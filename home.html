@@ -3,6 +3,14 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://도메인주소.com/" />
+<meta property="og:title" content="미주자산톡 | 미국 한인 재정 컨설팅" />
+<meta property="og:description" content="미국 거주 한인 대상 자산관리, 은퇴준비, 투자설계 등 맞춤 재정 컨설팅 서비스" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://mijutalk.co/" />
+<meta property="og:image" content="https://mijutalk.co/images/profile-picture.jpg" />
+
 <title>미주자산톡 | 미국 거주 한인 재정 컨설팅</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet" />
 <style>
@@ -76,7 +84,6 @@
     box-shadow: 0 0 10px #ffc600aa;
   }
 
-
 /* 모바일에서 햄버거 버튼 보이고, nav 숨김 */
 @media (max-width: 768px) {
   .menu-toggle {
@@ -117,7 +124,6 @@
   }
 }
 
-
   main {
     max-width: 1100px;
     margin: 120px auto 80px;
@@ -129,11 +135,21 @@
   }
 
 .hero {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 1s ease forwards;
   background: linear-gradient(135deg, #0078d7, #004e92);
   border-radius: 10px;
   color: white;
   padding: 50px 60px 50px; /* 위아래 패딩 동일하게 맞춤 */
   text-align: center;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .hero h1 {
@@ -208,7 +224,6 @@
   }
   /* 대표 소개 */
 
-
 .profile {
   display: flex;
   align-items: center;
@@ -228,9 +243,6 @@
   font-size: 16px;
   color: #333;
 }
-
-
-
 
   #about {
     display: flex;
@@ -362,37 +374,6 @@
     text-decoration: underline;
   }
 
-  /* 반응형 */
-  @media (max-width: 768px) {
-    #about {
-      flex-direction: column;
-      text-align: center;
-      gap: 24px;
-      padding: 0 10px
-    }
-    #about .bio {
-      flex: none;
-      min-width: auto;
-    }
-    #about .photo {
-      max-width: 240px;
-      margin: 0 auto;
-    }
-    nav ul {
-      gap: 16px;
-    }
-    header {
-      padding: 18px 20px;
-    }
-    main {
-      margin: 100px auto 60px;
-    }
-    .hero {
-      padding: 90px 24px 30px;
-    }
-  }
-
-
 /* 햄버거 버튼 기본 스타일 */
 .menu-toggle {
   display: none;
@@ -433,24 +414,20 @@
 
 </style>
 
-
 <meta name="description" content="미국 거주 한인 대상 자산관리, 은퇴준비, 투자설계 등 맞춤 재정 컨설팅 서비스" />
 <meta name="keywords" content="미국 한인, 재정 컨설팅, 자산관리, 401k, IRA, 투자설계, 은퇴 준비" />
 </head>
 <body>
 <header>
 
-
-
   <div class="logo" aria-label="미주자산톡 브랜드 로고">미주자산톡</div>
-
 
   <!-- 햄버거 버튼 추가 -->
   <button class="menu-toggle" aria-label="메뉴 열기/닫기" aria-expanded="false" aria-controls="primary-navigation">
     <span class="hamburger"></span>
   </button>
 
-  <nav>
+  <nav id="primary-navigation">
     <ul role="menubar">
       <li role="none"><a href="#hero" class="active" role="menuitem" tabindex="0">홈</a></li>
       <li role="none"><a href="#services" role="menuitem" tabindex="0">서비스</a></li>
@@ -517,7 +494,6 @@
   </div>
 </section>
 
-
   <section id="faq" aria-labelledby="faq-title">
     <h2 id="faq-title">자주 묻는 질문 (FAQ)</h2>
     
@@ -551,7 +527,6 @@
       </div>
     </article>
 
-
     <article class="faq-item">
       <button class="faq-question" aria-expanded="false" aria-controls="faq4" id="faq4-btn">
         4. 한국과 미국에 자산이 모두 있는데, 함께 상담 가능한가요?
@@ -561,7 +536,6 @@
         <p>네, 가능합니다. 미국 내 자산과 한국 자산을 함께 고려한 전략도 안내드릴 수 있습니다. (단, 한국 자산에 대한 세부 운용은 안내 차원에서만 도움 드립니다.)</p>
       </div>
     </article>
-
 
     <article class="faq-item">
       <button class="faq-question" aria-expanded="false" aria-controls="faq5" id="faq5-btn">
@@ -573,7 +547,6 @@
       </div>
     </article>
 
-
     <article class="faq-item">
       <button class="faq-question" aria-expanded="false" aria-controls="faq6" id="faq6-btn">
         6. 은퇴 후 수입은 어떻게 만드나요?
@@ -583,7 +556,6 @@
         <p>고객님의 은퇴 자금, 연금, 소설시큐리티 등을 기반으로 지속 가능한 현금 흐름을 설계해드립니다.</p>
       </div>
     </article>
-
 
     <article class="faq-item">
       <button class="faq-question" aria-expanded="false" aria-controls="faq7" id="faq7-btn">
@@ -637,7 +609,6 @@
     });
   });
 
-
   window.addEventListener("scroll", () => {
     const sections = document.querySelectorAll("section");
     const navLinks = document.querySelectorAll("nav ul li a");
@@ -663,9 +634,17 @@
       }
     });
   });
+
+  // 모바일 내비게이션 작동 스크립트
+  document.addEventListener("DOMContentLoaded", function () {
+    const toggleButton = document.querySelector(".menu-toggle");
+    const nav = document.querySelector("nav");
+
+    toggleButton.addEventListener("click", () => {
+      const isOpen = nav.classList.toggle("open");
+      toggleButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+  });
 </script>
-
-
-
 </body>
 </html>
