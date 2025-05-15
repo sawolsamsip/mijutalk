@@ -4,15 +4,16 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://도메인주소.com/" />
-<meta property="og:title" content="미주자산톡 | 미국 한인 재정 컨설팅" />
+<link rel="canonical" href="https://도메인주소.com/" /> <meta property="og:title" content="미주자산톡 | 미국 한인 재정 컨설팅" />
 <meta property="og:description" content="미국 거주 한인 대상 자산관리, 은퇴준비, 투자설계 등 맞춤 재정 컨설팅 서비스" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://mijutalk.co/" />
 <meta property="og:image" content="https://mijutalk.co/images/profile-picture.jpg" />
+<meta name="description" content="미국 거주 한인 대상 자산관리, 은퇴준비, 투자설계 등 맞춤 재정 컨설팅 서비스" />
+<meta name="keywords" content="미국 한인, 재정 컨설팅, 자산관리, 401k, IRA, 투자설계, 은퇴 준비" />
 
 <title>미주자산톡 | 미국 거주 한인 재정 컨설팅</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
 <style>
   :root {
     --color-primary: #003366;
@@ -26,9 +27,10 @@
   }
   * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
   }
   body {
-    margin: 0; padding: 0;
     font-family: 'Noto Sans KR', sans-serif;
     background: var(--color-background);
     color: var(--color-text-primary);
@@ -46,126 +48,186 @@
     top: 0; left: 0; right: 0;
     background: #004a99;
     color: #fff;
-    padding: 22px 40px;
+    padding: 15px 20px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.25);
     z-index: 1100;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 70px; /* Fixed header height */
   }
   .logo {
     font-weight: 900;
-    font-size: 2.2rem;
-    letter-spacing: 3px;
+    font-size: 1.8rem;
+    letter-spacing: 2px;
     user-select: none;
     cursor: default;
-    font-family: 'Noto Sans KR', sans-serif;
   }
-  nav ul {
+
+  /* Desktop Navigation */
+  nav#primary-navigation ul {
     display: flex;
-    gap: 28px;
+    gap: 20px; /* Adjusted gap */
     list-style: none;
-    margin: 0;
-    padding: 0;
   }
-  nav ul li a {
+  nav#primary-navigation ul li a {
     font-weight: 600;
-    font-size: 1.1rem;
-    padding: 8px 16px;
+    font-size: 1rem; /* Adjusted font size */
+    padding: 8px 12px; /* Adjusted padding */
     border-radius: 6px;
     color: #f0f5fb;
     transition: background-color 0.25s ease, color 0.25s ease;
   }
-  nav ul li a:hover,
-  nav ul li a.active {
-    background-color: #ffc600;
-    color: #004a99;
-    font-weight: 700;
-    box-shadow: 0 0 10px #ffc600aa;
-  }
-
-/* 모바일에서 햄버거 버튼 보이고, nav 숨김 */
-@media (max-width: 768px) {
-  .menu-toggle {
-    display: block;
-  }
-  nav {
-    position: fixed;
-    top: 70px; /* 헤더 아래 */
-    right: 0;
-    background: var(--color-primary);
-    width: 220px;
-    height: calc(100vh - 70px);
-    transform: translateX(100%);
-    transition: transform 0.3s ease;
-    box-shadow: -2px 0 10px rgba(0,0,0,0.3);
-    border-radius: 0 0 0 10px;
-    z-index: 1150;
-  }
-  nav.open {
-    transform: translateX(0);
-  }
-  nav ul {
-    flex-direction: column;
-    gap: 12px;
-    padding: 20px;
-  }
-  nav ul li a {
-    color: #fff;
-    padding: 12px 18px;
-    font-size: 1.2rem;
-  }
-  nav ul li a:hover,
-  nav ul li a.active {
+  nav#primary-navigation ul li a:hover,
+  nav#primary-navigation ul li a.active {
     background-color: var(--color-secondary);
     color: var(--color-primary);
-    box-shadow: none;
     font-weight: 700;
+    box-shadow: 0 0 10px rgba(255, 198, 0, 0.67); /* #ffc600aa */
   }
-}
+
+  /* Hamburger Button Base Styles */
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1200;
+    width: 40px;
+    height: 40px;
+    position: relative;
+  }
+  .menu-toggle .hamburger,
+  .menu-toggle .hamburger::before,
+  .menu-toggle .hamburger::after {
+    content: "";
+    display: block;
+    background-color: white;
+    height: 3px;
+    border-radius: 2px;
+    position: absolute;
+    width: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: all 0.3s ease;
+  }
+  .menu-toggle .hamburger {
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .menu-toggle .hamburger::before {
+    top: -8px;
+  }
+  .menu-toggle .hamburger::after {
+    /* bottom: -8px; */ /* Using top for consistent transform origin */
+    top: 8px;
+  }
+
+  /* Styles for "X" when menu is open */
+  .menu-toggle.open .hamburger {
+      background-color: transparent;
+  }
+  .menu-toggle.open .hamburger::before {
+      top: 0;
+      transform: translateX(-50%) rotate(45deg);
+  }
+  .menu-toggle.open .hamburger::after {
+      top: 0;
+      transform: translateX(-50%) rotate(-45deg);
+  }
+
+  /* Mobile Navigation Styles */
+  @media (max-width: 768px) {
+    .menu-toggle {
+      display: block;
+    }
+    nav#primary-navigation {
+      display: block;
+      position: fixed;
+      top: 70px; /* Matches header height */
+      right: 0;
+      background: var(--color-primary);
+      width: 250px;
+      height: calc(100vh - 70px); /* Full height minus header height */
+      transform: translateX(100%);
+      transition: transform 0.3s ease-in-out;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.3);
+      border-radius: 0 0 0 10px;
+      z-index: 1150;
+      overflow-y: auto;
+    }
+    nav#primary-navigation.open {
+      transform: translateX(0);
+    }
+    nav#primary-navigation ul {
+      flex-direction: column;
+      gap: 1px;
+      padding: 20px 0;
+      width: 100%;
+    }
+    nav#primary-navigation ul li {
+      width: 100%;
+    }
+    nav#primary-navigation ul li a {
+      color: #fff;
+      padding: 15px 25px;
+      font-size: 1.1rem;
+      display: block;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    nav#primary-navigation ul li a:hover,
+    nav#primary-navigation ul li a.active {
+      background-color: var(--color-secondary);
+      color: var(--color-primary);
+      font-weight: 700;
+      box-shadow: none;
+    }
+  }
 
   main {
     max-width: 1100px;
-    margin: 120px auto 80px;
-    padding: 0 20px;
+    margin: 0 auto; /* Margin top will be handled by section scroll-margin-top or padding-top */
+    padding: 20px;
+    padding-top: 90px; /* Space for fixed header */
   }
   section {
     margin-bottom: 60px;
-    scroll-margin-top: 120px;
+    scroll-margin-top: 90px; /* Space for fixed header for anchor links */
   }
 
-.hero {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeInUp 1s ease forwards;
-  background: linear-gradient(135deg, #0078d7, #004e92);
-  border-radius: 10px;
-  color: white;
-  padding: 50px 60px 50px; /* 위아래 패딩 동일하게 맞춤 */
-  text-align: center;
-}
-
-@keyframes fadeInUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  .hero {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 1s ease forwards;
+    background: linear-gradient(135deg, #0078d7, #004e92);
+    border-radius: 10px;
+    color: white;
+    padding: 50px 40px; /* Adjusted padding */
+    text-align: center;
+    margin-top: 0; /* Remove margin-top if main has padding-top */
   }
-}
 
-.hero h1 {
-  font-size: 2.8rem;
-  margin: 0 0 15px 0; /* 위쪽 마진 0, 아래쪽만 15px */
-  font-weight: 900;
-  letter-spacing: 1.3px;
-}
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 
-.hero p {
-  font-size: 1.2rem;
-  line-height: 1.5;
-  max-width: 600px;
-  margin: 0 auto; /* 위아래 margin 0, 좌우 자동 */
-}
-
+  .hero h1 {
+    font-size: 2.5rem; /* Adjusted for responsiveness */
+    margin: 0 0 15px 0;
+    font-weight: 900;
+    letter-spacing: 1.3px;
+  }
+  .hero p {
+    font-size: 1.1rem; /* Adjusted */
+    line-height: 1.5;
+    max-width: 600px;
+    margin: 0 auto;
+  }
   .btn-kakao {
     background-color: #fee500;
     color: #3c1e1e;
@@ -185,7 +247,7 @@
   h2 {
     color: var(--color-primary);
     font-weight: 700;
-    margin-bottom: 16px;
+    margin-bottom: 24px; /* Increased margin */
     font-size: 2rem;
     border-left: 6px solid var(--color-secondary);
     padding-left: 12px;
@@ -204,10 +266,11 @@
     border-radius: 16px;
     padding: 24px 30px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-    transition: box-shadow 0.3s ease;
+    transition: box-shadow 0.3s ease, transform 0.3s ease; /* Added transform transition */
   }
   #services li:hover {
     box-shadow: 0 10px 28px rgba(0,0,0,0.14);
+    transform: translateY(-5px); /* Added hover effect */
   }
   #services li h3 {
     margin-top: 0;
@@ -222,64 +285,50 @@
     font-size: 1rem;
     line-height: 1.4;
   }
+
   /* 대표 소개 */
-
-.profile {
-  display: flex;
-  align-items: center;
-  gap: 30px;
-  margin-top: 30px;
-  flex-wrap: wrap;
-}
-
-.profile-img {
-  width: 200px;
-  border-radius: 100px;
-  flex-shrink: 0;
-}
-
-.profile-text {
-  flex: 1;
-  font-size: 16px;
-  color: #333;
-}
-
   #about {
+    /* padding: 40px 20px; No need for padding if section has it */
+  }
+  .profile-container { /* Added a container for better centering and structure */
     display: flex;
-    flex-wrap: wrap;
-    gap: 40px;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    text-align: center;
+    background-color: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
   }
-  #about .photo {
-    flex: 1 1 280px;
-    max-width: 320px;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  .profile-img {
+    width: 150px;
+    height: 150px; /* Make it square for a circle */
+    object-fit: cover; /* Ensure image covers without distortion */
+    margin-bottom: 20px;
+    border-radius: 50%; /* Changed to 50% for a perfect circle */
+    border: 4px solid var(--color-secondary); /* Added a border */
   }
-  #about .photo img {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-  #about .bio {
-    flex: 2 1 480px;
-    font-size: 1.1rem;
-    color: var(--color-text-secondary);
-    line-height: 1.6;
-    min-width: : 280px;
-  }
-  #about .bio h3 {
+  .bio h3 {
     color: var(--color-primary);
     font-weight: 700;
+    font-size: 1.5rem; /* Slightly larger */
+    margin-top: 0;
     margin-bottom: 12px;
   }
+  .bio p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    max-width: 600px; /* Limit width for readability */
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   /* FAQ */
   #faq .faq-item {
-    margin-bottom: 22px;
+    margin-bottom: 18px; /* Adjusted margin */
     background-color: var(--color-faq-bg);
-    border-radius: 16px;
+    border-radius: 12px; /* Adjusted border-radius */
     box-shadow: 0 6px 18px rgba(0,0,0,0.08);
     overflow: hidden;
     transition: box-shadow 0.3s ease;
@@ -288,15 +337,15 @@
     box-shadow: 0 10px 28px rgba(0,0,0,0.14);
   }
   .faq-question {
-    background: none;
-    padding: 20px 30px;
-    font-size: 1.15rem;
+    background: none; /* Ensure no background from button defaults */
+    border: none; /* Ensure no border from button defaults */
+    padding: 18px 25px; /* Adjusted padding */
+    font-size: 1.1rem; /* Adjusted font-size */
     font-weight: 700;
     color: var(--color-primary);
     cursor: pointer;
     position: relative;
     user-select: none;
-    border: none;
     width: 100%;
     text-align: left;
     display: flex;
@@ -308,22 +357,36 @@
     fill: var(--color-primary);
     width: 20px;
     height: 20px;
+    flex-shrink: 0; /* Prevent icon from shrinking */
   }
   .faq-question.active svg {
     transform: rotate(180deg);
     fill: var(--color-secondary);
   }
   .faq-answer {
-    padding: 18px 30px 28px;
+    padding: 0px 25px 20px; /* Adjusted padding */
     color: var(--color-text-secondary);
     font-weight: 500;
     line-height: 1.5;
-    background-color: var(--color-background);
+    background-color: var(--color-faq-bg); /* Consistent with item or slightly different like --color-background */
+    /* max-height: 0; */ /* Using hidden attribute now, so max-height transition is not needed unless desired */
+    /* overflow: hidden; */
+    /* transition: max-height 0.35s ease-out, padding 0.35s ease-out; */
   }
+  /* .faq-answer.open {
+    max-height: 500px;
+    padding: 18px 30px 28px;
+  } */
+
+
   /* 문의 및 상담 */
   #contact form {
-    max-width: 480px;
+    max-width: 520px; /* Slightly wider */
     margin-top: 24px;
+    background-color: white; /* Form container background */
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
   }
   #contact label {
     display: block;
@@ -343,7 +406,8 @@
   }
   #contact input:focus, #contact textarea:focus {
     border-color: var(--color-primary);
-    outline: none;
+    outline: 2px solid var(--color-secondary); /* Added focus outline */
+    box-shadow: 0 0 5px rgba(0, 51, 102, 0.2); /* Subtle focus shadow */
   }
   #contact button {
     background-color: var(--color-button-bg);
@@ -355,78 +419,56 @@
     border-radius: 28px;
     cursor: pointer;
     box-shadow: 0 6px 16px rgba(0,80,158,0.4);
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
   }
   #contact button:hover {
     background-color: var(--color-button-hover);
+    transform: translateY(-2px); /* Slight lift on hover */
   }
+  #contact .contact-kakao-link { /* Style for the Kakao link below the form */
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1rem;
+  }
+
   /* footer */
   footer {
     background-color: var(--color-primary);
     color: white;
-    padding: 24px 20px;
+    padding: 30px 20px; /* Increased padding */
     text-align: center;
-    font-size: 0.95rem;
+    font-size: 0.9rem; /* Adjusted font size */
     user-select: none;
+    line-height: 1.7;
   }
   footer a {
     color: var(--color-secondary);
     text-decoration: underline;
   }
+  footer p {
+    margin-bottom: 0;
+  }
 
-/* 햄버거 버튼 기본 스타일 */
-.menu-toggle {
-  display: none;
-  background: none;
-  border: none;
-  cursor: pointer;
-  width: 30px;
-  height: 22px;
-  position: relative;
-  z-index: 1200;
-}
+  /* Accessibility: Focus Visible for keyboard users */
+  *:focus-visible {
+    outline: 3px solid var(--color-secondary);
+    outline-offset: 2px;
+  }
+  .faq-question:focus-visible { /* Specific for FAQ to avoid double outline with SVG */
+    outline: 2px solid var(--color-secondary);
+    outline-offset: 1px;
+  }
 
-.menu-toggle .hamburger,
-.menu-toggle .hamburger::before,
-.menu-toggle .hamburger::after {
-  content: "";
-  display: block;
-  background-color: white;
-  height: 3px;
-  border-radius: 2px;
-  position: absolute;
-  width: 100%;
-  transition: all 0.3s ease;
-}
-
-.menu-toggle .hamburger {
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.menu-toggle .hamburger::before {
-  top: -8px;
-}
-
-.menu-toggle .hamburger::after {
-  bottom: -8px;
-}
 
 </style>
-
-<meta name="description" content="미국 거주 한인 대상 자산관리, 은퇴준비, 투자설계 등 맞춤 재정 컨설팅 서비스" />
-<meta name="keywords" content="미국 한인, 재정 컨설팅, 자산관리, 401k, IRA, 투자설계, 은퇴 준비" />
 </head>
 <body>
 <header>
-
   <div class="logo" aria-label="미주자산톡 브랜드 로고">미주자산톡</div>
-
-  <!-- 햄버거 버튼 추가 -->
   <button class="menu-toggle" aria-label="메뉴 열기/닫기" aria-expanded="false" aria-controls="primary-navigation">
     <span class="hamburger"></span>
   </button>
-
   <nav id="primary-navigation">
     <ul role="menubar">
       <li role="none"><a href="#hero" class="active" role="menuitem" tabindex="0">홈</a></li>
@@ -439,10 +481,10 @@
 </header>
 
 <main role="main">
-  <section id="hero" class="hero" tabindex="-1" aria-label="미주자산톡 소개 및 상담 버튼">
-    <h1>미국 거주 한인을 위한 프리미엄 재정 컨설팅</h1>
+  <section id="hero" class="hero" tabindex="-1" aria-labelledby="hero-title">
+    <h1 id="hero-title">미국 거주 한인을 위한 프리미엄 재정 컨설팅</h1>
     <p>자산관리, 은퇴준비, 세금최적화 투자설계까지<br/>쉽고 전문적으로 도와드립니다.</p>
-    <a href="https://pf.kakao.com/_YxdjxkT" target="_blank" rel="noopener noreferrer" class="btn-kakao" aria-label="카카오톡 상담 바로가기 새 창 열림">카카오톡 무료 상담</a>
+    <a href="https://pf.kakao.com/_YxdjxkT" target="_blank" rel="noopener noreferrer" class="btn-kakao" aria-label="카카오톡 무료 상담 바로가기 새 창 열림">카카오톡 무료 상담</a>
   </section>
 
   <section id="services" aria-labelledby="services-title">
@@ -479,172 +521,245 @@
     </ul>
   </section>
 
-<section id="about" class="section">
-  <div class="container">
-    <h2>대표 소개</h2>
-    <div class="profile">
-      <img src="profile-picture.jpg" alt="대표 사진" class="profile-img">
-      <div class="bio">
-        <h3>이상현, MBA, CRPC®</h3>
-        <p>미국 내 10년 이상의 재정 컨설팅 경력을 가진 금융 전문가입니다.<br>
-           25만불 이상 대상으로 맞춤형 자산관리 및 은퇴 계획 수립을 전문으로 합니다. <br>
-           신뢰와 투명성을 최우선으로 고객과 함께 성장하는 파트너가 되겠습니다.</p>
-      </div>
+<section id="about" aria-labelledby="about-title">
+  <h2 id="about-title">대표 소개</h2>
+  <div class="profile-container">
+    <img src="https://mijutalk.co/profile-picture.jpg" alt="이상현 대표 사진" class="profile-img"> <div class="bio">
+      <h3>이상현, MBA, CRPC®</h3>
+      <p>미국 내 10년 이상의 재정 컨설팅 경력을 가진 금융 전문가입니다.<br>
+         25만불 이상 자산 규모 고객을 대상으로 맞춤형 자산관리 및 은퇴 계획 수립을 전문으로 합니다. <br>
+         신뢰와 투명성을 최우선으로 고객과 함께 성장하는 파트너가 되겠습니다.</p>
     </div>
   </div>
 </section>
 
   <section id="faq" aria-labelledby="faq-title">
     <h2 id="faq-title">자주 묻는 질문 (FAQ)</h2>
-    
     <article class="faq-item">
-      <button class="faq-question" aria-expanded="false" aria-controls="faq1" id="faq1-btn">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq1-answer" id="faq1-btn">
         1. 미국에서 자산 관리를 꼭 받아야 하나요?
         <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
       </button>
-      <div id="faq1" class="faq-answer" hidden>
+      <div id="faq1-answer" class="faq-answer" hidden>
         <p>대부분의 한인분들은 처음엔 직접 관리하시다가 투자 방향이나 세금 문제로 어려움을 느끼십니다. 전문가의 도움을 받으면 더 체계적이고 세금 면에서도 유리하게 관리할 수 있습니다.</p>
       </div>
     </article>
-
     <article class="faq-item">
-      <button class="faq-question" aria-expanded="false" aria-controls="faq2" id="faq2-btn">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq2-answer" id="faq2-btn">
         2. 상담은 무료인가요?
         <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
       </button>
-      <div id="faq2" class="faq-answer" hidden>
+      <div id="faq2-answer" class="faq-answer" hidden>
         <p>초기 상담은 무료이며, 현재 상황과 목표를 듣고 맞춤형 방향을 제시해드립니다. 이후 진행 방식은 상담 후 결정하실 수 있습니다.</p>
       </div>
     </article>
-
     <article class="faq-item">
-      <button class="faq-question" aria-expanded="false" aria-controls="faq3" id="faq3-btn">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq3-answer" id="faq3-btn">
         3. 얼마부터 시작할 수 있나요?
         <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
       </button>
-      <div id="faq3" class="faq-answer" hidden>
+      <div id="faq3-answer" class="faq-answer" hidden>
         <p>고객님의 상황에 따라 다르지만, 일반적으로 $250,000 이상의 투자 자산을 기준으로 종합적인 자산 관리를 제공하고 있습니다.</p>
       </div>
     </article>
-
     <article class="faq-item">
-      <button class="faq-question" aria-expanded="false" aria-controls="faq4" id="faq4-btn">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq4-answer" id="faq4-btn">
         4. 한국과 미국에 자산이 모두 있는데, 함께 상담 가능한가요?
         <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
       </button>
-      <div id="faq4" class="faq-answer" hidden>
+      <div id="faq4-answer" class="faq-answer" hidden>
         <p>네, 가능합니다. 미국 내 자산과 한국 자산을 함께 고려한 전략도 안내드릴 수 있습니다. (단, 한국 자산에 대한 세부 운용은 안내 차원에서만 도움 드립니다.)</p>
       </div>
     </article>
-
     <article class="faq-item">
-      <button class="faq-question" aria-expanded="false" aria-controls="faq5" id="faq5-btn">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq5-answer" id="faq5-btn">
         5. 세금 문제도 함께 도와주시나요?
         <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
       </button>
-      <div id="faq5" class="faq-answer" hidden>
+      <div id="faq5-answer" class="faq-answer" hidden>
         <p>세무사는 아니지만, 투자에 따른 세금 전략이나 구조 설계는 함께 검토해드립니다. 필요시 CPA와 협업도 가능합니다.</p>
       </div>
     </article>
-
     <article class="faq-item">
-      <button class="faq-question" aria-expanded="false" aria-controls="faq6" id="faq6-btn">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq6-answer" id="faq6-btn">
         6. 은퇴 후 수입은 어떻게 만드나요?
         <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
       </button>
-      <div id="faq6" class="faq-answer" hidden>
+      <div id="faq6-answer" class="faq-answer" hidden>
         <p>고객님의 은퇴 자금, 연금, 소설시큐리티 등을 기반으로 지속 가능한 현금 흐름을 설계해드립니다.</p>
       </div>
     </article>
-
     <article class="faq-item">
-      <button class="faq-question" aria-expanded="false" aria-controls="faq7" id="faq7-btn">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq7-answer" id="faq7-btn">
         7. 한국어로 상담 가능한가요?
         <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
       </button>
-      <div id="faq7" class="faq-answer" hidden>
-        <p>네, 편하게 한국어로 상담하실 수 있슨니다. 문화적차이도 이해하며 설명드리기 때문에 더 편하게 상담 받으실 수 있습니다.</p>
+      <div id="faq7-answer" class="faq-answer" hidden>
+        <p>네, 편하게 한국어로 상담하실 수 있습니다. 문화적 차이도 이해하며 설명드리기 때문에 더 편하게 상담 받으실 수 있습니다.</p>
       </div>
     </article>
   </section>
 
   <section id="contact" aria-labelledby="contact-title">
     <h2 id="contact-title">무료 상담 신청</h2>
-    <p>빠른 상담을 원하시면 아래 폼을 작성해 주세요.</p>
     <form method="post" action="https://docs.google.com/forms/d/e/2PACX-1vR6T2-XXXXXXXXXXXXXXXXX/formResponse" target="_blank" aria-label="무료 상담 신청 폼">
-      <label for="name">이름</label>
-      <input type="text" id="name" name="entry.1234567890" required aria-required="true" />
-      
-      <label for="email">이메일</label>
-      <input type="email" id="email" name="entry.0987654321" required aria-required="true" />
-      
-      <label for="message">문의 내용</label>
-      <textarea id="message" name="entry.1122334455" rows="4" required aria-required="true"></textarea>
-      
+      <p style="font-size: 0.9rem; color: var(--color-text-secondary); margin-bottom: 20px;">빠른 상담을 원하시면 아래 폼을 작성해 주세요. 모든 정보는 안전하게 처리됩니다.</p>
+      <div>
+        <label for="name">이름</label>
+        <input type="text" id="name" name="entry.1234567890" required aria-required="true" placeholder="홍길동" />
+      </div>
+      <div>
+        <label for="email">이메일</label>
+        <input type="email" id="email" name="entry.0987654321" required aria-required="true" placeholder="example@email.com" />
+      </div>
+      <div>
+        <label for="message">문의 내용</label>
+        <textarea id="message" name="entry.1122334455" rows="5" required aria-required="true" placeholder="간단한 문의 내용을 작성해주세요. (예: 은퇴 준비, 자녀 학자금 마련 등)"></textarea>
+      </div>
       <button type="submit">상담 신청하기</button>
     </form>
-    <p>또는 <a href="https://pf.kakao.com/_YxdjxkT" target="_blank" rel="noopener noreferrer" aria-label="카카오톡 상담 바로가기 새 창 열림">카카오톡 채널</a>에서 바로 상담받으실 수 있습니다.</p>
+    <p class="contact-kakao-link">또는 <a href="https://pf.kakao.com/_YxdjxkT" target="_blank" rel="noopener noreferrer" aria-label="카카오톡 상담 바로가기 새 창 열림">카카오톡 채널</a>에서 바로 상담받으실 수 있습니다.</p>
   </section>
 </main>
 
 <footer>
-  <p>상호: 미주자산톡 | 대표: 이상현 | 사업자등록번호: 445-60-0091 <br><br>주소: 경상남도 합천군 합천읍 대야로 888 | 이메일: <a href="mailto:sawolsamsip@naver.com">sawolsamsip@naver.com</a></p>
+  <p>상호: 미주자산톡 | 대표: 이상현 | 사업자등록번호: 445-60-0091<br>
+  주소: 경상남도 합천군 합천읍 대야로 888 | 이메일: <a href="mailto:contact@mijutalk.co">contact@mijutalk.co</a><br>
+  
+<!--
+   <span style="font-size: 0.8em; opacity: 0.8;">Investment advisory services offered through Sanghyun Lee, a Registered Investment Advisor. Financial planning and investment advisory services are available only to residents of California, Connecticut, Georgia, Illinois, Michigan, Nevada, New Mexico, Oregon, Texas.</span>
+-->
+
+   <br> 
+  &copy; <script>document.write(new Date().getFullYear());</script> 미주자산톡. All Rights Reserved.</p>
 </footer>
 
 <script>
+document.addEventListener("DOMContentLoaded", function () {
   // FAQ 아코디언 토글 기능
-  document.querySelectorAll('.faq-question').forEach(button => {
+  const faqQuestions = document.querySelectorAll('.faq-question');
+  faqQuestions.forEach(button => {
     button.addEventListener('click', () => {
       const expanded = button.getAttribute('aria-expanded') === 'true';
+      // Close all other FAQs
+      // faqQuestions.forEach(btn => {
+      //   if (btn !== button) {
+      //     btn.setAttribute('aria-expanded', 'false');
+      //     btn.classList.remove('active');
+      //     const otherAnswerId = btn.getAttribute('aria-controls');
+      //     const otherAnswer = document.getElementById(otherAnswerId);
+      //     if (otherAnswer) otherAnswer.setAttribute('hidden', '');
+      //   }
+      // });
+
+      // Toggle current FAQ
       button.setAttribute('aria-expanded', String(!expanded));
       button.classList.toggle('active');
 
       const answerId = button.getAttribute('aria-controls');
       const answer = document.getElementById(answerId);
-      if (!expanded) {
-        answer.removeAttribute('hidden');
-      } else {
-        answer.setAttribute('hidden', '');
+      if (answer) {
+        if (!expanded) {
+          answer.removeAttribute('hidden');
+        } else {
+          answer.setAttribute('hidden', '');
+        }
       }
     });
   });
 
-  window.addEventListener("scroll", () => {
-    const sections = document.querySelectorAll("section");
-    const navLinks = document.querySelectorAll("nav ul li a");
+  // Scrollspy for active nav link
+  const sections = document.querySelectorAll("main section[id]");
+  const navLinks = document.querySelectorAll("nav#primary-navigation ul li a");
+  const headerOffset = 90; // Adjusted to match section scroll-margin-top
 
+  function updateActiveLink() {
     let current = "";
-
-    const scrollPos = window.pageYOffset + 100; // 약간 아래 기준을 줌
+    const scrollPos = window.pageYOffset || document.documentElement.scrollTop;
 
     sections.forEach(section => {
-      const top = section.offsetTop;
-      const height = section.offsetHeight;
-      if (scrollPos >= top && scrollPos < top + height) {
+      const sectionTop = section.offsetTop;
+      if (scrollPos >= sectionTop - headerOffset) {
         current = section.getAttribute("id");
       }
     });
 
-    // 모든 링크에서 active 제거
+    // If at the bottom of the page, the last section should be active
+    if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight - 2) { // -2 for potential rounding errors
+        if (sections.length > 0) {
+            current = sections[sections.length -1].getAttribute("id");
+        }
+    }
+
+
     navLinks.forEach(link => {
       link.classList.remove("active");
-      const href = link.getAttribute("href").substring(1);
-      if (href === current) {
+      const href = link.getAttribute("href");
+      if (href && href.includes("#") && href.substring(1) === current) {
         link.classList.add("active");
+      }
+    });
+
+    // Default to "home" if no other section is current and at the top
+    if (current === "" && navLinks.length > 0 && navLinks[0].getAttribute("href") === "#hero" && scrollPos < sections[0].offsetTop - headerOffset) {
+        navLinks.forEach(link => link.classList.remove("active")); // Clear all
+        navLinks[0].classList.add("active");
+    }
+  }
+
+  window.addEventListener("scroll", updateActiveLink);
+  updateActiveLink(); // Call on load
+
+
+  // 모바일 내비게이션 작동 스크립트
+  const toggleButton = document.querySelector(".menu-toggle");
+  const nav = document.getElementById("primary-navigation");
+
+  if (toggleButton && nav) {
+    toggleButton.addEventListener("click", () => {
+      const isOpen = nav.classList.toggle("open");
+      toggleButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      toggleButton.classList.toggle("open", isOpen);
+      // Optional: Prevent body scroll when menu is open
+      // document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+
+    const mobileNavLinks = nav.querySelectorAll("a");
+    mobileNavLinks.forEach(link => {
+      link.addEventListener("click", () => {
+        if (nav.classList.contains("open")) {
+          nav.classList.remove("open");
+          toggleButton.setAttribute("aria-expanded", "false");
+          toggleButton.classList.remove("open");
+          // document.body.style.overflow = ''; // Restore body scroll
+        }
+      });
+    });
+  }
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      const hrefAttribute = this.getAttribute('href');
+      if (hrefAttribute && hrefAttribute.length > 1 && document.querySelector(hrefAttribute)) { // Ensure it's a valid selector and not just "#"
+        e.preventDefault();
+        const targetElement = document.querySelector(hrefAttribute);
+        if (targetElement) {
+            // Calculate position considering fixed header
+            const headerHeight = document.querySelector('header').offsetHeight;
+            const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+            const offsetPosition = elementPosition - headerHeight;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: "smooth"
+            });
+        }
       }
     });
   });
 
-  // 모바일 내비게이션 작동 스크립트
-  document.addEventListener("DOMContentLoaded", function () {
-    const toggleButton = document.querySelector(".menu-toggle");
-    const nav = document.querySelector("nav");
-
-    toggleButton.addEventListener("click", () => {
-      const isOpen = nav.classList.toggle("open");
-      toggleButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
-    });
-  });
+});
 </script>
 </body>
 </html>
