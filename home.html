@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>미주자산톡 | 미국 거주 한인 재정 컨설팅</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --color-primary: #003366;
+    --color-secondary: #ffb800;
+    --color-background: #f2f5f8;
+    --color-text-primary: #222222;
+    --color-text-secondary: #555555;
+    --color-button-bg: #00509e;
+    --color-button-hover: #003366;
+    --color-faq-bg: #ffffff;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--color-background);
+    color: var(--color-text-primary);
+    line-height: 1.6;
+  }
+  a {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--color-secondary);
+  }
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: #004a99;
+    color: #fff;
+    padding: 22px 40px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+    z-index: 1100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo {
+    font-weight: 900;
+    font-size: 2.2rem;
+    letter-spacing: 3px;
+    user-select: none;
+    cursor: default;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  nav ul {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  nav ul li a {
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 8px 16px;
+    border-radius: 6px;
+    color: #f0f5fb;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+  nav ul li a:hover,
+  nav ul li a.active {
+    background-color: #ffc600;
+    color: #004a99;
+    font-weight: 700;
+    box-shadow: 0 0 10px #ffc600aa;
+  }
+
+
+/* 모바일에서 햄버거 버튼 보이고, nav 숨김 */
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+  }
+  nav {
+    position: fixed;
+    top: 70px; /* 헤더 아래 */
+    right: 0;
+    background: var(--color-primary);
+    width: 220px;
+    height: calc(100vh - 70px);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.3);
+    border-radius: 0 0 0 10px;
+    z-index: 1150;
+  }
+  nav.open {
+    transform: translateX(0);
+  }
+  nav ul {
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+  }
+  nav ul li a {
+    color: #fff;
+    padding: 12px 18px;
+    font-size: 1.2rem;
+  }
+  nav ul li a:hover,
+  nav ul li a.active {
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    box-shadow: none;
+    font-weight: 700;
+  }
+}
+
+  
+  main {
+    max-width: 1100px;
+    margin: 120px auto 80px;
+    padding: 0 20px;
+  }
+  section {
+    margin-bottom: 60px;
+    scroll-margin-top: 120px;
+  }
+
+.hero {
+  background: linear-gradient(135deg, #0078d7, #004e92);
+  border-radius: 10px;
+  color: white;
+  padding: 50px 60px 50px; /* 위아래 패딩 동일하게 맞춤 */
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 2.8rem;
+  margin: 0 0 15px 0; /* 위쪽 마진 0, 아래쪽만 15px */
+  font-weight: 900;
+  letter-spacing: 1.3px;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  max-width: 600px;
+  margin: 0 auto; /* 위아래 margin 0, 좌우 자동 */
+}
+
+  .btn-kakao {
+    background-color: #fee500;
+    color: #3c1e1e;
+    font-weight: 700;
+    padding: 14px 36px;
+    border-radius: 30px;
+    display: inline-block;
+    margin-top: 30px;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: background-color 0.3s ease;
+  }
+  .btn-kakao:hover {
+    background-color: #f7d602;
+  }
+
+  h2 {
+    color: var(--color-primary);
+    font-weight: 700;
+    margin-bottom: 16px;
+    font-size: 2rem;
+    border-left: 6px solid var(--color-secondary);
+    padding-left: 12px;
+  }
+
+  /* 서비스 소개 */
+  #services ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+    gap: 28px;
+  }
+  #services li {
+    background: white;
+    border-radius: 16px;
+    padding: 24px 30px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    transition: box-shadow 0.3s ease;
+  }
+  #services li:hover {
+    box-shadow: 0 10px 28px rgba(0,0,0,0.14);
+  }
+  #services li h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    color: var(--color-primary);
+    font-weight: 700;
+    font-size: 1.3rem;
+  }
+  #services li p {
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+  /* 대표 소개 */
+
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.profile-img {
+  width: 200px;
+  border-radius: 100px;
+  flex-shrink: 0;
+}
+
+.profile-text {
+  flex: 1;
+  font-size: 16px;
+  color: #333;
+}
+
+
+
+
+  #about {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    align-items: center;
+  }
+  #about .photo {
+    flex: 1 1 280px;
+    max-width: 320px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  }
+  #about .photo img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  #about .bio {
+    flex: 2 1 480px;
+    font-size: 1.1rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+  #about .bio h3 {
+    color: var(--color-primary);
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  /* FAQ */
+  #faq .faq-item {
+    margin-bottom: 22px;
+    background-color: var(--color-faq-bg);
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+  }
+  #faq .faq-item:hover {
+    box-shadow: 0 10px 28px rgba(0,0,0,0.14);
+  }
+  .faq-question {
+    background: none;
+    padding: 20px 30px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .faq-question svg {
+    transition: transform 0.35s ease;
+    fill: var(--color-primary);
+    width: 20px;
+    height: 20px;
+  }
+  .faq-question.active svg {
+    transform: rotate(180deg);
+    fill: var(--color-secondary);
+  }
+  .faq-answer {
+    padding: 18px 30px 28px;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    line-height: 1.5;
+    background-color: var(--color-background);
+  }
+  /* 문의 및 상담 */
+  #contact form {
+    max-width: 480px;
+    margin-top: 24px;
+  }
+  #contact label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--color-primary);
+  }
+  #contact input, #contact textarea {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 18px;
+    border: 1.8px solid #ccc;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: 'Noto Sans KR', sans-serif;
+    transition: border-color 0.3s ease;
+  }
+  #contact input:focus, #contact textarea:focus {
+    border-color: var(--color-primary);
+    outline: none;
+  }
+  #contact button {
+    background-color: var(--color-button-bg);
+    color: white;
+    border: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 14px 30px;
+    border-radius: 28px;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(0,80,158,0.4);
+    transition: background-color 0.3s ease;
+  }
+  #contact button:hover {
+    background-color: var(--color-button-hover);
+  }
+  /* footer */
+  footer {
+    background-color: var(--color-primary);
+    color: white;
+    padding: 24px 20px;
+    text-align: center;
+    font-size: 0.95rem;
+    user-select: none;
+  }
+  footer a {
+    color: var(--color-secondary);
+    text-decoration: underline;
+  }
+
+  /* 반응형 */
+  @media (max-width: 768px) {
+    #about {
+      flex-direction: column;
+      text-align: center;
+    }
+    #about .bio {
+      flex: none;
+    }
+    #about .photo {
+      max-width: 240px;
+      margin: 0 auto;
+    }
+    nav ul {
+      gap: 16px;
+    }
+    header {
+      padding: 18px 20px;
+    }
+    main {
+      margin: 100px auto 60px;
+    }
+    .hero {
+      padding: 90px 24px 30px;
+    }
+  }
+
+
+/* 햄버거 버튼 기본 스타일 */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 30px;
+  height: 22px;
+  position: relative;
+  z-index: 1200;
+}
+
+.menu-toggle .hamburger,
+.menu-toggle .hamburger::before,
+.menu-toggle .hamburger::after {
+  content: "";
+  display: block;
+  background-color: white;
+  height: 3px;
+  border-radius: 2px;
+  position: absolute;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.menu-toggle .hamburger {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.menu-toggle .hamburger::before {
+  top: -8px;
+}
+
+.menu-toggle .hamburger::after {
+  bottom: -8px;
+}
+
+</style>
+
+
+<meta name="description" content="미국 거주 한인 대상 자산관리, 은퇴준비, 투자설계 등 맞춤 재정 컨설팅 서비스" />
+<meta name="keywords" content="미국 한인, 재정 컨설팅, 자산관리, 401k, IRA, 투자설계, 은퇴 준비" />
+</head>
+<body>
+<header>
+
+
+
+  <div class="logo" aria-label="미주자산톡 브랜드 로고">미주자산톡</div>
+
+
+  <!-- 햄버거 버튼 추가 -->
+  <button class="menu-toggle" aria-label="메뉴 열기/닫기" aria-expanded="false" aria-controls="primary-navigation">
+    <span class="hamburger"></span>
+  </button>
+
+  <nav>
+    <ul role="menubar">
+      <li role="none"><a href="#hero" class="active" role="menuitem" tabindex="0">홈</a></li>
+      <li role="none"><a href="#services" role="menuitem" tabindex="0">서비스</a></li>
+      <li role="none"><a href="#about" role="menuitem" tabindex="0">대표 소개</a></li>
+      <li role="none"><a href="#faq" role="menuitem" tabindex="0">FAQ</a></li>
+      <li role="none"><a href="#contact" role="menuitem" tabindex="0">문의</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main role="main">
+  <section id="hero" class="hero" tabindex="-1" aria-label="미주자산톡 소개 및 상담 버튼">
+    <h1>미국 거주 한인을 위한 프리미엄 재정 컨설팅</h1>
+    <p>자산관리, 은퇴준비, 세금최적화 투자설계까지<br/>쉽고 전문적으로 도와드립니다.</p>
+    <a href="https://pf.kakao.com/_YxdjxkT" target="_blank" rel="noopener noreferrer" class="btn-kakao" aria-label="카카오톡 상담 바로가기 새 창 열림">카카오톡 무료 상담</a>
+  </section>
+
+  <section id="services" aria-labelledby="services-title">
+    <h2 id="services-title">주요 서비스 안내</h2>
+    <ul>
+      <li>
+        <h3>종합 자산 관리</h3>
+        <p>-은퇴, 교육자금, 주택 구매 등 목적별 자산 설계<br>-투자 포트폴리오 구성 및 리밸런싱<br>-리스크 관리 및 세금 최적화 전략 포함</p>
+      </li>
+      <li>
+        <h3>은퇴 계획 수립</h3>
+        <p>-401(k), IRA, Defined Benefit 등 퇴직연금 분석 및 최적화<br>-소설시큐리티 수령 전략 및 은퇴 후 현금 흐름 설계</p>
+      </li>
+      <li>
+        <h3>맞춤형 투자 전략</h3>
+        <p>-주식, ETF, 채권, 펀드 등 다양한 자산 투자 안내<br>-투자 성향에 따른 포트폴리오 맞춤 설계</p>
+      </li>
+      <li>
+        <h3>세금 효율적 투자</h3>
+        <p>-세금 절감 전략 (Tax-Loss Harvesting, Roth Conversion 등)<br>-고소득자, 자영업자 맞춤 절세 구조 컨설팅</p>
+      </li>
+      <li>
+        <h3>자녀 교육자금 계획</h3>
+        <p>-529 플랜, UGMA/UTMA 계좌 활용<br>-장기적인 교육자금 마련 및 세금 전략</p>
+      </li>
+      <li>
+        <h3>생애 이벤트 재정 컨설팅</h3>
+        <p>-이민, 결혼, 이혼, 사업 시작/정리, 상속 등 주요 전환기 대응<br>-복잡한 상황을 쉽게 풀어주는 맞춤형 조언</p>
+      </li>
+      <li>
+        <h3>상속 및 유산 계획</h3>
+        <p>-유언장, 신탁(Trust), 수혜자 지정 등 구조 설계<br>-가족 간 자산 이전 및 세금 절감 전략</p>
+      </li>
+    </ul>
+  </section>
+
+<section id="about" class="section">
+  <div class="container">
+    <h2>대표 소개</h2>
+    <div class="profile">
+      <img src="profile-picture.jpg" alt="대표 사진" class="profile-img">
+      <div class="bio">
+        <h3>이상현, MBA, CRPC®</h3>
+        <p>미국 내 10년 이상의 재정 컨설팅 경력을 가진 금융 전문가입니다.<br>
+           25만불 이상 대상으로 맞춤형 자산관리 및 은퇴 계획 수립을 전문으로 합니다. <br>
+           신뢰와 투명성을 최우선으로 고객과 함께 성장하는 파트너가 되겠습니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+  <section id="faq" aria-labelledby="faq-title">
+    <h2 id="faq-title">자주 묻는 질문 (FAQ)</h2>
+    
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq1" id="faq1-btn">
+        1. 미국에서 자산 관리를 꼭 받아야 하나요?
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq1" class="faq-answer" hidden>
+        <p>대부분의 한인분들은 처음엔 직접 관리하시다가 투자 방향이나 세금 문제로 어려움을 느끼십니다. 전문가의 도움을 받으면 더 체계적이고 세금 면에서도 유리하게 관리할 수 있습니다.</p>
+      </div>
+    </article>
+
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq2" id="faq2-btn">
+        2. 상담은 무료인가요?
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq2" class="faq-answer" hidden>
+        <p>초기 상담은 무료이며, 현재 상황과 목표를 듣고 맞춤형 방향을 제시해드립니다. 이후 진행 방식은 상담 후 결정하실 수 있습니다.</p>
+      </div>
+    </article>
+
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq3" id="faq3-btn">
+        3. 얼마부터 시작할 수 있나요?
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq3" class="faq-answer" hidden>
+        <p>고객님의 상황에 따라 다르지만, 일반적으로 $250,000 이상의 투자 자산을 기준으로 종합적인 자산 관리를 제공하고 있습니다.</p>
+      </div>
+    </article>
+
+
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq4" id="faq4-btn">
+        4. 한국과 미국에 자산이 모두 있는데, 함께 상담 가능한가요?
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq4" class="faq-answer" hidden>
+        <p>네, 가능합니다. 미국 내 자산과 한국 자산을 함께 고려한 전략도 안내드릴 수 있습니다. (단, 한국 자산에 대한 세부 운용은 안내 차원에서만 도움 드립니다.)</p>
+      </div>
+    </article>
+
+
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq5" id="faq5-btn">
+        5. 세금 문제도 함께 도와주시나요?
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq5" class="faq-answer" hidden>
+        <p>세무사는 아니지만, 투자에 따른 세금 전략이나 구조 설계는 함께 검토해드립니다. 필요시 CPA와 협업도 가능합니다.</p>
+      </div>
+    </article>
+
+
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq6" id="faq6-btn">
+        6. 은퇴 후 수입은 어떻게 만드나요?
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq6" class="faq-answer" hidden>
+        <p>고객님의 은퇴 자금, 연금, 소설시큐리티 등을 기반으로 지속 가능한 현금 흐름을 설계해드립니다.</p>
+      </div>
+    </article>
+
+
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq7" id="faq7-btn">
+        7. 한국어로 상담 가능한가요?
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq7" class="faq-answer" hidden>
+        <p>네, 편하게 한국어로 상담하실 수 있슨니다. 문화적차이도 이해하며 설명드리기 때문에 더 편하게 상담 받으실 수 있습니다.</p>
+      </div>
+    </article>
+  </section>
+
+  <section id="contact" aria-labelledby="contact-title">
+    <h2 id="contact-title">무료 상담 신청</h2>
+    <p>빠른 상담을 원하시면 아래 폼을 작성해 주세요.</p>
+    <form method="post" action="https://docs.google.com/forms/d/e/2PACX-1vR6T2-XXXXXXXXXXXXXXXXX/formResponse" target="_blank" aria-label="무료 상담 신청 폼">
+      <label for="name">이름</label>
+      <input type="text" id="name" name="entry.1234567890" required aria-required="true" />
+      
+      <label for="email">이메일</label>
+      <input type="email" id="email" name="entry.0987654321" required aria-required="true" />
+      
+      <label for="message">문의 내용</label>
+      <textarea id="message" name="entry.1122334455" rows="4" required aria-required="true"></textarea>
+      
+      <button type="submit">상담 신청하기</button>
+    </form>
+    <p>또는 <a href="https://pf.kakao.com/_YxdjxkT" target="_blank" rel="noopener noreferrer" aria-label="카카오톡 상담 바로가기 새 창 열림">카카오톡 채널</a>에서 바로 상담받으실 수 있습니다.</p>
+  </section>
+</main>
+
+<footer>
+  <p>상호: 미주자산톡 | 대표: 이상현 | 사업자등록번호: 445-60-0091 <br><br>주소: 경상남도 합천군 합천읍 대야로 888 | 이메일: <a href="mailto:sawolsamsip@naver.com">sawolsamsip@naver.com</a></p>
+</footer>
+
+<script>
+  // FAQ 아코디언 토글 기능
+  document.querySelectorAll('.faq-question').forEach(button => {
+    button.addEventListener('click', () => {
+      const expanded = button.getAttribute('aria-expanded') === 'true';
+      button.setAttribute('aria-expanded', String(!expanded));
+      button.classList.toggle('active');
+
+      const answerId = button.getAttribute('aria-controls');
+      const answer = document.getElementById(answerId);
+      if (!expanded) {
+        answer.removeAttribute('hidden');
+      } else {
+        answer.setAttribute('hidden', '');
+      }
+    });
+  });
+
+
+  window.addEventListener("scroll", () => {
+    const sections = document.querySelectorAll("section");
+    const navLinks = document.querySelectorAll("nav ul li a");
+
+    let current = "";
+
+    const scrollPos = window.pageYOffset + 100; // 약간 아래 기준을 줌
+
+    sections.forEach(section => {
+      const top = section.offsetTop;
+      const height = section.offsetHeight;
+      if (scrollPos >= top && scrollPos < top + height) {
+        current = section.getAttribute("id");
+      }
+    });
+
+    // 모든 링크에서 active 제거
+    navLinks.forEach(link => {
+      link.classList.remove("active");
+      const href = link.getAttribute("href").substring(1);
+      if (href === current) {
+        link.classList.add("active");
+      }
+    });
+  });
+</script>
+
+
+
+</body>
+</html>
