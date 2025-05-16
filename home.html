@@ -477,6 +477,11 @@
     outline-offset: 1px;
   }
 
+  /* Hidden CSS */
+  .hidden {
+    position: absolute;
+    left: -9999px;
+  }
 
 </style>
 </head>
@@ -633,6 +638,13 @@
         <label for="message">문의 내용</label>
         <textarea id="message" name="message" rows="5" required aria-required="true" placeholder="간단한 문의 내용을 작성해주세요. (예: 은퇴 준비, 자녀 학자금 마련 등)"></textarea>
       </div>
+
+      <!-- 히든 필드 추가 (스팸 방지) -->
+      <input type="hidden" name="form-name" value="contact">
+      <p class="hidden">
+        <label>Don't fill this out if you're human: <input name="bot-field"></label>
+      </p>      
+
       <button type="submit">상담 신청하기</button>
     </form>
     <p class="contact-kakao-link">또는 <a href="http://pf.kakao.com/_Kxmlin" target="_blank" rel="noopener noreferrer" aria-label="카카오톡 상담 바로가기 새 창 열림">카카오톡 채널</a>에서 바로 상담받으실 수 있습니다.</p>
