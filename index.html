@@ -462,43 +462,41 @@
 
 
 /* 필터 버튼 스타일 */
-.filter-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
-}
+  .filter-buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 25px;
+  }
+  
+  .filter-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: none;
+    background: #e0e6ed;
+    color: #003366;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .filter-btn.active {
+    background: #003366;
+    color: white;
+  }
+  
+  .filter-btn:hover {
+    background: #00509e;
+    color: white;
+  }
 
-.filter-btn {
-  background: #e4e8f0;
-  color: #002b5c;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-.filter-btn.active {
-  background: #002b5c;
-  color: white;
-}
-    .swiper {
-      padding-bottom: 40px;
-    }
-
-
-/* Swiper 컨테이너 스타일 */
-.swiper-container {
-  position: relative; /* 부모 컨테이너에 relative 추가 */
-  width: 100%;
-  padding: 20px 0 50px;
-  max-width: 1200px; /* 최대 너비 제한 */
-  margin: 0 auto; /* 중앙 정렬 */
-}
-
+  /* 슬라이더 컨테이너 */
+  .swiper-container {
+    width: 100%;
+    padding: 20px 0 50px;
+    position: relative;
+  }
 /* 슬라이드 스타일 */
 .swiper-slide {
   background: white;
@@ -509,48 +507,48 @@
   transition: transform 0.3s ease;
 }
 
-    .case-category {
-      display: inline-block;
-      background: #0078d7;
-      color: white;
-      font-size: 0.75rem;
-      border-radius: 12px;
-      padding: 2px 10px;
-      margin-right: 6px;
-      margin-bottom: 8px;
-    }
-    .case-title {
-      font-size: 1.1rem;
-      font-weight: bold;
-      margin: 10px 0 4px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .case-client {
-      font-size: 0.9rem;
-      color: #666;
-      margin-bottom: 12px;
-    }
-    .case-desc p {
-      font-size: 0.9rem;
-      margin: 6px 0;
-    }
-    .case-result {
-      background: #eef6f8;
-      padding: 10px;
-      border-radius: 8px;
-      font-weight: bold;
-      color: #0078d7;
-      margin-top: 10px;
-    }
-.swiper-button-next {
-  right: 10px; /* 슬라이드 컨테이너 오른쪽 끝에서 10px 안쪽 */
-}
-
-.swiper-button-prev {
-  left: 10px; /* 슬라이드 컨테이너 왼쪽 끝에서 10px 안쪽 */
-}
+  .case-category {
+    display: inline-block;
+    background: #0078d7;
+    color: white;
+    font-size: 0.75rem;
+    padding: 3px 10px;
+    border-radius: 12px;
+    margin-right: 6px;
+    margin-bottom: 6px;
+  }
+  
+  .case-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #003366;
+    margin: 8px 0 5px;
+  }
+  
+  .case-client {
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  .case-content {
+    margin: 15px 0;
+    color: #555;
+    line-height: 1.6;
+  }
+  
+  .case-content p {
+    margin: 8px 0;
+  }
+  
+  .case-result {
+    background: #f5f9ff;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-weight: 600;
+    color: #003366;
+    border-left: 3px solid #ffb800;
+  }
 
 
 
@@ -709,17 +707,20 @@
       padding: 30px 0 70px;
     }
 
-    .case-card {
-      background: white;
-      border-radius: 15px;
-      padding: 25px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-      height: auto;
-      margin: 0 15px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      cursor: grab;
-    }
-    
+  .case-card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    height: auto;
+    margin: 0 10px;
+    transition: transform 0.3s ease;
+  }
+  
+  .case-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+  }
     .case-card:active {
       cursor: grabbing;
     }
@@ -729,6 +730,10 @@
       padding-bottom: 15px;
       margin-bottom: 15px;
     }
+
+      .category-container {
+    margin-bottom: 8px;
+  }
     
     .case-title {
       color: var(--color-primary);
@@ -789,63 +794,54 @@
       width: 400px !important;
     }
     
-    /* 네비게이션 화살표 */
-.swiper-button-next, 
-.swiper-button-prev {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
-  background: rgba(0,51,102,0.8);
-  border-radius: 50%;
-  color: var(--color-secondary);
-  z-index: 10;
-}
-    
-    .swiper-button-next:after, 
-    .swiper-button-prev:after {
-      font-size: 1.2rem;
-    }
-    
-    /* 페이지네이션 */
-    .swiper-pagination-bullet {
-      width: 10px;
-      height: 10px;
-      background: rgba(0,51,102,0.3);
-      opacity: 1;
-    }
-    
-    .swiper-pagination-bullet-active {
-      background: var(--color-secondary);
-    }
-    
+  
+  /* Swiper 네비게이션 스타일 */
+  .swiper-button-next,
+  .swiper-button-prev {
+    width: 40px;
+    height: 40px;
+    background: rgba(0,51,102,0.8);
+    border-radius: 50%;
+    color: #ffb800;
+  }
+  
+  .swiper-button-next:after,
+  .swiper-button-prev:after {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  /* 페이지네이션 스타일 */
+  .swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    background: rgba(0,51,102,0.3);
+    opacity: 1;
+  }
+
+     
     /* 반응형 조정 */
     @media (max-width: 768px) {
-      .swiper-slide {
-        width: 85% !important;
-      }
-      
-      .swiper-button-next, 
-      .swiper-button-prev {
-        display: none;
-      }
-
-      .filter-tabs {
-        justify-content: flex-start;
-        overflow-x: auto;
-        padding-bottom: 10px;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-      }
-      
-      .filter-tabs::-webkit-scrollbar {
-        display: none;
-      }
-      
-      .case-card {
-        padding: 20px;
-      }
+    .filter-buttons {
+      justify-content: flex-start;
+      overflow-x: auto;
+      padding-bottom: 10px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    
+    .filter-buttons::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .case-card {
+      padding: 20px;
+    }
+    
+    .swiper-button-next,
+    .swiper-button-prev {
+      display: none;
+    }
     }
 
 </style>
@@ -1035,7 +1031,6 @@
     <button class="filter-btn" data-filter="inheritance">상속계획</button>
   </div>
 
-<div class="success-cases-wrapper">
   <div class="swiper-container">
     <div class="swiper-wrapper">
       <!-- 슬라이드 내용은 기존과 동일하게 유지 -->
@@ -1263,6 +1258,8 @@
     </div>
     <div class="swiper-button-prev"></div>
     <div class="swiper-button-next"></div>
+
+
     <div class="swiper-pagination"></div>
   </div>
 </section>
@@ -1313,6 +1310,29 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+  var swiper = new Swiper(".success-slide", {
+    slidesPerView: 3,
+    spaceBetween: 20,
+    navigation: {
+      nextEl: ".success-button-next",
+      prevEl: ".success-button-prev",
+    },
+
+document.querySelectorAll(".filter-button").forEach(function(button) {
+  button.addEventListener("click", function() {
+    var filter = this.dataset.filter;
+    document.querySelectorAll(".success-slide .swiper-slide").forEach(function(slide) {
+      if(filter === 'all' || slide.dataset.category === filter) {
+        slide.style.display = 'block';
+      } else {
+        slide.style.display = 'none';
+      }
+    });
+    swiper.update(); // 슬라이더 갱신
+  });
+});
+
+
   // FAQ 아코디언 토글 기능
   const faqQuestions = document.querySelectorAll('.faq-question');
   faqQuestions.forEach(button => {
@@ -1494,31 +1514,53 @@ if(filterButtons.length > 0) {
 </script>
 
 <script>
-  const swiper = new Swiper('.swiper', {
+  // Swiper 초기화
+  const caseSwiper = new Swiper('.swiper-container', {
     slidesPerView: 1,
     spaceBetween: 20,
     navigation: {
       nextEl: '.swiper-button-next',
       prevEl: '.swiper-button-prev',
     },
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+    },
     breakpoints: {
-      768: { slidesPerView: 2, spaceBetween: 30 }
+      640: {
+        slidesPerView: 2,
+        spaceBetween: 20
+      },
+      1024: {
+        slidesPerView: 3,
+        spaceBetween: 30
+      }
     }
   });
 
-  const filterButtons = document.querySelectorAll('.filter-btn');
-  filterButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const filter = btn.dataset.filter;
+  // 필터 버튼 기능
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      // 활성 버튼 업데이트
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      
+      const filter = this.dataset.filter;
       const slides = document.querySelectorAll('.swiper-slide');
+      
+      // 슬라이드 필터링
       slides.forEach(slide => {
-        const category = slide.dataset.category || '';
-        slide.style.display = (filter === 'all' || category.includes(filter)) ? 'block' : 'none';
+        const categories = slide.dataset.category.split(' ');
+        if (filter === 'all' || categories.includes(filter)) {
+          slide.style.display = 'block';
+        } else {
+          slide.style.display = 'none';
+        }
       });
-      swiper.update();
-      swiper.slideTo(0);
+      
+      // Swiper 업데이트
+      caseSwiper.update();
+      caseSwiper.slideTo(0);
     });
   });
 </script>
