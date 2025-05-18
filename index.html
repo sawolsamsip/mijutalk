@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="robots" content="index, follow">
-<link rel="canonical" href="https://mijutalk.co/" /> 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
-<meta property="og:title" content="미주자산톡 | 한인 전문 재정 컨설팅">
-<meta property="og:description" content="미국 거주 한인 대상 자산관리, 은퇴준비, 투자설계 등 맞춤 재정 컨설팅 서비스" />
-<meta property="og:image" content="https://mijutalk.co/og-image.webp" />
-<meta property="og:url" content="https://mijutalk.co/" />
-<meta property="og:type" content="website" />
-<meta property="og:site_name" content="미주자산톡">
-<meta name="description" content="미국 거주 한인 대상 자산관리, 은퇴준비, 투자설계 등 맞춤 재정 컨설팅 서비스" />
-<meta name="keywords" content="미국 한인, 재정 컨설팅, 자산관리, 401k, IRA, 투자설계, 은퇴 준비" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://mijutalk.co/" /> 
+  <link rel="stylesheet" href="/swiper-bundle.min.css" />
+  <meta property="og:title" content="미주자산톡 | 한인 전문 재정 컨설팅">
+  <meta property="og:description" content="미국 거주 한인 대상 자산관리, 은퇴준비, 투자설계 등 맞춤 재정 컨설팅 서비스" />
+  <meta property="og:image" content="https://mijutalk.co/og-image.webp" />
+  <meta property="og:url" content="https://mijutalk.co/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="미주자산톡">
+  <meta name="description" content="미국 거주 한인 대상 자산관리, 은퇴준비, 투자설계 등 맞춤 재정 컨설팅 서비스" />
+  <meta name="keywords" content="미국 한인, 재정 컨설팅, 자산관리, 401k, IRA, 투자설계, 은퇴 준비" />
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
@@ -57,12 +57,10 @@
     color: var(--color-secondary);
   }
 
-  /* ===== [수정] 푸터 링크 밑줄 제거 ===== */
   footer a {
     text-decoration: none !important;
   }
 
-  /* ===== [수정] 한 줄 텍스트 처리 ===== */
   .nowrap, #services li p, .faq-answer p, 
   .consult-content p:not(.consult-note), footer p {
     white-space: nowrap;
@@ -72,14 +70,12 @@
     box-sizing: border-box;
   }
 
-  /* [추가] 대표 소개 텍스트 줄바꿈 처리 */
   .bio p {
     white-space: normal;
     word-break: keep-all;
   }
 
   @media (min-width: 769px) {
-    /* 데스크탑에서 버튼 가로 배열 */
     .cta-buttons {
       flex-direction: row;
     }
@@ -88,7 +84,6 @@
       width: auto;
     }
   }
-
 
   @media (max-width: 768px) {
     .nowrap, #services li p, .faq-answer p,
@@ -100,7 +95,6 @@
     }
   }
 
-  /* [기존 CSS 유지] */
   header {
     position: fixed;
     top: 0; left: 0; right: 0;
@@ -132,11 +126,10 @@
     margin-left: 10px;
   }
 
-.logo:hover {
-  transform: scale(1.05);
-}
+  .logo:hover {
+    transform: scale(1.05);
+  }
 
-  /* 데스크탑 네비게이션 */
   nav#primary-navigation ul {
     display: flex;
     gap: 20px;
@@ -158,7 +151,6 @@
     box-shadow: 0 0 10px rgba(255, 198, 0, 0.67);
   }
 
-  /* Hamburger Button */
   .menu-toggle {
     display: none;
     background: none;
@@ -206,7 +198,6 @@
     transform: translateX(-50%) rotate(-45deg);
   }
 
-  /* Mobile Navigation */
   @media (max-width: 768px) {
     .menu-toggle {
       display: block;
@@ -254,16 +245,16 @@
   }
 
   .header-container {
-    padding: 0 10px; /* 좌우 패딩 줄임 */
-    justify-content: space-between; /* 로고와 버튼을 양쪽으로 */
+    padding: 0 10px;
+    justify-content: space-between;
   }
 
   .logo {
-    margin-left: 0; /* 왼쪽 여백 제거 */
-    font-size: 1.6rem; /* 로고 크기 조정 */
+    margin-left: 0;
+    font-size: 1.6rem;
   }
   .menu-toggle {
-    margin-right: 0; /* 오른쪽 여백 제거 */
+    margin-right: 0;
   }
 
   main {
@@ -321,9 +312,9 @@
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     white-space: nowrap;
-    max-width: 100%; /* 부모 너비를 초과하지 않음 */
-    width: auto; /* 내용물에 맞게 자동 조정 */
-    text-align: center; /* 텍스트 가운데 정렬 */
+    max-width: 100%;
+    width: auto;
+    text-align: center;
   }
   .btn-kakao:hover {
     background-color: #3c1e1e;
@@ -341,7 +332,6 @@
     padding-left: 12px;
   }
 
-  /* 서비스 소개 */
   #services ul {
     list-style: none;
     padding: 0;
@@ -377,7 +367,6 @@
     word-break: keep-all;
   }
 
-  /* 대표 소개 */
   .profile-container {
     display: flex;
     flex-direction: column;
@@ -412,7 +401,6 @@
     margin-right: auto;
   }
 
-  /* FAQ */
   #faq .faq-item {
     margin-bottom: 18px;
     background-color: var(--color-faq-bg);
@@ -460,8 +448,11 @@
     background-color: var(--color-faq-bg);
   }
 
+  /* 성공 사례 섹션 스타일 */
+  #success-cases {
+    padding: 40px 0;
+  }
 
-/* 필터 버튼 스타일 */
   .filter-buttons {
     display: flex;
     justify-content: center;
@@ -491,22 +482,51 @@
     color: white;
   }
 
-  /* 슬라이더 컨테이너 */
   .swiper-container {
     width: 100%;
     padding: 20px 0 50px;
     position: relative;
+    overflow: hidden;
   }
-/* 슬라이드 스타일 */
-.swiper-slide {
-  background: white;
-  border-radius: 15px;
-  padding: 25px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-  height: auto;
-  transition: transform 0.3s ease;
-}
 
+  .swiper-wrapper {
+    display: flex;
+    transition-property: transform;
+    box-sizing: content-box;
+  }
+
+  .swiper-slide {
+    flex-shrink: 0;
+    width: 100%;
+    height: auto;
+    position: relative;
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    margin: 0 10px;
+    transition: transform 0.3s ease;
+  }
+
+  .swiper-slide:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+  }
+
+  .swiper-slide:not([style*="display: block"]) {
+    display: none !important;
+  }
+
+  .case-header {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+  }
+
+  .category-container {
+    margin-bottom: 8px;
+  }
+  
   .case-category {
     display: inline-block;
     background: #0078d7;
@@ -550,9 +570,63 @@
     border-left: 3px solid #ffb800;
   }
 
+  .highlight {
+    color: #00509e;
+  }
 
+  .swiper-button-next,
+  .swiper-button-prev {
+    width: 40px;
+    height: 40px;
+    background: rgba(0,51,102,0.8);
+    border-radius: 50%;
+    color: #ffb800;
+  }
+  
+  .swiper-button-next:after,
+  .swiper-button-prev:after {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    background: rgba(0,51,102,0.3);
+    opacity: 1;
+  }
+  
+  .swiper-pagination-bullet-active {
+    background: #ffb800;
+  }
 
-  /* 간결한 상담 신청 섹션 */
+  @media (max-width: 768px) {
+    .filter-buttons {
+      justify-content: flex-start;
+      overflow-x: auto;
+      padding-bottom: 10px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    
+    .filter-buttons::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .swiper-slide {
+      padding: 20px;
+    }
+    
+    .swiper-button-next,
+    .swiper-button-prev {
+      display: none;
+    }
+
+    .swiper-pagination {
+      display: none !important;
+    }
+  }
+
   #contact {
     position: relative;
   }
@@ -588,7 +662,6 @@
     margin-top: 30px;
   }
 
-  /* 변경된 버튼 스타일 (통일된 호버 효과 적용) */
   .kakao-btn, .call-btn {
     padding: 14px 25px;
     border-radius: 30px;
@@ -630,7 +703,6 @@
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   }
 
-  /* 버튼 아이콘 스타일 */
   .btn-icon {
     width: 20px;
     height: 20px;
@@ -638,12 +710,10 @@
     transition: all 0.3s ease;
   }
 
-  /* 전화 아이콘 색상 처리 */
   .phone-icon {
     fill: currentColor;
   }
 
-  /* 클릭 효과 추가 */
   .kakao-btn:active,
   .call-btn:active {
     transform: translateY(-1px);
@@ -672,7 +742,6 @@
     }
   }
 
-  /* footer */
   footer {
     background-color: var(--color-primary);
     color: white;
@@ -689,7 +758,6 @@
     margin-bottom: 0;
   }
 
-  /* Accessibility */
   *:focus-visible {
     outline: 3px solid var(--color-secondary);
     outline-offset: 2px;
@@ -698,152 +766,6 @@
     outline: 2px solid var(--color-secondary);
     outline-offset: 1px;
   }
-
-
-    /* 전체 슬라이드 컨테이너 */
-    .swiper {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 30px 0 70px;
-    }
-
-  .case-card {
-    background: white;
-    border-radius: 12px;
-    padding: 25px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-    height: auto;
-    margin: 0 10px;
-    transition: transform 0.3s ease;
-  }
-  
-  .case-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-  }
-    .case-card:active {
-      cursor: grabbing;
-    }
-    
-    .case-header {
-      border-bottom: 1px solid #eee;
-      padding-bottom: 15px;
-      margin-bottom: 15px;
-    }
-
-      .category-container {
-    margin-bottom: 8px;
-  }
-    
-    .case-title {
-      color: var(--color-primary);
-      font-weight: 700;
-      font-size: 1.3rem;
-      margin-bottom: 5px;
-    }
-    
-    .case-meta {
-      color: #777;
-      font-size: 0.9rem;
-      margin-bottom: 10px;
-    }
-    
-    .case-content {
-      color: #555;
-      font-size: 1rem;
-      line-height: 1.7;
-      margin-bottom: 15px;
-    }
-    
-    .case-points {
-      margin: 15px 0;
-      padding-left: 20px;
-    }
-    
-    .case-points li {
-      margin-bottom: 8px;
-      position: relative;
-      list-style-type: none;
-    }
-    
-    .case-points li:before {
-      content: "•";
-      color: var(--color-secondary);
-      font-weight: bold;
-      position: absolute;
-      left: -20px;
-    }
-    
-    .case-result {
-      background: #f9f9f9;
-      padding: 15px;
-      border-radius: 10px;
-      font-weight: 700;
-      margin-top: 20px;
-      font-size: 1rem;
-      border-left: 4px solid var(--color-secondary);
-    }
-    
-    .highlight {
-      color: var(--color-primary);
-      font-size: 1.1em;
-    }
-    
-    /* 데스크탑 슬라이드 스타일 */
-    .swiper-slide {
-      width: 400px !important;
-    }
-    
-  
-  /* Swiper 네비게이션 스타일 */
-  .swiper-button-next,
-  .swiper-button-prev {
-    width: 40px;
-    height: 40px;
-    background: rgba(0,51,102,0.8);
-    border-radius: 50%;
-    color: #ffb800;
-  }
-  
-  .swiper-button-next:after,
-  .swiper-button-prev:after {
-    font-size: 18px;
-    font-weight: bold;
-  }
-  
-  /* 페이지네이션 스타일 */
-  .swiper-pagination-bullet {
-    width: 10px;
-    height: 10px;
-    background: rgba(0,51,102,0.3);
-    opacity: 1;
-  }
-
-     
-    /* 반응형 조정 */
-    @media (max-width: 768px) {
-    .filter-buttons {
-      justify-content: flex-start;
-      overflow-x: auto;
-      padding-bottom: 10px;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-    
-    .filter-buttons::-webkit-scrollbar {
-      display: none;
-    }
-    
-    .case-card {
-      padding: 20px;
-    }
-    
-    .swiper-button-next,
-    .swiper-button-prev {
-      display: none;
-    }
-    }
-
 </style>
 </head>
 <body>
@@ -859,20 +781,21 @@
 
 <header>
   <div class="header-container">
-  <div class="logo" aria-label="미주자산톡 브랜드 로고">미주자산톡</div>
-  <button class="menu-toggle" aria-label="메뉴 열기/닫기" aria-expanded="false" aria-controls="primary-navigation">
-    <span class="hamburger"></span>
-  </button>
-  <nav id="primary-navigation">
-    <ul role="menubar">
-      <li role="none"><a href="#hero" class="active" role="menuitem" tabindex="0">홈</a></li>
-      <li role="none"><a href="#services" role="menuitem" tabindex="0">서비스</a></li>
-      <li role="none"><a href="#about" role="menuitem" tabindex="0">대표 소개</a></li>
-      <li role="none"><a href="#faq" role="menuitem" tabindex="0">FAQ</a></li>
-      <li role="none"><a href="#success-cases" role="menuitem" tabindex="0">성공 사례</a></li>
-      <li role="none"><a href="#contact" role="menuitem" tabindex="0">문의</a></li>
-    </ul>
-  </nav>
+    <div class="logo" aria-label="미주자산톡 브랜드 로고">미주자산톡</div>
+    <button class="menu-toggle" aria-label="메뉴 열기/닫기" aria-expanded="false" aria-controls="primary-navigation">
+      <span class="hamburger"></span>
+    </button>
+    <nav id="primary-navigation">
+      <ul role="menubar">
+        <li role="none"><a href="#hero" class="active" role="menuitem" tabindex="0">홈</a></li>
+        <li role="none"><a href="#services" role="menuitem" tabindex="0">서비스</a></li>
+        <li role="none"><a href="#about" role="menuitem" tabindex="0">대표 소개</a></li>
+        <li role="none"><a href="#faq" role="menuitem" tabindex="0">FAQ</a></li>
+        <li role="none"><a href="#success-cases" role="menuitem" tabindex="0">성공 사례</a></li>
+        <li role="none"><a href="#contact" role="menuitem" tabindex="0">문의</a></li>
+      </ul>
+    </nav>
+  </div>
 </header>
 
 <main role="main">
@@ -885,39 +808,30 @@
   <section id="services" aria-labelledby="services-title">
     <h2 id="services-title">전문 서비스 분야</h2>
     <ul>
-      <!-- [1] 개인 자산 관리 -->
       <li>
         <h3>개인 자산 통합 관리</h3>
         <p class="nowrap">-&nbsp;목표기반&nbsp;자산&nbsp;배분&nbsp;(은퇴·교육·주택&nbsp;구매)</p>
         <p class="nowrap">-&nbsp;투자&nbsp;포트폴리오&nbsp;설계&nbsp;및&nbsp;리밸런싱</p>
         <p class="nowrap">-&nbsp;위험&nbsp;관리&nbsp;전략&nbsp;(긴급자금·보험&nbsp;연계)</p>
       </li>
-
-      <!-- [2] 은퇴 설계 -->
       <li>
         <h3>은퇴 자금 전략</h3>
         <p class="nowrap">-&nbsp;401(k)·IRA&nbsp;롤오버&nbsp;최적화</p>
         <p class="nowrap">-&nbsp;Social&nbsp;Security&nbsp;수령&nbsp;시기&nbsp;분석</p>
         <p class="nowrap">-&nbsp;은퇴&nbsp;후&nbsp;지속&nbsp;가능한&nbsp;현금흐름&nbsp;모델링</p>
       </li>
-
-      <!-- [3] 세금 효율화 -->
       <li>
         <h3>세금 효율적 투자</h3>
         <p class="nowrap">-&nbsp;Tax-Loss&nbsp;Harvesting 전략</p>
         <p class="nowrap">-&nbsp;고소득자&nbsp;대상&nbsp;세금&nbsp;효율화&nbsp;구조&nbsp;설계</p>
         <p class="nowrap">-&nbsp;자산&nbsp;유형별(주식·채권)&nbsp;세금&nbsp;영향&nbsp;분석</p>
       </li>
-
-      <!-- [4] 교육·상속 -->
       <li>
         <h3>교육·상속 계획</h3>
         <p class="nowrap">-&nbsp;529&nbsp;플랜·UGMA/UTMA&nbsp;비교&nbsp;분석</p>
         <p class="nowrap">-&nbsp;신탁&nbsp;설계&nbsp;및&nbsp;유산&nbsp;분배&nbsp;전략</p>
         <p class="nowrap">-&nbsp;세대간&nbsp;자산&nbsp;이전&nbsp;절세&nbsp;방안</p>
       </li>
-
-      <!-- [5] 사업자 특화 -->
       <li class="business-service">
         <h3>사업주 맞춤 솔루션</h3>
         <p class="nowrap">-&nbsp;사업&nbsp;시작/매각&nbsp;시&nbsp;자금&nbsp;계획</p>
@@ -925,8 +839,6 @@
         <p class="nowrap">-&nbsp;퇴직금&nbsp;프로그램&nbsp;설계</p>
         <p class="nowrap">&nbsp;&nbsp;(Simple,&nbsp;SEP,&nbsp;401k,&nbsp;Defined&nbsp;Benefit)</p>
       </li>
-
-      <!-- [6] 특수 상황 -->
       <li>
         <h3>생애 이벤트 대응</h3>
         <p class="nowrap">-&nbsp;이민·귀국&nbsp;시&nbsp;자산관리</p>
@@ -1017,281 +929,278 @@
     </article>
   </section>
 
-
   <!-- 성공 사례 섹션 -->
-<section id="success-cases" aria-labelledby="success-cases-title">
-  <h2 id="success-cases-title">성공 사례</h2>
-  <div class="filter-buttons">
-    <button class="filter-btn active" data-filter="all">전체</button>
-    <button class="filter-btn" data-filter="asset">자산관리</button>
-    <button class="filter-btn" data-filter="retirement">은퇴설계</button>
-    <button class="filter-btn" data-filter="tax">세금전략</button>
-    <button class="filter-btn" data-filter="education">교육계획</button>
-    <button class="filter-btn" data-filter="business">사업주</button>
-    <button class="filter-btn" data-filter="inheritance">상속계획</button>
-  </div>
-
-  <div class="swiper-container">
-    <div class="swiper-wrapper">
-      <!-- 슬라이드 내용은 기존과 동일하게 유지 -->
-      <div class="swiper-slide" data-category="asset retirement tax">
-
-
-<div class="case-header">
-<div class="category-container">
-<span class="case-category">자산 통합 관리</span>
-<span class="case-category">은퇴 설계</span>
-<span class="case-category">세금 효율화</span>
-</div>
-<h3 class="case-title">방치된 401(k) 통합 + Roth IRA 전환</h3>
-<p class="case-client">40대 전문직 | 캘리포니아</p>
-</div>
-<div class="case-body">
-<div class="case-desc">
-<p>과거 직장 3곳의 <strong>401(k) $420K</strong> 통합 관리</p>
-<p>일부를 <strong>Roth IRA</strong>로 단계적 전환</p>
-</div>
-<div class="case-result">
-<span class="highlight">포트폴리오 수익률 2.3% 향상</span>
-</div>
-</div>
-</div><div class="swiper-slide" data-category="retirement tax">
-<div class="case-header">
-<div class="category-container">
-<span class="case-category">은퇴 설계</span>
-<span class="case-category">세금 효율화</span>
-</div>
-<h3 class="case-title">Traditional IRA 세액 공제</h3>
-<p class="case-client">40대 교사 | 텍사스</p>
-</div>
-<div class="case-body">
-<div class="case-desc">
-<p><strong>2025년 최대 기여금 $7,000</strong> 완납</p>
-<p>소득 구간에 따른 공제 효율 분석</p>
-</div>
-<div class="case-result">
-            연간 <span class="highlight">$1,680 세액 공제</span> (24% 구간)
-          </div>
-</div>
-</div><div class="swiper-slide" data-category="asset tax">
-<div class="case-header">
-<div class="category-container">
-<span class="case-category">자산 통합 관리</span>
-<span class="case-category">세금 효율화</span>
-</div>
-<h3 class="case-title">국채로 포트폴리오 균형</h3>
-<p class="case-client">60대 은퇴자 | 오레곤</p>
-</div>
-<div class="case-body">
-<div class="case-desc">
-<p><strong>국채(T-Bond)</strong> 30% 편입</p>
-<p>이자 소득 세금 효율화</p>
-</div>
-<div class="case-result">
-<span class="highlight">변동성 40% 감소 + 연 $2K 세금 절감</span>
-</div>
-</div>
-</div><div class="swiper-slide" data-category="education tax">
-<div class="case-header">
-<div class="category-container">
-<span class="case-category">교육 계획</span>
-<span class="case-category">세금 효율화</span>
-</div>
-<h3 class="case-title">529 플랜으로 교육비 마련</h3>
-<p class="case-client">35대 부모 | 일리노이</p>
-</div>
-<div class="case-body">
-<div class="case-desc">
-<p><strong>529 플랜</strong>과 <strong>UGMA</strong> 조합</p>
-<p>주별 세제 혜택 비교</p>
-</div>
-<div class="case-result">
-            10년 간 <span class="highlight">$85K 모금</span> 완료
-          </div>
-</div>
-</div><div class="swiper-slide" data-category="asset inheritance tax">
-<div class="case-header">
-<div class="category-container">
-<span class="case-category">자산 통합 관리</span>
-<span class="case-category">상속 계획</span>
-<span class="case-category">세금 효율화</span>
-</div>
-<h3 class="case-title">Trust로 상속 계획 수립</h3>
-<p class="case-client">60대 은퇴자 | 코네티컷</p>
-</div>
-<div class="case-body">
-<div class="case-desc">
-<p><strong>Living Trust</strong> 설계로 유산 분배</p>
-<p><strong>Estate</strong> 세금 최소화</p>
-</div>
-<div class="case-result">
-            상속비용 <span class="highlight">45% 감소</span>
-</div>
-</div>
-</div><div class="swiper-slide" data-category="business retirement tax">
-<div class="case-header">
-<div class="category-container">
-<span class="case-category">사업주 솔루션</span>
-<span class="case-category">은퇴 설계</span>
-<span class="case-category">세금 효율화</span>
-</div>
-<h3 class="case-title">소상공인 SEP IRA 활용</h3>
-<p class="case-client">55대 자영업자 | 네바다</p>
-</div>
-<div class="case-body">
-<div class="case-desc">
-<p><strong>SEP IRA</strong>로 사업 수익금 25% 적립</p>
-<p>기여금 한도 최적화</p>
-</div>
-<div class="case-result">
-            연간 <span class="highlight">$35K 추가 퇴직 자금</span>
-</div>
-</div>
-</div><div class="swiper-slide" data-category="business retirement tax">
-<div class="case-header">
-<div class="category-container">
-<span class="case-category">사업주 솔루션</span>
-<span class="case-category">은퇴 설계</span>
-<span class="case-category">세금 효율화</span>
-</div>
-<h3 class="case-title">고소득자 Defined Benefit</h3>
-<p class="case-client">50대 의사 | 뉴멕시코</p>
-</div>
-<div class="case-body">
-<div class="case-desc">
-<p><strong>Defined Benefit 플랜</strong>으로 고액 기여</p>
-<p>연금 수령 시기 분석</p>
-</div>
-<div class="case-result">
-            연간 <span class="highlight">$100K+ 세금 연기</span>
-</div>
-</div>
-</div><div class="swiper-slide" data-category="business retirement tax">
-<div class="case-header">
-<div class="category-container">
-<span class="case-category">사업주 솔루션</span>
-<span class="case-category">은퇴 설계</span>
-<span class="case-category">세금 효율화</span>
-</div>
-<h3 class="case-title">소규모 사업체 Simple IRA</h3>
-<p class="case-client">45대 카페 오너 | 미시간</p>
-</div>
-<div class="case-body">
-<div class="case-desc">
-<p><strong>Simple IRA</strong>로 직원 복지 강화</p>
-<p>기여금 매칭 전략</p>
-</div>
-<div class="case-result">
-            직원 유지율 <span class="highlight">30% 향상</span>
-</div>
-</div>
-</div><div class="swiper-slide" data-category="asset">
-<div class="case-header">
-<div class="category-container">
-<span class="case-category">자산 통합 관리</span>
-</div>
-<h3 class="case-title">주택 구매 자금 모으기</h3>
-<p class="case-client">30대 커플 | 텍사스</p>
-</div>
-<div class="case-body">
-<div class="case-desc">
-<p>목표 기반 저축 계획</p>
-<p>투자 수익률 vs 안정성 균형</p>
-</div>
-<div class="case-result">
-            3년 만에 <span class="highlight">$90K 다운페이</span> 완성
-          </div>
-</div>
-</div><div class="swiper-slide" data-category="tax">
-<div class="case-header">
-<div class="category-container">
-<span class="case-category">세금 효율화</span>
-</div>
-<h3 class="case-title">고소득자 세금 전략</h3>
-<p class="case-client">45세 변호사 | 코네티컷</p>
-</div>
-<div class="case-body">
-<div class="case-desc">
-<p><strong>Tax-Loss Harvesting</strong> 실행</p>
-<p>자산 유형별 세금 영향 분석</p>
-</div>
-<div class="case-result">
-<span class="highlight">연 $18K 세금 절감</span>
-</div>
-</div>
-</div><div class="swiper-slide" data-category="business asset">
-<div class="case-header">
-<div class="category-container">
-<span class="case-category">사업주 솔루션</span>
-<span class="case-category">자산 통합 관리</span>
-</div>
-<h3 class="case-title">사업체 명의 투자 계좌 운영</h3>
-<p class="case-client">50대 창업자 | 텍사스</p>
-</div>
-<div class="case-body">
-<div class="case-desc">
-<p>사업체 수익금 재투자 구조</p>
-<p>법인세 절감 전략</p>
-</div>
-<div class="case-result">
-<span class="highlight">연 $15K 추가 수익</span>
-</div>
-</div>
-</div><div class="swiper-slide" data-category="asset">
-<div class="case-header">
-<div class="category-container">
-<span class="case-category">자산 통합 관리</span>
-</div>
-<h3 class="case-title">이민 후 자산 통합 관리</h3>
-<p class="case-client">50대 이민자 | 조지아</p>
-</div>
-<div class="case-body">
-<div class="case-desc">
-<p>한국-미국 자산 통합 보고</p>
-<p>통화별 자산 배분 조정</p>
-</div>
-<div class="case-result">
-            관리 효율성 <span class="highlight">50% 향상</span>
-</div>
-</div>
-</div>
+  <section id="success-cases" aria-labelledby="success-cases-title">
+    <h2 id="success-cases-title">성공 사례</h2>
+    <div class="filter-buttons">
+      <button class="filter-btn active" data-filter="all">전체</button>
+      <button class="filter-btn" data-filter="asset">자산관리</button>
+      <button class="filter-btn" data-filter="retirement">은퇴설계</button>
+      <button class="filter-btn" data-filter="tax">세금전략</button>
+      <button class="filter-btn" data-filter="education">교육계획</button>
+      <button class="filter-btn" data-filter="business">사업주</button>
+      <button class="filter-btn" data-filter="inheritance">상속계획</button>
     </div>
-    <div class="swiper-button-prev"></div>
-    <div class="swiper-button-next"></div>
 
-
-    <div class="swiper-pagination"></div>
-  </div>
-</section>
-
-
-  <!-- 간결한 상담 신청 섹션 -->
-  <section id="contact" aria-labelledby="contact-title">
-    <h2 id="contact-title">프리미엄 컨설팅 신청</h2>
-    
-    <div class="consult-card">
-      <div class="consult-content">
-        <h3>지금 바로 전문가와 상담하세요</h3>
-        <p class="nowrap">카카오톡이나 전화로 편리하게 상담 예약이 가능합니다</p>
-        
-        <div class="cta-buttons">
-          <a href="http://pf.kakao.com/_Kxmlin" class="kakao-btn nowrap" aria-label="카카오톡 상담 바로가기">
-            <img src="./kakao-icon.webp" alt="카카오톡 아이콘" width="20" height="20" class="btn-icon">
-            카카오톡 상담
-          </a>
-          
-          <a href="tel:+1234567890" class="call-btn nowrap" aria-label="전화 상담 바로가기">
-            <svg class="btn-icon phone-icon" width="20" height="20" viewBox="0 0 24 24">
-              <path fill="currentColor" d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
-            </svg>
-            전화 상담
-          </a>
+    <div class="swiper-container">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide case-card" data-category="asset retirement tax">
+          <div class="case-header">
+            <div class="category-container">
+              <span class="case-category">자산 통합 관리</span>
+              <span class="case-category">은퇴 설계</span>
+              <span class="case-category">세금 효율화</span>
+            </div>
+            <h3 class="case-title">방치된 401(k) 통합 + Roth IRA 전환</h3>
+            <p class="case-client">40대 전문직 | 캘리포니아</p>
+          </div>
+          <div class="case-content">
+            <p>과거 직장 3곳의 <strong>401(k) $420K</strong> 통합 관리</p>
+            <p>일부를 <strong>Roth IRA</strong>로 단계적 전환</p>
+          </div>
+          <div class="case-result">
+            <span class="highlight">포트폴리오 수익률 2.3% 향상</span>
+          </div>
         </div>
         
-        <p class="consult-note">상담 가능 시간: 월-금 09:00 - 18:00 (미국&nbsp;서부시간&nbsp;기준)</p>
+        <div class="swiper-slide case-card" data-category="retirement tax">
+          <div class="case-header">
+            <div class="category-container">
+              <span class="case-category">은퇴 설계</span>
+              <span class="case-category">세금 효율화</span>
+            </div>
+            <h3 class="case-title">Traditional IRA 세액 공제</h3>
+            <p class="case-client">40대 교사 | 텍사스</p>
+          </div>
+          <div class="case-content">
+            <p><strong>2025년 최대 기여금 $7,000</strong> 완납</p>
+            <p>소득 구간에 따른 공제 효율 분석</p>
+          </div>
+          <div class="case-result">
+            연간 <span class="highlight">$1,680 세액 공제</span> (24% 구간)
+          </div>
+        </div>
+        
+        <!-- 나머지 사례들도 동일한 구조로 추가 -->
+        <div class="swiper-slide case-card" data-category="asset tax">
+          <div class="case-header">
+            <div class="category-container">
+              <span class="case-category">자산 통합 관리</span>
+              <span class="case-category">세금 효율화</span>
+            </div>
+            <h3 class="case-title">국채로 포트폴리오 균형</h3>
+            <p class="case-client">60대 은퇴자 | 오레곤</p>
+          </div>
+          <div class="case-body">
+            <div class="case-desc">
+              <p><strong>국채(T-Bond)</strong> 30% 편입</p>
+              <p>이자 소득 세금 효율화</p>
+            </div>
+            <div class="case-result">
+              <span class="highlight">변동성 40% 감소 + 연 $2K 세금 절감</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="swiper-slide case-card" data-category="educatoin tax">       
+          <div class="case-header">
+            <div class="category-container">
+              <span class="case-category">교육 계획</span>
+              <span class="case-category">세금 효율화</span>
+            </div>
+            <h3 class="case-title">529 플랜으로 교육비 마련</h3>
+            <p class="case-client">35대 부모 | 일리노이</p>
+          </div>
+          <div class="case-body">
+            <div class="case-desc">
+              <p><strong>529 플랜</strong>과 <strong>UGMA</strong> 조합</p>
+              <p>주별 세제 혜택 비교</p>
+            </div>
+            <div class="case-result">
+              10년 간 <span class="highlight">$85K 모금</span> 완료
+            </div>
+          </div>
+        </div><div class="swiper-slide case-card" data-category="asset inheritance tax">
+          <div class="case-header">
+            <div class="category-container">
+              <span class="case-category">자산 통합 관리</span>
+              <span class="case-category">상속 계획</span>
+              <span class="case-category">세금 효율화</span>
+            </div>
+            <h3 class="case-title">Trust로 상속 계획 수립</h3>
+            <p class="case-client">60대 은퇴자 | 코네티컷</p>
+          </div>
+          <div class="case-body">
+            <div class="case-desc">
+              <p><strong>Living Trust</strong> 설계로 유산 분배</p>
+              <p><strong>Estate</strong> 세금 최소화</p>
+            </div>
+            <div class="case-result">
+              상속비용 <span class="highlight">45% 감소</span>
+            </div>
+          </div>
+        </div><div class="swiper-slide case-card" data-category="business retirement tax">
+          <div class="case-header">
+            <div class="category-container">
+              <span class="case-category">사업주 솔루션</span>
+              <span class="case-category">은퇴 설계</span>
+              <span class="case-category">세금 효율화</span>
+            </div>
+            <h3 class="case-title">소상공인 SEP IRA 활용</h3>
+            <p class="case-client">55대 자영업자 | 네바다</p>
+          </div>
+          <div class="case-body">
+            <div class="case-desc">
+              <p><strong>SEP IRA</strong>로 사업 수익금 25% 적립</p>
+              <p>기여금 한도 최적화</p>
+            </div>
+            <div class="case-result">
+              연간 <span class="highlight">$35K 추가 퇴직 자금</span>
+            </div>
+          </div>
+        </div><div class="swiper-slide case-card" data-category="business retirement tax">
+          <div class="case-header">
+            <div class="category-container">
+              <span class="case-category">사업주 솔루션</span>
+              <span class="case-category">은퇴 설계</span>
+              <span class="case-category">세금 효율화</span>
+            </div>
+            <h3 class="case-title">고소득자 Defined Benefit</h3>
+            <p class="case-client">50대 의사 | 뉴멕시코</p>
+          </div>
+          <div class="case-body">
+            <div class="case-desc">
+              <p><strong>Defined Benefit 플랜</strong>으로 고액 기여</p>
+              <p>연금 수령 시기 분석</p>
+            </div>
+            <div class="case-result">
+              연간 <span class="highlight">$100K+ 세금 연기</span>
+            </div>
+          </div>
+        </div><div class="swiper-slide case-card" data-category="business retirement tax">
+          <div class="case-header">
+            <div class="category-container">
+              <span class="case-category">사업주 솔루션</span>
+              <span class="case-category">은퇴 설계</span>
+              <span class="case-category">세금 효율화</span>
+            </div>
+            <h3 class="case-title">소규모 사업체 Simple IRA</h3>
+            <p class="case-client">45대 카페 오너 | 미시간</p>
+          </div>
+          <div class="case-body">
+            <div class="case-desc">
+              <p><strong>Simple IRA</strong>로 직원 복지 강화</p>
+              <p>기여금 매칭 전략</p>
+            </div>
+            <div class="case-result">
+              직원 유지율 <span class="highlight">30% 향상</span>
+            </div>
+          </div>
+        </div><div class="swiper-slide case-card" data-category="asset">
+          <div class="case-header">
+            <div class="category-container">
+              <span class="case-category">자산 통합 관리</span>
+            </div>
+            <h3 class="case-title">주택 구매 자금 모으기</h3>
+            <p class="case-client">30대 커플 | 텍사스</p>
+          </div>
+          <div class="case-body">
+            <div class="case-desc">
+              <p>목표 기반 저축 계획</p>
+              <p>투자 수익률 vs 안정성 균형</p>
+            </div>
+            <div class="case-result">
+              3년 만에 <span class="highlight">$90K 다운페이</span> 완성
+            </div>
+          </div>
+        </div><div class="swiper-slide case-card" data-category="tax">
+          <div class="case-header">
+            <div class="category-container">
+              <span class="case-category">세금 효율화</span>
+            </div>
+            <h3 class="case-title">고소득자 세금 전략</h3>
+            <p class="case-client">45세 변호사 | 코네티컷</p>
+          </div>
+          <div class="case-body">
+            <div class="case-desc">
+              <p><strong>Tax-Loss Harvesting</strong> 실행</p>
+              <p>자산 유형별 세금 영향 분석</p>
+            </div>
+            <div class="case-result">
+              <span class="highlight">연 $18K 세금 절감</span>
+            </div>
+          </div>
+        </div><div class="swiper-slide case-card" data-category="business asset">
+          <div class="case-header">
+            <div class="category-container">
+              <span class="case-category">사업주 솔루션</span>
+              <span class="case-category">자산 통합 관리</span>
+            </div>
+            <h3 class="case-title">사업체 명의 투자 계좌 운영</h3>
+            <p class="case-client">50대 창업자 | 텍사스</p>
+          </div>
+          <div class="case-body">
+            <div class="case-desc">
+              <p>사업체 수익금 재투자 구조</p>
+              <p>법인세 절감 전략</p>
+            </div>
+            <div class="case-result">
+              <span class="highlight">연 $15K 추가 수익</span>
+            </div>
+          </div>
+        </div><div class="swiper-slide case-card" data-category="asset">
+          <div class="case-header">
+            <div class="category-container">
+              <span class="case-category">자산 통합 관리</span>
+            </div>
+            <h3 class="case-title">이민 후 자산 통합 관리</h3>
+            <p class="case-client">50대 이민자 | 조지아</p>
+          </div>
+          <div class="case-body">
+            <div class="case-desc">
+              <p>한국-미국 자산 통합 보고</p>
+              <p>통화별 자산 배분 조정</p>
+            </div>
+            <div class="case-result">
+              관리 효율성 <span class="highlight">50% 향상</span>
+            </div>
+          </div>
+        </div>
       </div>
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
+      <div class="swiper-pagination"></div>
     </div>
-  </section>
+  </div>
+</div>
+</section>
+
+<section id="contact" aria-labelledby="contact-title">
+  <h2 id="contact-title">프리미엄 컨설팅 신청</h2>
+
+  <div class="consult-card">
+    <div class="consult-content">
+      <h3>지금 바로 전문가와 상담하세요</h3>
+      <p class="nowrap">카카오톡이나 전화로 편리하게 상담 예약이 가능합니다</p>
+
+      <div class="cta-buttons">
+        <a href="http://pf.kakao.com/_Kxmlin" class="kakao-btn nowrap" aria-label="카카오톡 상담 바로가기">
+          <img src="./kakao-icon.webp" alt="카카오톡 아이콘" width="20" height="20" class="btn-icon">
+          카카오톡 상담
+        </a>
+
+        <a href="tel:+1234567890" class="call-btn nowrap" aria-label="전화 상담 바로가기">
+          <svg class="btn-icon phone-icon" width="20" height="20" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
+          </svg>
+          전화 상담
+        </a>
+      </div>
+
+      <p class="consult-note">상담 가능 시간: 월-금 09:00 - 18:00 (미국&nbsp;서부시간&nbsp;기준)</p>
+    </div>
+  </div>
+</section>
 </main>
 
 <footer>
@@ -1308,263 +1217,146 @@
   <p class="nowrap">&copy; <script>document.write(new Date().getFullYear());</script> 미주자산톡. All Rights Reserved.</p>
 </footer>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  var swiper = new Swiper(".success-slide", {
-    slidesPerView: 3,
-    spaceBetween: 20,
-    navigation: {
-      nextEl: ".success-button-next",
-      prevEl: ".success-button-prev",
-    },
 
-document.querySelectorAll(".filter-button").forEach(function(button) {
-  button.addEventListener("click", function() {
-    var filter = this.dataset.filter;
-    document.querySelectorAll(".success-slide .swiper-slide").forEach(function(slide) {
-      if(filter === 'all' || slide.dataset.category === filter) {
-        slide.style.display = 'block';
-      } else {
-        slide.style.display = 'none';
-      }
-    });
-    swiper.update(); // 슬라이더 갱신
-  });
-});
+ <!-- JS 연결 (body 종료 전) -->
+<script src="/swiper-bundle.min.js"></script>
 
-
-  // FAQ 아코디언 토글 기능
-  const faqQuestions = document.querySelectorAll('.faq-question');
-  faqQuestions.forEach(button => {
-    button.addEventListener('click', () => {
-      const expanded = button.getAttribute('aria-expanded') === 'true';
-      button.setAttribute('aria-expanded', String(!expanded));
-      button.classList.toggle('active');
-
-      const answerId = button.getAttribute('aria-controls');
-      const answer = document.getElementById(answerId);
-      if (answer) {
-        if (!expanded) {
-          answer.removeAttribute('hidden');
-        } else {
-          answer.setAttribute('hidden', '');
-        }
-      }
-    });
-  });
-
-  // Scrollspy for active nav link
-  const sections = document.querySelectorAll("main section[id]");
-  const navLinks = document.querySelectorAll("nav#primary-navigation ul li a");
-  const headerOffset = 70;
-
-  function updateActiveLink() {
-    let current = "";
-    const scrollPos = window.pageYOffset || document.documentElement.scrollTop;
-
-    if (scrollPos < 100) {
-      current = "hero";
-    } else {
-      sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        if (scrollPos >= sectionTop - headerOffset) {
-          current = section.getAttribute("id");
-        }
-      });
-    }
-
-    navLinks.forEach(link => {
-      link.classList.remove("active");
-      const href = link.getAttribute("href");
-      if (href && href.includes("#") && href.substring(1) === current) {
-        link.classList.add("active");
-      }
-    });
-  }
-
-  window.addEventListener("scroll", updateActiveLink);
-  updateActiveLink();
-
-  // 모바일 내비게이션 작동 스크립트
-  const toggleButton = document.querySelector(".menu-toggle");
-  const nav = document.getElementById("primary-navigation");
-
-  if (toggleButton && nav) {
-    toggleButton.addEventListener("click", () => {
-      const isOpen = nav.classList.toggle("open");
-      toggleButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
-      toggleButton.classList.toggle("open", isOpen);
-    });
-
-    const mobileNavLinks = nav.querySelectorAll("a");
-    mobileNavLinks.forEach(link => {
-      link.addEventListener("click", () => {
-        if (nav.classList.contains("open")) {
-          nav.classList.remove("open");
-          toggleButton.setAttribute("aria-expanded", "false");
-          toggleButton.classList.remove("open");
-        }
-      });
-    });
-  }
-
-  // Smooth scroll for anchor links
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-      const hrefAttribute = this.getAttribute('href');
-      
-      if (hrefAttribute === '#hero') {
-        e.preventDefault();
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth"
-        });
-        return;
-      }
-      
-      if (hrefAttribute && hrefAttribute.length > 1 && document.querySelector(hrefAttribute)) {
-        e.preventDefault();
-        const targetElement = document.querySelector(hrefAttribute);
-        if (targetElement) {
-          const headerHeight = document.querySelector('header').offsetHeight;
-          const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
-          const offsetPosition = elementPosition - headerHeight;
-
-          window.scrollTo({
-            top: offsetPosition,
-            behavior: "smooth"
-          });
-        }
-      }
-    });
-  });
-
-
-// [신규 추가] 정렬 우선순위 함수
-function sortByPriority(cards, filter) {
-  return cards.sort((a, b) => {
-    const aCats = a.dataset.category.split(' ');
-    const bCats = b.dataset.category.split(' ');
-    
-    // 1. 선택 필터가 첫 번째인 카드 우선
-    if(aCats[0] === filter && bCats[0] !== filter) return -1;
-    if(aCats[0] !== filter && bCats[0] === filter) return 1;
-    
-    // 2. 선택 필터 포함시 카테고리 수가 적은 순
-    if(aCats.includes(filter) && bCats.includes(filter)) {
-      return aCats.length - bCats.length;
-    }
-    
-    return 0;
-  });
-}
-
-// 필터 기능 구현 (기존 로직 유지 + 정렬 추가)
-const filterButtons = document.querySelectorAll('.filter-btn');
-if(filterButtons.length > 0) {
-  filterButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      // 활성 탭 업데이트 (기존 동일)
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      
-      // 필터링 로직 (수정된 부분)
-      const filter = btn.dataset.filter;
-      const caseGrid = document.querySelector('.case-grid');
-      const cards = Array.from(document.querySelectorAll('.case-card'));
-      
-      // 1. 필터링
-      const filteredCards = cards.filter(card => {
-        const display = filter === 'all' || card.dataset.category.split(' ').includes(filter);
-        card.style.display = display ? 'block' : 'none';
-        return display;
-      });
-
-      // 2. 정렬 (신규 추가)
-      if(filter !== 'all') {
-        sortByPriority(filteredCards, filter).forEach(card => {
-          caseGrid.appendChild(card);
-        });
-      }
-    });
-  });
-}
-
-
-  // 카테고리 태그 동적 생성
-  const caseCards = document.querySelectorAll('.case-card');
-  if(caseCards.length > 0) {
-    caseCards.forEach(card => {
-      const categories = card.dataset.category.split(' ');
-      const tagContainer = card.querySelector('.case-tags');
-      if(tagContainer) {
-        tagContainer.innerHTML = '';
-        
-        // 각 카테고리에 대한 태그 생성
-        categories.forEach(cat => {
-          const tagElement = document.createElement('span');
-          tagElement.className = 'case-tag';
-          tagElement.textContent = categoryNames[cat] || cat;
-          tagContainer.appendChild(tagElement);
-        });
-      }
-    });
-  }
-});
-</script>
 
 <script>
+document.addEventListener("DOMContentLoaded", function() {
   // Swiper 초기화
-  const caseSwiper = new Swiper('.swiper-container', {
-    slidesPerView: 1,
-    spaceBetween: 20,
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-    },
-    pagination: {
-      el: '.swiper-pagination',
-      clickable: true,
-    },
-    breakpoints: {
-      640: {
-        slidesPerView: 2,
-        spaceBetween: 20
+    const caseSwiper = new Swiper('.swiper-container', {
+      slidesPerView: 1,
+      spaceBetween: 20,
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
       },
-      1024: {
-        slidesPerView: 3,
-        spaceBetween: 30
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      breakpoints: {
+        640: {
+          slidesPerView: 2,
+          spaceBetween: 20
+        },
+        1024: {
+          slidesPerView: 3,
+          spaceBetween: 30
+        }
       }
-    }
-  });
+    });
 
   // 필터 버튼 기능
-  document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
       // 활성 버튼 업데이트
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      this.classList.add('active');
-      
-      const filter = this.dataset.filter;
-      const slides = document.querySelectorAll('.swiper-slide');
-      
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+
+        const filter = this.dataset.filter;
+        const slides = document.querySelectorAll('.swiper-slide');
+
       // 슬라이드 필터링
-      slides.forEach(slide => {
-        const categories = slide.dataset.category.split(' ');
-        if (filter === 'all' || categories.includes(filter)) {
-          slide.style.display = 'block';
+        let visibleSlides = 0;
+        slides.forEach(slide => {
+          const categories = slide.dataset.category.split(' ');
+          if (filter === 'all' || categories.includes(filter)) {
+            slide.style.display = 'block';
+            visibleSlides++;
+          } else {
+            slide.style.display = 'none';
+          }
+        });
+
+      // Swiper 업데이트
+        caseSwiper.update();
+        caseSwiper.slideTo(0);
+
+      // 페이지네이션 업데이트
+        if (visibleSlides <= caseSwiper.params.slidesPerView) {
+          document.querySelector('.swiper-pagination').style.display = 'none';
         } else {
-          slide.style.display = 'none';
+          document.querySelector('.swiper-pagination').style.display = 'block';
         }
       });
-      
-      // Swiper 업데이트
-      caseSwiper.update();
-      caseSwiper.slideTo(0);
+    });
+
+  // FAQ 아코디언 토글 기능
+    const faqQuestions = document.querySelectorAll('.faq-question');
+    faqQuestions.forEach(button => {
+      button.addEventListener('click', () => {
+        const expanded = button.getAttribute('aria-expanded') === 'true';
+        button.setAttribute('aria-expanded', String(!expanded));
+        button.classList.toggle('active');
+
+        const answerId = button.getAttribute('aria-controls');
+        const answer = document.getElementById(answerId);
+        if (answer) {
+          if (!expanded) {
+            answer.removeAttribute('hidden');
+          } else {
+            answer.setAttribute('hidden', '');
+          }
+        }
+      });
+    });
+
+  // 모바일 네비게이션 토글
+    const toggleButton = document.querySelector(".menu-toggle");
+    const nav = document.getElementById("primary-navigation");
+
+    if (toggleButton && nav) {
+      toggleButton.addEventListener("click", () => {
+        const isOpen = nav.classList.toggle("open");
+        toggleButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        toggleButton.classList.toggle("open", isOpen);
+      });
+
+      const mobileNavLinks = nav.querySelectorAll("a");
+      mobileNavLinks.forEach(link => {
+        link.addEventListener("click", () => {
+          if (nav.classList.contains("open")) {
+            nav.classList.remove("open");
+            toggleButton.setAttribute("aria-expanded", "false");
+            toggleButton.classList.remove("open");
+          }
+        });
+      });
+    }
+
+  // 부드러운 스크롤
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const hrefAttribute = this.getAttribute('href');
+
+        if (hrefAttribute === '#hero') {
+          e.preventDefault();
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+          });
+          return;
+        }
+
+        if (hrefAttribute && hrefAttribute.length > 1 && document.querySelector(hrefAttribute)) {
+          e.preventDefault();
+          const targetElement = document.querySelector(hrefAttribute);
+          if (targetElement) {
+            const headerHeight = document.querySelector('header').offsetHeight;
+            const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+            const offsetPosition = elementPosition - headerHeight;
+
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: "smooth"
+            });
+          }
+        }
+      });
     });
   });
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
 </body>
 </html>
