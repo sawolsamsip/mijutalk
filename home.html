@@ -4,8 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://mijutalk.co/" /> <meta property="og:title" content="미주자산톡 | 미국 한인 재정 컨설팅" />
-<meta property="og:title" content="미주자산톡 | 한인 전문 재무설계 & 자산관리">
+<link rel="canonical" href="https://mijutalk.co/" /> 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+<meta property="og:title" content="미주자산톡 | 한인 전문 재정 컨설팅">
 <meta property="og:description" content="미국 거주 한인 대상 자산관리, 은퇴준비, 투자설계 등 맞춤 재정 컨설팅 서비스" />
 <meta property="og:image" content="https://mijutalk.co/og-image.webp" />
 <meta property="og:url" content="https://mijutalk.co/" />
@@ -20,9 +21,12 @@
 <meta name="twitter:description" content="미국 거주 한인 대상 자산관리, 은퇴준비, 투자설계 등 맞춤 재정 컨설팅 서비스">
 <meta name="twitter:image" content="https://mijutalk.co/og-image.webp">
 
+<!-- 폰트 로딩 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
 
 <title>미주자산톡 | 미국 거주 한인 재정 컨설팅</title>
-<link rel="preconnect" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
 <style>
   :root {
     --color-primary: #003366;
@@ -52,6 +56,51 @@
   a:hover {
     color: var(--color-secondary);
   }
+
+  /* ===== [수정] 푸터 링크 밑줄 제거 ===== */
+  footer a {
+    text-decoration: none !important;
+  }
+
+  /* ===== [수정] 한 줄 텍스트 처리 ===== */
+  .nowrap, #services li p, .faq-answer p, 
+  .consult-content p:not(.consult-note), footer p {
+    white-space: nowrap;
+    display: inline-block;
+    width: 100%;
+    overflow: visible;
+    box-sizing: border-box;
+  }
+
+  /* [추가] 대표 소개 텍스트 줄바꿈 처리 */
+  .bio p {
+    white-space: normal;
+    word-break: keep-all;
+  }
+
+  @media (min-width: 769px) {
+    /* 데스크탑에서 버튼 가로 배열 */
+    .cta-buttons {
+      flex-direction: row;
+    }
+    
+    .kakao-btn, .call-btn {
+      width: auto;
+    }
+  }
+
+
+  @media (max-width: 768px) {
+    .nowrap, #services li p, .faq-answer p,
+    .consult-content p:not(.consult-note), footer p {
+      white-space: normal;
+      word-break: keep-all;
+      font-size: 0.93rem;
+      letter-spacing: -0.2px;
+    }
+  }
+
+  /* [기존 CSS 유지] */
   header {
     position: fixed;
     top: 0; left: 0; right: 0;
@@ -60,32 +109,43 @@
     padding: 15px 20px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.25);
     z-index: 1100;
+    height: 70px;
+  }
+
+  .header-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 70px; /* Fixed header height */
+    height: 100%;
   }
 
   .logo {
+    transition: transform 0.3s;
     font-weight: 900;
     font-size: 1.8rem;
     letter-spacing: 2px;
     user-select: none;
     cursor: default;
+    margin-left: 10px;
   }
 
+.logo:hover {
+  transform: scale(1.05);
+}
 
-
-  /* Desktop Navigation */
+  /* 데스크탑 네비게이션 */
   nav#primary-navigation ul {
     display: flex;
-    gap: 20px; /* Adjusted gap */
+    gap: 20px;
     list-style: none;
   }
   nav#primary-navigation ul li a {
     font-weight: 600;
-    font-size: 1rem; /* Adjusted font size */
-    padding: 8px 12px; /* Adjusted padding */
+    font-size: 1rem;
+    padding: 8px 12px;
     border-radius: 6px;
     color: #f0f5fb;
     transition: background-color 0.25s ease, color 0.25s ease;
@@ -95,10 +155,10 @@
     background-color: var(--color-secondary);
     color: var(--color-primary);
     font-weight: 700;
-    box-shadow: 0 0 10px rgba(255, 198, 0, 0.67); /* #ffc600aa */
+    box-shadow: 0 0 10px rgba(255, 198, 0, 0.67);
   }
 
-  /* Hamburger Button Base Styles */
+  /* Hamburger Button */
   .menu-toggle {
     display: none;
     background: none;
@@ -132,44 +192,33 @@
     top: -8px;
   }
   .menu-toggle .hamburger::after {
-    /* bottom: -8px; */ /* Using top for consistent transform origin */
     top: 8px;
   }
-
-  /* Styles for "X" when menu is open */
   .menu-toggle.open .hamburger {
-      background-color: transparent;
+    background-color: transparent;
   }
   .menu-toggle.open .hamburger::before {
-      top: 0;
-      transform: translateX(-50%) rotate(45deg);
+    top: 0;
+    transform: translateX(-50%) rotate(45deg);
   }
   .menu-toggle.open .hamburger::after {
-      top: 0;
-      transform: translateX(-50%) rotate(-45deg);
+    top: 0;
+    transform: translateX(-50%) rotate(-45deg);
   }
 
-  /* Mobile Navigation Styles */
+  /* Mobile Navigation */
   @media (max-width: 768px) {
-    .profile-container {
-      padding: 20px 15px;
-    }
-    .profile-img {
-      width: 120px;
-      height: 120px;
-      max-width: 100%;
-    }
     .menu-toggle {
       display: block;
     }
     nav#primary-navigation {
       display: block;
       position: fixed;
-      top: 70px; /* Matches header height */
+      top: 70px;
       right: 0;
       background: var(--color-primary);
       width: 250px;
-      height: calc(100vh - 70px); /* Full height minus header height */
+      height: calc(100vh - 70px);
       transform: translateX(100%);
       transition: transform 0.3s ease-in-out;
       box-shadow: -2px 0 10px rgba(0,0,0,0.3);
@@ -195,26 +244,37 @@
       font-size: 1.1rem;
       display: block;
       border-radius: 0;
-      box-shadow: none;
     }
     nav#primary-navigation ul li a:hover,
     nav#primary-navigation ul li a.active {
       background-color: var(--color-secondary);
       color: var(--color-primary);
       font-weight: 700;
-      box-shadow: none;
     }
+  }
+
+  .header-container {
+    padding: 0 10px; /* 좌우 패딩 줄임 */
+    justify-content: space-between; /* 로고와 버튼을 양쪽으로 */
+  }
+
+  .logo {
+    margin-left: 0; /* 왼쪽 여백 제거 */
+    font-size: 1.6rem; /* 로고 크기 조정 */
+  }
+  .menu-toggle {
+    margin-right: 0; /* 오른쪽 여백 제거 */
   }
 
   main {
     max-width: 1100px;
-    margin: 0 auto; /* Margin top will be handled by section scroll-margin-top or padding-top */
+    margin: 0 auto;
     padding: 20px;
-    padding-top: 90px; /* Space for fixed header */
+    padding-top: 90px;
   }
   section {
     margin-bottom: 60px;
-    scroll-margin-top: 90px; /* Space for fixed header for anchor links */
+    scroll-margin-top: 70px;
   }
 
   .hero {
@@ -224,9 +284,8 @@
     background: linear-gradient(135deg, #0078d7, #004e92);
     border-radius: 10px;
     color: white;
-    padding: 50px 40px; /* Adjusted padding */
+    padding: 50px 40px;
     text-align: center;
-    margin-top: 0; /* Remove margin-top if main has padding-top */
   }
 
   @keyframes fadeInUp {
@@ -237,13 +296,14 @@
   }
 
   .hero h1 {
-    font-size: 2.5rem; /* Adjusted for responsiveness */
+    font-size: 2.5rem;
     margin: 0 0 15px 0;
     font-weight: 900;
     letter-spacing: 1.3px;
+    word-break: keep-all;
   }
   .hero p {
-    font-size: 1.1rem; /* Adjusted */
+    font-size: 1.1rem;
     line-height: 1.5;
     max-width: 600px;
     margin: 0 auto;
@@ -258,16 +318,24 @@
     margin-top: 30px;
     text-decoration: none;
     font-size: 1.1rem;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    white-space: nowrap;
+    max-width: 100%; /* 부모 너비를 초과하지 않음 */
+    width: auto; /* 내용물에 맞게 자동 조정 */
+    text-align: center; /* 텍스트 가운데 정렬 */
   }
   .btn-kakao:hover {
-    background-color: #f7d602;
+    background-color: #3c1e1e;
+    color: #fee500;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
   }
 
   h2 {
     color: var(--color-primary);
     font-weight: 700;
-    margin-bottom: 24px; /* Increased margin */
+    margin-bottom: 24px;
     font-size: 2rem;
     border-left: 6px solid var(--color-secondary);
     padding-left: 12px;
@@ -286,11 +354,13 @@
     border-radius: 16px;
     padding: 24px 30px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-    transition: box-shadow 0.3s ease, transform 0.3s ease; /* Added transform transition */
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    min-width: 0;
+    overflow: visible;
   }
   #services li:hover {
     box-shadow: 0 10px 28px rgba(0,0,0,0.14);
-    transform: translateY(-5px); /* Added hover effect */
+    transform: translateY(-5px);
   }
   #services li h3 {
     margin-top: 0;
@@ -303,14 +373,12 @@
     color: var(--color-text-secondary);
     font-weight: 500;
     font-size: 1rem;
-    line-height: 1.4;
+    line-height: 1.3;
+    word-break: keep-all;
   }
 
   /* 대표 소개 */
-  #about {
-    /* padding: 40px 20px; No need for padding if section has it */
-  }
-  .profile-container { /* Added a container for better centering and structure */
+  .profile-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -322,16 +390,16 @@
   }
   .profile-img {
     width: 150px;
-    height: 150px; /* Make it square for a circle */
-    object-fit: cover; /* Ensure image covers without distortion */
+    height: 150px;
+    object-fit: cover;
     margin-bottom: 20px;
-    border-radius: 50%; /* Changed to 50% for a perfect circle */
-    border: 4px solid var(--color-secondary); /* Added a border */
+    border-radius: 50%;
+    border: 4px solid var(--color-secondary);
   }
   .bio h3 {
     color: var(--color-primary);
     font-weight: 700;
-    font-size: 1.5rem; /* Slightly larger */
+    font-size: 1.5rem;
     margin-top: 0;
     margin-bottom: 12px;
   }
@@ -339,16 +407,16 @@
     font-size: 1rem;
     line-height: 1.6;
     color: var(--color-text-secondary);
-    max-width: 600px; /* Limit width for readability */
+    max-width: 600px;
     margin-left: auto;
     margin-right: auto;
   }
 
   /* FAQ */
   #faq .faq-item {
-    margin-bottom: 18px; /* Adjusted margin */
+    margin-bottom: 18px;
     background-color: var(--color-faq-bg);
-    border-radius: 12px; /* Adjusted border-radius */
+    border-radius: 12px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.08);
     overflow: hidden;
     transition: box-shadow 0.3s ease;
@@ -357,10 +425,10 @@
     box-shadow: 0 10px 28px rgba(0,0,0,0.14);
   }
   .faq-question {
-    background: none; /* Ensure no background from button defaults */
-    border: none; /* Ensure no border from button defaults */
-    padding: 18px 25px; /* Adjusted padding */
-    font-size: 1.1rem; /* Adjusted font-size */
+    background: none;
+    border: none;
+    padding: 18px 25px;
+    font-size: 1.1rem;
     font-weight: 700;
     color: var(--color-primary);
     cursor: pointer;
@@ -371,122 +439,430 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    word-break: keep-all;
   }
   .faq-question svg {
     transition: transform 0.35s ease;
     fill: var(--color-primary);
     width: 20px;
     height: 20px;
-    flex-shrink: 0; /* Prevent icon from shrinking */
+    flex-shrink: 0;
   }
   .faq-question.active svg {
     transform: rotate(180deg);
     fill: var(--color-secondary);
   }
   .faq-answer {
-    padding: 0px 25px 20px; /* Adjusted padding */
+    padding: 0px 25px 20px;
     color: var(--color-text-secondary);
     font-weight: 500;
     line-height: 1.5;
-    background-color: var(--color-faq-bg); /* Consistent with item or slightly different like --color-background */
-    /* max-height: 0; */ /* Using hidden attribute now, so max-height transition is not needed unless desired */
-    /* overflow: hidden; */
-    /* transition: max-height 0.35s ease-out, padding 0.35s ease-out; */
+    background-color: var(--color-faq-bg);
   }
-  /* .faq-answer.open {
-    max-height: 500px;
-    padding: 18px 30px 28px;
-  } */
 
 
-  /* 문의 및 상담 */
-  #contact form {
-    max-width: 100%; 
-    width: 100%;
-    margin-top: 24px;
-    background-color: white;
-    padding: 40px;
+/* 필터 버튼 스타일 */
+.filter-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  background: #e4e8f0;
+  color: #002b5c;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.filter-btn.active {
+  background: #002b5c;
+  color: white;
+}
+    .swiper {
+      padding-bottom: 40px;
+    }
+
+
+/* Swiper 컨테이너 스타일 */
+.swiper-container {
+  position: relative; /* 부모 컨테이너에 relative 추가 */
+  width: 100%;
+  padding: 20px 0 50px;
+  max-width: 1200px; /* 최대 너비 제한 */
+  margin: 0 auto; /* 중앙 정렬 */
+}
+
+/* 슬라이드 스타일 */
+.swiper-slide {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  height: auto;
+  transition: transform 0.3s ease;
+}
+
+    .case-category {
+      display: inline-block;
+      background: #0078d7;
+      color: white;
+      font-size: 0.75rem;
+      border-radius: 12px;
+      padding: 2px 10px;
+      margin-right: 6px;
+      margin-bottom: 8px;
+    }
+    .case-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin: 10px 0 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .case-client {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 12px;
+    }
+    .case-desc p {
+      font-size: 0.9rem;
+      margin: 6px 0;
+    }
+    .case-result {
+      background: #eef6f8;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: bold;
+      color: #0078d7;
+      margin-top: 10px;
+    }
+.swiper-button-next {
+  right: 10px; /* 슬라이드 컨테이너 오른쪽 끝에서 10px 안쪽 */
+}
+
+.swiper-button-prev {
+  left: 10px; /* 슬라이드 컨테이너 왼쪽 끝에서 10px 안쪽 */
+}
+
+
+
+  /* 간결한 상담 신청 섹션 */
+  #contact {
+    position: relative;
+  }
+
+  .consult-card {
+    white-space: nowrap;
+    background: white;
     border-radius: 16px;
+    padding: 40px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-  }
-  #contact label {
-    display: block;
-    font-weight: 700;
-    margin-bottom: 8px;
-    color: var(--color-primary);
-  }
-  #contact input, #contact textarea {
     width: 100%;
-    padding: 12px 14px;
-    margin-bottom: 18px;
-    border: 1.8px solid #ccc;
-    border-radius: 10px;
-    font-size: 1rem;
-    font-family: 'Noto Sans KR', sans-serif;
-    transition: border-color 0.3s ease;
-  }
-  #contact input:focus, #contact textarea:focus {
-    border-color: var(--color-primary);
-    outline: 2px solid var(--color-secondary); /* Added focus outline */
-    box-shadow: 0 0 5px rgba(0, 51, 102, 0.2); /* Subtle focus shadow */
-  }
-  #contact button {
-    background-color: var(--color-button-bg);
-    color: white;
-    border: none;
-    font-weight: 700;
-    font-size: 1.1rem;
-    padding: 14px 30px;
-    border-radius: 28px;
-    cursor: pointer;
-    box-shadow: 0 6px 16px rgba(0,80,158,0.4);
-    transition: background-color 0.3s ease, transform 0.2s ease;
-  }
-  #contact button:hover {
-    background-color: var(--color-button-hover);
-    transform: translateY(-2px); /* Slight lift on hover */
-  }
-  #contact .contact-kakao-link { /* Style for the Kakao link below the form */
-    display: block;
+    box-sizing: border-box;
+    border-top: 6px solid var(--color-secondary);
     text-align: center;
+  }
+
+  .consult-content {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .consult-content h3 {
+    font-size: 1.5rem;
+    color: #003366;
+    margin-bottom: 30px;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 30px;
+  }
+
+  /* 변경된 버튼 스타일 (통일된 호버 효과 적용) */
+  .kakao-btn, .call-btn {
+    padding: 14px 25px;
+    border-radius: 30px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .kakao-btn {
+    background: #fee500;
+    color: #3c1e1e;
+  }
+
+  .kakao-btn:hover {
+    background: #3c1e1e;
+    color: #fee500;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .kakao-btn:hover .btn-icon {
+    filter: brightness(0) invert(1);
+  }
+
+  .call-btn {
+    background: #003366;
+    color: white;
+    border: 2px solid #003366;
+  }
+
+  .call-btn:hover {
+    background: white;
+    color: #003366;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  /* 버튼 아이콘 스타일 */
+  .btn-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+  }
+
+  /* 전화 아이콘 색상 처리 */
+  .phone-icon {
+    fill: currentColor;
+  }
+
+  /* 클릭 효과 추가 */
+  .kakao-btn:active,
+  .call-btn:active {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .consult-note {
+    white-space: normal;
+    word-break: keep-all;
+    overflow-x: auto;
     margin-top: 20px;
-    font-size: 1rem;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 600px) {
+    .cta-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .kakao-btn, .call-btn {
+      width: 100%;
+      max-width: 280px;
+      justify-content: center;
+    }
   }
 
   /* footer */
   footer {
     background-color: var(--color-primary);
     color: white;
-    padding: 30px 20px; /* Increased padding */
+    padding: 30px 20px;
     text-align: center;
-    font-size: 0.9rem; /* Adjusted font size */
+    font-size: 0.9rem;
     user-select: none;
     line-height: 1.7;
   }
   footer a {
     color: var(--color-secondary);
-    text-decoration: underline;
   }
   footer p {
     margin-bottom: 0;
   }
 
-  /* Accessibility: Focus Visible for keyboard users */
+  /* Accessibility */
   *:focus-visible {
     outline: 3px solid var(--color-secondary);
     outline-offset: 2px;
   }
-  .faq-question:focus-visible { /* Specific for FAQ to avoid double outline with SVG */
+  .faq-question:focus-visible {
     outline: 2px solid var(--color-secondary);
     outline-offset: 1px;
   }
 
+
+    /* 전체 슬라이드 컨테이너 */
+    .swiper {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 30px 0 70px;
+    }
+
+    .case-card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      height: auto;
+      margin: 0 15px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: grab;
+    }
+    
+    .case-card:active {
+      cursor: grabbing;
+    }
+    
+    .case-header {
+      border-bottom: 1px solid #eee;
+      padding-bottom: 15px;
+      margin-bottom: 15px;
+    }
+    
+    .case-title {
+      color: var(--color-primary);
+      font-weight: 700;
+      font-size: 1.3rem;
+      margin-bottom: 5px;
+    }
+    
+    .case-meta {
+      color: #777;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+    
+    .case-content {
+      color: #555;
+      font-size: 1rem;
+      line-height: 1.7;
+      margin-bottom: 15px;
+    }
+    
+    .case-points {
+      margin: 15px 0;
+      padding-left: 20px;
+    }
+    
+    .case-points li {
+      margin-bottom: 8px;
+      position: relative;
+      list-style-type: none;
+    }
+    
+    .case-points li:before {
+      content: "•";
+      color: var(--color-secondary);
+      font-weight: bold;
+      position: absolute;
+      left: -20px;
+    }
+    
+    .case-result {
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 10px;
+      font-weight: 700;
+      margin-top: 20px;
+      font-size: 1rem;
+      border-left: 4px solid var(--color-secondary);
+    }
+    
+    .highlight {
+      color: var(--color-primary);
+      font-size: 1.1em;
+    }
+    
+    /* 데스크탑 슬라이드 스타일 */
+    .swiper-slide {
+      width: 400px !important;
+    }
+    
+    /* 네비게이션 화살표 */
+.swiper-button-next, 
+.swiper-button-prev {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background: rgba(0,51,102,0.8);
+  border-radius: 50%;
+  color: var(--color-secondary);
+  z-index: 10;
+}
+    
+    .swiper-button-next:after, 
+    .swiper-button-prev:after {
+      font-size: 1.2rem;
+    }
+    
+    /* 페이지네이션 */
+    .swiper-pagination-bullet {
+      width: 10px;
+      height: 10px;
+      background: rgba(0,51,102,0.3);
+      opacity: 1;
+    }
+    
+    .swiper-pagination-bullet-active {
+      background: var(--color-secondary);
+    }
+    
+    /* 반응형 조정 */
+    @media (max-width: 768px) {
+      .swiper-slide {
+        width: 85% !important;
+      }
+      
+      .swiper-button-next, 
+      .swiper-button-prev {
+        display: none;
+      }
+
+      .filter-tabs {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 10px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      
+      .filter-tabs::-webkit-scrollbar {
+        display: none;
+      }
+      
+      .case-card {
+        padding: 20px;
+      }
+    }
+
 </style>
 </head>
 <body>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VNNXFK9RNH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-VNNXFK9RNH');
+</script>
+
 <header>
-
-
+  <div class="header-container">
   <div class="logo" aria-label="미주자산톡 브랜드 로고">미주자산톡</div>
   <button class="menu-toggle" aria-label="메뉴 열기/닫기" aria-expanded="false" aria-controls="primary-navigation">
     <span class="hamburger"></span>
@@ -497,6 +873,7 @@
       <li role="none"><a href="#services" role="menuitem" tabindex="0">서비스</a></li>
       <li role="none"><a href="#about" role="menuitem" tabindex="0">대표 소개</a></li>
       <li role="none"><a href="#faq" role="menuitem" tabindex="0">FAQ</a></li>
+      <li role="none"><a href="#success-cases" role="menuitem" tabindex="0">성공 사례</a></li>
       <li role="none"><a href="#contact" role="menuitem" tabindex="0">문의</a></li>
     </ul>
   </nav>
@@ -505,55 +882,77 @@
 <main role="main">
   <section id="hero" class="hero" tabindex="-1" aria-labelledby="hero-title">
     <h1 id="hero-title">미국 거주 한인을 위한 프리미엄 재정 컨설팅</h1>
-    <p>자산관리, 은퇴준비, 세금최적화 투자설계까지<br/>쉽고 전문적으로 도와드립니다.</p>
-    <a href="http://pf.kakao.com/_Kxmlin" target="_blank" rel="noopener noreferrer" class="btn-kakao" aria-label="카카오톡 무료 상담 바로가기 새 창 열림">카카오톡 무료 상담</a>
+    <p>자산관리, 은퇴준비, 세금최적화 투자설계까지 쉽고 전문적으로 도와드립니다.</p>
+    <a href="http://pf.kakao.com/_Kxmlin" target="_blank" rel="noopener noreferrer" class="btn-kakao nowrap" aria-label="카카오톡 무료 상담 바로가기 새 창 열림">카카오톡 무료 상담</a>
   </section>
 
   <section id="services" aria-labelledby="services-title">
-    <h2 id="services-title">주요 서비스 안내</h2>
+    <h2 id="services-title">전문 서비스 분야</h2>
     <ul>
+      <!-- [1] 개인 자산 관리 -->
       <li>
-        <h3>종합 자산 관리</h3>
-        <p>-은퇴, 교육자금, 주택 구매 등 목적별 자산 설계<br>-투자 포트폴리오 구성 및 리밸런싱<br>-리스크 관리 및 세금 최적화 전략 포함</p>
+        <h3>개인 자산 통합 관리</h3>
+        <p class="nowrap">-&nbsp;목표기반&nbsp;자산&nbsp;배분&nbsp;(은퇴·교육·주택&nbsp;구매)</p>
+        <p class="nowrap">-&nbsp;투자&nbsp;포트폴리오&nbsp;설계&nbsp;및&nbsp;리밸런싱</p>
+        <p class="nowrap">-&nbsp;위험&nbsp;관리&nbsp;전략&nbsp;(긴급자금·보험&nbsp;연계)</p>
       </li>
+
+      <!-- [2] 은퇴 설계 -->
       <li>
-        <h3>은퇴 계획 수립</h3>
-        <p>-401(k), IRA, Defined Benefit 등 퇴직연금 분석 및 최적화<br>-소설시큐리티 수령 전략 및 은퇴 후 현금 흐름 설계</p>
+        <h3>은퇴 자금 전략</h3>
+        <p class="nowrap">-&nbsp;401(k)·IRA&nbsp;롤오버&nbsp;최적화</p>
+        <p class="nowrap">-&nbsp;Social&nbsp;Security&nbsp;수령&nbsp;시기&nbsp;분석</p>
+        <p class="nowrap">-&nbsp;은퇴&nbsp;후&nbsp;지속&nbsp;가능한&nbsp;현금흐름&nbsp;모델링</p>
       </li>
-      <li>
-        <h3>맞춤형 투자 전략</h3>
-        <p>-주식, ETF, 채권, 펀드 등 다양한 자산 투자 안내<br>-투자 성향에 따른 포트폴리오 맞춤 설계</p>
-      </li>
+
+      <!-- [3] 세금 효율화 -->
       <li>
         <h3>세금 효율적 투자</h3>
-        <p>-세금 절감 전략 (Tax-Loss Harvesting, Roth Conversion 등)<br>-고소득자, 자영업자 맞춤 절세 구조 컨설팅</p>
+        <p class="nowrap">-&nbsp;Tax-Loss&nbsp;Harvesting 전략</p>
+        <p class="nowrap">-&nbsp;고소득자&nbsp;대상&nbsp;세금&nbsp;효율화&nbsp;구조&nbsp;설계</p>
+        <p class="nowrap">-&nbsp;자산&nbsp;유형별(주식·채권)&nbsp;세금&nbsp;영향&nbsp;분석</p>
       </li>
+
+      <!-- [4] 교육·상속 -->
       <li>
-        <h3>자녀 교육자금 계획</h3>
-        <p>-529 플랜, UGMA/UTMA 계좌 활용<br>-장기적인 교육자금 마련 및 세금 전략</p>
+        <h3>교육·상속 계획</h3>
+        <p class="nowrap">-&nbsp;529&nbsp;플랜·UGMA/UTMA&nbsp;비교&nbsp;분석</p>
+        <p class="nowrap">-&nbsp;신탁&nbsp;설계&nbsp;및&nbsp;유산&nbsp;분배&nbsp;전략</p>
+        <p class="nowrap">-&nbsp;세대간&nbsp;자산&nbsp;이전&nbsp;절세&nbsp;방안</p>
       </li>
-      <li>
-        <h3>생애 이벤트 재정 컨설팅</h3>
-        <p>-이민, 결혼, 이혼, 사업 시작/정리, 상속 등 주요 전환기 대응<br>-복잡한 상황을 쉽게 풀어주는 맞춤형 조언</p>
+
+      <!-- [5] 사업자 특화 -->
+      <li class="business-service">
+        <h3>사업주 맞춤 솔루션</h3>
+        <p class="nowrap">-&nbsp;사업&nbsp;시작/매각&nbsp;시&nbsp;자금&nbsp;계획</p>
+        <p class="nowrap">-&nbsp;사업체명의&nbsp;투자&nbsp;계좌&nbsp;개설&nbsp;및&nbsp;운영</p>
+        <p class="nowrap">-&nbsp;퇴직금&nbsp;프로그램&nbsp;설계</p>
+        <p class="nowrap">&nbsp;&nbsp;(Simple,&nbsp;SEP,&nbsp;401k,&nbsp;Defined&nbsp;Benefit)</p>
       </li>
+
+      <!-- [6] 특수 상황 -->
       <li>
-        <h3>상속 및 유산 계획</h3>
-        <p>-유언장, 신탁(Trust), 수혜자 지정 등 구조 설계<br>-가족 간 자산 이전 및 세금 절감 전략</p>
+        <h3>생애 이벤트 대응</h3>
+        <p class="nowrap">-&nbsp;이민·귀국&nbsp;시&nbsp;자산관리</p>
+        <p class="nowrap">-&nbsp;이혼/재혼&nbsp;시&nbsp;자산분할·수혜자&nbsp;재설정</p>
+        <p class="nowrap">-&nbsp;상속&nbsp;계획&nbsp;및&nbsp;수혜자&nbsp;지정</p>
+        <p class="nowrap">&nbsp;&nbsp;(Trust/Estate&nbsp;설립·유산&nbsp;분배)</p>
       </li>
     </ul>
   </section>
 
-<section id="about" aria-labelledby="about-title">
-  <h2 id="about-title">대표 소개</h2>
-  <div class="profile-container">
-    <img src="https://mijutalk.co/profile-picture.webp" loading="lazy" alt="이상현 대표 사진" class="profile-img"> <div class="bio">
-      <h3>이상현, MBA, CRPC®</h3>
-      <p>미국 내 10년 이상의 재정 컨설팅 경력을 가진 금융 전문가입니다.<br>
-         25만불 이상 자산 규모 고객을 대상으로 맞춤형 자산관리 및 은퇴 계획 수립을 전문으로 합니다. <br>
-         신뢰와 투명성을 최우선으로 고객과 함께 성장하는 파트너가 되겠습니다.</p>
+  <section id="about" aria-labelledby="about-title">
+    <h2 id="about-title">대표 소개</h2>
+    <div class="profile-container">
+      <img src="./profile-picture.webp" loading="lazy" alt="이상현 대표 사진" class="profile-img">
+      <div class="bio">
+        <h3>이상현, MBA, CRPC®</h3>
+        <p>미국 내 10년 이상의 재정 컨설팅 경력을 가진 금융 전문가입니다.</p>
+        <p>25만불 이상 자산 고객을 대상으로 맞춤형 자산관리 및 은퇴 계획 수립을 전문으로 합니다.</p>
+        <p>신뢰와 투명성을 최우선으로 고객과 함께 성장하는 파트너가 되겠습니다.</p>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
   <section id="faq" aria-labelledby="faq-title">
     <h2 id="faq-title">자주 묻는 질문 (FAQ)</h2>
@@ -622,45 +1021,294 @@
     </article>
   </section>
 
+
+  <!-- 성공 사례 섹션 -->
+<section id="success-cases" aria-labelledby="success-cases-title">
+  <h2 id="success-cases-title">성공 사례</h2>
+  <div class="filter-buttons">
+    <button class="filter-btn active" data-filter="all">전체</button>
+    <button class="filter-btn" data-filter="asset">자산관리</button>
+    <button class="filter-btn" data-filter="retirement">은퇴설계</button>
+    <button class="filter-btn" data-filter="tax">세금전략</button>
+    <button class="filter-btn" data-filter="education">교육계획</button>
+    <button class="filter-btn" data-filter="business">사업주</button>
+    <button class="filter-btn" data-filter="inheritance">상속계획</button>
+  </div>
+
+<div class="success-cases-wrapper">
+  <div class="swiper-container">
+    <div class="swiper-wrapper">
+      <!-- 슬라이드 내용은 기존과 동일하게 유지 -->
+      <div class="swiper-slide" data-category="asset retirement tax">
+
+
+<div class="case-header">
+<div class="category-container">
+<span class="case-category">자산 통합 관리</span>
+<span class="case-category">은퇴 설계</span>
+<span class="case-category">세금 효율화</span>
+</div>
+<h3 class="case-title">방치된 401(k) 통합 + Roth IRA 전환</h3>
+<p class="case-client">40대 전문직 | 캘리포니아</p>
+</div>
+<div class="case-body">
+<div class="case-desc">
+<p>과거 직장 3곳의 <strong>401(k) $420K</strong> 통합 관리</p>
+<p>일부를 <strong>Roth IRA</strong>로 단계적 전환</p>
+</div>
+<div class="case-result">
+<span class="highlight">포트폴리오 수익률 2.3% 향상</span>
+</div>
+</div>
+</div><div class="swiper-slide" data-category="retirement tax">
+<div class="case-header">
+<div class="category-container">
+<span class="case-category">은퇴 설계</span>
+<span class="case-category">세금 효율화</span>
+</div>
+<h3 class="case-title">Traditional IRA 세액 공제</h3>
+<p class="case-client">40대 교사 | 텍사스</p>
+</div>
+<div class="case-body">
+<div class="case-desc">
+<p><strong>2025년 최대 기여금 $7,000</strong> 완납</p>
+<p>소득 구간에 따른 공제 효율 분석</p>
+</div>
+<div class="case-result">
+            연간 <span class="highlight">$1,680 세액 공제</span> (24% 구간)
+          </div>
+</div>
+</div><div class="swiper-slide" data-category="asset tax">
+<div class="case-header">
+<div class="category-container">
+<span class="case-category">자산 통합 관리</span>
+<span class="case-category">세금 효율화</span>
+</div>
+<h3 class="case-title">국채로 포트폴리오 균형</h3>
+<p class="case-client">60대 은퇴자 | 오레곤</p>
+</div>
+<div class="case-body">
+<div class="case-desc">
+<p><strong>국채(T-Bond)</strong> 30% 편입</p>
+<p>이자 소득 세금 효율화</p>
+</div>
+<div class="case-result">
+<span class="highlight">변동성 40% 감소 + 연 $2K 세금 절감</span>
+</div>
+</div>
+</div><div class="swiper-slide" data-category="education tax">
+<div class="case-header">
+<div class="category-container">
+<span class="case-category">교육 계획</span>
+<span class="case-category">세금 효율화</span>
+</div>
+<h3 class="case-title">529 플랜으로 교육비 마련</h3>
+<p class="case-client">35대 부모 | 일리노이</p>
+</div>
+<div class="case-body">
+<div class="case-desc">
+<p><strong>529 플랜</strong>과 <strong>UGMA</strong> 조합</p>
+<p>주별 세제 혜택 비교</p>
+</div>
+<div class="case-result">
+            10년 간 <span class="highlight">$85K 모금</span> 완료
+          </div>
+</div>
+</div><div class="swiper-slide" data-category="asset inheritance tax">
+<div class="case-header">
+<div class="category-container">
+<span class="case-category">자산 통합 관리</span>
+<span class="case-category">상속 계획</span>
+<span class="case-category">세금 효율화</span>
+</div>
+<h3 class="case-title">Trust로 상속 계획 수립</h3>
+<p class="case-client">60대 은퇴자 | 코네티컷</p>
+</div>
+<div class="case-body">
+<div class="case-desc">
+<p><strong>Living Trust</strong> 설계로 유산 분배</p>
+<p><strong>Estate</strong> 세금 최소화</p>
+</div>
+<div class="case-result">
+            상속비용 <span class="highlight">45% 감소</span>
+</div>
+</div>
+</div><div class="swiper-slide" data-category="business retirement tax">
+<div class="case-header">
+<div class="category-container">
+<span class="case-category">사업주 솔루션</span>
+<span class="case-category">은퇴 설계</span>
+<span class="case-category">세금 효율화</span>
+</div>
+<h3 class="case-title">소상공인 SEP IRA 활용</h3>
+<p class="case-client">55대 자영업자 | 네바다</p>
+</div>
+<div class="case-body">
+<div class="case-desc">
+<p><strong>SEP IRA</strong>로 사업 수익금 25% 적립</p>
+<p>기여금 한도 최적화</p>
+</div>
+<div class="case-result">
+            연간 <span class="highlight">$35K 추가 퇴직 자금</span>
+</div>
+</div>
+</div><div class="swiper-slide" data-category="business retirement tax">
+<div class="case-header">
+<div class="category-container">
+<span class="case-category">사업주 솔루션</span>
+<span class="case-category">은퇴 설계</span>
+<span class="case-category">세금 효율화</span>
+</div>
+<h3 class="case-title">고소득자 Defined Benefit</h3>
+<p class="case-client">50대 의사 | 뉴멕시코</p>
+</div>
+<div class="case-body">
+<div class="case-desc">
+<p><strong>Defined Benefit 플랜</strong>으로 고액 기여</p>
+<p>연금 수령 시기 분석</p>
+</div>
+<div class="case-result">
+            연간 <span class="highlight">$100K+ 세금 연기</span>
+</div>
+</div>
+</div><div class="swiper-slide" data-category="business retirement tax">
+<div class="case-header">
+<div class="category-container">
+<span class="case-category">사업주 솔루션</span>
+<span class="case-category">은퇴 설계</span>
+<span class="case-category">세금 효율화</span>
+</div>
+<h3 class="case-title">소규모 사업체 Simple IRA</h3>
+<p class="case-client">45대 카페 오너 | 미시간</p>
+</div>
+<div class="case-body">
+<div class="case-desc">
+<p><strong>Simple IRA</strong>로 직원 복지 강화</p>
+<p>기여금 매칭 전략</p>
+</div>
+<div class="case-result">
+            직원 유지율 <span class="highlight">30% 향상</span>
+</div>
+</div>
+</div><div class="swiper-slide" data-category="asset">
+<div class="case-header">
+<div class="category-container">
+<span class="case-category">자산 통합 관리</span>
+</div>
+<h3 class="case-title">주택 구매 자금 모으기</h3>
+<p class="case-client">30대 커플 | 텍사스</p>
+</div>
+<div class="case-body">
+<div class="case-desc">
+<p>목표 기반 저축 계획</p>
+<p>투자 수익률 vs 안정성 균형</p>
+</div>
+<div class="case-result">
+            3년 만에 <span class="highlight">$90K 다운페이</span> 완성
+          </div>
+</div>
+</div><div class="swiper-slide" data-category="tax">
+<div class="case-header">
+<div class="category-container">
+<span class="case-category">세금 효율화</span>
+</div>
+<h3 class="case-title">고소득자 세금 전략</h3>
+<p class="case-client">45세 변호사 | 코네티컷</p>
+</div>
+<div class="case-body">
+<div class="case-desc">
+<p><strong>Tax-Loss Harvesting</strong> 실행</p>
+<p>자산 유형별 세금 영향 분석</p>
+</div>
+<div class="case-result">
+<span class="highlight">연 $18K 세금 절감</span>
+</div>
+</div>
+</div><div class="swiper-slide" data-category="business asset">
+<div class="case-header">
+<div class="category-container">
+<span class="case-category">사업주 솔루션</span>
+<span class="case-category">자산 통합 관리</span>
+</div>
+<h3 class="case-title">사업체 명의 투자 계좌 운영</h3>
+<p class="case-client">50대 창업자 | 텍사스</p>
+</div>
+<div class="case-body">
+<div class="case-desc">
+<p>사업체 수익금 재투자 구조</p>
+<p>법인세 절감 전략</p>
+</div>
+<div class="case-result">
+<span class="highlight">연 $15K 추가 수익</span>
+</div>
+</div>
+</div><div class="swiper-slide" data-category="asset">
+<div class="case-header">
+<div class="category-container">
+<span class="case-category">자산 통합 관리</span>
+</div>
+<h3 class="case-title">이민 후 자산 통합 관리</h3>
+<p class="case-client">50대 이민자 | 조지아</p>
+</div>
+<div class="case-body">
+<div class="case-desc">
+<p>한국-미국 자산 통합 보고</p>
+<p>통화별 자산 배분 조정</p>
+</div>
+<div class="case-result">
+            관리 효율성 <span class="highlight">50% 향상</span>
+</div>
+</div>
+</div>
+    </div>
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-button-next"></div>
+    <div class="swiper-pagination"></div>
+  </div>
+</section>
+
+
+  <!-- 간결한 상담 신청 섹션 -->
   <section id="contact" aria-labelledby="contact-title">
-    <h2 id="contact-title">무료 상담 신청</h2>
-    <form name="contact" method="post" netlify>
-      <p style="font-size: 0.9rem; color: var(--color-text-secondary); margin-bottom: 20px;">빠른 상담을 원하시면 아래 폼을 작성해 주세요. 모든 정보는 안전하게 처리됩니다.</p>
-      <div>
-        <label for="name">이름</label>
-        <input type="text" id="name" name="name" required aria-required="true" placeholder="홍길동" />
+    <h2 id="contact-title">프리미엄 컨설팅 신청</h2>
+    
+    <div class="consult-card">
+      <div class="consult-content">
+        <h3>지금 바로 전문가와 상담하세요</h3>
+        <p class="nowrap">카카오톡이나 전화로 편리하게 상담 예약이 가능합니다</p>
+        
+        <div class="cta-buttons">
+          <a href="http://pf.kakao.com/_Kxmlin" class="kakao-btn nowrap" aria-label="카카오톡 상담 바로가기">
+            <img src="./kakao-icon.webp" alt="카카오톡 아이콘" width="20" height="20" class="btn-icon">
+            카카오톡 상담
+          </a>
+          
+          <a href="tel:+1234567890" class="call-btn nowrap" aria-label="전화 상담 바로가기">
+            <svg class="btn-icon phone-icon" width="20" height="20" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
+            </svg>
+            전화 상담
+          </a>
+        </div>
+        
+        <p class="consult-note">상담 가능 시간: 월-금 09:00 - 18:00 (미국&nbsp;서부시간&nbsp;기준)</p>
       </div>
-      <div>
-        <label for="email">이메일</label>
-        <input type="email" id="email" name="email" required aria-required="true" placeholder="example@email.com" />
-      </div>
-      <div>
-        <label for="message">문의 내용</label>
-        <textarea id="message" name="message" rows="5" required aria-required="true" placeholder="간단한 문의 내용을 작성해주세요. (예: 은퇴 준비, 자녀 학자금 마련 등)"></textarea>
-      </div>
-
-      <!-- 히든 필드 추가 (스팸 방지) -->
-      <input type="hidden" name="form-name" value="contact">
-      <p class="hidden">
-        <label>Don't fill this out if you're human: <input name="bot-field"></label>
-      </p>      
-
-      <button type="submit">상담 신청하기</button>
-    </form>
-    <p class="contact-kakao-link">또는 <a href="http://pf.kakao.com/_Kxmlin" target="_blank" rel="noopener noreferrer" aria-label="카카오톡 상담 바로가기 새 창 열림">카카오톡 채널</a>에서 바로 상담받으실 수 있습니다.</p>
+    </div>
   </section>
 </main>
 
 <footer>
-  <p>상호: 미주자산톡 | 대표: 이상현 | 사업자등록번호: 445-60-0091<br>
-  주소: 경상남도 합천군 합천읍 대야로 888 | 이메일: <a href="mailto:info@mijutalk.co">info@mijutalk.co</a><br>
+  <div class="footer-links">
+    <a href="./privacy.html">개인정보처리방침</a>
+    <span>|</span>
+    <a href="./terms.html">이용약관</a>
+    <span>|</span>
+    <a href="mailto:privacy@mijutalk.co">개인정보 보호문의</a>
+  </div>
   
-<!--
-   <span style="font-size: 0.8em; opacity: 0.8;">Investment advisory services offered through Sanghyun Lee, a Registered Investment Advisor. Financial planning and investment advisory services are available only to residents of California, Connecticut, Georgia, Illinois, Michigan, Nevada, New Mexico, Oregon, Texas.</span>
--->
-
-   <br> 
-  &copy; <script>document.write(new Date().getFullYear());</script> 미주자산톡. All Rights Reserved.</p>
+  <p class="nowrap">상호: 미주자산톡 | 대표: 이상현 | 사업자등록번호: 445-60-0091</p>
+  <p class="nowrap">주소: 경상남도 합천군 합천읍 대야로 888 | 이메일: <a href="mailto:info@mijutalk.co">info@mijutalk.co</a></p>
+  <p class="nowrap">&copy; <script>document.write(new Date().getFullYear());</script> 미주자산톡. All Rights Reserved.</p>
 </footer>
 
 <script>
@@ -670,18 +1318,6 @@ document.addEventListener("DOMContentLoaded", function () {
   faqQuestions.forEach(button => {
     button.addEventListener('click', () => {
       const expanded = button.getAttribute('aria-expanded') === 'true';
-      // Close all other FAQs
-      // faqQuestions.forEach(btn => {
-      //   if (btn !== button) {
-      //     btn.setAttribute('aria-expanded', 'false');
-      //     btn.classList.remove('active');
-      //     const otherAnswerId = btn.getAttribute('aria-controls');
-      //     const otherAnswer = document.getElementById(otherAnswerId);
-      //     if (otherAnswer) otherAnswer.setAttribute('hidden', '');
-      //   }
-      // });
-
-      // Toggle current FAQ
       button.setAttribute('aria-expanded', String(!expanded));
       button.classList.toggle('active');
 
@@ -700,26 +1336,22 @@ document.addEventListener("DOMContentLoaded", function () {
   // Scrollspy for active nav link
   const sections = document.querySelectorAll("main section[id]");
   const navLinks = document.querySelectorAll("nav#primary-navigation ul li a");
-  const headerOffset = 90; // Adjusted to match section scroll-margin-top
+  const headerOffset = 70;
 
   function updateActiveLink() {
     let current = "";
     const scrollPos = window.pageYOffset || document.documentElement.scrollTop;
 
-    sections.forEach(section => {
-      const sectionTop = section.offsetTop;
-      if (scrollPos >= sectionTop - headerOffset) {
-        current = section.getAttribute("id");
-      }
-    });
-
-    // If at the bottom of the page, the last section should be active
-    if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight - 2) { // -2 for potential rounding errors
-        if (sections.length > 0) {
-            current = sections[sections.length -1].getAttribute("id");
+    if (scrollPos < 100) {
+      current = "hero";
+    } else {
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        if (scrollPos >= sectionTop - headerOffset) {
+          current = section.getAttribute("id");
         }
+      });
     }
-
 
     navLinks.forEach(link => {
       link.classList.remove("active");
@@ -728,17 +1360,10 @@ document.addEventListener("DOMContentLoaded", function () {
         link.classList.add("active");
       }
     });
-
-    // Default to "home" if no other section is current and at the top
-    if (current === "" && navLinks.length > 0 && navLinks[0].getAttribute("href") === "#hero" && scrollPos < sections[0].offsetTop - headerOffset) {
-        navLinks.forEach(link => link.classList.remove("active")); // Clear all
-        navLinks[0].classList.add("active");
-    }
   }
 
   window.addEventListener("scroll", updateActiveLink);
-  updateActiveLink(); // Call on load
-
+  updateActiveLink();
 
   // 모바일 내비게이션 작동 스크립트
   const toggleButton = document.querySelector(".menu-toggle");
@@ -749,8 +1374,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const isOpen = nav.classList.toggle("open");
       toggleButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
       toggleButton.classList.toggle("open", isOpen);
-      // Optional: Prevent body scroll when menu is open
-      // document.body.style.overflow = isOpen ? 'hidden' : '';
     });
 
     const mobileNavLinks = nav.querySelectorAll("a");
@@ -760,7 +1383,6 @@ document.addEventListener("DOMContentLoaded", function () {
           nav.classList.remove("open");
           toggleButton.setAttribute("aria-expanded", "false");
           toggleButton.classList.remove("open");
-          // document.body.style.overflow = ''; // Restore body scroll
         }
       });
     });
@@ -770,25 +1392,137 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
       const hrefAttribute = this.getAttribute('href');
-      if (hrefAttribute && hrefAttribute.length > 1 && document.querySelector(hrefAttribute)) { // Ensure it's a valid selector and not just "#"
+      
+      if (hrefAttribute === '#hero') {
+        e.preventDefault();
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+        return;
+      }
+      
+      if (hrefAttribute && hrefAttribute.length > 1 && document.querySelector(hrefAttribute)) {
         e.preventDefault();
         const targetElement = document.querySelector(hrefAttribute);
         if (targetElement) {
-            // Calculate position considering fixed header
-            const headerHeight = document.querySelector('header').offsetHeight;
-            const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
-            const offsetPosition = elementPosition - headerHeight;
+          const headerHeight = document.querySelector('header').offsetHeight;
+          const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+          const offsetPosition = elementPosition - headerHeight;
 
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: "smooth"
-            });
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+          });
         }
       }
     });
   });
 
+
+// [신규 추가] 정렬 우선순위 함수
+function sortByPriority(cards, filter) {
+  return cards.sort((a, b) => {
+    const aCats = a.dataset.category.split(' ');
+    const bCats = b.dataset.category.split(' ');
+    
+    // 1. 선택 필터가 첫 번째인 카드 우선
+    if(aCats[0] === filter && bCats[0] !== filter) return -1;
+    if(aCats[0] !== filter && bCats[0] === filter) return 1;
+    
+    // 2. 선택 필터 포함시 카테고리 수가 적은 순
+    if(aCats.includes(filter) && bCats.includes(filter)) {
+      return aCats.length - bCats.length;
+    }
+    
+    return 0;
+  });
+}
+
+// 필터 기능 구현 (기존 로직 유지 + 정렬 추가)
+const filterButtons = document.querySelectorAll('.filter-btn');
+if(filterButtons.length > 0) {
+  filterButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // 활성 탭 업데이트 (기존 동일)
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      // 필터링 로직 (수정된 부분)
+      const filter = btn.dataset.filter;
+      const caseGrid = document.querySelector('.case-grid');
+      const cards = Array.from(document.querySelectorAll('.case-card'));
+      
+      // 1. 필터링
+      const filteredCards = cards.filter(card => {
+        const display = filter === 'all' || card.dataset.category.split(' ').includes(filter);
+        card.style.display = display ? 'block' : 'none';
+        return display;
+      });
+
+      // 2. 정렬 (신규 추가)
+      if(filter !== 'all') {
+        sortByPriority(filteredCards, filter).forEach(card => {
+          caseGrid.appendChild(card);
+        });
+      }
+    });
+  });
+}
+
+
+  // 카테고리 태그 동적 생성
+  const caseCards = document.querySelectorAll('.case-card');
+  if(caseCards.length > 0) {
+    caseCards.forEach(card => {
+      const categories = card.dataset.category.split(' ');
+      const tagContainer = card.querySelector('.case-tags');
+      if(tagContainer) {
+        tagContainer.innerHTML = '';
+        
+        // 각 카테고리에 대한 태그 생성
+        categories.forEach(cat => {
+          const tagElement = document.createElement('span');
+          tagElement.className = 'case-tag';
+          tagElement.textContent = categoryNames[cat] || cat;
+          tagContainer.appendChild(tagElement);
+        });
+      }
+    });
+  }
 });
 </script>
+
+<script>
+  const swiper = new Swiper('.swiper', {
+    slidesPerView: 1,
+    spaceBetween: 20,
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+    breakpoints: {
+      768: { slidesPerView: 2, spaceBetween: 30 }
+    }
+  });
+
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  filterButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      const slides = document.querySelectorAll('.swiper-slide');
+      slides.forEach(slide => {
+        const category = slide.dataset.category || '';
+        slide.style.display = (filter === 'all' || category.includes(filter)) ? 'block' : 'none';
+      });
+      swiper.update();
+      swiper.slideTo(0);
+    });
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
 </body>
 </html>
