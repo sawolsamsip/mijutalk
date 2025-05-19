@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://mijutalk.co/" /> 
-  <link rel="stylesheet" href="/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="./swiper-bundle.min.css" />
   <meta property="og:title" content="미주자산톡 | 한인 전문 재정 컨설팅">
   <meta property="og:description" content="미국 거주 한인 대상 자산관리, 은퇴준비, 투자설계 등 맞춤 재정 컨설팅 서비스" />
   <meta property="og:image" content="https://mijutalk.co/og-image.webp" />
@@ -21,10 +21,11 @@
 <meta name="twitter:description" content="미국 거주 한인 대상 자산관리, 은퇴준비, 투자설계 등 맞춤 재정 컨설팅 서비스">
 <meta name="twitter:image" content="https://mijutalk.co/og-image.webp">
 
-<!-- 폰트 로딩 -->
+<!-- 폰트 로딩
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+-->
 
 <title>미주자산톡 | 미국 거주 한인 재정 컨설팅</title>
 <style>
@@ -37,6 +38,8 @@
     --color-button-bg: #00509e;
     --color-button-hover: #003366;
     --color-faq-bg: #ffffff;
+    --color-kakao-bg: #fee500;
+    --color-kakao-text: #3c1e1e;
   }
   * {
     box-sizing: border-box;
@@ -61,21 +64,36 @@
     text-decoration: none !important;
   }
 
-  .nowrap, #services li p, .faq-answer p, 
-  .consult-content p:not(.consult-note), footer p {
-    white-space: nowrap;
-    display: inline-block;
-    width: 100%;
-    overflow: visible;
-    box-sizing: border-box;
-  }
+.nowrap, #services li p, 
+.consult-content p:not(.consult-note), footer p {
+  white-space: nowrap;
+  display: inline-block;
+  width: 100%;
+  overflow: visible;
+  box-sizing: border-box;
+}
+
+/* FAQ 답변의 p는 줄 바꿈 허용 */
+.faq-answer p {
+  white-space: normal;
+  word-break: keep-all;
+  display: block;
+  width: 100%;
+  overflow-wrap: break-word; /* 긴 단어도 줄 바꿈 가능 */
+}
 
   .bio p {
     white-space: normal;
     word-break: keep-all;
   }
 
-  @media (min-width: 769px) {
+/* 데스크탑에서만 추가적인 스타일 적용 */
+@media (min-width: 769px) {
+      .faq-answer[aria-hidden="false"] {
+    max-height: none !important; /* 높이 제한 없앰 */
+    overflow: visible !important;
+    padding: 8px 20px 20px; /* 모바일에서도 하단 패딩 우선 적용 */
+  }
     .cta-buttons {
       flex-direction: row;
     }
@@ -116,17 +134,29 @@
     height: 100%;
   }
 
-  .logo {
-    transition: transform 0.3s;
-    font-weight: 900;
-    font-size: 1.8rem;
-    letter-spacing: 2px;
-    user-select: none;
-    cursor: default;
-    margin-left: 10px;
-  }
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 900;
+  font-size: 1.6rem;
+  color: white;
+  text-decoration: none;
+}
+
+.logo-symbol {
+  width: 40px;
+  height: 40px;
+   filter: brightness(0) invert(1); /* SVG가 검은색 계열일 경우 흰색으로 보이게 */
+}
+
+.logo-text {
+  user-select: none;
+}
+
 
   .logo:hover {
+    color: white;
     transform: scale(1.05);
   }
 
@@ -300,8 +330,8 @@
     margin: 0 auto;
   }
   .btn-kakao {
-    background-color: #fee500;
-    color: #3c1e1e;
+    background-color: var(--color-kakao-bg);
+    color: var(--color-kakao-text);
     font-weight: 700;
     padding: 14px 36px;
     border-radius: 30px;
@@ -317,8 +347,8 @@
     text-align: center;
   }
   .btn-kakao:hover {
-    background-color: #3c1e1e;
-    color: #fee500;
+    background-color: var(--color-kakao-text);
+    color: var(--color-kakao-bg);
     transform: translateY(-3px);
     box-shadow: 0 6px 12px rgba(0,0,0,0.15);
   }
@@ -402,16 +432,23 @@
   }
 
   #faq .faq-item {
-    margin-bottom: 18px;
+    margin-bottom: 24px;
     background-color: var(--color-faq-bg);
     border-radius: 12px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-    overflow: hidden;
+      overflow: visible !important;
+  contain: none !important;
     transition: box-shadow 0.3s ease;
   }
   #faq .faq-item:hover {
     box-shadow: 0 10px 28px rgba(0,0,0,0.14);
   }
+
+.faq-item {
+  contain: content; /* 성능 최적화 */
+  will-change: height; /* 애니메이션 최적화 */
+}
+
   .faq-question {
     background: none;
     border: none;
@@ -440,13 +477,26 @@
     transform: rotate(180deg);
     fill: var(--color-secondary);
   }
-  .faq-answer {
-    padding: 0px 25px 20px;
-    color: var(--color-text-secondary);
-    font-weight: 500;
-    line-height: 1.5;
-    background-color: var(--color-faq-bg);
-  }
+.faq-answer {
+  max-height: 0;  /* 기본적으로 숨기기 */
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+  padding: 0 25px;
+  will-change: max-height; /* 성능 최적화 */
+}
+
+.faq-answer[aria-hidden="false"] {
+  max-height: none; /* 높이 제한 없앰 */
+  padding-bottom: 20px;
+  overflow: visible; /* 답변이 길어도 잘리지 않도록 설정 */
+}
+
+.faq-answer.expanded {
+  height: auto; /* height를 auto로 설정하여, 자동으로 길이를 조정 */
+  max-height: none; /* 충분히 큰 값으로 설정하여 길어도 잘리지 않게 설정 */
+  padding: 0 25px 20px;
+  overflow: visible;
+}
 
   /* 성공 사례 섹션 스타일 */
   #success-cases {
@@ -482,29 +532,33 @@
     color: white;
   }
 
-  .swiper-container {
-    width: 100%;
-    padding: 20px 0 50px;
-    position: relative;
-    overflow: hidden;
-  }
+.swiper-container {
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 50px; /* pagination 공간 확보 */
+}
 
   .swiper-wrapper {
+    padding-left: 0;
+    padding-right: 0;
     display: flex;
     transition-property: transform;
     box-sizing: content-box;
   }
 
   .swiper-slide {
+    min-height: 320px; /* 균일 높이 지정 */
+    margin-right: 20%;
+    box-sizing: border-box;
     flex-shrink: 0;
-    width: 100%;
+    width: auto;
     height: auto;
     position: relative;
     background: white;
     border-radius: 12px;
     padding: 25px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-    margin: 0 10px;
+
     transition: transform 0.3s ease;
   }
 
@@ -539,7 +593,7 @@
   }
   
   .case-title {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: 700;
     color: #003366;
     margin: 8px 0 5px;
@@ -578,29 +632,92 @@
   .swiper-button-prev {
     width: 40px;
     height: 40px;
-    background: rgba(0,51,102,0.8);
+    background: rgba(0, 51, 102, 0.8); /* 기본 배경: 진한 남색 반투명 */
     border-radius: 50%;
-    color: #ffb800;
+    color: #ffb800; /* 화살표 색상: 노란색 */
+    transition: background-color 0.3s ease;
+  }
+
+  .swiper-button-next:hover,
+  .swiper-button-prev:hover {
+    background: #ffb800; /* 호버 시 배경: 노란색 */
+    color: #003366; /* 아이콘 색상 반전: 진한 남색 */
   }
   
-  .swiper-button-next:after,
-  .swiper-button-prev:after {
-    font-size: 18px;
+  .swiper-button-prev::after {
+    content: "‹"; /* HTML entity로 왼쪽 화살표 */
+    font-size: 30px;
+    color: var(--color-primary);
     font-weight: bold;
   }
-  
-  .swiper-pagination-bullet {
-    width: 10px;
-    height: 10px;
-    background: rgba(0,51,102,0.3);
-    opacity: 1;
+
+  .swiper-button-next::after {
+    content: "›"; /* HTML entity로 오른쪽 화살표 */
+    font-size: 30px;
+    color: var(--color-primary);
+    font-weight: bold;
   }
+
+
+/* pagination 컨테이너 위치 지정 */
+.swiper-pagination {
+  position: relative;
+  margin-top: 10px; 
+  bottom: 10px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 10;
+}
+  
+
+/* pagination 점들 기본 스타일 */
+.swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  background: rgba(0,51,102,0.3);
+  opacity: 1;
+  margin: 0 4px; /* 점들 간 간격 */
+  display: inline-block;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
   
   .swiper-pagination-bullet-active {
     background: #ffb800;
   }
 
   @media (max-width: 768px) {
+
+  .faq-item {
+    margin-bottom: 20px; /* 아이템 간격 줄이기 */
+  }
+  
+  .faq-question {
+    padding: 16px 20px; /* 패딩 조정 */
+    font-size: 1rem; /* 폰트 크기 조정 */
+  }
+  
+  .faq-answer {
+    padding: 0 20px; /* 좌우 패딩 조정 */
+  }
+  
+  .faq-answer[aria-hidden="false"] {
+    padding-bottom: 20px;
+    max-height: none; /* 높이 제한 없앰 */
+    overflow-y: auto; /* 필요시 스크롤 */
+        padding: 12px 20px 20px;
+  }
+  
+  .faq-answer p {
+    white-space: normal;
+    word-break: keep-all;
+    font-size: 0.93rem;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+
     .filter-buttons {
       justify-content: flex-start;
       overflow-x: auto;
@@ -614,7 +731,9 @@
     }
     
     .swiper-slide {
-      padding: 20px;
+      width: 100% !important; /* 모바일에서는 슬라이드가 컨테이너 폭에 딱 맞게 */
+      margin: 0; /* 불필요한 좌우 마진 제거 */
+      box-sizing: border-box; /* 내부 패딩 포함해서 계산 */
     }
     
     .swiper-button-next,
@@ -622,10 +741,20 @@
       display: none;
     }
 
-    .swiper-pagination {
-      display: none !important;
+    @media (max-width: 768px) {
+      .swiper-pagination {
+display: block !important;
+      }
     }
   }
+
+.swiper-container,
+.swiper-wrapper {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+
 
   #contact {
     position: relative;
@@ -781,22 +910,28 @@
 
 <header>
   <div class="header-container">
-    <div class="logo" aria-label="미주자산톡 브랜드 로고">미주자산톡</div>
+    <a href="https://mijutalk.co" class="logo" aria-label="미주자산톡 홈으로 이동">
+      <img src="./logo-img-60-60.svg" alt="미주자산톡 로고" class="logo-symbol" />
+      <span class="logo-text">미주자산톡</span>
+    </a>
+
     <button class="menu-toggle" aria-label="메뉴 열기/닫기" aria-expanded="false" aria-controls="primary-navigation">
       <span class="hamburger"></span>
     </button>
+
     <nav id="primary-navigation">
       <ul role="menubar">
         <li role="none"><a href="#hero" class="active" role="menuitem" tabindex="0">홈</a></li>
-        <li role="none"><a href="#services" role="menuitem" tabindex="0">서비스</a></li>
-        <li role="none"><a href="#about" role="menuitem" tabindex="0">대표 소개</a></li>
+        <li role="none"><a href="#services" role="menuitem" tabindex="0">전문서비스</a></li>
+        <li role="none"><a href="#about" role="menuitem" tabindex="0">대표소개</a></li>
         <li role="none"><a href="#faq" role="menuitem" tabindex="0">FAQ</a></li>
-        <li role="none"><a href="#success-cases" role="menuitem" tabindex="0">성공 사례</a></li>
-        <li role="none"><a href="#contact" role="menuitem" tabindex="0">문의</a></li>
+        <li role="none"><a href="#success-cases" role="menuitem" tabindex="0">성공사례</a></li>
+        <li role="none"><a href="#contact" role="menuitem" tabindex="0">상담신청</a></li>
       </ul>
     </nav>
   </div>
 </header>
+
 
 <main role="main">
   <section id="hero" class="hero" tabindex="-1" aria-labelledby="hero-title">
@@ -812,7 +947,7 @@
         <h3>개인 자산 통합 관리</h3>
         <p class="nowrap">-&nbsp;목표기반&nbsp;자산&nbsp;배분&nbsp;(은퇴·교육·주택&nbsp;구매)</p>
         <p class="nowrap">-&nbsp;투자&nbsp;포트폴리오&nbsp;설계&nbsp;및&nbsp;리밸런싱</p>
-        <p class="nowrap">-&nbsp;위험&nbsp;관리&nbsp;전략&nbsp;(긴급자금·보험&nbsp;연계)</p>
+        <p class="nowrap">-&nbsp;위험&nbsp;관리&nbsp;전략&nbsp;(긴급자금·재&nbsp;보호)</p>
       </li>
       <li>
         <h3>은퇴 자금 전략</h3>
@@ -879,7 +1014,7 @@
         <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
       </button>
       <div id="faq2-answer" class="faq-answer" hidden>
-        <p>초기 상담은 무료이며, 현재 상황과 목표를 듣고 맞춤형 방향을 제시해드립니다. 이후 진행 방식은 상담 후 결정하실 수 있습니다.</p>
+        <p>초기 상담은 무료로 제공되며, 현재 상황과 목표를 듣고 맞춤형 방향을 제시해드립니다. 이후 추가 상담이나 서비스 이용과 관련하여 비용이 발생할 수도 있으나, 발생 시에는 별도로 사전에 안내드립니다. 진행 여부는 무료 상담 후에 결정하실 수 있습니다.</p>
       </div>
     </article>
     <article class="faq-item">
@@ -932,13 +1067,14 @@
   <!-- 성공 사례 섹션 -->
   <section id="success-cases" aria-labelledby="success-cases-title">
     <h2 id="success-cases-title">성공 사례</h2>
+
     <div class="filter-buttons">
       <button class="filter-btn active" data-filter="all">전체</button>
       <button class="filter-btn" data-filter="asset">자산관리</button>
       <button class="filter-btn" data-filter="retirement">은퇴설계</button>
       <button class="filter-btn" data-filter="tax">세금전략</button>
       <button class="filter-btn" data-filter="education">교육계획</button>
-      <button class="filter-btn" data-filter="business">사업주</button>
+      <button class="filter-btn" data-filter="business">사업주 솔루솔션</button>
       <button class="filter-btn" data-filter="inheritance">상속계획</button>
     </div>
 
@@ -947,7 +1083,7 @@
         <div class="swiper-slide case-card" data-category="asset retirement tax">
           <div class="case-header">
             <div class="category-container">
-              <span class="case-category">자산 통합 관리</span>
+              <span class="case-category">자산 관리</span>
               <span class="case-category">은퇴 설계</span>
               <span class="case-category">세금 효율화</span>
             </div>
@@ -985,7 +1121,7 @@
         <div class="swiper-slide case-card" data-category="asset tax">
           <div class="case-header">
             <div class="category-container">
-              <span class="case-category">자산 통합 관리</span>
+              <span class="case-category">자산 관리</span>
               <span class="case-category">세금 효율화</span>
             </div>
             <h3 class="case-title">국채로 포트폴리오 균형</h3>
@@ -1002,14 +1138,14 @@
           </div>
         </div>
 
-        <div class="swiper-slide case-card" data-category="educatoin tax">       
+        <div class="swiper-slide case-card" data-category="education tax">       
           <div class="case-header">
             <div class="category-container">
               <span class="case-category">교육 계획</span>
               <span class="case-category">세금 효율화</span>
             </div>
             <h3 class="case-title">529 플랜으로 교육비 마련</h3>
-            <p class="case-client">35대 부모 | 일리노이</p>
+            <p class="case-client">40대 부모 | 일리노이</p>
           </div>
           <div class="case-body">
             <div class="case-desc">
@@ -1023,7 +1159,7 @@
         </div><div class="swiper-slide case-card" data-category="asset inheritance tax">
           <div class="case-header">
             <div class="category-container">
-              <span class="case-category">자산 통합 관리</span>
+              <span class="case-category">자산 관리</span>
               <span class="case-category">상속 계획</span>
               <span class="case-category">세금 효율화</span>
             </div>
@@ -1047,7 +1183,7 @@
               <span class="case-category">세금 효율화</span>
             </div>
             <h3 class="case-title">소상공인 SEP IRA 활용</h3>
-            <p class="case-client">55대 자영업자 | 네바다</p>
+            <p class="case-client">50대 자영업자 | 네바다</p>
           </div>
           <div class="case-body">
             <div class="case-desc">
@@ -1085,7 +1221,7 @@
               <span class="case-category">세금 효율화</span>
             </div>
             <h3 class="case-title">소규모 사업체 Simple IRA</h3>
-            <p class="case-client">45대 카페 오너 | 미시간</p>
+            <p class="case-client">40 카페 오너 | 미시간</p>
           </div>
           <div class="case-body">
             <div class="case-desc">
@@ -1099,7 +1235,7 @@
         </div><div class="swiper-slide case-card" data-category="asset">
           <div class="case-header">
             <div class="category-container">
-              <span class="case-category">자산 통합 관리</span>
+              <span class="case-category">자산 관리</span>
             </div>
             <h3 class="case-title">주택 구매 자금 모으기</h3>
             <p class="case-client">30대 커플 | 텍사스</p>
@@ -1119,7 +1255,7 @@
               <span class="case-category">세금 효율화</span>
             </div>
             <h3 class="case-title">고소득자 세금 전략</h3>
-            <p class="case-client">45세 변호사 | 코네티컷</p>
+            <p class="case-client">40 변호사 | 코네티컷</p>
           </div>
           <div class="case-body">
             <div class="case-desc">
@@ -1134,7 +1270,7 @@
           <div class="case-header">
             <div class="category-container">
               <span class="case-category">사업주 솔루션</span>
-              <span class="case-category">자산 통합 관리</span>
+              <span class="case-category">자산 관리</span>
             </div>
             <h3 class="case-title">사업체 명의 투자 계좌 운영</h3>
             <p class="case-client">50대 창업자 | 텍사스</p>
@@ -1151,9 +1287,9 @@
         </div><div class="swiper-slide case-card" data-category="asset">
           <div class="case-header">
             <div class="category-container">
-              <span class="case-category">자산 통합 관리</span>
+              <span class="case-category">자산 관리</span>
             </div>
-            <h3 class="case-title">이민 후 자산 통합 관리</h3>
+            <h3 class="case-title">이민 후 자산 관리</h3>
             <p class="case-client">50대 이민자 | 조지아</p>
           </div>
           <div class="case-body">
@@ -1171,8 +1307,17 @@
       <div class="swiper-button-next"></div>
       <div class="swiper-pagination"></div>
     </div>
+
+           <!-- 이 부분에 결과 안내 문구 추가 -->
+  <p style="font-size: 0.9rem; color: #555; margin-bottom: 20px;">
+    * 본 컨설팅 결과는 개인별 상황에 따라 달라질 수 있습니다.
+  </p>
+
   </div>
 </div>
+
+ 
+
 </section>
 
 <section id="contact" aria-labelledby="contact-title">
@@ -1189,7 +1334,7 @@
           카카오톡 상담
         </a>
 
-        <a href="tel:+1234567890" class="call-btn nowrap" aria-label="전화 상담 바로가기">
+        <a href="tel:+1-949-818-1881" class="call-btn nowrap" aria-label="전화 상담 바로가기">
           <svg class="btn-icon phone-icon" width="20" height="20" viewBox="0 0 24 24">
             <path fill="currentColor" d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
           </svg>
@@ -1212,22 +1357,24 @@
     <a href="mailto:privacy@mijutalk.co">개인정보 보호문의</a>
   </div>
   
-  <p class="nowrap">상호: 미주자산톡 | 대표: 이상현 | 사업자등록번호: 445-60-0091</p>
+  <p class="nowrap">상호: 미주자산톡 | 대표: 이상현 | 사업자등록번호: 445-60-00911</p>
   <p class="nowrap">주소: 경상남도 합천군 합천읍 대야로 888 | 이메일: <a href="mailto:info@mijutalk.co">info@mijutalk.co</a></p>
   <p class="nowrap">&copy; <script>document.write(new Date().getFullYear());</script> 미주자산톡. All Rights Reserved.</p>
 </footer>
 
 
- <!-- JS 연결 (body 종료 전) -->
-<script src="/swiper-bundle.min.js"></script>
+<!-- JS 연결 (body 종료 전) -->
+<script src="./swiper-bundle.min.js"></script>
 
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
+  document.addEventListener("DOMContentLoaded", function() {
   // Swiper 초기화
     const caseSwiper = new Swiper('.swiper-container', {
       slidesPerView: 1,
       spaceBetween: 20,
+      roundLengths: true,      
+      watchOverflow: true,
       navigation: {
         nextEl: '.swiper-button-next',
         prevEl: '.swiper-button-prev',
@@ -1237,124 +1384,207 @@ document.addEventListener("DOMContentLoaded", function() {
         clickable: true,
       },
       breakpoints: {
-        640: {
-          slidesPerView: 2,
-          spaceBetween: 20
-        },
-        1024: {
-          slidesPerView: 3,
-          spaceBetween: 30
-        }
+        640: { slidesPerView: 2, spaceBetween: 20 },
+        1024: { slidesPerView: 3, spaceBetween: 20 },
       }
     });
 
-  // 필터 버튼 기능
-    document.querySelectorAll('.filter-btn').forEach(btn => {
+
+  // 여기에 Scrollspy 추가
+  const sections = document.querySelectorAll("section[id]");
+  const navLinks = document.querySelectorAll("nav#primary-navigation ul li a");
+  const headerHeight = document.querySelector('header').offsetHeight;
+
+  function updateActiveLink() {
+    const scrollPos = window.pageYOffset || document.documentElement.scrollTop;
+    let currentSectionId = "";
+
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop - headerHeight - 10; // 헤더 높이 보정 및 10px 여유
+      const sectionHeight = section.offsetHeight;
+
+      if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+        currentSectionId = section.id;
+      }
+    });
+
+    navLinks.forEach(link => {
+      link.classList.remove("active");
+      const href = link.getAttribute("href");
+      if (href && href.startsWith("#") && href.substring(1) === currentSectionId) {
+        link.classList.add("active");
+      }
+    });
+  }
+
+  window.addEventListener("scroll", updateActiveLink);
+  updateActiveLink();
+
+
+  // 선택 필터 우선순위 정렬 함수
+    function sortByPriority(cards, filter) {
+      return cards.sort((a, b) => {
+        const aCats = a.dataset.category.split(' ');
+        const bCats = b.dataset.category.split(' ');
+
+      // 1. 선택 필터가 첫 번째인 카드 우선
+        if(aCats[0] === filter && bCats[0] !== filter) return -1;
+        if(aCats[0] !== filter && bCats[0] === filter) return 1;
+
+      // 2. 선택 필터 포함 시 카테고리 수 적은 순
+        if(aCats.includes(filter) && bCats.includes(filter)) {
+          return aCats.length - bCats.length;
+        }
+        return 0;
+      });
+    }
+
+  // 필터 버튼 이벤트
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    filterButtons.forEach(btn => {
       btn.addEventListener('click', function() {
-      // 활성 버튼 업데이트
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      // 활성 버튼 토글
+        filterButtons.forEach(b => b.classList.remove('active'));
         this.classList.add('active');
 
         const filter = this.dataset.filter;
-        const slides = document.querySelectorAll('.swiper-slide');
+        const caseGrid = document.querySelector('.swiper-wrapper');
+        const cards = Array.from(document.querySelectorAll('.swiper-slide'));
 
-      // 슬라이드 필터링
-        let visibleSlides = 0;
-        slides.forEach(slide => {
-          const categories = slide.dataset.category.split(' ');
-          if (filter === 'all' || categories.includes(filter)) {
-            slide.style.display = 'block';
-            visibleSlides++;
-          } else {
-            slide.style.display = 'none';
-          }
+      // 필터링 및 표시
+        const filteredCards = cards.filter(card => {
+          const display = filter === 'all' || card.dataset.category.split(' ').includes(filter);
+          card.style.display = display ? 'block' : 'none';
+          return display;
         });
+
+      // 정렬 후 DOM 재배치
+        if(filter !== 'all') {
+          sortByPriority(filteredCards, filter).forEach(card => {
+            caseGrid.appendChild(card);
+          });
+        }
 
       // Swiper 업데이트
         caseSwiper.update();
         caseSwiper.slideTo(0);
 
-      // 페이지네이션 업데이트
-        if (visibleSlides <= caseSwiper.params.slidesPerView) {
-          document.querySelector('.swiper-pagination').style.display = 'none';
+      // 페이지네이션 토글
+        const paginationEl = document.querySelector('.swiper-pagination');
+        if(filteredCards.length <= caseSwiper.params.slidesPerView) {
+          paginationEl.style.display = 'none';
         } else {
-          document.querySelector('.swiper-pagination').style.display = 'block';
+          paginationEl.style.display = 'block';
         }
       });
     });
 
-  // FAQ 아코디언 토글 기능
-    const faqQuestions = document.querySelectorAll('.faq-question');
-    faqQuestions.forEach(button => {
-      button.addEventListener('click', () => {
-        const expanded = button.getAttribute('aria-expanded') === 'true';
-        button.setAttribute('aria-expanded', String(!expanded));
-        button.classList.toggle('active');
+  // 초기 필터 강제 클릭 (전체 보이도록)
+    const initialFilterBtn = document.querySelector('.filter-btn[data-filter="all"]');
+    if(initialFilterBtn) {
+      initialFilterBtn.click();
+    }
+  });
 
-        const answerId = button.getAttribute('aria-controls');
-        const answer = document.getElementById(answerId);
-        if (answer) {
-          if (!expanded) {
-            answer.removeAttribute('hidden');
-          } else {
-            answer.setAttribute('hidden', '');
-          }
-        }
-      });
+// FAQ 아코디언 토글 기능 개선 (답변 겹침 방지 및 공간 확보)
+const faqQuestions = document.querySelectorAll('.faq-question');
+faqQuestions.forEach(button => {
+  button.addEventListener('click', () => {
+    const isExpanded = button.getAttribute('aria-expanded') === 'true';
+    const answer = document.getElementById(button.getAttribute('aria-controls'));
+    
+    // 모든 FAQ 답변 닫기
+    const allAnswers = document.querySelectorAll('.faq-answer');
+    allAnswers.forEach(ans => {
+      if (ans !== answer) {
+        ans.style.maxHeight = '0';
+        ans.style.paddingBottom = '0';
+        ans.style.overflow = 'hidden';
+        ans.setAttribute('hidden', ''); // 다른 답변 닫기
+      }
     });
+
+    // 상태 토글
+    button.setAttribute('aria-expanded', String(!isExpanded));
+    button.classList.toggle('active');
+    answer.setAttribute('aria-hidden', String(isExpanded));
+
+    if (!isExpanded) {
+      // 답변 열기
+      answer.style.height = 'auto'; // 동적으로 높이 조정
+      answer.style.maxHeight = 'none'; // 답변이 길어져도 잘리지 않게 설정
+      answer.style.paddingBottom = '20px';
+      answer.style.overflow = 'visible'; // 답변이 길어도 스크롤 없이 보여지도록 설정
+      answer.removeAttribute('hidden');
+    } else {
+      // 답변 닫기
+      answer.style.maxHeight = '0';
+      answer.style.paddingBottom = '0';
+      answer.style.overflow = 'hidden'; // 스크롤을 숨김
+      setTimeout(() => {
+        if (button.getAttribute('aria-expanded') === 'false') {
+          answer.setAttribute('hidden', '');
+        }
+      }, 350); // transition 시간에 맞춰서 350ms 뒤에 hidden 처리
+    }
+  });
+});
+
+
+
+
 
   // 모바일 네비게이션 토글
-    const toggleButton = document.querySelector(".menu-toggle");
-    const nav = document.getElementById("primary-navigation");
+  const toggleButton = document.querySelector(".menu-toggle");
+  const nav = document.getElementById("primary-navigation");
 
-    if (toggleButton && nav) {
-      toggleButton.addEventListener("click", () => {
-        const isOpen = nav.classList.toggle("open");
-        toggleButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
-        toggleButton.classList.toggle("open", isOpen);
-      });
+  if (toggleButton && nav) {
+    toggleButton.addEventListener("click", () => {
+      const isOpen = nav.classList.toggle("open");
+      toggleButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      toggleButton.classList.toggle("open", isOpen);
+    });
 
-      const mobileNavLinks = nav.querySelectorAll("a");
-      mobileNavLinks.forEach(link => {
-        link.addEventListener("click", () => {
-          if (nav.classList.contains("open")) {
-            nav.classList.remove("open");
-            toggleButton.setAttribute("aria-expanded", "false");
-            toggleButton.classList.remove("open");
-          }
-        });
+    const mobileNavLinks = nav.querySelectorAll("a");
+    mobileNavLinks.forEach(link => {
+      link.addEventListener("click", () => {
+        if (nav.classList.contains("open")) {
+          nav.classList.remove("open");
+          toggleButton.setAttribute("aria-expanded", "false");
+          toggleButton.classList.remove("open");
+        }
       });
-    }
+    });
+  }
 
   // 부드러운 스크롤
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        const hrefAttribute = this.getAttribute('href');
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      const hrefAttribute = this.getAttribute('href');
 
-        if (hrefAttribute === '#hero') {
-          e.preventDefault();
+      if (hrefAttribute === '#hero') {
+        e.preventDefault();
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+        return;
+      }
+
+      if (hrefAttribute && hrefAttribute.length > 1 && document.querySelector(hrefAttribute)) {
+        e.preventDefault();
+        const targetElement = document.querySelector(hrefAttribute);
+        if (targetElement) {
+          const headerHeight = document.querySelector('header').offsetHeight;
+          const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+          const offsetPosition = elementPosition - headerHeight;
+
           window.scrollTo({
-            top: 0,
+            top: offsetPosition,
             behavior: "smooth"
           });
-          return;
         }
-
-        if (hrefAttribute && hrefAttribute.length > 1 && document.querySelector(hrefAttribute)) {
-          e.preventDefault();
-          const targetElement = document.querySelector(hrefAttribute);
-          if (targetElement) {
-            const headerHeight = document.querySelector('header').offsetHeight;
-            const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
-            const offsetPosition = elementPosition - headerHeight;
-
-            window.scrollTo({
-              top: offsetPosition,
-              behavior: "smooth"
-            });
-          }
-        }
-      });
+      }
     });
   });
 </script>
