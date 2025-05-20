@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Add SSH Known Hosts
         run: |
           mkdir -p ~/.ssh
@@ -16,9 +16,9 @@ jobs:
       - name: Deploy files
         uses: appleboy/scp-action@v0.1.4
         with:
-          host: ${{ secrets.SSH_HOST }}
+          host: ${{ secrets.SSH_HOST }}  # 반드시 secrets.SSH_HOST로 참조
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "./"
           target: "/var/www/html"
-          rm: true  # 기존 파일 삭제 후 업로드
+          overwrite: true
