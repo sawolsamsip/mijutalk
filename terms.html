@@ -54,29 +54,51 @@
   a:hover {
     color: var(--color-secondary);
   }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 900;
+    font-size: 1.6rem;
+    color: white;
+    text-decoration: none;
+  }
+
+  .logo-symbol {
+    width: 40px;
+    height: 40px;
+    filter: brightness(0) invert(1);
+  }
+
+  .logo-text {
+    user-select: none;
+  }
+
+  .logo:hover {
+    color: white;
+    transform: scale(1.05);
+  }
+
   header {
     position: fixed;
     top: 0; left: 0; right: 0;
     background: #004a99;
-    color: #fff;
-    padding: 15px 20px;
+    color: white;
     box-shadow: 0 4px 15px rgba(0,0,0,0.25);
     z-index: 1100;
+  }
+
+  .header-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     height: 70px;
   }
 
-  .logo {
-    font-weight: 900;
-    font-size: 1.8rem;
-    letter-spacing: 2px;
-    user-select: none;
-    cursor: default;
-  }
-
-  /* Desktop Navigation */
   nav#primary-navigation ul {
     display: flex;
     gap: 20px;
@@ -98,7 +120,6 @@
     box-shadow: 0 0 10px rgba(255, 198, 0, 0.67);
   }
 
-  /* Hamburger Button */
   .menu-toggle {
     display: none;
     background: none;
@@ -146,7 +167,6 @@
     transform: translateX(-50%) rotate(-45deg);
   }
 
-  /* Mobile Navigation */
   @media (max-width: 768px) {
     .menu-toggle {
       display: block;
@@ -285,29 +305,28 @@
 </head>
 <body>
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-VNNXFK9RNH"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-VNNXFK9RNH');
-</script>
-
 <header>
-  <div class="logo" aria-label="미주자산톡 브랜드 로고">미주자산톡</div>
-  <button class="menu-toggle" aria-label="메뉴 열기/닫기" aria-expanded="false" aria-controls="primary-navigation">
-    <span class="hamburger"></span>
-  </button>
-  <nav id="primary-navigation">
-    <ul role="menubar">
-      <li role="none"><a href="/index.html" role="menuitem" tabindex="0">홈</a></li>
-      <li role="none"><a href="/index.html#services" role="menuitem" tabindex="0">서비스</a></li>
-      <li role="none"><a href="/index.html#about" role="menuitem" tabindex="0">대표 소개</a></li>
-      <li role="none"><a href="/index.html#faq" role="menuitem" tabindex="0">FAQ</a></li>
-      <li role="none"><a href="/index.html#contact" role="menuitem" tabindex="0">문의</a></li>
-    </ul>
-  </nav>
+  <div class="header-container">
+    <a href="https://mijutalk.co" class="logo" aria-label="미주자산톡 홈으로 이동">
+      <img src="./logo-img-60-60.svg" alt="미주자산톡 로고" class="logo-symbol" />
+      <span class="logo-text">미주자산톡</span>
+    </a>
+
+    <button class="menu-toggle" aria-label="메뉴 열기/닫기" aria-expanded="false" aria-controls="primary-navigation">
+      <span class="hamburger"></span>
+    </button>
+
+    <nav id="primary-navigation">
+      <ul role="menubar">
+        <li role="none"><a href="./index.html#hero" class="active" role="menuitem" tabindex="0">홈</a></li>
+        <li role="none"><a href="./index.html#services" role="menuitem" tabindex="0">전문서비스</a></li>
+        <li role="none"><a href="./index.html#about" role="menuitem" tabindex="0">대표소개</a></li>
+        <li role="none"><a href="./index.html#faq" role="menuitem" tabindex="0">FAQ</a></li>
+        <li role="none"><a href="./index.html#success-cases" role="menuitem" tabindex="0">성공사례</a></li>
+        <li role="none"><a href="./consultant.html" role="menuitem" tabindex="0">상담신청</a></li>
+      </ul>
+    </nav>
+  </div>
 </header>
 
 <main role="main">
@@ -380,16 +399,16 @@
 
 <footer>
   <div class="footer-links">
-    <a href="/privacy.html">개인정보처리방침</a>
+    <a href="./privacy.html">개인정보처리방침</a>
     <span>|</span>
-    <a href="/terms.html">이용약관</a>
+    <a href="./terms.html">이용약관</a>
     <span>|</span>
     <a href="mailto:privacy@mijutalk.co">개인정보 보호문의</a>
   </div>
   
-  <p>상호: 미주자산톡 | 대표: 이상현 | 사업자등록번호: 445-60-0091<br>
-  주소: 경상남도 합천군 합천읍 대야로 888 | 이메일: <a href="mailto:info@mijutalk.co">info@mijutalk.co</a><br>
-  &copy; <script>document.write(new Date().getFullYear());</script> 미주자산톡. All Rights Reserved.</p>
+  <p class="nowrap">상호: 미주자산톡 | 대표: 이상현 | 사업자등록번호: 445-60-00911</p>
+  <p class="nowrap">주소: 경상남도 합천군 합천읍 대야로 888 | 이메일: <a href="mailto:info@mijutalk.co">info@mijutalk.co</a></p>
+  <p class="nowrap">&copy; <script>document.write(new Date().getFullYear());</script> 미주자산톡. All Rights Reserved.</p>
 </footer>
 
 <script>
