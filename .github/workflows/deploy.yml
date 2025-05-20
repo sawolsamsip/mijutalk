@@ -1,34 +1,19 @@
-name: Deploy to Server
+name: Deploy via SSH
 
-on:
-  push:
-    branches:
-      - main
+on: [push]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-
-        uses: actions/checkout@v3
-
-      - name: Set up SSH key
-        run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem
-          chmod 600 key.pem
-
-      - name: Deploy to server via SSH
-        run: |
-          ssh -i key.pem -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} 'bash ~/deploy.sh'
-        uses: actions/checkout@v4
-        
-      - name: Upload via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      - uses: actions/checkout@v4
+      
+      - name: Deploy files
+        uses: appleboy/scp-action@v0.7.0
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./
-          server-dir: /var/www/html
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "./"
+          target: "/var/www/html"
+          overwrite: true
