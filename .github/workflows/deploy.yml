@@ -1,24 +1,9 @@
-name: Deploy via SSH
-
-on: [push]
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Add SSH Known Hosts
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_HOST }} ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBB..." >> ~/.ssh/known_hosts
-
-      - name: Deploy files
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.SSH_HOST }}  # 반드시 secrets.SSH_HOST로 참조
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "./"
-          target: "/var/www/html"
-          overwrite: true
+- name: Deploy files
+  uses: appleboy/scp-action@v0.1.4
+  with:
+    host: ${{ secrets.SSH_HOST }}  # 오라클 인스턴스 공인 IP
+    username: ubuntu               # 오라클 기본 사용자 (ubuntu)
+    key: ${{ secrets.SSH_PRIVATE_KEY }}
+    port: 22                       # 명시적 포트 지정
+    source: "./"
+    target: "/var/www/html"
