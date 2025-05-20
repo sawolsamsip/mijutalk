@@ -1,0 +1,22 @@
+name: Deploy to Server  # 작업 이름 (마음대로 변경 가능)
+
+on:
+  push:
+    branches: [ main ]  # 'main' 브랜치에 코드 푸시될 때 실행
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # GitHub의 가상 머신에서 실행
+
+    steps:
+      - name: Checkout code  # 1단계: 코드 다운로드
+        uses: actions/checkout@v4
+
+      - name: Upload via FTP  # 2단계: FTP로 서버에 업로드
+        uses: SamKirkland/FTP-Deploy-Action@v4
+        with:
+          server: ${{ secrets.FTP_SERVER }}      # 서버 주소 (예: ftp.example.com)
+          username: ${{ secrets.FTP_USERNAME }}  # FTP 아이디
+          password: ${{ secrets.FTP_PASSWORD }}  # FTP 비밀번호
+          local-dir: ./              # 현재 폴더(저장소 루트)의 모든 파일
+          server-dir: /var/www/html  # 서버 업로드 위치
