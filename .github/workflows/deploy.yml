@@ -1,9 +1,22 @@
-# deploy.yml 대체 코드 (SFTP 버전)
-  name: Deploy via SFTP
-  uses: appleboy/scp-action@master
-  with:
-    host: ${{ secrets.SSH_HOST }}  # 서버 IP/도메인
-    username: ${{ secrets.SSH_USERNAME }}  # SSH 사용자 (일반적으로 ubuntu)
-    key: ${{ secrets.SSH_KEY }}  # 서버 SSH 키 (cat ~/.ssh/id_rsa.pub)
-    source: "./"
-    target: "/var/www/html"
+name: Deploy to Server
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Upload via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./
+          server-dir: /var/www/html
