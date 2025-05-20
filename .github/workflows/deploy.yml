@@ -1,5 +1,5 @@
 # deploy.yml 대체 코드 (SFTP 버전)
-- name: Deploy via SFTP
+  name: Deploy via SFTP
   uses: appleboy/scp-action@master
   with:
     host: ${{ secrets.SSH_HOST }}  # 서버 IP/도메인
