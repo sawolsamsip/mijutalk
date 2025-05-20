@@ -11,6 +11,7 @@ jobs:
 
     steps:
       - name: Checkout code
+
         uses: actions/checkout@v3
 
       - name: Set up SSH key
@@ -21,3 +22,13 @@ jobs:
       - name: Deploy to server via SSH
         run: |
           ssh -i key.pem -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} 'bash ~/deploy.sh'
+        uses: actions/checkout@v4
+        
+      - name: Upload via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./
+          server-dir: /var/www/html
