@@ -8,12 +8,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Add SSH Known Hosts
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_HOST }} ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBB..." >> ~/.ssh/known_hosts
+
       - name: Deploy files
-        uses: appleboy/scp-action@v0.7.0
+        uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "./"
           target: "/var/www/html"
-          overwrite: true
+          rm: true  # 기존 파일 삭제 후 업로드
