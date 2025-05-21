@@ -2,7 +2,7 @@
 // webhook.php (웹서버에서 공개된 위치에 배치, 예: /var/www/html/webhook.php)
 
 // GitHub에서 전송된 헤더 중 시크릿(signature) 확인(보안을 위해, 선택 사항)
-$secret = '여기에_웹훅_시크릿_입력'; // GitHub 웹훅 설정에서 같은 값 입력
+$secret = '967452c5d14a95839539c47421b2bb6beaa74168'; // GitHub 웹훅 설정에서 같은 값 입력
 
 // GitHub 이벤트 검증
 $signature = $_SERVER['HTTP_X_HUB_SIGNATURE_256'] ?? '';
