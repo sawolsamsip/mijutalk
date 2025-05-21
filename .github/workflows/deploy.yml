@@ -1,26 +1,21 @@
-name: Deploy via SSH
+name: Auto Deploy to Oracle VM
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Add SSH Known Hosts
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_HOST }} ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBB..." >> ~/.ssh/known_hosts
-
-      - name: Deploy files
-        uses: appleboy/scp-action@v0.1.4
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
+          host: ${{ secrets.SERVER_IP }}
+          username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "./"
-          target: "/var/www/html"
-          overwrite: true
+          script: |
+            cd /var/www/html
+            git pull origin main
