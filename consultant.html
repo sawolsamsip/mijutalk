@@ -86,24 +86,23 @@
       display: inline-block;
     }
 
-    nav#primary-navigation ul li a {
-      font-weight: 600;
-      font-size: 1rem;
-      padding: 8px 12px;
-      border-radius: 6px;
-      color: #f0f5fb;
-      transition: all 0.25s ease;
-      display: block;
-      position: relative;
-      text-decoration: none; /* 밑줄 제거 추가 */
-    }
+nav#primary-navigation ul li a {
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: #f0f5fb;
+    transition: background-color 0.25s ease, color 0.25s ease;
+    position: relative;
+}
 
-    nav#primary-navigation ul li a:hover,
-    nav#primary-navigation ul li a.active {
-      color: var(--color-secondary);
-      font-weight: 700;
-      text-decoration: none; /* 호버 시 밑줄 제거 확실히 */
-    }
+nav#primary-navigation ul li a:hover,
+nav#primary-navigation ul li a.active {
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    font-weight: 700;
+    box-shadow: 0 0 10px rgba(255, 198, 0, 0.67);
+}
 
     /* 모바일 메뉴 토글 스타일 */
     .menu-toggle {
@@ -164,7 +163,7 @@
       .menu-toggle {
         display: block;
       }
-      nav#primary-navigation {
+    nav#primary-navigation {
         position: fixed;
         top: 70px;
         right: 0;
@@ -172,23 +171,40 @@
         width: 250px;
         height: calc(100vh - 70px);
         transform: translateX(100%);
-        transition: transform 0.3s ease;
+        transition: transform 0.3s ease-in-out;
         box-shadow: -2px 0 10px rgba(0,0,0,0.3);
-      }
-      nav#primary-navigation.open {
+        border-radius: 0 0 0 10px;
+        z-index: 1150;
+        overflow-y: auto;
+    }
+    nav#primary-navigation.open {
         transform: translateX(0);
-      }
-      nav#primary-navigation ul {
+    }
+    
+    nav#primary-navigation ul {
         flex-direction: column;
+        gap: 1px;
         padding: 20px 0;
-      }
-      nav#primary-navigation ul li {
         width: 100%;
-      }
-      nav#primary-navigation ul li a {
-        display: block;
+    }
+    
+    nav#primary-navigation ul li {
+        width: 100%;
+    }
+    
+    nav#primary-navigation ul li a {
+        color: #fff;
         padding: 15px 25px;
-      }
+        font-size: 1.1rem;
+        display: block;
+        border-radius: 0;
+    }
+    
+    nav#primary-navigation ul li a:hover,
+    nav#primary-navigation ul li a.active {
+        background-color: var(--color-secondary);
+        color: var(--color-primary);
+        font-weight: 700;
     }
 
     /* 폼 페이지 본문 스타일 */
