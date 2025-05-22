@@ -15,9 +15,8 @@ jobs:
           host: ${{ secrets.REMOTE_SSH_HOST }}
           username: ${{ secrets.REMOTE_SSH_USERNAME }}
           key: ${{ secrets.REMOTE_SSH_KEY }}
-          passphrase: ${{ secrets.REMOTE_SSH_PASSPHRASE }}
           port: ${{ secrets.REMOTE_SSH_PORT }}
           script: |
             cd /var/www/html  # 당신의 실제 프로젝트 디렉토리
-            git pull origin master
+            git pull origin main
             sudo systemctl restart nginx
