@@ -724,7 +724,22 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   });
+
+  // 기타 항목 선택 시 입력 칸 보이기
+  const otherSelect = document.querySelector('select[name="your-select-name"]'); // select 요소 이름을 적절히 변경하세요
+  const otherInput = document.querySelector('.other-input'); // .other-input 요소 선택
+
+  if (otherSelect && otherInput) {
+    otherSelect.addEventListener('change', function() {
+      if (this.value === '기타') {
+        otherInput.classList.add('show');  // '기타' 선택 시 입력 칸 보이기
+      } else {
+        otherInput.classList.remove('show');  // '기타' 외 항목 선택 시 입력 칸 숨기기
+      }
+    });
+  }
 });
+
 </script>
 </body>
 </html>
