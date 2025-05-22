@@ -632,6 +632,25 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+
+ // 거주 지역 기타 옵션 처리
+  document.getElementById('location').addEventListener('change', function() {
+    const otherContainer = document.getElementById('locationOtherContainer');
+    otherContainer.classList.toggle('show', this.value === 'other');
+  });
+
+  // 상담 주제 기타 옵션 처리
+  document.getElementById('consultType').addEventListener('change', function() {
+    const otherContainer = document.getElementById('consultTypeOtherContainer');
+    otherContainer.classList.toggle('show', this.value === 'other');
+  });
+
+  // 알게된 경로 기타 옵션 처리
+  document.getElementById('howFound').addEventListener('change', function() {
+    const otherContainer = document.getElementById('howFoundOtherContainer');
+    otherContainer.classList.toggle('show', this.value === 'other');
+  });
+  
   // FAQ 아코디언 토글 기능
   const faqQuestions = document.querySelectorAll('.faq-question');
   faqQuestions.forEach(button => {
