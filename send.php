@@ -42,7 +42,7 @@ $headers .= "From: 미주자산톡 <no-reply@mijutalk.co>" . "\r\n";
 
 // 4. 메일 전송
 if (mail($to, $subject, $message, $headers)) {
-    echo "<script>alert('상담 신청이 성공적으로 접수되었습니다.'); window.location.href = 'index.html';</script>";
+    echo "<script>alert('상담 신청이 성공적으로 접수되었습니다.'); window.location.href = 'thank-you.html';</script>";
 } else {
     echo "<script>alert('메일 전송에 실패했습니다. 관리자에게 문의해주세요.'); history.back();</script>";
 }
