@@ -250,50 +250,37 @@
     margin: 15px 0;
   }
 
-  /* footer */
+
+/* ===== Footer 스타일 (index.html과 동일하게 적용) ===== */
+footer {
+  background-color: var(--color-primary);
+  color: white;
+  padding: 30px 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  user-select: none;
+  line-height: 1.7;
+}
+footer a {
+  color: var(--color-secondary);
+  text-decoration: none;
+}
+footer p {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
   footer {
-    background-color: var(--color-primary);
-    color: white;
-    padding: 30px 20px;
-    text-align: center;
-    font-size: 0.9rem;
-    user-select: none;
-    line-height: 1.7;
+    padding: 25px 15px;
   }
-  
-  .footer-links {
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+  footer p, footer a {
+    white-space: normal;
+    word-break: keep-all;
+    font-size: 0.93rem;
+    letter-spacing: -0.2px;
   }
-
-  .footer-links a {
-    color: var(--color-secondary);
-    font-weight: 500;
-    margin: 0 10px;
-    transition: opacity 0.3s;
-  }
-
-  .footer-links a:hover {
-    opacity: 0.8;
-  }
-
-  .footer-links span {
-    color: rgba(255,255,255,0.3);
-    user-select: none;
-  }
-
-  /* 변경 */
-  footer a[href^="mailto:"],
-  footer a[href^="tel:"] {
-    color: var(--color-secondary);
-    text-decoration: none !important;
-    -webkit-text-decoration: none !important; /* Safari 대응 */
-  }
-
-  footer p {
-    margin-bottom: 0;
-  }
+}
+</style>
 
   /* Accessibility */
   *:focus-visible {
