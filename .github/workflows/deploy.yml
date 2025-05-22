@@ -1,3 +1,18 @@
+name: Deploy to Server  # 워크플로우 이름 (필수)
+on:
+  push:
+    branches: [ main ]  # main 브랜치에 push할 때 실행
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: "144.24.67.238"  # 실제 IP 대신 secrets 사용 권장
+          username: "ubuntu"
+          key: |
 -----BEGIN RSA PRIVATE KEY-----
 MIIJKAIBAAKCAgEA0xN6rpjKSUsbTFRiZhRb8dd/JQm9h6iwskxKvPjihkAkGVP4
 Ioa4HPMkhmV/EniMmMp/rKpdM2Ih1dzY540XT8iLgVDwkhPLN/ANLGu/4D+akN7H
@@ -49,3 +64,9 @@ UUGdrLebA87oZUrW2m/yA0tv+SRthLrNVWhDh12ZfQ9AJZ8ZeEE4lf4XR8gUs3UL
 /KqhIfizU4odM5GpMB8yXXYxDT0x3n0IDRw9NQR+VZUZ5XXERC4Vldbrfdegtu15
 t/VLdsTj07eCmPci7J5OmfxfihAnZR/wYGvo2eC6zkOU5NFEEAKsGA1JZ9k=
 -----END RSA PRIVATE KEY-----
+          port: "22"
+          script: |
+            cd /var/www/html
+            git pull origin main
+            sudo systemctl restart nginx
+          timeout: 30s
