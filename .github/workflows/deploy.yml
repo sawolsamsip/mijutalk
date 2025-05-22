@@ -2,79 +2,74 @@ name: Deploy to Server
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Setup SSH Key
-        run: |
-          cat <<EOF > key.pem
------BEGIN RSA PRIVATE KEY-----
-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
------END RSA PRIVATE KEY-----
-
-EOF
-          chmod 600 key.pem
-
       - name: Deploy via SSH
-        run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@144.24.67.238 << 'EOF'
+        uses: appleboy/ssh-action@master
+        with:
+          host: "144.24.67.238"
+          username: "ubuntu"
+          key: |
+            -----BEGIN RSA PRIVATE KEY-----
+            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
+            -----END RSA PRIVATE KEY-----
+          port: "22"
+          script: |
             cd /var/www/html
             git pull origin main
             sudo systemctl restart nginx
-EOF
