@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>미주자산톡 | 무료상담 신청</title>
-  <style>
+<style>
     :root {
       --color-primary: #003366;
       --color-secondary: #ffb800;
@@ -18,13 +18,13 @@
       --color-error: #e74c3c;
       --color-required: #e74c3c;
     }
-    
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-    
+
     body {
       font-family: 'Noto Sans KR', sans-serif;
       background: var(--color-background);
@@ -86,23 +86,23 @@
       display: inline-block;
     }
 
-nav#primary-navigation ul li a {
-    font-weight: 600;
-    font-size: 1rem;
-    padding: 8px 12px;
-    border-radius: 6px;
-    color: #f0f5fb;
-    transition: background-color 0.25s ease, color 0.25s ease;
-    position: relative;
-}
+    nav#primary-navigation ul li a {
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 8px 12px;
+      border-radius: 6px;
+      color: #f0f5fb;
+      transition: background-color 0.25s ease, color 0.25s ease;
+      position: relative;
+    }
 
-nav#primary-navigation ul li a:hover,
-nav#primary-navigation ul li a.active {
-    background-color: var(--color-secondary);
-    color: var(--color-primary);
-    font-weight: 700;
-    box-shadow: 0 0 10px rgba(255, 198, 0, 0.67);
-}
+    nav#primary-navigation ul li a:hover,
+    nav#primary-navigation ul li a.active {
+      background-color: var(--color-secondary);
+      color: var(--color-primary);
+      font-weight: 700;
+      box-shadow: 0 0 10px rgba(255, 198, 0, 0.67);
+    }
 
     /* 모바일 메뉴 토글 스타일 */
     .menu-toggle {
@@ -159,11 +159,13 @@ nav#primary-navigation ul li a.active {
       transform: translateX(-50%) rotate(-45deg);
     }
 
+    /* 모바일 스타일 */
     @media (max-width: 768px) {
       .menu-toggle {
         display: block;
       }
-    nav#primary-navigation {
+
+      nav#primary-navigation {
         position: fixed;
         top: 70px;
         right: 0;
@@ -172,39 +174,54 @@ nav#primary-navigation ul li a.active {
         height: calc(100vh - 70px);
         transform: translateX(100%);
         transition: transform 0.3s ease-in-out;
-        box-shadow: -2px 0 10px rgba(0,0,0,0.3);
+        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
         border-radius: 0 0 0 10px;
         z-index: 1150;
         overflow-y: auto;
-    }
-    nav#primary-navigation.open {
+      }
+
+      nav#primary-navigation.open {
         transform: translateX(0);
-    }
-    
-    nav#primary-navigation ul {
+      }
+
+      nav#primary-navigation ul {
         flex-direction: column;
         gap: 1px;
         padding: 20px 0;
         width: 100%;
-    }
-    
-    nav#primary-navigation ul li {
+      }
+
+      nav#primary-navigation ul li {
         width: 100%;
-    }
-    
-    nav#primary-navigation ul li a {
+      }
+
+      nav#primary-navigation ul li a {
         color: #fff;
         padding: 15px 25px;
         font-size: 1.1rem;
         display: block;
         border-radius: 0;
-    }
-    
-    nav#primary-navigation ul li a:hover,
-    nav#primary-navigation ul li a.active {
+      }
+
+      nav#primary-navigation ul li a:hover,
+      nav#primary-navigation ul li a.active {
         background-color: var(--color-secondary);
         color: var(--color-primary);
         font-weight: 700;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-group.full-width,
+      .privacy-check {
+        grid-column: span 1;
+      }
+
+      .consult-form {
+        padding: 30px 20px;
+      }
     }
 
     /* 폼 페이지 본문 스타일 */
@@ -236,7 +253,7 @@ nav#primary-navigation ul li a.active {
       background: white;
       border-radius: 16px;
       padding: 40px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
       margin-bottom: 40px;
     }
 
@@ -293,15 +310,6 @@ nav#primary-navigation ul li a.active {
     textarea.form-control {
       min-height: 120px;
       resize: vertical;
-    }
-
-    .other-input {
-      margin-top: 10px;
-      display: none;
-    }
-
-    .other-input.show {
-      display: block;
     }
 
     .error-message {
@@ -367,7 +375,7 @@ nav#primary-navigation ul li a.active {
 
     .submit-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
     .back-link {
@@ -383,21 +391,6 @@ nav#primary-navigation ul li a.active {
       color: var(--color-secondary);
     }
 
-    @media (max-width: 768px) {
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .form-group.full-width,
-      .privacy-check {
-        grid-column: span 1;
-      }
-      
-      .consult-form {
-        padding: 30px 20px;
-      }
-    }
-
     /* 푸터 스타일 */
     footer {
       background-color: var(--color-primary);
@@ -408,21 +401,21 @@ nav#primary-navigation ul li a.active {
     }
 
     footer a {
-      color: var(--color-secondary);  /* 노란색 계열로 통일 */
+      color: var(--color-secondary); 
       text-decoration: none;
     }
-        
+
     footer a:hover {
-      color: #ffffff; /* 호버 시 흰색 등으로 바꿀 수 있음 */
+      color: #ffffff;
       text-decoration: underline;
     }
-        
-     footer a[href^="mailto:"],
-     footer a[href^="tel:"] {
+
+    footer a[href^="mailto:"],
+    footer a[href^="tel:"] {
       color: var(--color-secondary);
       text-decoration: none;
     }
-    
+
     .footer-links {
       margin-bottom: 15px;
     }
@@ -437,7 +430,8 @@ nav#primary-navigation ul li a.active {
       margin: 8px 0;
       line-height: 1.6;
     }
-  </style>
+</style>
+
 </head>
 <body>
   <!-- 헤더 -->
@@ -459,7 +453,7 @@ nav#primary-navigation ul li a.active {
         <li role="none"><a href="./index.html#about" role="menuitem" tabindex="0">대표소개</a></li>
         <li role="none"><a href="./index.html#faq" role="menuitem" tabindex="0">FAQ</a></li>
         <li role="none"><a href="./index.html#success-cases" role="menuitem" tabindex="0">성공사례</a></li>
-        <li role="none"><a href="./consultant.html" role="menuitem" tabindex="0">상담신청</a></li>
+        <li role="none"><a href="./consultant.html" class="active" role="menuitem" tabindex="0">상담신청</a></li>
       </ul>
     </nav>
   </div>
