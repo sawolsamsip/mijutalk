@@ -1,18 +1,21 @@
-name: Deploy to Server  # 워크플로우 이름 (필수)
+name: Deploy to Server
+
 on:
   push:
-    branches: [ main ]  # main 브랜치에 push할 때 실행
+    branches: [ main ]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: SSH Deploy
-        uses: appleboy/ssh-action@master
-        with:
-          host: "144.24.67.238"  # 실제 IP 대신 secrets 사용 권장
-          username: "ubuntu"
-          key: "-----BEGIN RSA PRIVATE KEY-----
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup SSH Key
+        run: |
+          cat <<EOF > key.pem
+-----BEGIN RSA PRIVATE KEY-----
 MIIJKAIBAAKCAgEA0xN6rpjKSUsbTFRiZhRb8dd/JQm9h6iwskxKvPjihkAkGVP4
 Ioa4HPMkhmV/EniMmMp/rKpdM2Ih1dzY540XT8iLgVDwkhPLN/ANLGu/4D+akN7H
 7sdOWIq1GMCrAI+2TMqpffBJ6e7M3NusW02gynjJnsDrOuYo4ZqOUyu1EmKMS/SS
@@ -62,10 +65,14 @@ m5Uu3Y8lgWNsnmtKOv/nIXvDv4HcVTFwEV4+CbtiywZZrHlnYyRFP0KTQdMtddao
 UUGdrLebA87oZUrW2m/yA0tv+SRthLrNVWhDh12ZfQ9AJZ8ZeEE4lf4XR8gUs3UL
 /KqhIfizU4odM5GpMB8yXXYxDT0x3n0IDRw9NQR+VZUZ5XXERC4Vldbrfdegtu15
 t/VLdsTj07eCmPci7J5OmfxfihAnZR/wYGvo2eC6zkOU5NFEEAKsGA1JZ9k=
------END RSA PRIVATE KEY-----"
-          port: "22"
-          script: |
+-----END RSA PRIVATE KEY-----
+EOF
+          chmod 600 key.pem
+
+      - name: Deploy via SSH
+        run: |
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@144.24.67.238 << 'EOF'
             cd /var/www/html
             git pull origin main
             sudo systemctl restart nginx
-          timeout: 30s
+EOF
