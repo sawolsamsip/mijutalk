@@ -418,11 +418,15 @@ footer p {
   margin-bottom: 0;
 }
 
-/* ===== 모바일 대응 미디어 쿼리 추가 ===== */
 @media (max-width: 768px) {
   footer {
     padding: 25px 15px;
-    font-size: 0.85rem;
+  }
+  footer p, footer a {
+    white-space: normal;
+    word-break: keep-all;
+    font-size: 0.93rem;
+    letter-spacing: -0.2px;
   }
 }
 </style>
