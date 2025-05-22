@@ -16,7 +16,7 @@ jobs:
         with:
           host: "144.24.67.238"
           username: "ubuntu"
-          key: "${{secrets.SSH_PRIVATE_KEY}}"
+          key: "${{ secrets.SSH_PRIVATE_KEY }}"
           port: "22"
           script: |
             cd /var/www/html
