@@ -2,7 +2,8 @@ name: Deploy to Server
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   deploy:
@@ -66,6 +67,7 @@ UUGdrLebA87oZUrW2m/yA0tv+SRthLrNVWhDh12ZfQ9AJZ8ZeEE4lf4XR8gUs3UL
 /KqhIfizU4odM5GpMB8yXXYxDT0x3n0IDRw9NQR+VZUZ5XXERC4Vldbrfdegtu15
 t/VLdsTj07eCmPci7J5OmfxfihAnZR/wYGvo2eC6zkOU5NFEEAKsGA1JZ9k=
 -----END RSA PRIVATE KEY-----
+
 EOF
           chmod 600 key.pem
 
