@@ -400,23 +400,31 @@
       }
     }
 
-    /* 푸터 스타일 */
-    footer {
-      background-color: var(--color-primary);
-      color: white;
-      padding: 30px 20px;
-      text-align: center;
-      font-size: 0.9rem;
-      user-select: none;
-      line-height: 1.7;
-    }
-    footer a {
-      color: var(--color-secondary);
-      text-decoration: none;
-    }
-    footer p {
-      margin-bottom: 0;
-    }
+/* ===== Footer 스타일 (index.html과 동일하게 적용) ===== */
+footer {
+  background-color: var(--color-primary);
+  color: white;
+  padding: 30px 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  user-select: none;
+  line-height: 1.7;
+}
+footer a {
+  color: var(--color-secondary);
+  text-decoration: none;
+}
+footer p {
+  margin-bottom: 0;
+}
+
+/* ===== 모바일 대응 미디어 쿼리 추가 ===== */
+@media (max-width: 768px) {
+  footer {
+    padding: 25px 15px;
+    font-size: 0.85rem;
+  }
+}
 </style>
 
 
