@@ -40,10 +40,12 @@ $headers  = "MIME-Version: 1.0" . "\r\n";
 $headers .= "Content-type: text/html; charset=UTF-8" . "\r\n";
 $headers .= "From: 미주자산톡 <no-reply@mijutalk.co>" . "\r\n";
 
-// 4. 메일 전송
+// 4. 메일 전송 후 리디렉션
 if (mail($to, $subject, $message, $headers)) {
-    echo "<script>alert('상담 신청이 성공적으로 접수되었습니다.'); window.location.href = 'thank-you.html';</script>";
+    header("Location: thank-you.html");
+    exit;
 } else {
+    // 실패했을 경우만 alert로 알림
     echo "<script>alert('메일 전송에 실패했습니다. 관리자에게 문의해주세요.'); history.back();</script>";
 }
 ?>
