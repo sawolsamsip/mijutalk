@@ -283,9 +283,12 @@
     user-select: none;
   }
 
-  footer a:not(.footer-links a) {
+  /* 변경 */
+  footer a[href^="mailto:"],
+  footer a[href^="tel:"] {
     color: var(--color-secondary);
-    text-decoration: underline;
+    text-decoration: none !important;
+    -webkit-text-decoration: none !important; /* Safari 대응 */
   }
 
   footer p {
