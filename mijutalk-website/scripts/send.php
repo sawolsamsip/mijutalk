@@ -55,7 +55,7 @@ $headers .= "From: 미주자산톡 <no-reply@mijutalk.co>" . "\r\n";
 
 // 4. 메일 전송 후 리디렉션
 if (mail($to, $subject, $message, $headers)) {
-    header("Location: thank-you.html");
+    header("Location: ../pages/thank-you.html");
     exit;
 } else {
     // 실패했을 경우만 alert로 알림
