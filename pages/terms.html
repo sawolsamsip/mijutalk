@@ -273,6 +273,51 @@ footer p {
   margin-bottom: 0;
 }
 
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.footer-links a {
+  color: var(--color-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover {
+  color: #ffffff;
+}
+
+    
+.footer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+}
+    
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-weight: 900;
+    font-size: 1.2rem;
+    
+  }
+
+  .footer-brand img {
+    width: 40px;
+    height: 40px;
+    filter: brightness(0) invert(1);
+ 
+  }
+  
 @media (max-width: 768px) {
   footer {
     padding: 25px 15px;
@@ -396,19 +441,31 @@ footer p {
 </main>
 
 <footer>
-  <div class="footer-links">
-    <a href="../pages/privacy.html">개인정보처리방침</a>
-    <span>|</span>
-    <a href="../pages/terms.html">이용약관</a>
-    <span>|</span>
-    <a href="mailto:privacy@mijutalk.co">개인정보 보호문의</a>
+  <div class="footer-container">
+    <div class="footer-brand">
+      <img src="../assets/logo-img-60-60.svg" alt="미주자산톡 로고">
+      <span class="brand-name">미주자산톡</span>
+    </div>
+
+    <div class="footer-links">
+      <a href="../pages/privacy.html">개인정보처리방침</a>
+      <a href="../pages/terms.html">이용약관</a>
+      <a href="mailto:privacy@mijutalk.co">개인정보보호문의</a>
+    </div>
+
+    <div class="footer-info">
+      <p>상호: 미주자산톡 | 대표: 이상현</p>
+      <p>사업자등록번호: 445-60-00911 | 이메일: <a href="mailto:info@mijutalk.co">info@mijutalk.co</a></p>
+      <p>미국사업장: 14468 Culver Dr, Irvine, CA 92604</p>
+      <p>한국사업장: 경상남도 합천군 합천읍 대야로 888</p>
+    </div>
+
+    <div class="footer-copy">
+      &copy; <script>document.write(new Date().getFullYear());</script> 미주자산톡. All Rights Reserved.
+    </div>
   </div>
-  
-  <p class="nowrap">상호: 미주자산톡 | 대표: 이상현 | 사업자등록번호: 445-60-00911 | 이메일: <a href="mailto:info@mijutalk.co">info@mijutalk.co</a></p>
-  <p class="nowrap">미국사업장주소: 14468 Culver Dr, Irvine, CA 92604</p>
-  <p class="nowrap">사업자등록주소: 경상남도 합천군 합천읍 대야로 888 </p>
-  <p class="nowrap">&copy; <script>document.write(new Date().getFullYear());</script> 미주자산톡. All Rights Reserved.</p>
 </footer>
+
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
