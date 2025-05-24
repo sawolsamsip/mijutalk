@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en"> <!-- 언어 변경 -->
 <head>
-<meta charset="UTF-8" />
+  <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://mijutalk.co/terms" /> 
-<meta property="og:title" content="미주자산톡 | 이용약관" />
-<meta property="og:description" content="미주자산톡의 서비스 이용약관입니다." />
+<link rel="canonical" href="https://mijutalk.co/privacy" /> 
+<meta property="og:title" content="미주자산톡 | 개인정보 처리방침" />
+<meta property="og:description" content="미주자산톡의 개인정보 처리방침입니다." />
 <meta property="og:image" content="https://mijutalk.co/og-image.webp" />
-<meta property="og:url" content="https://mijutalk.co/terms" />
+<meta property="og:url" content="https://mijutalk.co/privacy" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="미주자산톡">
-<meta name="description" content="미주자산톡의 서비스 이용약관입니다." />
+<meta name="description" content="미주자산톡의 개인정보 처리방침입니다." />
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="미주자산톡 | 이용약관">
-<meta name="twitter:description" content="미주자산톡의 서비스 이용약관입니다.">
+<meta name="twitter:title" content="미주자산톡 | 개인정보 처리방침">
+<meta name="twitter:description" content="미주자산톡의 개인정보 처리방침입니다.">
 <meta name="twitter:image" content="https://mijutalk.co/og-image.webp">
 
 <!-- 폰트 로딩 -->
@@ -24,9 +24,20 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
 
-<title>이용약관 | 미주자산톡</title>
-<style>
-  :root {
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VNNXFK9RNH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VNNXFK9RNH');
+</script>
+  <title>Terms of Use | Mijutalk</title>
+  <style>
+
+
+:root {
     --color-primary: #003366;
     --color-secondary: #ffb800;
     --color-background: #f2f5f8;
@@ -220,37 +231,33 @@
     padding-top: 90px;
   }
 
-  #terms {
+  #privacy {
     background: white;
     padding: 40px;
     border-radius: 16px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.08);
   }
 
-  #terms h1 {
+  #privacy h1 {
     color: var(--color-primary);
     margin-bottom: 30px;
     border-bottom: 2px solid var(--color-secondary);
     padding-bottom: 10px;
   }
 
-  #terms h2 {
+  #privacy h2 {
     color: var(--color-primary);
     margin-top: 40px;
     border-left: 4px solid var(--color-secondary);
     padding-left: 10px;
   }
 
-  #terms ul, #terms ol {
+  #privacy ul {
     margin: 20px 0;
     padding-left: 20px;
   }
 
-  #terms li {
-    margin-bottom: 10px;
-  }
-
-  #terms p {
+  #privacy p {
     margin: 15px 0;
   }
 
@@ -284,17 +291,49 @@ footer p {
     letter-spacing: -0.2px;
   }
 }
-</style>
 
   /* Accessibility */
   *:focus-visible {
     outline: 3px solid var(--color-secondary);
     outline-offset: 2px;
   }
-</style>
+
+
+    #terms-en {
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+      margin-bottom: 40px;
+    }
+    #terms-en h1 {
+      color: var(--color-primary);
+      border-bottom: 2px solid var(--color-secondary);
+      padding-bottom: 10px;
+      margin-bottom: 30px;
+    }
+    #terms-en h2 {
+      color: var(--color-primary);
+      margin-top: 40px;
+      border-left: 4px solid var(--color-secondary);
+      padding-left: 10px;
+    }
+    #terms-en ol {
+      list-style-type: decimal;
+      padding-left: 25px;
+    }
+    .language-switch {
+      margin-top: 40px;
+      text-align: center;
+    }
+    @media (max-width: 768px) {
+      #terms-en {
+        padding: 20px 15px;
+      }
+    }
+  </style>
 </head>
 <body>
-
 <header>
   <div class="header-container">
     <a href="https://mijutalk.co" class="logo" aria-label="미주자산톡 홈으로 이동">
@@ -319,7 +358,7 @@ footer p {
   </div>
 </header>
 
-<main role="main">
+  <main role="main">
   <section id="terms-en" aria-labelledby="terms-title">
   <h1>Terms of Use</h1>
   <p class="effective-date">Effective Date: May 18, 2025</p>
@@ -394,9 +433,7 @@ footer p {
     👉 <a href="../pages/terms.html" target="_blank" rel="noopener noreferrer">View Terms of Use in Korean</a>
   </p>
 </section>
-
-</main>
-
+  </main>
 <footer>
   <div class="footer-links">
     <a href="../pages/privacy.html">개인정보처리방침</a>
@@ -414,28 +451,8 @@ footer p {
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-  // FAQ 아코디언 토글 기능
-  const faqQuestions = document.querySelectorAll('.faq-question');
-  faqQuestions.forEach(button => {
-    button.addEventListener('click', () => {
-      const expanded = button.getAttribute('aria-expanded') === 'true';
-      button.setAttribute('aria-expanded', String(!expanded));
-      button.classList.toggle('active');
-
-      const answerId = button.getAttribute('aria-controls');
-      const answer = document.getElementById(answerId);
-      if (answer) {
-        if (!expanded) {
-          answer.removeAttribute('hidden');
-        } else {
-          answer.setAttribute('hidden', '');
-        }
-      }
-    });
-  });
-
   // Scrollspy for active nav link
-  const sections = document.querySelectorAll("section[id], #terms");
+  const sections = document.querySelectorAll("section[id], #privacy");
   const navLinks = document.querySelectorAll("nav#primary-navigation ul li a");
   const headerOffset = 70; // 헤더 높이와 동일하게 설정
 
