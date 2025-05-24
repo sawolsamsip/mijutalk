@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://mijutalk.co/terms" /> 
+<meta property="og:title" content="미주자산톡 | 이용약관" />
+<meta property="og:description" content="미주자산톡의 서비스 이용약관입니다." />
+<meta property="og:image" content="https://mijutalk.co/og-image.webp" />
+<meta property="og:url" content="https://mijutalk.co/terms" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="미주자산톡">
+<meta name="description" content="미주자산톡의 서비스 이용약관입니다." />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="미주자산톡 | 이용약관">
+<meta name="twitter:description" content="미주자산톡의 서비스 이용약관입니다.">
+<meta name="twitter:image" content="https://mijutalk.co/og-image.webp">
+
+<!-- 폰트 로딩 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+
+<title>이용약관 | 미주자산톡</title>
+<style>
+  :root {
+    --color-primary: #003366;
+    --color-secondary: #ffb800;
+    --color-background: #f2f5f8;
+    --color-text-primary: #222222;
+    --color-text-secondary: #555555;
+    --color-button-bg: #00509e;
+    --color-button-hover: #003366;
+    --color-faq-bg: #ffffff;
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--color-background);
+    color: var(--color-text-primary);
+    line-height: 1.6;
+  }
+  a {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--color-secondary);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 900;
+    font-size: 1.6rem;
+    color: white;
+    text-decoration: none;
+  }
+
+  .logo-symbol {
+    width: 40px;
+    height: 40px;
+    filter: brightness(0) invert(1);
+  }
+
+  .logo-text {
+    user-select: none;
+  }
+
+  .logo:hover {
+    color: white;
+    transform: scale(1.05);
+  }
+
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: #004a99;
+    color: white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+    z-index: 1100;
+  }
+
+  .header-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+  }
+
+  nav#primary-navigation ul {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+  }
+  nav#primary-navigation ul li a {
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: #f0f5fb;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+  nav#primary-navigation ul li a:hover,
+  nav#primary-navigation ul li a.active {
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    font-weight: 700;
+    box-shadow: 0 0 10px rgba(255, 198, 0, 0.67);
+  }
+
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1200;
+    width: 40px;
+    height: 40px;
+    position: relative;
+  }
+  .menu-toggle .hamburger,
+  .menu-toggle .hamburger::before,
+  .menu-toggle .hamburger::after {
+    content: "";
+    display: block;
+    background-color: white;
+    height: 3px;
+    border-radius: 2px;
+    position: absolute;
+    width: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: all 0.3s ease;
+  }
+  .menu-toggle .hamburger {
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .menu-toggle .hamburger::before {
+    top: -8px;
+  }
+  .menu-toggle .hamburger::after {
+    top: 8px;
+  }
+  .menu-toggle.open .hamburger {
+    background-color: transparent;
+  }
+  .menu-toggle.open .hamburger::before {
+    top: 0;
+    transform: translateX(-50%) rotate(45deg);
+  }
+  .menu-toggle.open .hamburger::after {
+    top: 0;
+    transform: translateX(-50%) rotate(-45deg);
+  }
+
+  @media (max-width: 768px) {
+    .menu-toggle {
+      display: block;
+    }
+    nav#primary-navigation {
+      display: block;
+      position: fixed;
+      top: 70px;
+      right: 0;
+      background: var(--color-primary);
+      width: 250px;
+      height: calc(100vh - 70px);
+      transform: translateX(100%);
+      transition: transform 0.3s ease-in-out;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.3);
+      border-radius: 0 0 0 10px;
+      z-index: 1150;
+      overflow-y: auto;
+    }
+    nav#primary-navigation.open {
+      transform: translateX(0);
+    }
+    nav#primary-navigation ul {
+      flex-direction: column;
+      gap: 1px;
+      padding: 20px 0;
+      width: 100%;
+    }
+    nav#primary-navigation ul li {
+      width: 100%;
+    }
+    nav#primary-navigation ul li a {
+      color: #fff;
+      padding: 15px 25px;
+      font-size: 1.1rem;
+      display: block;
+      border-radius: 0;
+    }
+    nav#primary-navigation ul li a:hover,
+    nav#primary-navigation ul li a.active {
+      background-color: var(--color-secondary);
+      color: var(--color-primary);
+      font-weight: 700;
+    }
+  }
+
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+    padding-top: 90px;
+  }
+
+  #terms {
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  }
+
+  #terms h1 {
+    color: var(--color-primary);
+    margin-bottom: 30px;
+    border-bottom: 2px solid var(--color-secondary);
+    padding-bottom: 10px;
+  }
+
+  #terms h2 {
+    color: var(--color-primary);
+    margin-top: 40px;
+    border-left: 4px solid var(--color-secondary);
+    padding-left: 10px;
+  }
+
+  #terms ul, #terms ol {
+    margin: 20px 0;
+    padding-left: 20px;
+  }
+
+  #terms li {
+    margin-bottom: 10px;
+  }
+
+  #terms p {
+    margin: 15px 0;
+  }
+
+
+/* ===== Footer 스타일 (index.html과 동일하게 적용) ===== */
+footer {
+  background-color: var(--color-primary);
+  color: white;
+  padding: 30px 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  user-select: none;
+  line-height: 1.7;
+}
+footer a {
+  color: var(--color-secondary);
+  text-decoration: none;
+}
+footer p {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  footer {
+    padding: 25px 15px;
+  }
+  footer p, footer a {
+    white-space: normal;
+    word-break: keep-all;
+    font-size: 0.93rem;
+    letter-spacing: -0.2px;
+  }
+}
+</style>
+
+  /* Accessibility */
+  *:focus-visible {
+    outline: 3px solid var(--color-secondary);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-container">
+    <a href="https://mijutalk.co" class="logo" aria-label="미주자산톡 홈으로 이동">
+      <img src="../assets/logo-img-60-60.svg" alt="미주자산톡 로고" class="logo-symbol" />
+      <span class="logo-text">미주자산톡</span>
+    </a>
+
+    <button class="menu-toggle" aria-label="메뉴 열기/닫기" aria-expanded="false" aria-controls="primary-navigation">
+      <span class="hamburger"></span>
+    </button>
+
+    <nav id="primary-navigation">
+      <ul role="menubar">
+        <li role="none"><a href="../pages/index.html#hero" class="active" role="menuitem" tabindex="0">홈</a></li>
+        <li role="none"><a href="../pages/index.html#services" role="menuitem" tabindex="0">전문서비스</a></li>
+        <li role="none"><a href="../pages/index.html#about" role="menuitem" tabindex="0">대표소개</a></li>
+        <li role="none"><a href="../pages/index.html#faq" role="menuitem" tabindex="0">FAQ</a></li>
+        <li role="none"><a href="../pages/index.html#success-cases" role="menuitem" tabindex="0">성공사례</a></li>
+        <li role="none"><a href="../pages/consultant.html" role="menuitem" tabindex="0">상담신청</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main role="main">
+  <section id="terms-en" aria-labelledby="terms-title">
+  <h1>Terms of Use</h1>
+  <p class="effective-date">Effective Date: May 18, 2025</p>
+
+  <h2>1. Purpose</h2>
+  <p>These Terms of Use govern the conditions and procedures for using services provided by Mijutalk ("the Company").</p>
+
+  <h2>2. Definitions</h2>
+  <ol>
+    <li>"Service" refers to financial consulting and related offerings provided by the Company.</li>
+    <li>"User" means an individual who agrees to these terms and receives services from the Company.</li>
+  </ol>
+
+  <h2>3. Effectiveness and Amendment</h2>
+  <ol>
+    <li>These terms apply to all users who access or use our services.</li>
+    <li>The Company may amend these terms in accordance with applicable laws and regulations.</li>
+    <li>Changes will be notified on our website with the effective date and reasons for the amendment.</li>
+  </ol>
+
+  <h2>4. Services Provided</h2>
+  <ol>
+    <li>The Company offers:
+      <ul>
+        <li>Asset management consulting</li>
+        <li>Investment and retirement planning support</li>
+        <li>Tax optimization and education planning</li>
+        <li>Other general financial information services</li>
+      </ul>
+    </li>
+    <li>Consultations may be coordinated with third-party professionals who deliver actual legal, tax, or financial advice.</li>
+  </ol>
+
+  <h2>5. Formation of Agreement</h2>
+  <ol>
+    <li>An agreement is formed when a user submits a consultation request and the Company accepts it.</li>
+    <li>The Company may decline requests if:
+      <ul>
+        <li>False or incomplete information is submitted</li>
+        <li>There is an attempt to impersonate another individual</li>
+        <li>Any misuse or inappropriate request is identified</li>
+      </ul>
+    </li>
+  </ol>
+
+  <h2>6. Privacy Protection</h2>
+  <p>Users' personal data is protected under the Company’s Privacy Policy and relevant laws.</p>
+
+  <h2>7. Disclaimer and Limitation of Liability</h2>
+  <ol>
+    <li>The Company shall not be liable for service interruptions caused by force majeure such as natural disasters or system failure.</li>
+    <li>We are not responsible for decisions or losses resulting from the use of the information provided.</li>
+    <li>All services are for general informational purposes only and do not constitute financial, tax, or legal advice.</li>
+    <li>Specific advice may be delivered by qualified U.S.-licensed professionals (CPA, EA, attorney, etc.).</li>
+  </ol>
+
+  <h2>8. Intellectual Property</h2>
+  <p>All content on this website (text, images, logos, etc.) is the property of the Company or its affiliates and may not be used without permission.</p>
+
+  <h2>9. Governing Law and Jurisdiction</h2>
+  <ol>
+    <li>These terms are governed by the laws of the Republic of Korea, with applicable U.S. regulations as necessary.</li>
+    <li>Disputes shall be resolved in the courts located in the Company’s principal office or as applicable to user location.</li>
+  </ol>
+
+  <p class="effective-date">Posted: May 18, 2025<br>Effective: May 18, 2025</p>
+</section>
+
+
+  <p style="margin-top: 40px; font-size: 0.95rem;">
+    한글로 된 이용약관이 필요하신가요?<br>
+    👉 <a href="../pages/terms.html" target="_blank" rel="noopener noreferrer">View Terms of Use in Korean</a>
+  </p>
+</section>
+
+</main>
+
+<footer>
+  <div class="footer-links">
+    <a href="../pages/privacy.html">개인정보처리방침</a>
+    <span>|</span>
+    <a href="../pages/terms.html">이용약관</a>
+    <span>|</span>
+    <a href="mailto:privacy@mijutalk.co">개인정보 보호문의</a>
+  </div>
+  
+  <p class="nowrap">상호: 미주자산톡 | 대표: 이상현 | 사업자등록번호: 445-60-00911 | 이메일: <a href="mailto:info@mijutalk.co">info@mijutalk.co</a></p>
+  <p class="nowrap">미국사업장주소: 14468 Culver Dr, Irvine, CA 92604</p>
+  <p class="nowrap">사업자등록주소: 경상남도 합천군 합천읍 대야로 888 </p>
+  <p class="nowrap">&copy; <script>document.write(new Date().getFullYear());</script> 미주자산톡. All Rights Reserved.</p>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  // FAQ 아코디언 토글 기능
+  const faqQuestions = document.querySelectorAll('.faq-question');
+  faqQuestions.forEach(button => {
+    button.addEventListener('click', () => {
+      const expanded = button.getAttribute('aria-expanded') === 'true';
+      button.setAttribute('aria-expanded', String(!expanded));
+      button.classList.toggle('active');
+
+      const answerId = button.getAttribute('aria-controls');
+      const answer = document.getElementById(answerId);
+      if (answer) {
+        if (!expanded) {
+          answer.removeAttribute('hidden');
+        } else {
+          answer.setAttribute('hidden', '');
+        }
+      }
+    });
+  });
+
+  // Scrollspy for active nav link
+  const sections = document.querySelectorAll("section[id], #terms");
+  const navLinks = document.querySelectorAll("nav#primary-navigation ul li a");
+  const headerOffset = 70; // 헤더 높이와 동일하게 설정
+
+  function updateActiveLink() {
+    let current = "";
+    const scrollPos = window.pageYOffset || document.documentElement.scrollTop;
+
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop;
+      if (scrollPos >= sectionTop - headerOffset) {
+        current = section.getAttribute("id");
+      }
+    });
+
+    navLinks.forEach(link => {
+      link.classList.remove("active");
+      const href = link.getAttribute("href");
+      if (href && href.includes("#") && href.substring(1) === current) {
+        link.classList.add("active");
+      }
+    });
+  }
+
+  window.addEventListener("scroll", updateActiveLink);
+  updateActiveLink();
+
+  // 모바일 내비게이션 작동 스크립트
+  const toggleButton = document.querySelector(".menu-toggle");
+  const nav = document.getElementById("primary-navigation");
+
+  if (toggleButton && nav) {
+    toggleButton.addEventListener("click", () => {
+      const isOpen = nav.classList.toggle("open");
+      toggleButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      toggleButton.classList.toggle("open", isOpen);
+    });
+
+    const mobileNavLinks = nav.querySelectorAll("a");
+    mobileNavLinks.forEach(link => {
+      link.addEventListener("click", () => {
+        if (nav.classList.contains("open")) {
+          nav.classList.remove("open");
+          toggleButton.setAttribute("aria-expanded", "false");
+          toggleButton.classList.remove("open");
+        }
+      });
+    });
+  }
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      const hrefAttribute = this.getAttribute('href');
+      
+      if (hrefAttribute && hrefAttribute.length > 1 && document.querySelector(hrefAttribute)) {
+        e.preventDefault();
+        const targetElement = document.querySelector(hrefAttribute);
+        if (targetElement) {
+          const headerHeight = document.querySelector('header').offsetHeight;
+          const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+          const offsetPosition = elementPosition - headerHeight;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+          });
+        }
+      }
+    });
+  });
+});
+</script>
+</body>
+</html>
