@@ -197,9 +197,58 @@ nav#primary-navigation {
   }
 
 @media (max-width: 768px) {
-    .menu-toggle {
-      display: block;
-    }
+.menu-toggle {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1200;
+}
+
+.menu-toggle .hamburger,
+.menu-toggle .hamburger::before,
+.menu-toggle .hamburger::after {
+  content: "";
+  display: block;
+  background-color: white;
+  height: 3px;
+  width: 24px;
+  border-radius: 2px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: all 0.3s ease;
+}
+
+.menu-toggle .hamburger {
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.menu-toggle .hamburger::before {
+  top: -8px;
+}
+
+.menu-toggle .hamburger::after {
+  top: 8px;
+}
+
+.menu-toggle.open .hamburger {
+  background-color: transparent;
+}
+
+.menu-toggle.open .hamburger::before {
+  top: 0;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.menu-toggle.open .hamburger::after {
+  top: 0;
+  transform: translateX(-50%) rotate(-45deg);
+}
+
     nav#primary-navigation {
       display: block;
       position: fixed;
