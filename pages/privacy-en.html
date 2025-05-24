@@ -197,85 +197,50 @@ nav#primary-navigation {
   }
 
 @media (max-width: 768px) {
-  .menu-toggle {
-    display: block;
+    .menu-toggle {
+      display: block;
+    }
+    nav#primary-navigation {
+      display: block;
+      position: fixed;
+      top: 70px;
+      right: 0;
+      background: var(--color-primary);
+      width: 250px;
+      height: calc(100vh - 70px);
+      transform: translateX(100%);
+      transition: transform 0.3s ease-in-out;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.3);
+      border-radius: 0 0 0 10px;
+      z-index: 1150;
+      overflow-y: auto;
+    }
+    nav#primary-navigation.open {
+      transform: translateX(0);
+    }
+    nav#primary-navigation ul {
+      flex-direction: column;
+      gap: 1px;
+      padding: 20px 0;
+      width: 100%;
+    }
+    nav#primary-navigation ul li {
+      width: 100%;
+    }
+    nav#primary-navigation ul li a {
+      color: #fff;
+      padding: 15px 25px;
+      font-size: 1.1rem;
+      display: block;
+      border-radius: 0;
+    }
+    nav#primary-navigation ul li a:hover,
+    nav#primary-navigation ul li a.active {
+      background-color: var(--color-secondary);
+      color: var(--color-primary);
+      font-weight: 700;
+    }
   }
-
-  .hamburger,
-  .hamburger::before,
-  .hamburger::after {
-    content: "";
-    display: block;
-    background-color: white;
-    height: 3px;
-    border-radius: 2px;
-    position: absolute;
-    width: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    transition: all 0.3s ease;
-  }
-
-  .hamburger {
-    top: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  .hamburger::before {
-    top: -8px;
-  }
-
-  .hamburger::after {
-    top: 8px;
-  }
-
-  .menu-toggle.open .hamburger {
-    background-color: transparent;
-  }
-
-  .menu-toggle.open .hamburger::before {
-    top: 0;
-    transform: translateX(-50%) rotate(45deg);
-  }
-
-  .menu-toggle.open .hamburger::after {
-    top: 0;
-    transform: translateX(-50%) rotate(-45deg);
-  }
-
-  nav#primary-navigation {
-    position: fixed;
-    top: 70px;
-    right: 0;
-    background: var(--color-primary);
-    width: 250px;
-    height: calc(100vh - 70px);
-    transform: translateX(100%);
-    transition: transform 0.3s ease-in-out;
-    box-shadow: -2px 0 10px rgba(0,0,0,0.3);
-    border-radius: 0 0 0 10px;
-    z-index: 1150;
-    overflow-y: auto;
-    display: block;
-  }
-
-  nav#primary-navigation.open {
-    transform: translateX(0);
-  }
-
-  nav#primary-navigation ul {
-    flex-direction: column;
-    padding: 20px;
-    gap: 10px;
-  }
-
-  nav#primary-navigation ul li a {
-    color: #fff;
-    display: block;
-    padding: 15px;
-    font-size: 1.1rem;
-  }
-}
 
 
     
