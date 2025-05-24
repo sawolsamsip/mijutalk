@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,300 +19,141 @@
 <meta name="twitter:description" content="미주자산톡의 개인정보 처리방침입니다.">
 <meta name="twitter:image" content="https://mijutalk.co/og-image.webp">
 
-<!-- 폰트 로딩 -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-VNNXFK9RNH"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VNNXFK9RNH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-VNNXFK9RNH');
+  </script>
 
-  gtag('config', 'G-XXXXXXX');
-</script>
-
-  
-<title>개인정보 처리방침 | 미주자산톡</title>
-<style>
-  :root {
-    --color-primary: #003366;
-    --color-secondary: #ffb800;
-    --color-background: #f2f5f8;
-    --color-text-primary: #222222;
-    --color-text-secondary: #555555;
-    --color-button-bg: #00509e;
-    --color-button-hover: #003366;
-    --color-faq-bg: #ffffff;
-  }
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-  body {
-    font-family: 'Noto Sans KR', sans-serif;
-    background: var(--color-background);
-    color: var(--color-text-primary);
-    line-height: 1.6;
-  }
-  a {
-    color: var(--color-primary);
-    text-decoration: none;
-  }
-  a:hover {
-    color: var(--color-secondary);
-  }
-
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: 900;
-    font-size: 1.6rem;
-    color: white;
-    text-decoration: none;
-  }
-
-  .logo-symbol {
-    width: 40px;
-    height: 40px;
-    filter: brightness(0) invert(1);
-  }
-
-  .logo-text {
-    user-select: none;
-  }
-
-  .logo:hover {
-    color: white;
-    transform: scale(1.05);
-  }
-
-  header {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    background: #004a99;
-    color: white;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.25);
-    z-index: 1100;
-  }
-
-  .header-container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 70px;
-  }
-
-  nav#primary-navigation ul {
-    display: flex;
-    gap: 20px;
-    list-style: none;
-  }
-  nav#primary-navigation ul li a {
-    font-weight: 600;
-    font-size: 1rem;
-    padding: 8px 12px;
-    border-radius: 6px;
-    color: #f0f5fb;
-    transition: background-color 0.25s ease, color 0.25s ease;
-  }
-  nav#primary-navigation ul li a:hover,
-  nav#primary-navigation ul li a.active {
-    background-color: var(--color-secondary);
-    color: var(--color-primary);
-    font-weight: 700;
-    box-shadow: 0 0 10px rgba(255, 198, 0, 0.67);
-  }
-
-  .menu-toggle {
-    display: none;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 10px;
-    z-index: 1200;
-    width: 40px;
-    height: 40px;
-    position: relative;
-  }
-  .menu-toggle .hamburger,
-  .menu-toggle .hamburger::before,
-  .menu-toggle .hamburger::after {
-    content: "";
-    display: block;
-    background-color: white;
-    height: 3px;
-    border-radius: 2px;
-    position: absolute;
-    width: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    transition: all 0.3s ease;
-  }
-  .menu-toggle .hamburger {
-    top: 50%;
-    transform: translate(-50%, -50%);
-  }
-  .menu-toggle .hamburger::before {
-    top: -8px;
-  }
-  .menu-toggle .hamburger::after {
-    top: 8px;
-  }
-  .menu-toggle.open .hamburger {
-    background-color: transparent;
-  }
-  .menu-toggle.open .hamburger::before {
-    top: 0;
-    transform: translateX(-50%) rotate(45deg);
-  }
-  .menu-toggle.open .hamburger::after {
-    top: 0;
-    transform: translateX(-50%) rotate(-45deg);
-  }
-
-  @media (max-width: 768px) {
-    .menu-toggle {
-      display: block;
+  <title>Privacy Policy | 미주자산톡</title>
+  <style>
+    :root {
+      --color-primary: #003366;
+      --color-secondary: #ffb800;
+      --color-background: #f2f5f8;
+      --color-text-primary: #222222;
+      --color-text-secondary: #555555;
+      --color-button-bg: #00509e;
+      --color-button-hover: #003366;
+      --color-faq-bg: #ffffff;
     }
-    nav#primary-navigation {
-      display: block;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--color-background);
+      color: var(--color-text-primary);
+      line-height: 1.6;
+    }
+    a { color: var(--color-primary); text-decoration: none; }
+    a:hover { color: var(--color-secondary); }
+
+    header {
       position: fixed;
-      top: 70px;
-      right: 0;
-      background: var(--color-primary);
-      width: 250px;
-      height: calc(100vh - 70px);
-      transform: translateX(100%);
-      transition: transform 0.3s ease-in-out;
-      box-shadow: -2px 0 10px rgba(0,0,0,0.3);
-      border-radius: 0 0 0 10px;
-      z-index: 1150;
-      overflow-y: auto;
+      top: 0; left: 0; right: 0;
+      background: #004a99;
+      color: white;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+      z-index: 1100;
     }
-    nav#primary-navigation.open {
-      transform: translateX(0);
+    .header-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 70px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 900;
+      font-size: 1.6rem;
+      color: white;
+      text-decoration: none;
+    }
+    .logo-symbol {
+      width: 40px;
+      height: 40px;
+      filter: brightness(0) invert(1);
     }
     nav#primary-navigation ul {
-      flex-direction: column;
-      gap: 1px;
-      padding: 20px 0;
-      width: 100%;
-    }
-    nav#primary-navigation ul li {
-      width: 100%;
+      display: flex;
+      gap: 20px;
+      list-style: none;
     }
     nav#primary-navigation ul li a {
-      color: #fff;
-      padding: 15px 25px;
-      font-size: 1.1rem;
-      display: block;
-      border-radius: 0;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 8px 12px;
+      border-radius: 6px;
+      color: #f0f5fb;
     }
     nav#primary-navigation ul li a:hover,
     nav#primary-navigation ul li a.active {
       background-color: var(--color-secondary);
       color: var(--color-primary);
       font-weight: 700;
+      box-shadow: 0 0 10px rgba(255, 198, 0, 0.67);
     }
-  }
+    .menu-toggle { display: none; }
 
-  main {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 20px;
-    padding-top: 90px;
-  }
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px;
+      padding-top: 90px;
+    }
+    #privacy {
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+    #privacy h1 {
+      color: var(--color-primary);
+      margin-bottom: 30px;
+      border-bottom: 2px solid var(--color-secondary);
+      padding-bottom: 10px;
+    }
+    #privacy h2 {
+      color: var(--color-primary);
+      margin-top: 40px;
+      border-left: 4px solid var(--color-secondary);
+      padding-left: 10px;
+    }
+    #privacy ul { margin: 20px 0; padding-left: 20px; }
+    #privacy p { margin: 15px 0; }
 
-  #privacy {
-    background: white;
-    padding: 40px;
-    border-radius: 16px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-  }
-
-  #privacy h1 {
-    color: var(--color-primary);
-    margin-bottom: 30px;
-    border-bottom: 2px solid var(--color-secondary);
-    padding-bottom: 10px;
-  }
-
-  #privacy h2 {
-    color: var(--color-primary);
-    margin-top: 40px;
-    border-left: 4px solid var(--color-secondary);
-    padding-left: 10px;
-  }
-
-  #privacy ul {
-    margin: 20px 0;
-    padding-left: 20px;
-  }
-
-  #privacy p {
-    margin: 15px 0;
-  }
-
-
-/* ===== Footer 스타일 (index.html과 동일하게 적용) ===== */
-footer {
-  background-color: var(--color-primary);
-  color: white;
-  padding: 30px 20px;
-  text-align: center;
-  font-size: 0.9rem;
-  user-select: none;
-  line-height: 1.7;
-}
-footer a {
-  color: var(--color-secondary);
-  text-decoration: none;
-}
-footer p {
-  margin-bottom: 0;
-}
-
-@media (max-width: 768px) {
-  footer {
-    padding: 25px 15px;
-  }
-  footer p, footer a {
-    white-space: normal;
-    word-break: keep-all;
-    font-size: 0.93rem;
-    letter-spacing: -0.2px;
-  }
-}
-</style>
-
-  /* Accessibility */
-  *:focus-visible {
-    outline: 3px solid var(--color-secondary);
-    outline-offset: 2px;
-  }
-</style>
+    footer {
+      background-color: var(--color-primary);
+      color: white;
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 0.9rem;
+      user-select: none;
+      line-height: 1.7;
+    }
+    footer a {
+      color: var(--color-secondary);
+      text-decoration: none;
+    }
+  </style>
 </head>
 <body>
-
 <header>
   <div class="header-container">
-    <a href="https://mijutalk.co" class="logo" aria-label="미주자산톡 홈으로 이동">
-      <img src="../assets/logo-img-60-60.svg" alt="미주자산톡 로고" class="logo-symbol" />
-      <span class="logo-text">미주자산톡</span>
+    <a href="https://mijutalk.co" class="logo" aria-label="Go to Mijutalk Home">
+      <img src="../assets/logo-img-60-60.svg" alt="Mijutalk Logo" class="logo-symbol" />
+      <span class="logo-text">Mijutalk</span>
     </a>
-
-    <button class="menu-toggle" aria-label="메뉴 열기/닫기" aria-expanded="false" aria-controls="primary-navigation">
-      <span class="hamburger"></span>
-    </button>
-
     <nav id="primary-navigation">
       <ul role="menubar">
         <li role="none"><a href="../index.html#hero" class="active" role="menuitem" tabindex="0">홈</a></li>
@@ -325,92 +166,55 @@ footer p {
     </nav>
   </div>
 </header>
-
-<main role="main">
-<section id="privacy-en">
+<main>
+<section id="privacy">
   <h1>Privacy Policy</h1>
   <p class="effective-date">Effective Date: May 18, 2025</p>
-
   <h2>1. Information We Collect</h2>
-  <p>When you request a consultation, Mijutalk collects the following personal information:</p>
+  <p>When you request a consultation, Mijutalk collects the following information:</p>
   <ul>
-    <li><strong>Required:</strong> Name, phone number, area of consultation, available time slots</li>
-    <li><strong>Optional:</strong> Email address, estimated financial assets, detailed inquiry</li>
+    <li><strong>Required:</strong> Name, phone number, consultation topic, available time</li>
+    <li><strong>Optional:</strong> Email, financial assets, details of inquiry</li>
   </ul>
-
-  <h2>2. Purpose of Collection and Use</h2>
+  <h2>2. Purpose of Use</h2>
   <ul>
-    <li>To provide financial consultation and support services</li>
-    <li>To respond to inquiries and improve our service quality</li>
-    <li>To perform internal analysis and marketing (only with prior consent)</li>
+    <li>To provide financial consulting and support</li>
+    <li>To respond to inquiries and improve services</li>
+    <li>For internal analytics and marketing (with prior consent)</li>
   </ul>
-
   <h2>3. Retention Period</h2>
-  <p>
-    Personal information is retained for 6 months after the consultation is completed, then securely deleted.<br>
-    In certain cases, data may be retained longer as required by law.
-  </p>
-
-  <h2>4. Third-Party Sharing & International Transfers</h2>
-  <p>
-    Mijutalk does not share personal information with third parties unless:
-  </p>
+  <p>Your information will be stored for 6 months after consultation and then securely deleted, unless longer retention is required by law.</p>
+  <h2>4. Third-Party Disclosure</h2>
   <ul>
-    <li>Required by law or legal process</li>
-    <li>Consent has been explicitly provided by the user</li>
+    <li>Only when required by law or with your consent</li>
+    <li>Information may be stored on servers in Korea and accessed from the US</li>
   </ul>
-  <p>
-    Data may be stored on servers located in South Korea and accessed from the United States.<br>
-    Transfers are handled in accordance with applicable data protection laws, including CCPA.
-  </p>
-
-  <h2>5. User Rights</h2>
+  <h2>5. Your Rights</h2>
   <ul>
-    <li>Access and correct your personal information</li>
-    <li>Request deletion or restriction of processing</li>
-    <li>California residents may exercise their rights under the CCPA</li>
+    <li>Request to view, correct, delete or limit processing of your data</li>
+    <li>Email: <a href="mailto:privacy@mijutalk.co">privacy@mijutalk.co</a></li>
   </ul>
-  <p>Requests: <a href="mailto:privacy@mijutalk.co">privacy@mijutalk.co</a></p>
-
   <h2>6. Safeguards</h2>
   <ul>
-    <li>SSL encryption for data transmission</li>
-    <li>Access control and logging</li>
-    <li>Internal data protection training</li>
-    <li>Physical security measures for document storage</li>
+    <li>SSL encryption</li>
+    <li>Access controls and logging</li>
+    <li>Staff training</li>
+    <li>Locked physical storage</li>
   </ul>
-
   <h2>7. Data Protection Officer</h2>
-  <p>
-    Name: Sanghyun Lee<br>
-    Phone: <a href="tel:+827071391635">+82-70-7139-1635</a><br>
-    Email: <a href="mailto:privacy@mijutalk.co">privacy@mijutalk.co</a>
+  <p>Sanghyun Lee<br>Phone: <a href="tel:+827071391635">+82-70-7139-1635</a><br>Email: <a href="mailto:privacy@mijutalk.co">privacy@mijutalk.co</a></p>
+  <h2>8. Cookies & Tracking</h2>
+  <p>We use Google Analytics to analyze usage anonymously. You may opt-out at:
+    <a href="https://tools.google.com/dlpage/gaoptout" target="_blank">Google Analytics Opt-Out</a>
   </p>
-
-  <h2>8. Cookies & Analytics</h2>
-  <p>
-    We use Google Analytics to improve our services and analyze traffic anonymously.<br>
-    No personally identifiable information is linked with this data.<br>
-    Users can opt-out using: <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer">Google Analytics Opt-Out Tool</a>
-  </p>
-
-  <h2>9. Notification of Changes</h2>
-  <p>
-    This policy may change based on legal or service updates.<br>
-    Changes will be announced on our website at least 7 days in advance.<br>
-    Last Updated: May 24, 2025
-  </p>
-</section>
-
-
+  <h2>9. Changes to This Policy</h2>
+  <p>We may update this policy. Changes will be posted at least 7 days in advance.<br>Last updated: May 24, 2025</p>
   <p style="margin-top: 50px; font-size: 0.95rem;">
     한글로 된 개인정보처리방침이 필요하신가요?<br>
-    👉 <a href="../pages/privacy.html" target="_blank" rel="noopener noreferrer">View Privacy Policy in Korean</a>
+    👉 <a href="../pages/privacy.html">View Privacy Policy in Korean</a>
   </p>
 </section>
-
 </main>
-
 <footer>
   <div class="footer-links">
     <a href="../pages/privacy.html">개인정보처리방침</a>
@@ -425,82 +229,5 @@ footer p {
   <p class="nowrap">사업자등록주소: 경상남도 합천군 합천읍 대야로 888 </p>
   <p class="nowrap">&copy; <script>document.write(new Date().getFullYear());</script> 미주자산톡. All Rights Reserved.</p>
 </footer>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  // Scrollspy for active nav link
-  const sections = document.querySelectorAll("section[id], #privacy");
-  const navLinks = document.querySelectorAll("nav#primary-navigation ul li a");
-  const headerOffset = 70; // 헤더 높이와 동일하게 설정
-
-  function updateActiveLink() {
-    let current = "";
-    const scrollPos = window.pageYOffset || document.documentElement.scrollTop;
-
-    sections.forEach(section => {
-      const sectionTop = section.offsetTop;
-      if (scrollPos >= sectionTop - headerOffset) {
-        current = section.getAttribute("id");
-      }
-    });
-
-    navLinks.forEach(link => {
-      link.classList.remove("active");
-      const href = link.getAttribute("href");
-      if (href && href.includes("#") && href.substring(1) === current) {
-        link.classList.add("active");
-      }
-    });
-  }
-
-  window.addEventListener("scroll", updateActiveLink);
-  updateActiveLink();
-
-  // 모바일 내비게이션 작동 스크립트
-  const toggleButton = document.querySelector(".menu-toggle");
-  const nav = document.getElementById("primary-navigation");
-
-  if (toggleButton && nav) {
-    toggleButton.addEventListener("click", () => {
-      const isOpen = nav.classList.toggle("open");
-      toggleButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
-      toggleButton.classList.toggle("open", isOpen);
-    });
-
-    const mobileNavLinks = nav.querySelectorAll("a");
-    mobileNavLinks.forEach(link => {
-      link.addEventListener("click", () => {
-        if (nav.classList.contains("open")) {
-          nav.classList.remove("open");
-          toggleButton.setAttribute("aria-expanded", "false");
-          toggleButton.classList.remove("open");
-        }
-      });
-    });
-  }
-
-  // Smooth scroll for anchor links
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-      const hrefAttribute = this.getAttribute('href');
-      
-      if (hrefAttribute && hrefAttribute.length > 1 && document.querySelector(hrefAttribute)) {
-        e.preventDefault();
-        const targetElement = document.querySelector(hrefAttribute);
-        if (targetElement) {
-          const headerHeight = document.querySelector('header').offsetHeight;
-          const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
-          const offsetPosition = elementPosition - headerHeight;
-
-          window.scrollTo({
-            top: offsetPosition,
-            behavior: "smooth"
-          });
-        }
-      }
-    });
-  });
-});
-</script>
 </body>
 </html>
