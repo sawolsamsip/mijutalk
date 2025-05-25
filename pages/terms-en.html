@@ -24,18 +24,18 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-VNNXFK9RNH"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VNNXFK9RNH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-VNNXFK9RNH');
+  </script>
 
-  gtag('config', 'G-XXXXXXX');
-</script>
-
+  <title>Terms of Service | Mijutalk</title>
   
-<title>미주자산톡 | 이용약관</title>
+  <!-- Styles (기존 한글 버전과 동일) -->
 <style>
   :root {
     --color-primary: #003366;
@@ -231,33 +231,37 @@
     padding-top: 90px;
   }
 
-  #privacy {
+  #terms {
     background: white;
     padding: 40px;
     border-radius: 16px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.08);
   }
 
-  #privacy h1 {
+  #terms h1 {
     color: var(--color-primary);
     margin-bottom: 30px;
     border-bottom: 2px solid var(--color-secondary);
     padding-bottom: 10px;
   }
 
-  #privacy h2 {
+  #terms h2 {
     color: var(--color-primary);
     margin-top: 40px;
     border-left: 4px solid var(--color-secondary);
     padding-left: 10px;
   }
 
-  #privacy ul {
+  #terms ul, #terms ol {
     margin: 20px 0;
     padding-left: 20px;
   }
 
-  #privacy p {
+  #terms li {
+    margin-bottom: 10px;
+  }
+
+  #terms p {
     margin: 15px 0;
   }
 
@@ -324,31 +328,6 @@ footer p {
     filter: brightness(0) invert(1);
  
   }
-
-.content-section {
-  background: white;
-  padding: 40px;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-  margin-bottom: 40px;
-}
-
-.content-section h1 {
-  color: var(--color-primary);
-  margin-bottom: 30px;
-  border-bottom: 2px solid var(--color-secondary);
-  padding-bottom: 10px;
-}
-
-.content-section h2 {
-  color: var(--color-primary);
-  margin-top: 40px;
-  border-left: 4px solid var(--color-secondary);
-  padding-left: 10px;
-  font-size: 1.15rem;
-  font-weight: 700;
-}
-
   
 @media (max-width: 768px) {
   footer {
@@ -361,16 +340,10 @@ footer p {
     letter-spacing: -0.2px;
   }
 }
-
-  /* Accessibility */
-  *:focus-visible {
-    outline: 3px solid var(--color-secondary);
-    outline-offset: 2px;
-  }
 </style>
+
 </head>
 <body>
-
 <header>
   <div class="header-container">
     <a href="https://mijutalk.co" class="logo" aria-label="미주자산톡 홈으로 이동">
@@ -394,6 +367,24 @@ footer p {
     </nav>
   </div>
 </header>
+  <header>
+    <div class="header-container">
+      <a href="https://mijutalk.co" class="logo" aria-label="Mijutalk Home">
+        <img src="../assets/logo-img-60-60.svg" alt="Mijutalk Logo" class="logo-symbol" />
+        <span class="logo-text">Mijutalk</span>
+      </a>
+      <nav id="primary-navigation">
+        <ul>
+          <li><a href="../index.html#hero">Home</a></li>
+          <li><a href="../index.html#services">Services</a></li>
+          <li><a href="../index.html#about">About</a></li>
+          <li><a href="../index.html#faq">FAQ</a></li>
+          <li><a href="../index.html#success-cases">Success Cases</a></li>
+          <li><a href="../pages/consultant.html">Consultation</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
 <main role="main">
 <section id="terms" aria-labelledby="terms-title" class="content-section">
