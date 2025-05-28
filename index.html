@@ -1271,37 +1271,59 @@
     </div>
   </section>
 
-<section class="faq-section">
-  <div class="faq-categories">
-    <button class="faq-category active" data-category="general">일반</button>
-    <button class="faq-category" data-category="account">계정</button>
-    <button class="faq-category" data-category="payment">결제</button>
-  </div>
-  <div class="faq-contents">
-    <div class="faq-item" data-category="general">
-      <h3>일반 질문 1</h3>
-      <p>일반 질문에 대한 답변입니다.</p>
-    </div>
-    <div class="faq-item" data-category="general">
-      <h3>일반 질문 2</h3>
-      <p>일반 질문에 대한 또 다른 답변입니다.</p>
-    </div>
-    <div class="faq-item" data-category="account">
-      <h3>계정 질문 1</h3>
-      <p>계정 관련 질문에 대한 답변입니다.</p>
-    </div>
-    <div class="faq-item" data-category="payment">
-      <h3>결제 질문 1</h3>
-      <p>결제 관련 질문에 대한 답변입니다.</p>
-    </div>
+<section aria-labelledby="faq-heading" class="container my-5">
+  <h1 id="faq-heading">자주 묻는 질문</h1>
+
+  <ul class="nav nav-tabs" id="faqTab" role="tablist">
+    <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#faq-tab1">1. 서비스 성격 및 역할</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#faq-tab2">2. 이용 방법 및 절차</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#faq-tab3">3. 제공 정보 분야별 FAQ</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#faq-tab4">4. 전문가 연결 관련 안내</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#faq-tab5">5. 플랫폼 운영 및 이용 환경</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#faq-tab6">6. 개인정보 및 보안 정책</button></li>
+  </ul>
+
+  <div class="tab-content mt-3">
+    <section class="tab-pane fade show active" id="faq-tab1" role="tabpanel">
+      <div class="faq-item"><div class="faq-question">Q. 미주자산톡은 어떤 서비스를 하나요?</div><div class="faq-answer">A. 미주자산톡은 미국 거주 한인을 위한 금융 정보 제공 플랫폼입니다.</div></div>
+      <div class="faq-item"><div class="faq-question">Q. 어떤 사람을 위한 서비스인가요?</div><div class="faq-answer">A. 자산 25만불 이상 한인을 위한 맞춤 정보 제공과 전문가 연결 플랫폼입니다.</div></div>
+    </section>
+
+    <section class="tab-pane fade" id="faq-tab2" role="tabpanel">
+      <div class="faq-item"><div class="faq-question">Q. 상담은 어떻게 신청하나요?</div><div class="faq-answer">A. 홈페이지나 카카오톡에서 간편하게 신청하실 수 있습니다.</div></div>
+      <div class="faq-item"><div class="faq-question">Q. 예약 절차는 어떻게 되나요?</div><div class="faq-answer">A. 신청 → 전문가 매칭 → 일정 조율 → 상담으로 진행됩니다.</div></div>
+    </section>
+
+    <section class="tab-pane fade" id="faq-tab3" role="tabpanel">
+      <div class="faq-item"><div class="faq-question">Q. 자산관리 상담 내용은?</div><div class="faq-answer">A. 목표 기반 자산 배분, 리밸런싱, 리스크 관리 등을 포함합니다.</div></div>
+      <div class="faq-item"><div class="faq-question">Q. 은퇴 전략 상담 내용은?</div><div class="faq-answer">A. 401(k), IRA, Social Security 수령 전략 등을 안내합니다.</div></div>
+    </section>
+
+    <section class="tab-pane fade" id="faq-tab4" role="tabpanel">
+      <div class="faq-item"><div class="faq-question">Q. 연결되는 전문가는 누구인가요?</div><div class="faq-answer">A. 미국 자격 보유 전문가들로 구성되어 있습니다.</div></div>
+      <div class="faq-item"><div class="faq-question">Q. 상담 방식은?</div><div class="faq-answer">A. 주로 Zoom 화상 또는 전화로 진행됩니다.</div></div>
+    </section>
+
+    <section class="tab-pane fade" id="faq-tab5" role="tabpanel">
+      <div class="faq-item"><div class="faq-question">Q. 운영 시간은?</div><div class="faq-answer">A. 평일 오전 9시~오후 6시(PST), 주말/공휴일 휴무입니다.</div></div>
+      <div class="faq-item"><div class="faq-question">Q. 모바일 지원 되나요?</div><div class="faq-answer">A. 모바일 최적화 웹으로 편리하게 이용 가능합니다.</div></div>
+    </section>
+
+    <section class="tab-pane fade" id="faq-tab6" role="tabpanel">
+      <div class="faq-item"><div class="faq-question">Q. 개인정보는 안전한가요?</div><div class="faq-answer">A. 암호화 저장되며 외부에 제공되지 않습니다.</div></div>
+      <div class="faq-item"><div class="faq-question">Q. 미주자산톡의 중립성은?</div><div class="faq-answer">A. 특정 금융기관에 소속되지 않은 독립 플랫폼입니다.</div></div>
+    </section>
   </div>
 </section>
-<!-- Bootstrap 5 CSS (head 태그에 위치해야 함) -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<!-- Bootstrap Icons -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-<!-- Bootstrap Bundle JS (body 끝에 위치) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.parentElement;
+      item.classList.toggle('active');
+    });
+  });
+</script>
 
   <!-- 성공 사례 섹션 -->
   <section id="success-cases" aria-labelledby="success-cases-title">
