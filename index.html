@@ -69,13 +69,65 @@
       box-sizing: border-box;
     }
 
-    /* FAQ 답변의 p는 줄 바꿈 허용 */
-    .faq-answer p {
-      white-space: normal;
-      word-break: keep-all;
-      display: block;
-      width: 100%;
-      overflow-wrap: break-word;
+    .nav-tabs {
+      flex-wrap: wrap;
+      justify-content: center;
+      border-bottom: 2px solid #0d6efd;
+    }
+    .nav-tabs .nav-link {
+      font-weight: 500;
+      color: #555;
+      margin: 3px;
+      border-radius: 0.5rem 0.5rem 0 0;
+    }
+    .nav-tabs .nav-link.active {
+      color: #0d6efd;
+      background-color: #e9f0ff;
+      border: 1px solid #0d6efd;
+      border-bottom: none;
+    }
+    .tab-content {
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 0 0 0.5rem 0.5rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      margin-top: -1px;
+    }
+    .faq-item {
+      border: 1px solid #dee2e6;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .faq-question {
+      background: #f1f5ff;
+      color: #0d6efd;
+      font-weight: 600;
+      padding: 1rem 1.2rem;
+      cursor: pointer;
+      position: relative;
+    }
+    .faq-question::after {
+      content: '+';
+      position: absolute;
+      right: 1.2rem;
+      transition: transform 0.3s;
+    }
+    .faq-item.active .faq-question::after {
+      content: '–';
+    }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      padding: 0 1.2rem;
+      background: #fff;
+      transition: max-height 0.4s ease, padding 0.4s ease;
+    }
+    .faq-item.active .faq-answer {
+      padding: 1rem 1.2rem;
+      max-height: 500px;
     }
 
     .bio p {
