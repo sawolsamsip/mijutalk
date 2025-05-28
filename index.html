@@ -994,6 +994,36 @@
 
     /* 모바일 대응 */
     @media (max-width: 768px) {
+
+            .faq-item {
+        margin-bottom: 20px;
+      }
+      
+      .faq-question {
+        padding: 16px 20px;
+        font-size: 1rem;
+      }
+      
+      .faq-answer {
+        padding: 0 20px;
+      }
+      
+      .faq-answer[aria-hidden="false"] {
+        padding-bottom: 20px;
+        max-height: none;
+        overflow-y: auto;
+        padding: 12px 20px 20px;
+      }
+      
+      .faq-answer p {
+        white-space: normal;
+        word-break: keep-all;
+        font-size: 0.93rem;
+        line-height: 1.5;
+        margin-bottom: 12px;
+      }
+
+      
       .floating-cta {
         bottom: 25px;
         right: 25px;
@@ -1060,108 +1090,83 @@
       animation: pulse 3s ease-in-out infinite;
     }
 
-  .accordion-item {
-    background-color: #fff;
-    border-radius: 12px;
-    margin-bottom: 15px;
-    border: 1px solid #e1e1e1;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  }
 
-  .accordion-button {
-    background-color: #ffffff;
-    color: #212529;
-    font-weight: 600;
-    padding: 18px 24px;
-    transition: background-color 0.3s ease;
-  }
 
-  .accordion-button:hover {
-    background-color: #f0f4ff;
-  }
-
-  .accordion-button:not(.collapsed) {
-    background-color: #e6f0ff;
-    color: #0d6efd;
-    box-shadow: inset 0 -1px 0 rgba(0,0,0,0.125);
-  }
-
-  .accordion-button i {
-    font-size: 1.2rem;
-    color: #0d6efd;
-    margin-right: 8px;
-  }
-
-  .accordion-body {
-    padding: 20px 24px;
-    line-height: 1.7;
-    background-color: #fcfcfe;
-  }
-
-  .nav-tabs .nav-link {
-    border: none;
-    font-weight: 600;
-    color: #6c757d;
-    padding: 10px 18px;
-    margin: 0 6px;
-    border-radius: 30px;
-    background-color: #e9ecef;
-  }
-
-  .nav-tabs .nav-link.active {
-    color: #fff;
-    background-color: #0d6efd;
-  }
-
-  @media (max-width: 576px) {
-    .accordion-button {
-      font-size: 0.95rem;
-      padding: 14px 18px;
+        /* FAQ 답변의 p는 줄 바꿈 허용 */
+    .faq-answer p {
+      white-space: normal;
+      word-break: keep-all;
+      display: block;
+      width: 100%;
+      overflow-wrap: break-word;
     }
 
-    .accordion-body {
-      font-size: 0.92rem;
-      padding: 16px 18px;
+        #faq .faq-item {
+      margin-bottom: 24px;
+      background-color: var(--color-faq-bg);
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      overflow: visible;
+      contain: none;
+      transition: box-shadow 0.3s ease;
     }
-  }
+    #faq .faq-item:hover {
+      box-shadow: 0 10px 28px rgba(0,0,0,0.14);
+    }
 
+    .faq-item {
+      contain: content;
+      will-change: height;
+    }
 
-.faq-section {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-}
+    .faq-question {
+      background: none;
+      border: none;
+      padding: 18px 25px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      cursor: pointer;
+      position: relative;
+      user-select: none;
+      width: 100%;
+      text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      word-break: keep-all;
+    }
+    .faq-question svg {
+      transition: transform 0.35s ease;
+      fill: var(--color-primary);
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    .faq-question.active svg {
+      transform: rotate(180deg);
+      fill: var(--color-secondary);
+    }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.35s ease;
+      padding: 0 25px;
+      will-change: max-height;
+    }
 
-.faq-categories {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
+    .faq-answer[aria-hidden="false"] {
+      max-height: none;
+      padding-bottom: 20px;
+      overflow: visible;
+    }
 
-.faq-category {
-  padding: 10px 20px;
-  border: none;
-  background-color: #eee;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-}
-
-.faq-category.active {
-  background-color: #007BFF;
-  color: #fff;
-}
-
-.faq-item {
-  display: none;
-  margin-bottom: 15px;
-}
-
-.faq-item.active {
-  display: block;
-}
-    
+    .faq-answer.expanded {
+      height: auto;
+      max-height: none;
+      padding: 0 25px 20px;
+      overflow: visible;
+    }
   </style>
 </head>
 <body>
@@ -1271,59 +1276,72 @@
     </div>
   </section>
 
-<section aria-labelledby="faq-heading" class="container my-5">
-  <h1 id="faq-heading">자주 묻는 질문</h1>
-
-  <ul class="nav nav-tabs" id="faqTab" role="tablist">
-    <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#faq-tab1">1. 서비스 성격 및 역할</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#faq-tab2">2. 이용 방법 및 절차</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#faq-tab3">3. 제공 정보 분야별 FAQ</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#faq-tab4">4. 전문가 연결 관련 안내</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#faq-tab5">5. 플랫폼 운영 및 이용 환경</button></li>
-    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#faq-tab6">6. 개인정보 및 보안 정책</button></li>
-  </ul>
-
-  <div class="tab-content mt-3">
-    <section class="tab-pane fade show active" id="faq-tab1" role="tabpanel">
-      <div class="faq-item"><div class="faq-question">Q. 미주자산톡은 어떤 서비스를 하나요?</div><div class="faq-answer">A. 미주자산톡은 미국 거주 한인을 위한 금융 정보 제공 플랫폼입니다.</div></div>
-      <div class="faq-item"><div class="faq-question">Q. 어떤 사람을 위한 서비스인가요?</div><div class="faq-answer">A. 자산 25만불 이상 한인을 위한 맞춤 정보 제공과 전문가 연결 플랫폼입니다.</div></div>
-    </section>
-
-    <section class="tab-pane fade" id="faq-tab2" role="tabpanel">
-      <div class="faq-item"><div class="faq-question">Q. 상담은 어떻게 신청하나요?</div><div class="faq-answer">A. 홈페이지나 카카오톡에서 간편하게 신청하실 수 있습니다.</div></div>
-      <div class="faq-item"><div class="faq-question">Q. 예약 절차는 어떻게 되나요?</div><div class="faq-answer">A. 신청 → 전문가 매칭 → 일정 조율 → 상담으로 진행됩니다.</div></div>
-    </section>
-
-    <section class="tab-pane fade" id="faq-tab3" role="tabpanel">
-      <div class="faq-item"><div class="faq-question">Q. 자산관리 상담 내용은?</div><div class="faq-answer">A. 목표 기반 자산 배분, 리밸런싱, 리스크 관리 등을 포함합니다.</div></div>
-      <div class="faq-item"><div class="faq-question">Q. 은퇴 전략 상담 내용은?</div><div class="faq-answer">A. 401(k), IRA, Social Security 수령 전략 등을 안내합니다.</div></div>
-    </section>
-
-    <section class="tab-pane fade" id="faq-tab4" role="tabpanel">
-      <div class="faq-item"><div class="faq-question">Q. 연결되는 전문가는 누구인가요?</div><div class="faq-answer">A. 미국 자격 보유 전문가들로 구성되어 있습니다.</div></div>
-      <div class="faq-item"><div class="faq-question">Q. 상담 방식은?</div><div class="faq-answer">A. 주로 Zoom 화상 또는 전화로 진행됩니다.</div></div>
-    </section>
-
-    <section class="tab-pane fade" id="faq-tab5" role="tabpanel">
-      <div class="faq-item"><div class="faq-question">Q. 운영 시간은?</div><div class="faq-answer">A. 평일 오전 9시~오후 6시(PST), 주말/공휴일 휴무입니다.</div></div>
-      <div class="faq-item"><div class="faq-question">Q. 모바일 지원 되나요?</div><div class="faq-answer">A. 모바일 최적화 웹으로 편리하게 이용 가능합니다.</div></div>
-    </section>
-
-    <section class="tab-pane fade" id="faq-tab6" role="tabpanel">
-      <div class="faq-item"><div class="faq-question">Q. 개인정보는 안전한가요?</div><div class="faq-answer">A. 암호화 저장되며 외부에 제공되지 않습니다.</div></div>
-      <div class="faq-item"><div class="faq-question">Q. 미주자산톡의 중립성은?</div><div class="faq-answer">A. 특정 금융기관에 소속되지 않은 독립 플랫폼입니다.</div></div>
-    </section>
-  </div>
-</section>
-
-<script>
-  document.querySelectorAll('.faq-question').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const item = btn.parentElement;
-      item.classList.toggle('active');
-    });
-  });
-</script>
+  <section id="faq" aria-labelledby="faq-title">
+    <h2 id="faq-title">자주 묻는 질문 (FAQ)</h2>
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq1-answer" id="faq1-btn">
+        1. 미국에서 자산 관리를 꼭 받아야 하나요?
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq1-answer" class="faq-answer" hidden>
+        <p>대부분의 한인분들은 처음엔 직접 관리하시다가 투자 방향이나 세금 문제로 어려움을 느끼십니다. 전문가의 도움을 받으면 더 체계적이고 세금 면에서도 유리하게 관리할 수 있습니다.</p>
+      </div>
+    </article>
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq2-answer" id="faq2-btn">
+        2. 상담은 무료인가요?
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq2-answer" class="faq-answer" hidden>
+        <p>초기 상담은 무료로 제공되며, 현재 상황과 목표를 듣고 맞춤형 방향을 제시해드립니다. 이후 추가 상담이나 서비스 이용과 관련하여 비용이 발생할 수도 있으나, 발생 시에는 별도로 사전에 안내드립니다. 진행 여부는 무료 상담 후에 결정하실 수 있습니다.</p>
+      </div>
+    </article>
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq3-answer" id="faq3-btn">
+        3. 얼마부터 시작할 수 있나요?
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq3-answer" class="faq-answer" hidden>
+        <p>고객님의 상황에 따라 다르지만, 일반적으로 $250,000 이상의 투자 자산을 기준으로 종합적인 자산 관리를 제공하고 있습니다.</p>
+      </div>
+    </article>
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq4-answer" id="faq4-btn">
+        4. 한국과 미국에 자산이 모두 있는데, 함께 상담 가능한가요?
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq4-answer" class="faq-answer" hidden>
+        <p>네, 가능합니다. 미국 내 자산과 한국 자산을 함께 고려한 전략도 안내드릴 수 있습니다. (단, 한국 자산에 대한 세부 운용은 안내 차원에서만 도움 드립니다.)</p>
+      </div>
+    </article>
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq5-answer" id="faq5-btn">
+        5. 세금 문제도 함께 도와주시나요?
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq5-answer" class="faq-answer" hidden>
+        <p>세무사는 아니지만, 투자에 따른 세금 전략이나 구조 설계는 함께 검토해드립니다. 필요시 CPA와 협업도 가능합니다.</p>
+      </div>
+    </article>
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq6-answer" id="faq6-btn">
+        6. 은퇴 후 수입은 어떻게 만드나요?
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq6-answer" class="faq-answer" hidden>
+        <p>고객님의 은퇴 자금, 연금, 소설시큐리티 등을 기반으로 지속 가능한 현금 흐름을 설계해드립니다.</p>
+      </div>
+    </article>
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq7-answer" id="faq7-btn">
+        7. 한국어로 상담 가능한가요?
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq7-answer" class="faq-answer" hidden>
+        <p>네, 편하게 한국어로 상담하실 수 있습니다. 문화적 차이도 이해하며 설명드리기 때문에 더 편하게 상담 받으실 수 있습니다.</p>
+      </div>
+    </article>
+  </section>
 
   <!-- 성공 사례 섹션 -->
   <section id="success-cases" aria-labelledby="success-cases-title">
