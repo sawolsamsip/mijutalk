@@ -93,42 +93,6 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.05);
       margin-top: -1px;
     }
-    .faq-item {
-      border: 1px solid #dee2e6;
-      border-radius: 0.5rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
-      overflow: hidden;
-      transition: all 0.3s ease;
-    }
-    .faq-question {
-      background: #f1f5ff;
-      color: #0d6efd;
-      font-weight: 600;
-      padding: 1rem 1.2rem;
-      cursor: pointer;
-      position: relative;
-    }
-    .faq-question::after {
-      content: '+';
-      position: absolute;
-      right: 1.2rem;
-      transition: transform 0.3s;
-    }
-    .faq-item.active .faq-question::after {
-      content: '–';
-    }
-    .faq-answer {
-      max-height: 0;
-      overflow: hidden;
-      padding: 0 1.2rem;
-      background: #fff;
-      transition: max-height 0.4s ease, padding 0.4s ease;
-    }
-    .faq-item.active .faq-answer {
-      padding: 1rem 1.2rem;
-      max-height: 500px;
-    }
 
     .bio p {
       white-space: normal;
@@ -137,18 +101,13 @@
 
     /* 데스크탑에서만 추가적인 스타일 적용 */
     @media (min-width: 769px) {
-      .faq-answer[aria-hidden="false"] {
-        max-height: none;
-        overflow: visible;
-        padding: 8px 20px 20px;
-      }
       .cta-buttons {
         flex-direction: row;
       }
     }
 
     @media (max-width: 768px) {
-      .nowrap, #services li p, .faq-answer p,
+      .nowrap, #services li p, 
       .consult-content p:not(.consult-note), footer p {
         white-space: normal;
         word-break: keep-all;
@@ -474,72 +433,6 @@
       margin-right: auto;
     }
 
-    #faq .faq-item {
-      margin-bottom: 24px;
-      background-color: var(--color-faq-bg);
-      border-radius: 12px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-      overflow: visible;
-      contain: none;
-      transition: box-shadow 0.3s ease;
-    }
-    #faq .faq-item:hover {
-      box-shadow: 0 10px 28px rgba(0,0,0,0.14);
-    }
-
-    .faq-item {
-      contain: content;
-      will-change: height;
-    }
-
-    .faq-question {
-      background: none;
-      border: none;
-      padding: 18px 25px;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--color-primary);
-      cursor: pointer;
-      position: relative;
-      user-select: none;
-      width: 100%;
-      text-align: left;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      word-break: keep-all;
-    }
-    .faq-question svg {
-      transition: transform 0.35s ease;
-      fill: var(--color-primary);
-      width: 20px;
-      height: 20px;
-      flex-shrink: 0;
-    }
-    .faq-question.active svg {
-      transform: rotate(180deg);
-      fill: var(--color-secondary);
-    }
-    .faq-answer {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.35s ease, padding 0.35s ease;
-      padding: 0 25px;
-      will-change: max-height;
-    }
-
-    .faq-answer[aria-hidden="false"] {
-      max-height: none;
-      padding-bottom: 20px;
-      overflow: visible;
-    }
-
-    .faq-answer.expanded {
-      height: auto;
-      max-height: none;
-      padding: 0 25px 20px;
-      overflow: visible;
-    }
 
     /* 성공 사례 섹션 스타일 */
     #success-cases {
@@ -762,34 +655,6 @@
     }
 
     @media (max-width: 768px) {
-      .faq-item {
-        margin-bottom: 20px;
-      }
-      
-      .faq-question {
-        padding: 16px 20px;
-        font-size: 1rem;
-      }
-      
-      .faq-answer {
-        padding: 0 20px;
-      }
-      
-      .faq-answer[aria-hidden="false"] {
-        padding-bottom: 20px;
-        max-height: none;
-        overflow-y: auto;
-        padding: 12px 20px 20px;
-      }
-      
-      .faq-answer p {
-        white-space: normal;
-        word-break: keep-all;
-        font-size: 0.93rem;
-        line-height: 1.5;
-        margin-bottom: 12px;
-      }
-
       .filter-buttons {
         justify-content: flex-start;
         overflow-x: auto;
@@ -1017,10 +882,7 @@
       outline: 3px solid var(--color-secondary);
       outline-offset: 2px;
     }
-    .faq-question:focus-visible {
-      outline: 2px solid var(--color-secondary);
-      outline-offset: 1px;
-    }
+
 
     /* 플로팅 버튼 컨테이너 */
     .floating-cta {
@@ -1198,17 +1060,6 @@
       animation: pulse 3s ease-in-out infinite;
     }
 
-  .faq-section {
-    background-color: #f9f9fb;
-    padding-top: 60px;
-    padding-bottom: 60px;
-  }
-
-  .faq-section h2 {
-    font-weight: 700;
-    margin-bottom: 40px;
-  }
-
   .accordion-item {
     background-color: #fff;
     border-radius: 12px;
@@ -1273,11 +1124,43 @@
       font-size: 0.92rem;
       padding: 16px 18px;
     }
-
-    .faq-section h2 {
-      font-size: 1.5rem;
-    }
   }
+
+
+.faq-section {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.faq-categories {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.faq-category {
+  padding: 10px 20px;
+  border: none;
+  background-color: #eee;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.faq-category.active {
+  background-color: #007BFF;
+  color: #fff;
+}
+
+.faq-item {
+  display: none;
+  margin-bottom: 15px;
+}
+
+.faq-item.active {
+  display: block;
+}
     
   </style>
 </head>
@@ -1388,89 +1271,31 @@
     </div>
   </section>
 
-<!-- FAQ Section Start -->
-<section id="faq" aria-labelledby="faq-title" class="faq-section py-5">
-  <div class="container">
-    <h2 class="text-center mb-4" id="faq-title">자주 묻는 질문</h2>
-
-    <!-- 탭 네비게이션 -->
-    <ul class="nav nav-tabs justify-content-center mb-4" id="faqTab" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#tab1" type="button" role="tab" aria-controls="tab1" aria-selected="true">1. 서비스 성격 및 역할</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button" role="tab" aria-controls="tab2" aria-selected="false">2. 이용 방법 및 절차</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="tab3-tab" data-bs-toggle="tab" data-bs-target="#tab3" type="button" role="tab" aria-controls="tab3" aria-selected="false">3. 제공 정보 분야별 FAQ</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="tab4-tab" data-bs-toggle="tab" data-bs-target="#tab4" type="button" role="tab" aria-controls="tab4" aria-selected="false">4. 전문가 연결 안내</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="tab5-tab" data-bs-toggle="tab" data-bs-target="#tab5" type="button" role="tab" aria-controls="tab5" aria-selected="false">5. 운영 및 시스템</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="tab6-tab" data-bs-toggle="tab" data-bs-target="#tab6" type="button" role="tab" aria-controls="tab6" aria-selected="false">6. 개인정보 및 보안</button>
-      </li>
-    </ul>
-
-    <!-- 탭 콘텐츠 -->
-    <div class="tab-content" id="faqTabContent">
-
-      <!-- 예시: tab3 - 정보 분야별 FAQ -->
-      <div class="tab-pane fade show active" id="tab1" role="tabpanel" aria-labelledby="tab1-tab">
-        <div class="accordion" id="faqAccordion1">
-          <!-- 아코디언 항목 추가 가능 -->
-        </div>
-      </div>
-
-      <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
-        <div class="accordion" id="faqAccordion2">
-          <!-- 아코디언 항목 추가 가능 -->
-        </div>
-      </div>
-
-      <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
-        <div class="accordion" id="faqAccordion3">
-          <!-- 각 질문 항목 -->
-          <div class="accordion-item">
-            <h2 class="accordion-header" id="heading3-1">
-              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3-1" aria-expanded="false" aria-controls="collapse3-1">
-                <i class="bi bi-question-circle me-2"></i> 자산관리 상담에는 어떤 내용이 포함되나요?
-              </button>
-            </h2>
-            <div id="collapse3-1" class="accordion-collapse collapse" aria-labelledby="heading3-1" data-bs-parent="#faqAccordion3">
-              <div class="accordion-body">목표 기반 자산 배분, 포트폴리오 구성, 리밸런싱, 긴급자금 확보 및 위험 관리 등이 포함됩니다.</div>
-            </div>
-          </div>
-          <!-- 추가 항목 반복 가능 -->
-        </div>
-      </div>
-
-      <div class="tab-pane fade" id="tab4" role="tabpanel" aria-labelledby="tab4-tab">
-        <div class="accordion" id="faqAccordion4">
-          <!-- 아코디언 항목 추가 가능 -->
-        </div>
-      </div>
-
-      <div class="tab-pane fade" id="tab5" role="tabpanel" aria-labelledby="tab5-tab">
-        <div class="accordion" id="faqAccordion5">
-          <!-- 아코디언 항목 추가 가능 -->
-        </div>
-      </div>
-
-      <div class="tab-pane fade" id="tab6" role="tabpanel" aria-labelledby="tab6-tab">
-        <div class="accordion" id="faqAccordion6">
-          <!-- 아코디언 항목 추가 가능 -->
-        </div>
-      </div>
-
+<section class="faq-section">
+  <div class="faq-categories">
+    <button class="faq-category active" data-category="general">일반</button>
+    <button class="faq-category" data-category="account">계정</button>
+    <button class="faq-category" data-category="payment">결제</button>
+  </div>
+  <div class="faq-contents">
+    <div class="faq-item" data-category="general">
+      <h3>일반 질문 1</h3>
+      <p>일반 질문에 대한 답변입니다.</p>
+    </div>
+    <div class="faq-item" data-category="general">
+      <h3>일반 질문 2</h3>
+      <p>일반 질문에 대한 또 다른 답변입니다.</p>
+    </div>
+    <div class="faq-item" data-category="account">
+      <h3>계정 질문 1</h3>
+      <p>계정 관련 질문에 대한 답변입니다.</p>
+    </div>
+    <div class="faq-item" data-category="payment">
+      <h3>결제 질문 1</h3>
+      <p>결제 관련 질문에 대한 답변입니다.</p>
     </div>
   </div>
 </section>
-<!-- FAQ Section End -->
-
 <!-- Bootstrap 5 CSS (head 태그에 위치해야 함) -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <!-- Bootstrap Icons -->
@@ -2002,48 +1827,34 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-// FAQ 아코디언 토글 기능 개선 (답변 겹침 방지 및 공간 확보)
-const faqQuestions = document.querySelectorAll('.faq-question');
-faqQuestions.forEach(button => {
-  button.addEventListener('click', () => {
-    const isExpanded = button.getAttribute('aria-expanded') === 'true';
-    const answer = document.getElementById(button.getAttribute('aria-controls'));
-    
-    // 모든 FAQ 답변 닫기
-    const allAnswers = document.querySelectorAll('.faq-answer');
-    allAnswers.forEach(ans => {
-      if (ans !== answer) {
-        ans.style.maxHeight = '0';
-        ans.style.paddingBottom = '0';
-        ans.style.overflow = 'hidden';
-        ans.setAttribute('hidden', ''); // 다른 답변 닫기
+document.addEventListener("DOMContentLoaded", function () {
+  const categoryButtons = document.querySelectorAll(".faq-category");
+  const faqItems = document.querySelectorAll(".faq-item");
+
+  function showCategory(category) {
+    faqItems.forEach((item) => {
+      if (item.dataset.category === category) {
+        item.classList.add("active");
+      } else {
+        item.classList.remove("active");
       }
     });
+  }
 
-    // 상태 토글
-    button.setAttribute('aria-expanded', String(!isExpanded));
-    button.classList.toggle('active');
-    answer.setAttribute('aria-hidden', String(isExpanded));
-
-    if (!isExpanded) {
-      // 답변 열기
-      answer.style.height = 'auto'; // 동적으로 높이 조정
-      answer.style.maxHeight = 'none'; // 답변이 길어져도 잘리지 않게 설정
-      answer.style.paddingBottom = '20px';
-      answer.style.overflow = 'visible'; // 답변이 길어도 스크롤 없이 보여지도록 설정
-      answer.removeAttribute('hidden');
-    } else {
-      // 답변 닫기
-      answer.style.maxHeight = '0';
-      answer.style.paddingBottom = '0';
-      answer.style.overflow = 'hidden'; // 스크롤을 숨김
-      setTimeout(() => {
-        if (button.getAttribute('aria-expanded') === 'false') {
-          answer.setAttribute('hidden', '');
-        }
-      }, 350); // transition 시간에 맞춰서 350ms 뒤에 hidden 처리
-    }
+  categoryButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      categoryButtons.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      const selectedCategory = btn.dataset.category;
+      showCategory(selectedCategory);
+    });
   });
+
+  // 초기화: 첫 번째 카테고리 표시
+  const initialCategory = document.querySelector(".faq-category.active")?.dataset.category;
+  if (initialCategory) {
+    showCategory(initialCategory);
+  }
 });
 
   // 모바일 네비게이션 토글
