@@ -1090,6 +1090,63 @@
       animation: pulse 3s ease-in-out infinite;
     }
 
+        /* 추가된 FAQ 카테고리 스타일 */
+    .faq-categories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+    
+    .category-btn {
+      padding: 10px 20px;
+      background: #e0e6ed;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      color: #003366;
+      font-size: 0.95rem;
+    }
+    
+    .category-btn:hover, .category-btn.active {
+      background: #003366;
+      color: white;
+    }
+    
+    .faq-section {
+      margin-bottom: 50px;
+    }
+    
+    .category-title {
+      font-size: 1.5rem;
+      color: #003366;
+      margin-bottom: 25px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #ffb800;
+      display: flex;
+      align-items: center;
+    }
+    
+    .category-title span {
+      background: #003366;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      font-weight: 600;
+    }
+    
+    .faq-items {
+      display: grid;
+      gap: 20px;
+    }
 
 
         /* FAQ 답변의 p는 줄 바꿈 허용 */
@@ -1101,7 +1158,7 @@
       overflow-wrap: break-word;
     }
 
-        #faq .faq-item {
+    #faq .faq-item {
       margin-bottom: 24px;
       background-color: var(--color-faq-bg);
       border-radius: 12px;
@@ -1276,75 +1333,87 @@
     </div>
   </section>
 
-        <section class="faq-categories">
-            <button class="category-btn active" data-category="service">서비스 성격 및 역할</button>
-            <button class="category-btn" data-category="usage">이용방법 및 절차</button>
-            <button class="category-btn" data-category="info">제공정보분야별</button>
-            <button class="category-btn" data-category="experts">전문가 연관 관련 안내</button>
-            <button class="category-btn" data-category="platform">플랫폼 운영 및 이용 환경</button>
-            <button class="category-btn" data-category="privacy">개인정보 및 보안 정책</button>
-        </section>
+  <section id="faq" aria-labelledby="faq-title">
+    <h2 id="faq-title">자주 묻는 질문 (FAQ)</h2>
+    
+    <div class="faq-categories">
+      <button class="category-btn active" data-category="service">서비스 성격 및 역할</button>
+      <button class="category-btn" data-category="usage">이용방법 및 절차</button>
+      <button class="category-btn" data-category="info">제공정보분야별</button>
+      <button class="category-btn" data-category="experts">전문가 연관 관련 안내</button>
+      <button class="category-btn" data-category="platform">플랫폼 운영 및 이용 환경</button>
+      <button class="category-btn" data-category="privacy">개인정보 및 보안 정책</button>
+    </div>
+    
+    <!-- 카테고리 1: 서비스 성격 및 역할 -->
+    <div class="faq-section" id="service">
+      <h3 class="category-title"><span>1</span>서비스 성격 및 역할</h3>
+      <div class="faq-items">
+        <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq1-answer" id="faq1-btn">
+            1. 미국에서 자산 관리를 꼭 받아야 하나요?
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq1-answer" class="faq-answer" hidden>
+            <p>대부분의 한인분들은 처음엔 직접 관리하시다가 투자 방향이나 세금 문제로 어려움을 느끼십니다. 전문가의 도움을 받으면 더 체계적이고 세금 면에서도 유리하게 관리할 수 있습니다.</p>
+          </div>
+        </article>
         
-        <section id="faq" aria-labelledby="faq-title">
-            <!-- 카테고리 1: 서비스 성격 및 역할 -->
-            <section class="faq-section" id="service">
-                <h2 class="category-title"><span>1</span>서비스 성격 및 역할</h2>
-                <div class="faq-items">
-                    <!-- FAQ 항목들 (기존 내용 유지) -->
-                    <article class="faq-item">
-                        <button class="faq-question" aria-expanded="false" aria-controls="faq1-answer" id="faq1-btn">
-                            1. 미국에서 자산 관리를 꼭 받아야 하나요?
-                            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
-                        </button>
-                        <div id="faq1-answer" class="faq-answer" hidden>
-                            <p>대부분의 한인분들은 처음엔 직접 관리하시다가 투자 방향이나 세금 문제로 어려움을 느끼십니다. 전문가의 도움을 받으면 더 체계적이고 세금 면에서도 유리하게 관리할 수 있습니다.</p>
-                        </div>
-                    </article>
-                    
-                    <!-- 추가 FAQ 항목들 (기존 내용 유지) -->
-                </div>
-            </section>
-            
-            <!-- 카테고리 2: 이용방법 및 절차 -->
-            <section class="faq-section" id="usage">
-                <h2 class="category-title"><span>2</span>이용방법 및 절차</h2>
-                <div class="faq-items">
-                    <!-- FAQ 항목들 (기존 내용 유지) -->
-                </div>
-            </section>
-            
-            <!-- 카테고리 3: 제공정보분야별 -->
-            <section class="faq-section" id="info">
-                <h2 class="category-title"><span>3</span>제공정보분야별</h2>
-                <div class="faq-items">
-                    <!-- FAQ 항목들 (기존 내용 유지) -->
-                </div>
-            </section>
-            
-            <!-- 카테고리 4: 전문가 연관 관련 안내 -->
-            <section class="faq-section" id="experts">
-                <h2 class="category-title"><span>4</span>전문가 연관 관련 안내</h2>
-                <div class="faq-items">
-                    <!-- FAQ 항목들 (기존 내용 유지) -->
-                </div>
-            </section>
-            
-            <!-- 카테고리 5: 플랫폼 운영 및 이용 환경 -->
-            <section class="faq-section" id="platform">
-                <h2 class="category-title"><span>5</span>플랫폼 운영 및 이용 환경</h2>
-                <div class="faq-items">
-                    <!-- FAQ 항목들 (기존 내용 유지) -->
-                </div>
-            </section>
-            
-            <!-- 카테고리 6: 개인정보 및 보안 정책 -->
-            <section class="faq-section" id="privacy">
-                <h2 class="category-title"><span>6</span>개인정보 및 보안 정책</h2>
-                <div class="faq-items">
-                    <!-- FAQ 항목들 (기존 내용 유지) -->
-                </div>
-            </section>
-        </section>
+        <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq2-answer" id="faq2-btn">
+            2. 서비스의 주요 목적과 가치는 무엇인가요?
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq2-answer" class="faq-answer" hidden>
+            <p>저희 서비스는 고객님의 자산을 체계적으로 관리하고 성장시키는 것을 목표로 합니다. 투자 전략 수립, 세금 최적화, 위험 관리 등 종합적인 재무 계획을 통해 고객님의 재정적 목표를 달성하도록 돕습니다.</p>
+            <p>가장 큰 가치는 복잡한 미국 금융 환경에서 고객님에게 맞춤형 솔루션을 제공하여 안정적인 자산 증식과 재정적 안정을 보장하는 데 있습니다.</p>
+          </div>
+        </article>
+        
+        <!-- 추가 FAQ 항목들 -->
+      </div>
+    </div>
+    
+    <!-- 카테고리 2: 이용방법 및 절차 -->
+    <div class="faq-section" id="usage">
+      <h3 class="category-title"><span>2</span>이용방법 및 절차</h3>
+      <div class="faq-items">
+        <!-- FAQ 항목들 -->
+      </div>
+    </div>
+    
+    <!-- 카테고리 3: 제공정보분야별 -->
+    <div class="faq-section" id="info">
+      <h3 class="category-title"><span>3</span>제공정보분야별</h3>
+      <div class="faq-items">
+        <!-- FAQ 항목들 -->
+      </div>
+    </div>
+    
+    <!-- 카테고리 4: 전문가 연관 관련 안내 -->
+    <div class="faq-section" id="experts">
+      <h3 class="category-title"><span>4</span>전문가 연관 관련 안내</h3>
+      <div class="faq-items">
+        <!-- FAQ 항목들 -->
+      </div>
+    </div>
+    
+    <!-- 카테고리 5: 플랫폼 운영 및 이용 환경 -->
+    <div class="faq-section" id="platform">
+      <h3 class="category-title"><span>5</span>플랫폼 운영 및 이용 환경</h3>
+      <div class="faq-items">
+        <!-- FAQ 항목들 -->
+      </div>
+    </div>
+    
+    <!-- 카테고리 6: 개인정보 및 보안 정책 -->
+    <div class="faq-section" id="privacy">
+      <h3 class="category-title"><span>6</span>개인정보 및 보안 정책</h3>
+      <div class="faq-items">
+        <!-- FAQ 항목들 -->
+      </div>
+    </div>
+  </section>
 
   <!-- 성공 사례 섹션 -->
   <section id="success-cases" aria-labelledby="success-cases-title">
@@ -1869,98 +1938,97 @@ document.addEventListener('DOMContentLoaded', function () {
       initialFilterBtn.click();
     }
   });
-    <script>
-        // FAQ 아코디언 토글 기능
-        const faqQuestions = document.querySelectorAll('.faq-question');
-        faqQuestions.forEach(button => {
-            button.addEventListener('click', () => {
-                const isExpanded = button.getAttribute('aria-expanded') === 'true';
-                const answer = document.getElementById(button.getAttribute('aria-controls'));
-                
-                // 모든 FAQ 답변 닫기
-                const allAnswers = document.querySelectorAll('.faq-answer');
-                const allButtons = document.querySelectorAll('.faq-question');
-                
-                allButtons.forEach(btn => {
-                    if (btn !== button) {
-                        btn.setAttribute('aria-expanded', 'false');
-                        btn.classList.remove('active');
-                    }
-                });
-                
-                allAnswers.forEach(ans => {
-                    if (ans !== answer) {
-                        ans.style.maxHeight = '0';
-                        ans.style.paddingBottom = '0';
-                        ans.style.overflow = 'hidden';
-                        ans.setAttribute('hidden', '');
-                    }
-                });
 
-                // 상태 토글
-                button.setAttribute('aria-expanded', String(!isExpanded));
-                button.classList.toggle('active');
-                answer.setAttribute('aria-hidden', String(isExpanded));
-
-                if (!isExpanded) {
-                    // 답변 열기
-                    answer.style.height = 'auto';
-                    answer.style.maxHeight = 'none';
-                    answer.style.paddingBottom = '20px';
-                    answer.style.overflow = 'visible';
-                    answer.removeAttribute('hidden');
-                } else {
-                    // 답변 닫기
-                    answer.style.maxHeight = '0';
-                    answer.style.paddingBottom = '0';
-                    answer.style.overflow = 'hidden';
-                    setTimeout(() => {
-                        if (button.getAttribute('aria-expanded') === 'false') {
-                            answer.setAttribute('hidden', '');
-                        }
-                    }, 350);
-                }
-            });
-        });
-
-        // 카테고리 탭 기능
-        const categoryButtons = document.querySelectorAll('.category-btn');
-        const faqSections = document.querySelectorAll('.faq-section');
+   // FAQ 아코디언 토글 기능
+    const faqQuestions = document.querySelectorAll('.faq-question');
+    faqQuestions.forEach(button => {
+      button.addEventListener('click', () => {
+        const isExpanded = button.getAttribute('aria-expanded') === 'true';
+        const answer = document.getElementById(button.getAttribute('aria-controls'));
         
-        categoryButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                // 모든 버튼 비활성화
-                categoryButtons.forEach(btn => btn.classList.remove('active'));
-                // 클릭한 버튼 활성화
-                button.classList.add('active');
-                
-                const categoryId = button.getAttribute('data-category');
-                
-                // 모든 섹션 숨기기
-                faqSections.forEach(section => {
-                    section.style.display = 'none';
-                });
-                
-                // 선택한 섹션 보이기
-                document.getElementById(categoryId).style.display = 'block';
-                
-                // 선택한 카테고리로 스크롤 이동
-                document.getElementById(categoryId).scrollIntoView({ 
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            });
+        // 모든 FAQ 답변 닫기
+        const allAnswers = document.querySelectorAll('.faq-answer');
+        const allButtons = document.querySelectorAll('.faq-question');
+        
+        allButtons.forEach(btn => {
+          if (btn !== button) {
+            btn.setAttribute('aria-expanded', 'false');
+            btn.classList.remove('active');
+          }
+        });
+        
+        allAnswers.forEach(ans => {
+          if (ans !== answer) {
+            ans.style.maxHeight = '0';
+            ans.style.paddingBottom = '0';
+            ans.style.overflow = 'hidden';
+            ans.setAttribute('hidden', '');
+          }
         });
 
-        // 페이지 로드 시 첫 번째 카테고리만 표시
-        window.addEventListener('DOMContentLoaded', () => {
-            faqSections.forEach((section, index) => {
-                if (index !== 0) {
-                    section.style.display = 'none';
-                }
-            });
+        // 상태 토글
+        button.setAttribute('aria-expanded', String(!isExpanded));
+        button.classList.toggle('active');
+        answer.setAttribute('aria-hidden', String(isExpanded));
+
+        if (!isExpanded) {
+          // 답변 열기
+          answer.style.height = 'auto';
+          answer.style.maxHeight = 'none';
+          answer.style.paddingBottom = '20px';
+          answer.style.overflow = 'visible';
+          answer.removeAttribute('hidden');
+        } else {
+          // 답변 닫기
+          answer.style.maxHeight = '0';
+          answer.style.paddingBottom = '0';
+          answer.style.overflow = 'hidden';
+          setTimeout(() => {
+            if (button.getAttribute('aria-expanded') === 'false') {
+              answer.setAttribute('hidden', '');
+            }
+          }, 350);
+        }
+      });
+    });
+
+    // 카테고리 탭 기능
+    const categoryButtons = document.querySelectorAll('.category-btn');
+    const faqSections = document.querySelectorAll('.faq-section');
+    
+    categoryButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // 모든 버튼 비활성화
+        categoryButtons.forEach(btn => btn.classList.remove('active'));
+        // 클릭한 버튼 활성화
+        button.classList.add('active');
+        
+        const categoryId = button.getAttribute('data-category');
+        
+        // 모든 섹션 숨기기
+        faqSections.forEach(section => {
+          section.style.display = 'none';
         });
-    </script>
+        
+        // 선택한 섹션 보이기
+        document.getElementById(categoryId).style.display = 'block';
+        
+        // 선택한 카테고리로 스크롤 이동
+        document.getElementById(categoryId).scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      });
+    });
+
+    // 페이지 로드 시 첫 번째 카테고리만 표시
+    window.addEventListener('DOMContentLoaded', () => {
+      faqSections.forEach((section, index) => {
+        if (index !== 0) {
+          section.style.display = 'none';
+        }
+      });
+    });
 
   // 모바일 네비게이션 토글
   const toggleButton = document.querySelector(".menu-toggle");
