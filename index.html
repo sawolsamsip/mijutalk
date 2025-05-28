@@ -1867,35 +1867,50 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-document.addEventListener("DOMContentLoaded", function () {
-  const categoryButtons = document.querySelectorAll(".faq-category");
-  const faqItems = document.querySelectorAll(".faq-item");
-
-  function showCategory(category) {
-    faqItems.forEach((item) => {
-      if (item.dataset.category === category) {
-        item.classList.add("active");
-      } else {
-        item.classList.remove("active");
+// FAQ 아코디언 토글 기능 개선 (답변 겹침 방지 및 공간 확보)
+const faqQuestions = document.querySelectorAll('.faq-question');
+faqQuestions.forEach(button => {
+  button.addEventListener('click', () => {
+    const isExpanded = button.getAttribute('aria-expanded') === 'true';
+    const answer = document.getElementById(button.getAttribute('aria-controls'));
+    
+    // 모든 FAQ 답변 닫기
+    const allAnswers = document.querySelectorAll('.faq-answer');
+    allAnswers.forEach(ans => {
+      if (ans !== answer) {
+        ans.style.maxHeight = '0';
+        ans.style.paddingBottom = '0';
+        ans.style.overflow = 'hidden';
+        ans.setAttribute('hidden', ''); // 다른 답변 닫기
       }
     });
-  }
 
-  categoryButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      categoryButtons.forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      const selectedCategory = btn.dataset.category;
-      showCategory(selectedCategory);
-    });
+    // 상태 토글
+    button.setAttribute('aria-expanded', String(!isExpanded));
+    button.classList.toggle('active');
+    answer.setAttribute('aria-hidden', String(isExpanded));
+
+    if (!isExpanded) {
+      // 답변 열기
+      answer.style.height = 'auto'; // 동적으로 높이 조정
+      answer.style.maxHeight = 'none'; // 답변이 길어져도 잘리지 않게 설정
+      answer.style.paddingBottom = '20px';
+      answer.style.overflow = 'visible'; // 답변이 길어도 스크롤 없이 보여지도록 설정
+      answer.removeAttribute('hidden');
+    } else {
+      // 답변 닫기
+      answer.style.maxHeight = '0';
+      answer.style.paddingBottom = '0';
+      answer.style.overflow = 'hidden'; // 스크롤을 숨김
+      setTimeout(() => {
+        if (button.getAttribute('aria-expanded') === 'false') {
+          answer.setAttribute('hidden', '');
+        }
+      }, 350); // transition 시간에 맞춰서 350ms 뒤에 hidden 처리
+    }
   });
-
-  // 초기화: 첫 번째 카테고리 표시
-  const initialCategory = document.querySelector(".faq-category.active")?.dataset.category;
-  if (initialCategory) {
-    showCategory(initialCategory);
-  }
 });
+
 
   // 모바일 네비게이션 토글
   const toggleButton = document.querySelector(".menu-toggle");
