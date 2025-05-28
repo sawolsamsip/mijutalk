@@ -443,30 +443,35 @@
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 12px;
       margin-bottom: 25px;
     }
     
-    .filter-btn {
-      padding: 8px 16px;
-      border-radius: 20px;
-      border: none;
-      background: #e0e6ed;
-      color: #003366;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
+.filter-btn {
+  padding: 12px 24px;
+  background: #e0e6ed;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  color: #003366;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
     
-    .filter-btn.active {
-      background: #003366;
-      color: white;
-    }
-    
-    .filter-btn:hover {
-      background: #00509e;
-      color: white;
-    }
+.filter-btn:hover, .filter-btn.active {
+  background: var(--color-primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.filter-btn i {
+  font-size: 1.1rem;
+}
 
     .swiper-container {
   position: relative;
@@ -655,17 +660,24 @@
     }
 
     @media (max-width: 768px) {
-      .filter-buttons {
-        justify-content: flex-start;
-        overflow-x: auto;
-        padding-bottom: 10px;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-      }
-      
-      .filter-buttons::-webkit-scrollbar {
-        display: none;
-      }
+  .filter-buttons {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 8px;
+  }
+  
+  .filter-buttons::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .filter-btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
       
       .swiper-slide {
         width: 100% !important;
@@ -1763,15 +1775,29 @@
   <section id="success-cases" aria-labelledby="success-cases-title">
     <h2 id="success-cases-title">성공 사례</h2>
 
-    <div class="filter-buttons">
-      <button class="filter-btn active" data-filter="all">전체</button>
-      <button class="filter-btn" data-filter="asset">자산관리</button>
-      <button class="filter-btn" data-filter="retirement">은퇴설계</button>
-      <button class="filter-btn" data-filter="tax">세금전략</button>
-      <button class="filter-btn" data-filter="education">교육계획</button>
-      <button class="filter-btn" data-filter="business">사업주 솔루솔션</button>
-      <button class="filter-btn" data-filter="inheritance">상속계획</button>
-    </div>
+  <div class="filter-buttons">
+    <button class="filter-btn active" data-filter="all">
+      <i class="bi bi-grid-fill"></i>전체
+    </button>
+    <button class="filter-btn" data-filter="asset">
+      <i class="bi bi-wallet2"></i>자산관리
+    </button>
+    <button class="filter-btn" data-filter="retirement">
+      <i class="bi bi-emoji-sunglasses"></i>은퇴설계
+    </button>
+    <button class="filter-btn" data-filter="tax">
+      <i class="bi bi-calculator"></i>세금전략
+    </button>
+    <button class="filter-btn" data-filter="education">
+      <i class="bi bi-mortarboard"></i>교육계획
+    </button>
+    <button class="filter-btn" data-filter="business">
+      <i class="bi bi-briefcase"></i>사업주 솔루션
+    </button>
+    <button class="filter-btn" data-filter="inheritance">
+      <i class="bi bi-people"></i>상속계획
+    </button>
+  </div>
 
     <div class="swiper-container">
       <div class="swiper-wrapper">
