@@ -1274,6 +1274,65 @@
   color: var(--color-secondary);
   font-weight: 700;
 }
+
+    /* 추가할 CSS */
+.highlight-gold {
+  color: var(--color-secondary);
+  font-weight: 800;
+}
+.highlight-blue {
+  color: #e6f0ff;
+  font-weight: 700;
+}
+.hero-subtitle {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin: 1.5rem auto;
+}
+.sub-highlight {
+  display: inline-block;
+  background: rgba(0,80,158,0.2);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+}
+.trust-elements {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+.trust-badge {
+  background: rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  min-width: 200px;
+}
+.trust-badge img {
+  flex-shrink: 0;
+}
+.trust-badge strong {
+  display: block;
+  color: var(--color-secondary);
+  font-size: 0.95rem;
+}
+.trust-badge p {
+  font-size: 0.8rem;
+  opacity: 0.9;
+  margin: 0;
+}
+.tooltip-content {
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1rem auto 0;
+  max-width: 500px;
+}
     
   </style>
 </head>
@@ -1314,19 +1373,49 @@
 
 
 <main role="main">
+<!-- 기존 코드 전체 삭제 후 이 코드로 교체 -->
 <section id="hero" class="hero">
-  <h1>미국 한인을 위한 <span class="highlight">금융 리소스 플랫폼</span></h1>
+  <h1>
+    <span class="highlight-gold">미국 한인의 자산</span>을 위한<br>
+    <span class="highlight-blue">검증된 전문가 연결</span>
+  </h1>
   
-  <p class="hero-subtitle">신뢰할 수 있는 금융 정보와 검증된 전문가 연결 서비스</p>
-  
-  <a href="./pages/consultant.html" class="btn-kakao">
-    <span class="emoji">📩</span> 무료 교육자료 받기 + 전문가 매칭
-  </a>
-  
-  <p class="disclaimer">
-    ※ 교육 목적의 정보만 제공하며, 특정 금융상품을 추천하지 않습니다.<br>
-    ※ 전문가 연결 시 수수료 없음 | 3단계 검증 시스템 적용
+  <p class="hero-subtitle">
+    FINRA 등록 전문가만을 엄선하는<br>
+    <span class="sub-highlight">수수료 없는 중개 플랫폼</span>
   </p>
+  
+  <div class="cta-group">
+    <a href="./pages/consultant.html" class="btn-primary">
+      <i class="bi bi-chevron-right"></i> 무료 전문가 매칭 신청
+    </a>
+    <button class="info-tooltip-btn" aria-expanded="false" aria-controls="service-disclaimer">
+      <i class="bi bi-info-circle"></i> 서비스 안내
+    </button>
+  </div>
+  
+  <div id="service-disclaimer" class="tooltip-content" hidden>
+    <p>✓ 순수 중개 서비스 | ✓ 전문가로부터 수수료 없음<br>
+    ✓ 투자 권유 없음 | ✓ 3단계 검증 시스템</p>
+  </div>
+  
+  <!-- 신뢰 요소 추가 -->
+  <div class="trust-elements">
+    <div class="trust-badge">
+      <img src="./assets/shield-check.svg" alt="검증" width="40">
+      <div>
+        <strong>3단계 검증</strong>
+        <p>라이선스·경력·피드백</p>
+      </div>
+    </div>
+    <div class="trust-badge">
+      <img src="./assets/process-icon.svg" alt="절차" width="40">
+      <div>
+        <strong>수수료 없음</strong>
+        <p>당사는 수수료를 받지 않습니다</p>
+      </div>
+    </div>
+  </div>
 </section>
 
   <section id="services" aria-labelledby="services-title">
