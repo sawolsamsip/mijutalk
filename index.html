@@ -280,16 +280,16 @@ section {
   background-color: var(--color-kakao-bg);
   color: var(--color-kakao-text);
   font-weight: 700;
-  padding: 12px 24px;
+  padding: 12px 28px;
   border-radius: 30px;
   display: block;
   margin-top: 30px;
   text-decoration: none;
-  font-size: 1.1rem;
+  font-size: 1rem;
   transition: all .3s cubic-bezier(.25,.8,.25,1);
   box-shadow: 0 2px 4px rgba(0,0,0,.1);
   white-space: nowrap;
-  max-width: 90%;
+  max-width: 280px;
   width: auto;
   text-align: center;
   margin: 20px auto 0;
@@ -525,7 +525,7 @@ section {
   justify-content: center;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 25px;
+  margin-bottom: 35px;
 }
 
 .filter-btn {
@@ -637,9 +637,10 @@ section {
 
 .case-result {
   background: #f5f9ff;
-  padding: 12px;
+  padding: 15px;
   border-radius: 8px;
-  margin-top: 15px;
+  margin-top: 25px;
+  margin-bottom: 10px; 
   font-weight: 600;
   color: #003366;
   border-left: 3px solid #ffb800;
@@ -756,7 +757,7 @@ section {
 .consult-content h3 {
   font-size: 1.5rem;
   color: #003366;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
 }
 
 .main-cta-btn {
@@ -769,7 +770,7 @@ section {
   border-radius: 8px;
   font-weight: 700;
   text-decoration: none;
-  margin: 20px 0;
+  margin: 30px 0;
   box-shadow: 0 4px 12px rgba(0,80,158,.3);
   transition: all .3s ease;
 }
@@ -781,8 +782,8 @@ section {
 
 .secondary-options {
   border-top: 1px solid #eee;
-  padding-top: 20px;
-  margin-top: 20px;
+  padding-top: 30px;
+  margin-top: 25px;
 }
 
 .options-title {
@@ -1148,7 +1149,8 @@ footer p {
   /* 성공 사례 모바일 스타일 */
   .swiper-slide {
     width: 85% !important;
-    margin-right: 10px !important;
+    margin-right: 15px !important;
+    min-width: 85% !important; /* 추가 */
     box-sizing: border-box;
   }
   
@@ -1158,6 +1160,7 @@ footer p {
     white-space: normal;
     word-break: keep-all;
     font-size: 0.9rem;
+    line-height: 1.5;
   }
   
   .case-result {
@@ -1176,10 +1179,11 @@ footer p {
   #success-cases {
     overflow-x: hidden;
     width: 100%;
+    padding: 30px 0;
   }
   
   .swiper-container {
-    padding: 0 15px !important;
+    padding: 0 5px !important;
     margin: 0 auto;
   }
   
