@@ -2258,7 +2258,8 @@ html, body {
   document.addEventListener("DOMContentLoaded", function() {
     // Swiper 초기화
     const caseSwiper = new Swiper('.swiper-container', {
-      slidesPerView: 1,
+      slidesPerView: 'auto',
+      centeredSlides: true,
       spaceBetween: 20,
       roundLengths: true,      
       watchOverflow: true,
@@ -2271,7 +2272,7 @@ html, body {
         clickable: true,
       },
       breakpoints: {
-        640: { slidesPerView: 2, spaceBetween: 20 },
+        640: { slidesPerView: 2, centeredSlides: false, spaceBetween: 20 },
         1024: { slidesPerView: 3, spaceBetween: 20 },
       }
     });
