@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="robots" content="index, follow">
   <meta name="author" content="미주자산톡">
 
@@ -1038,6 +1038,31 @@ footer p {
 
 /* Mobile Responsive Styles */
 @media (max-width: 768px) {
+ .faq-question {
+    padding: 15px 20px;
+    font-size: 1rem;
+  }
+  
+  main {
+    padding: 15px;
+    padding-top: 80px;
+  }
+  
+  section {
+    margin-bottom: 40px;
+  }
+  
+  .hero {
+    padding: 30px 20px;
+  }
+  
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+  
+  .hero p {
+    font-size: 1rem;
+  }
   h2 {
     font-size: 1.8rem;
     border-left-width: 4px; /* 두께 약간 줄임 */
@@ -1108,20 +1133,22 @@ footer p {
   /* FAQ 카테고리 모바일 스타일 */
   .faq-categories {
     flex-wrap: wrap; /* 변경: nowrap → wrap */
-    overflow-x: visible;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 10px;
     justify-content: flex-start;
-    padding-bottom: 5px;
   }
   
   .category-btn {
-    padding: 8px 12px;
+    flex-shrink: 0;
     font-size: 0.85rem;
+    padding: 8px 12px;
   }
   
   /* 성공 사례 모바일 스타일 */
   .swiper-slide {
-    width: 280px !important;
-    margin-right: 15px !important;
+    width: 85% !important;
+    margin-right: 10px !important;
     box-sizing: border-box;
   }
   
@@ -1130,6 +1157,7 @@ footer p {
   .case-result {
     white-space: normal;
     word-break: keep-all;
+    font-size: 0.9rem;
   }
   
   .case-result {
