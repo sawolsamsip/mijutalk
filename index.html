@@ -2363,43 +2363,49 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
 
-    // 카테고리 탭 기능
-    const categoryButtons = document.querySelectorAll('.category-btn');
-    const faqSections = document.querySelectorAll('.faq-section');
-    
-    categoryButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        // 모든 버튼 비활성화
-        categoryButtons.forEach(btn => btn.classList.remove('active'));
-        // 클릭한 버튼 활성화
-        button.classList.add('active');
-        
-        const categoryId = button.getAttribute('data-category');
-        
-        // 모든 섹션 숨기기
-        faqSections.forEach(section => {
-          section.style.display = 'none';
-        });
-        
-        // 선택한 섹션 보이기
-        document.getElementById(categoryId).style.display = 'block';
-        
-        // 선택한 카테고리로 스크롤 이동
-        document.getElementById(categoryId).scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
-        });
-      });
-    });
+// 카테고리 탭 기능 - 기존 코드 대체
+const categoryButtons = document.querySelectorAll('.category-btn');
+const faqSections = document.querySelectorAll('.faq-section');
 
-    // 페이지 로드 시 첫 번째 카테고리만 표시
-    window.addEventListener('DOMContentLoaded', () => {
-      faqSections.forEach((section, index) => {
-        if (index !== 0) {
-          section.style.display = 'none';
-        }
-      });
+categoryButtons.forEach(button => {
+  button.addEventListener('click', (e) => {
+    e.preventDefault(); // 기본 동작 방지
+    
+    // 모든 버튼 비활성화
+    categoryButtons.forEach(btn => btn.classList.remove('active'));
+    // 클릭한 버튼 활성화
+    button.classList.add('active');
+    
+    const categoryId = button.getAttribute('data-category');
+    
+    // 모든 섹션 숨기기
+    faqSections.forEach(section => {
+      section.style.display = 'none';
     });
+    
+    // 선택한 섹션 보이기
+    const targetSection = document.getElementById(categoryId);
+    targetSection.style.display = 'block';
+    
+    // 스크롤 이동 제거하고 대신 부드러운 페이드 효과 적용
+    targetSection.style.opacity = '0';
+    setTimeout(() => {
+      targetSection.style.transition = 'opacity 0.3s ease';
+      targetSection.style.opacity = '1';
+    }, 10);
+  });
+});
+
+// 페이지 로드 시 첫 번째 카테고리만 표시
+window.addEventListener('DOMContentLoaded', () => {
+  faqSections.forEach((section, index) => {
+    if (index !== 0) {
+      section.style.display = 'none';
+    } else {
+      section.style.opacity = '1';
+    }
+  });
+});
 
   // 모바일 네비게이션 토글
   const toggleButton = document.querySelector(".menu-toggle");
