@@ -2,18 +2,12 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="index, follow">
   <meta name="author" content="미주자산톡">
-
-  <link rel="preload" href="./assets/swiper-bundle.min.css" as="style">
-  <link rel="stylesheet" href="./assets/swiper-bundle.min.css" media="print" onload="this.media='all'">
   <link rel="canonical" href="https://mijutalk.co/" /> 
-
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
-  <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" as="style">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" media="print" onload="this.media='all'">
-  
+  <link rel="stylesheet" href="./assets/swiper-bundle.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <meta property="og:title" content="미주자산톡 | 금융 정보 제공 및 전문가 연결 플랫폼">
   <meta property="og:description" content="미국에 거주하는 한인을 위한 금융 정보 제공 플랫폼. 자산관리, 은퇴설계, 세금 전략, 상속 계획 등 다양한 정보를 무료로 제공하며, 필요 시 미국 현지 전문가와의 연결도 도와드립니다." />
   <meta property="og:image" content="https://mijutalk.co/assets/og-image.webp" />
@@ -22,1194 +16,2137 @@
   <meta property="og:site_name" content="미주자산톡">
   <meta name="description" content="미국에 거주하는 한인을 위한 금융 정보 제공 플랫폼. 자산관리, 은퇴설계, 세금 전략, 상속 계획 등 다양한 정보를 무료로 제공하며, 필요 시 미국 현지 전문가와의 연결도 도와드립니다." />
   <meta name="keywords" content="미주자산톡, 금융 정보, 전문가 연결, 자산관리, 은퇴 준비, 세금 전략, 상속, 미국 한인, 무료 상담" />
+
+  <!-- Twitter Card -->
   <meta name="twitter:card" content="./assets/summary_large_image">
   <meta name="twitter:title" content="미주자산톡 | 금융 정보 제공 및 전문가 연결 플랫폼">
   <meta name="twitter:description" content="미국 거주 한인 대상 자산관리, 은퇴준비, 투자설계 등 맞춤 재정 컨설팅 서비스">
   <meta name="twitter:image" content="https://mijutalk.co/og-image.webp">
-  
-  <meta name="theme-color" content="#003366">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-  <!-- 구조화된 데이터 추가 -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FinancialService",
-    "name": "미주자산톡",
-    "description": "미국 거주 한인을 위한 금융 정보 제공 및 전문가 연결 플랫폼",
-    "url": "https://mijutalk.co/",
-    "logo": "https://mijutalk.co/assets/logo-img-60-60.svg",
-    "sameAs": [
-      "https://pf.kakao.com/_Kxmlin"
-    ]
-  }
-  </script>
-  
   <title>미주자산톡 | 금융 정보 제공 및 전문가 연결 플랫폼</title>
-  
-<style>
+  <style>
+    :root {
+      --color-primary: #003366;
+      --color-secondary: #ffb800;
+      --color-background: #f2f5f8;
+      --color-text-primary: #222222;
+      --color-text-secondary: #555555;
+      --color-button-bg: #00509e;
+      --color-button-hover: #003366;
+      --color-faq-bg: #ffffff;
+      --color-kakao-bg: #fee500;
+      --color-kakao-text: #3c1e1e;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--color-background);
+      color: var(--color-text-primary);
+      line-height: 1.6;
+    }
+    a {
+      color: var(--color-primary);
+      text-decoration: none;
+    }
+    a:hover {
+      color: var(--color-secondary);
+    }
 
-:root {
-  --color-primary: #003366;
-  --color-secondary: #ffb800;
-  --color-background: #f2f5f8;
-  --color-text-primary: #222;
-  --color-text-secondary: #555;
-  --color-button-bg: #00509e;
-  --color-button-hover: #003366;
-  --color-faq-bg: #fff;
-  --color-kakao-bg: #fee500;
-  --color-kakao-text: #3c1e1e;
-}
+    footer a {
+      text-decoration: none;
+    }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+    .nowrap, #services li p, 
+    .consult-content p:not(.consult-note), footer p {
+      white-space: nowrap;
+      display: inline-block;
+      width: 100%;
+      overflow: visible;
+      box-sizing: border-box;
+    }
 
-html {
-  font-size: 16px;
-  scroll-behavior: smooth;
-}
+    .nav-tabs {
+      flex-wrap: wrap;
+      justify-content: center;
+      border-bottom: 2px solid #0d6efd;
+    }
+    .nav-tabs .nav-link {
+      font-weight: 500;
+      color: #555;
+      margin: 3px;
+      border-radius: 0.5rem 0.5rem 0 0;
+    }
+    .nav-tabs .nav-link.active {
+      color: #0d6efd;
+      background-color: #e9f0ff;
+      border: 1px solid #0d6efd;
+      border-bottom: none;
+    }
+    .tab-content {
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 0 0 0.5rem 0.5rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      margin-top: -1px;
+    }
 
-body {
-  font-family: 'Noto Sans KR', sans-serif;
-  background: var(--color-background);
-  color: var(--color-text-primary);
-  line-height: 1.6;
-  overflow-x: hidden;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
+    .bio p {
+      white-space: normal;
+      word-break: keep-all;
+    }
 
-/* 공통 섹션 스타일 */
-main {
-  flex: 1;
-  width: 100%;
-  padding-top: 90px;
-}
+    /* 데스크탑에서만 추가적인 스타일 적용 */
+    @media (min-width: 769px) {
+      .cta-buttons {
+        flex-direction: row;
+      }
+    }
 
-section {
-  max-width: 1200px;
-  width: calc(100% - 40px);
-  margin: 0 auto 60px;
-  scroll-margin-top: 70px;
-}
+    @media (max-width: 768px) {
+      .nowrap, #services li p, 
+      .consult-content p:not(.consult-note), footer p {
+        white-space: normal;
+        word-break: keep-all;
+        font-size: 0.93rem;
+        letter-spacing: -0.2px;
+      }
+    }
 
-.section-box {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0,0,0,.08);
-  padding: 40px;
-  margin-bottom: 40px;
-}
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: #004a99;
+      color: #fff;
+      padding: 15px 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+      z-index: 1100;
+      height: 70px;
+    }
 
-h2 {
-  color: var(--color-primary);
-  font-weight: 700;
-  margin-bottom: 24px;
-  font-size: clamp(1.8rem, 4vw, 2.2rem);
-  border-left: 6px solid var(--color-secondary);
-  padding-left: 12px;
-  line-height: 1.3;
-  transition: border-color 0.3s ease;
-}
+    .header-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 100%;
+    }
 
-h2:hover {
-  border-left-color: #ffcc00;
-}
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 900;
+      font-size: 1.6rem;
+      color: white;
+      text-decoration: none;
+    }
 
-/* 헤더 스타일 */
-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  background: #004a99;
-  color: #fff;
-  padding: 15px 0;
-  box-shadow: 0 4px 15px rgba(0,0,0,.25);
-  z-index: 1100;
-  height: 70px;
-}
+    .logo-symbol {
+      width: 40px;
+      height: 40px;
+      filter: brightness(0) invert(1);
+    }
 
-.header-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 100%;
-}
+    .logo-text {
+      user-select: none;
+    }
 
-.logo {
+    .logo:hover {
+      color: white;
+      transform: scale(1.05);
+    }
+
+    nav#primary-navigation ul {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+    }
+    nav#primary-navigation ul li a {
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 8px 12px;
+      border-radius: 6px;
+      color: #f0f5fb;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+    nav#primary-navigation ul li a:hover,
+    nav#primary-navigation ul li a.active {
+      background-color: var(--color-secondary);
+      color: var(--color-primary);
+      font-weight: 700;
+      box-shadow: 0 0 10px rgba(255, 198, 0, 0.67);
+    }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 10px;
+      z-index: 1200;
+      width: 40px;
+      height: 40px;
+      position: relative;
+    }
+    .menu-toggle .hamburger,
+    .menu-toggle .hamburger::before,
+    .menu-toggle .hamburger::after {
+      content: "";
+      display: block;
+      background-color: white;
+      height: 3px;
+      border-radius: 2px;
+      position: absolute;
+      width: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      transition: all 0.3s ease;
+    }
+    .menu-toggle .hamburger {
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .menu-toggle .hamburger::before {
+      top: -8px;
+    }
+    .menu-toggle .hamburger::after {
+      top: 8px;
+    }
+    .menu-toggle.open .hamburger {
+      background-color: transparent;
+    }
+    .menu-toggle.open .hamburger::before {
+      top: 0;
+      transform: translateX(-50%) rotate(45deg);
+    }
+    .menu-toggle.open .hamburger::after {
+      top: 0;
+      transform: translateX(-50%) rotate(-45deg);
+    }
+
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
+      nav#primary-navigation {
+        display: block;
+        position: fixed;
+        top: 70px;
+        right: 0;
+        background: var(--color-primary);
+        width: 250px;
+        height: calc(100vh - 70px);
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in-out;
+        box-shadow: -2px 0 10px rgba(0,0,0,0.3);
+        border-radius: 0 0 0 10px;
+        z-index: 1150;
+        overflow-y: auto;
+      }
+      nav#primary-navigation.open {
+        transform: translateX(0);
+      }
+      nav#primary-navigation ul {
+        flex-direction: column;
+        gap: 1px;
+        padding: 20px 0;
+        width: 100%;
+      }
+      nav#primary-navigation ul li {
+        width: 100%;
+      }
+      nav#primary-navigation ul li a {
+        color: #fff;
+        padding: 15px 25px;
+        font-size: 1.1rem;
+        display: block;
+        border-radius: 0;
+      }
+      nav#primary-navigation ul li a:hover,
+      nav#primary-navigation ul li a.active {
+        background-color: var(--color-secondary);
+        color: var(--color-primary);
+        font-weight: 700;
+      }
+    }
+
+    .header-container {
+      padding: 0 10px;
+      justify-content: space-between;
+    }
+
+    .logo {
+      margin-left: 0;
+      font-size: 1.6rem;
+    }
+    .menu-toggle {
+      margin-right: 0;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px;
+      padding-top: 90px;
+    }
+    section {
+      margin-bottom: 60px;
+      scroll-margin-top: 70px;
+    }
+
+    .hero {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 1s ease forwards;
+      background: linear-gradient(135deg, #0078d7, #004e92);
+      border-radius: 10px;
+      color: white;
+      padding: 50px 40px;
+      text-align: center;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero h1 {
+      font-size: 2.5rem;
+      margin: 0 0 15px 0;
+      font-weight: 900;
+      letter-spacing: 1.3px;
+      word-break: keep-all;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      line-height: 1.5;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .btn-kakao {
+      background-color: var(--color-kakao-bg);
+      color: var(--color-kakao-text);
+      font-weight: 700;
+      padding: 14px 36px;
+      border-radius: 30px;
+      display: inline-block;
+      margin-top: 30px;
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      white-space: nowrap;
+      max-width: 100%;
+      width: auto;
+      text-align: center;
+    }
+    .btn-kakao:hover {
+      background-color: var(--color-kakao-text);
+      color: var(--color-kakao-bg);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+
+    h2 {
+      color: var(--color-primary);
+      font-weight: 700;
+      margin-bottom: 24px;
+      font-size: 2rem;
+      border-left: 6px solid var(--color-secondary);
+      padding-left: 12px;
+    }
+
+    #services ul {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+      gap: 28px;
+    }
+    #services li {
+      background: white;
+      border-radius: 16px;
+      padding: 24px 30px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+      min-width: 0;
+      overflow: visible;
+    }
+    #services li:hover {
+      box-shadow: 0 10px 28px rgba(0,0,0,0.14);
+      transform: translateY(-5px);
+    }
+    #services li h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      color: var(--color-primary);
+      font-weight: 700;
+      font-size: 1.3rem;
+    }
+    #services li p {
+      color: var(--color-text-secondary);
+      font-weight: 500;
+      font-size: 1rem;
+      line-height: 1.3;
+      word-break: keep-all;
+    }
+
+    .profile-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      background-color: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+    .profile-img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      margin-bottom: 20px;
+      border-radius: 50%;
+      border: 4px solid var(--color-secondary);
+    }
+    .bio h3 {
+      color: var(--color-primary);
+      font-weight: 700;
+      font-size: 1.5rem;
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+    .bio p {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--color-text-secondary);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+
+    /* 성공 사례 섹션 스타일 */
+    #success-cases {
+      padding: 40px 0;
+    }
+
+    .filter-buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+    
+.filter-btn {
+  padding: 12px 24px;
+  background: #e0e6ed;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  color: #003366;
+  font-size: 0.95rem;
   display: flex;
   align-items: center;
   gap: 8px;
-  font-weight: 900;
-  font-size: clamp(1.4rem, 3vw, 1.6rem);
-  color: #fff;
-  text-decoration: none;
-  transition: transform 0.3s ease;
+}
+    
+.filter-btn:hover, .filter-btn.active {
+  background: var(--color-primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
-.logo-symbol {
-  width: 40px;
-  height: 40px;
-  filter: brightness(0) invert(1);
-  transition: transform 0.3s ease;
+.filter-btn i {
+  font-size: 1.1rem;
 }
 
-/* 히어로 섹션 */
-.hero-box {
-  background: linear-gradient(135deg, #0078d7, #004e92);
-  color: #fff;
-  text-align: center;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeInUp 1s ease forwards;
-}
-
-.hero-content h1 {
-  font-size: clamp(1.8rem, 4vw, 2.5rem);
-  margin: 0 0 15px;
-  font-weight: 900;
-  letter-spacing: 1.3px;
-  line-height: 1.3;
-}
-
-.hero-content p {
-  font-size: clamp(1rem, 2vw, 1.1rem);
-  line-height: 1.5;
-  max-width: 700px;
+    .swiper-container {
+  position: relative;
+  overflow: hidden;
+  padding: 0 50px; /* 버튼을 위한 공간 확보 */
   margin: 0 auto;
+  width: 100%;
+  max-width: 1100px; /* 메인 컨텐츠 너비와 일치 */
+    }
+
+    .swiper-wrapper {
+      padding-left: 0;
+      padding-right: 0;
+      display: flex;
+      transition-property: transform;
+      box-sizing: content-box;
+    }
+
+    .swiper-slide {
+      min-height: 320px;
+      margin-right: 20px;
+      box-sizing: border-box;
+      flex-shrink: 0;
+      width: auto;
+      height: auto;
+      position: relative;
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease;
+    }
+
+    .swiper-slide:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+    }
+
+    .swiper-slide:not([style*="display: block"]) {
+      display: none !important;
+    }
+
+    .case-header {
+      border-bottom: 1px solid #eee;
+      padding-bottom: 15px;
+      margin-bottom: 15px;
+    }
+
+    .category-container {
+      margin-bottom: 8px;
+    }
+    
+    .case-category {
+      display: inline-block;
+      background: #0078d7;
+      color: white;
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 12px;
+      margin-right: 6px;
+      margin-bottom: 6px;
+    }
+    
+    .case-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #003366;
+      margin: 8px 0 5px;
+      white-space: nowrap;
+    }
+    
+    .case-client {
+      font-size: 0.9rem;
+      color: #666;
+    }
+    
+    .case-content {
+      margin: 15px 0;
+      color: #555;
+      line-height: 1.6;
+      white-space: nowrap;
+    }
+    
+    .case-content p {
+      margin: 8px 0;
+    }
+    
+    .case-result {
+      background: #f5f9ff;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 15px;
+      font-weight: 600;
+      color: #003366;
+      border-left: 3px solid #ffb800;
+      white-space: nowrap;
+    }
+
+    .highlight {
+      color: #00509e;
+    }
+
+    .swiper-button-next,
+    .swiper-button-prev {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 60px;
+      height: 60px;
+      background: rgba(0, 51, 102, 0.8);
+      border-radius: 50%;
+      color: #ffb800;
+      transition: background-color 0.3s ease;
+      z-index: 10;
+      justify-content: center;
+      align-items: center;
+    }
+
+        /* 왼쪽 버튼 위치 조정 */
+    .swiper-button-prev {
+      left: 20px; /* 화면 왼쪽 끝에서 20px 떨어진 위치 */
+    }
+
+    /* 오른쪽 버튼 위치 조정 */
+    .swiper-button-next {
+      right: 20px; /* 화면 오른쪽 끝에서 20px 떨어진 위치 */
+    }
+
+    .swiper-button-next:hover,
+    .swiper-button-prev:hover {
+      background: #ffb800;
+      color: #003366;
+    }
+    
+    .swiper-button-prev::after {
+      content: "‹";
+    }
+
+    .swiper-button-next::after {
+      content: "›";
+    }
+
+/* 화살표 버튼 아이콘 크기 조정 */
+.swiper-button-prev::after,
+.swiper-button-next::after {
+      color: var(--color-secondary);
+      font-weight: bold;
+      display: block;
+      text-align: center;
+      font-size: 50px; /* 아이콘 크기 축소 */
+      font-weight: bold;
+      line-height: 1;
 }
 
-/* 버튼 스타일 */
-.btn-kakao {
-  background-color: var(--color-kakao-bg);
-  color: var(--color-kakao-text);
-  font-weight: 700;
-  padding: 14px 28px;
-  border-radius: 30px;
-  display: inline-block;
-  margin-top: 30px;
-  text-decoration: none;
-  font-size: 1rem;
-  transition: all .3s cubic-bezier(.25,.8,.25,1);
-  box-shadow: 0 2px 4px rgba(0,0,0,.1);
-  white-space: nowrap;
-  max-width: 280px;
-  width: auto;
-  text-align: center;
-  margin: 20px auto 0;
+.swiper-button-prev:hover::after,
+.swiper-button-next:hover::after {
+  color: var(--color-background);
 }
 
-/* 서비스 섹션 */
-#services ul {
-  list-style: none;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 25px;
-}
+    /* pagination 컨테이너 위치 지정 */
+    .swiper-pagination {
+      position: relative;
+      margin-top: 10px; 
+      bottom: 10px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      z-index: 10;
+    }
+    
+    /* pagination 점들 기본 스타일 */
+    .swiper-pagination-bullet {
+      width: 10px;
+      height: 10px;
+      background: rgba(0,51,102,0.3);
+      opacity: 1;
+      margin: 0 4px;
+      display: inline-block;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    
+    .swiper-pagination-bullet-active {
+      background: #ffb800;
+    }
 
-#services li {
-  background: #fff;
-  border-radius: 16px;
-  padding: 25px 30px;
-  box-shadow: 0 6px 20px rgba(0,0,0,.08);
-  transition: all 0.3s ease;
-}
+    @media (max-width: 768px) {
+  .filter-buttons {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 8px;
+  }
+  
+  .filter-buttons::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .filter-btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+      
+      .swiper-slide {
+        width: 100% !important;
+        margin: 0;
+        box-sizing: border-box;
+      }
+      
+      .swiper-button-next,
+      .swiper-button-prev {
+        display: none;
+      }
 
-#services li:hover {
-  box-shadow: 0 10px 28px rgba(0,0,0,.14);
-  transform: translateY(-5px);
-}
+      @media (max-width: 768px) {
+        .swiper-pagination {
+          display: block !important;
+        }
+      }
+    }
 
-/* 전문가 프로필 */
-.profile-box {
-  text-align: center;
-}
+    .swiper-container,
+    .swiper-wrapper {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
 
-.profile-img {
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
-  margin-bottom: 20px;
-  border-radius: 50%;
-  border: 4px solid var(--color-secondary);
-}
+    #contact {
+      position: relative;
+    }
 
-/* FAQ 섹션 */
-.faq-categories {
+    .consult-card {
+      white-space: nowrap;
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+      width: 100%;
+      box-sizing: border-box;
+      border-top: 6px solid var(--color-secondary);
+      text-align: center;
+    }
+
+    .consult-content {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .consult-content h3 {
+      font-size: 1.5rem;
+      color: #003366;
+      margin-bottom: 30px;
+    }
+
+    /* 메인 CTA 버튼 */
+    .main-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #00509e, #003366);
+      color: white;
+      padding: 16px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      text-decoration: none;
+      margin: 20px 0;
+      box-shadow: 0 4px 12px rgba(0, 80, 158, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .main-cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 80, 158, 0.4);
+    }
+
+    /* 보조 옵션 */
+    .secondary-options {
+      border-top: 1px solid #eee;
+      padding-top: 20px;
+      margin-top: 20px;
+    }
+
+    .options-title {
+      color: #666;
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: 0.95rem;
+    }
+
+    .option-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* 보조 버튼 공통 스타일 */
+    .secondary-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    /* 카카오톡 버튼 */
+    .secondary-btn.kakao {
+      background: #fee500;
+      color: #3c1e1e;
+    }
+
+    .secondary-btn.kakao:hover {
+      background: #3c1e1e;
+      color: #fee500;
+    }
+
+    /* 전화 버튼 */
+    .secondary-btn.phone {
+      background: #0066cc;
+      color: white;
+    }
+
+    .secondary-btn.phone:hover {
+      background: #e6f0ff;
+      color: #003366;
+    }
+
+    /* 반응형 조정 */
+    @media (max-width: 600px) {
+      .option-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .secondary-btn {
+        width: 100%;
+        max-width: 280px;
+        justify-content: center;
+      }
+    }
+
+    .consult-note {
+      white-space: normal;
+      word-break: keep-all;
+      overflow-x: auto;
+      margin-top: 20px;
+      font-size: 0.9rem;
+      color: var(--color-text-secondary);
+    }
+
+    footer {
+      background-color: var(--color-primary);
+      color: white;
+      padding: 30px 20px;
+      text-align: center;
+      font-size: 0.9rem;
+      user-select: none;
+      line-height: 1.7;
+    }
+    footer a {
+      color: var(--color-secondary);
+    }
+    footer p {
+      margin-bottom: 0;
+    }
+
+.footer-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 30px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #e0e6ed;
   justify-content: center;
+  gap: 16px;
+  margin-bottom: 10px;
 }
 
-.faq-item {
-  margin-bottom: 16px;
-  background-color: var(--color-faq-bg);
-  border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(0,0,0,.08);
+.footer-links a {
+  color: var(--color-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
 }
 
-/* 성공 사례 섹션 */
-.swiper-container {
-  width: 100%;
-  max-width: 1200px;
-  padding: 0 20px;
+.footer-links a:hover {
+  color: #ffffff;
 }
 
-.swiper-slide {
-  background: #fff;
-  border-radius: 12px;
-  padding: 25px;
-  box-shadow: 0 5px 15px rgba(0,0,0,.08);
-}
-
-/* 컨설팅 박스 */
-.consult-box {
-  border-top: 6px solid var(--color-secondary);
+    
+.footer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
   text-align: center;
 }
+    
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-weight: 900;
+    font-size: 1.2rem;
+    
+  }
 
-/* 푸터 스타일 */
-footer {
-  background-color: var(--color-primary);
-  color: #fff;
-  padding: 40px 20px;
-  text-align: center;
-  font-size: .9rem;
-  margin-top: auto;
-}
+  .footer-brand img {
+    width: 40px;
+    height: 40px;
+    filter: brightness(0) invert(1);
+ 
+  }
+    
+    *:focus-visible {
+      outline: 3px solid var(--color-secondary);
+      outline-offset: 2px;
+    }
 
-/* 모바일 반응형 */
-@media (max-width: 768px) {
-  section {
-    width: calc(100% - 30px);
-    margin-bottom: 40px;
-  }
-  
-  .section-box {
-    padding: 30px 20px;
-  }
-  
-  #services ul {
-    grid-template-columns: 1fr;
-  }
-}
 
-@media (max-width: 480px) {
-  .section-box {
-    padding: 25px 15px;
-  }
-}
+    /* 플로팅 버튼 컨테이너 */
+    .floating-cta {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: flex-end;
+      gap: 15px;
+    }
 
-/* 애니메이션 */
-@keyframes fadeInUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-  
-</style>
-  
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VNNXFK9RNH"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-VNNXFK9RNH');
-  </script>
+    /* 메인 버튼 스타일 */
+    .floating-btn {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--color-secondary);
+      box-shadow: 0 6px 20px rgba(255, 184, 0, 0.3);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      border: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 호버 효과 */
+    .floating-btn:hover {
+      transform: scale(1.1) rotate(10deg);
+      box-shadow: 0 8px 25px rgba(255, 184, 0, 0.4);
+    }
+
+    /* 서브 버튼 컨테이너 */
+    .sub-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      pointer-events: none;
+      will-change: transform, opacity;
+    }
+
+    /* 서브 버튼 공통 스타일 */
+    .sub-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 22px;
+      border-radius: 30px;
+      font-weight: 600;
+      text-decoration: none;
+      text-align: center;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transform: scale(0.9);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      border: none;
+      color: white;
+      font-size: 0.95rem;
+      min-width: 120px;
+    }
+
+    /* 서브 버튼 호버 효과 */
+    .sub-btn:hover {
+      transform: scale(1) translateY(-3px) !important;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+    }
+
+    /* 서브 버튼 아이콘 스타일 */
+    .sub-btn svg, .sub-btn img {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      transition: transform 0.3s ease;
+    }
+
+    .sub-btn:hover svg, .sub-btn:hover img {
+      transform: scale(1.1);
+    }
+
+    /* 각 서브 버튼 색상 */
+    .form-btn { 
+      background: linear-gradient(135deg, #00509e, #003366);
+      color: white;
+    }
+    .kakao-btn { 
+      background: linear-gradient(135deg, #fee500, #f8d60e);
+      color: #3c1e1e;
+    }
+    .call-btn { 
+      background: linear-gradient(135deg, #0066cc, #004080);
+      color: white;
+    }
+
+    /* 호버 효과 */
+    .floating-cta:hover .sub-buttons {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    /* 모바일 대응 */
+    @media (max-width: 768px) {
+
+            .faq-item {
+        margin-bottom: 20px;
+      }
+      
+      .faq-question {
+        padding: 16px 20px;
+        font-size: 1rem;
+      }
+      
+      .faq-answer {
+        padding: 0 20px;
+      }
+      
+      .faq-answer[aria-hidden="false"] {
+        padding-bottom: 20px;
+        max-height: none;
+        overflow-y: auto;
+        padding: 12px 20px 20px;
+      }
+      
+      .faq-answer p {
+        white-space: normal;
+        word-break: keep-all;
+        font-size: 0.93rem;
+        line-height: 1.5;
+        margin-bottom: 12px;
+      }
+
+      
+      .floating-cta {
+        bottom: 25px;
+        right: 25px;
+      }
+      
+      .floating-btn {
+        width: 56px;
+        height: 56px;
+      }
+      
+      /* 모바일에서는 클릭으로만 확장 */
+      .sub-buttons {
+        position: absolute;
+        bottom: 70px;
+        right: 0;
+        background: transparent;
+        backdrop-filter: none;
+        border-radius: 16px;
+        padding: 0;
+        box-shadow: none;
+      }
+      
+      .floating-cta:hover .sub-buttons {
+    /*    opacity: 0; */
+      }
+      
+      .floating-cta.active .sub-buttons {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
+      }
+      
+      .sub-btn {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+        min-width: 110px;
+      }
+    }
+
+    /* 버튼 텍스트에 약간의 그림자 추가 */
+    .sub-btn span {
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .kakao-btn span {
+      text-shadow: 0 1px 2px rgba(255,255,255,0.3);
+    }
+
+    /* 버튼 클릭 효과 */
+    .sub-btn:active {
+      transform: scale(0.98) !important;
+    }
+    .floating-btn:active {
+      transform: scale(0.95) rotate(5deg) !important;
+    }
+
+    /* 펄스 애니메이션 */
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 6px 20px rgba(255, 184, 0, 0.3); }
+      50% { transform: scale(1.15); box-shadow: 0 8px 25px rgba(255, 184, 0, 0.4); }
+      100% { transform: scale(1); box-shadow: 0 6px 20px rgba(255, 184, 0, 0.3); }
+    }
+
+    .floating-btn {
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+        /* 추가된 FAQ 카테고리 스타일 */
+    .faq-categories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+    
+    .category-btn {
+      padding: 10px 20px;
+      background: #e0e6ed;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      color: #003366;
+      font-size: 0.95rem;
+    }
+    
+    .category-btn:hover, .category-btn.active {
+      background: #003366;
+      color: white;
+    }
+    
+    .faq-section {
+      margin-bottom: 50px;
+    }
+    
+    .category-title {
+      font-size: 1.5rem;
+      color: #003366;
+      margin-bottom: 25px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #ffb800;
+      display: flex;
+      align-items: center;
+    }
+    
+    .category-title span {
+      background: #003366;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      font-weight: 600;
+    }
+    
+    .faq-items {
+      display: grid;
+      gap: 5px;
+    }
+
+
+        /* FAQ 답변의 p는 줄 바꿈 허용 */
+    .faq-anseigwer p {
+      white-space: normal;
+      word-break: keep-all;
+      display: block;
+      width: 100%;
+      overflow-wrap: break-word;
+    }
+
+    #faq .faq-item {
+      margin-bottom: 12px;
+      background-color: var(--color-faq-bg);
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      overflow: visible;
+      contain: none;
+      transition: box-shadow 0.3s ease;
+    }
+    #faq .faq-item:hover {
+      box-shadow: 0 10px 28px rgba(0,0,0,0.14);
+    }
+
+    .faq-item {
+      contain: content;
+      will-change: height;
+    }
+
+    .faq-question {
+      background: none;
+      border: none;
+      padding: 18px 25px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      cursor: pointer;
+      position: relative;
+      user-select: none;
+      width: 100%;
+      text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      word-break: keep-all;
+    }
+    .faq-question svg {
+      transition: transform 0.35s ease;
+      fill: var(--color-primary);
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    .faq-question.active svg {
+      transform: rotate(180deg);
+      fill: var(--color-secondary);
+    }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.35s ease;
+      padding: 0 25px;
+      will-change: max-height;
+    }
+
+    .faq-answer[aria-hidden="false"] {
+      max-height: none;
+      padding-bottom: 20px;
+      overflow: visible;
+    }
+
+    .faq-answer.expanded {
+      height: auto;
+      max-height: none;
+      padding: 0 25px 20px;
+      overflow: visible;
+    }
+  </style>
 </head>
-
 <body>
-  <!-- 헤더 구조 개선 -->
-  <header aria-label="주요 내비게이션">
-    <div class="header-container">
-      <a href="./index.html" class="logo" aria-label="미주자산톡 홈으로 이동">
-        <img src="./assets/logo-img-60-60.svg" alt="미주자산톡 로고" class="logo-symbol" width="40" height="40" loading="eager">
-        <span class="logo-text">미주자산톡</span>
-      </a>
 
-      <button class="menu-toggle" aria-label="메뉴 열기/닫기" aria-expanded="false" aria-controls="primary-navigation">
-        <span class="hamburger" aria-hidden="true"></span>
-      </button>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VNNXFK9RNH"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-VNNXFK9RNH');
+</script>
 
-      <nav id="primary-navigation" aria-label="주요 메뉴">
-        <ul role="menubar">
-          <li role="none"><a href="./index.html" class="active" role="menuitem">홈</a></li>
-          <li role="none"><a href="./index.html#services" role="menuitem" tabindex="0">전문서비스</a></li>
-          <li role="none"><a href="./index.html#about" role="menuitem" tabindex="0">금융전문가소개</a></li>
-          <li role="none"><a href="./index.html#faq" role="menuitem" tabindex="0">FAQ</a></li>
-          <li role="none"><a href="./index.html#success-cases" role="menuitem" tabindex="0">성공사례</a></li>
-          <li role="none"><a href="./pages/consultant.html" role="menuitem" tabindex="0">상담신청</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+<header>
+  <div class="header-container">
+    <a href="./index.html" class="logo" aria-label="미주자산톡 홈으로 이동">
+      <img src="./assets/logo-img-60-60.svg" alt="미주자산톡 로고" class="logo-symbol" />
+      <span class="logo-text">미주자산톡</span>
+    </a>
 
-  <main id="main-content" role="main">
-   <section id="hero" class="hero-box section-box" aria-labelledby="hero-title">
-      <div class="hero-content">
-        <h1 id="hero-title">미국 거주 한인을 위한 프리미엄 재정 컨설팅</h1>
-        <p>자산관리, 은퇴준비, 세금최적화 투자설계까지 쉽고 전문적으로 도와드립니다.</p>
-        <a href="./pages/consultant.html" class="btn-kakao" aria-label="무료 상담 신청하기">무료상담 신청하기</a>
-      </div>
-    </section>
+    <button class="menu-toggle" aria-label="메뉴 열기/닫기" aria-expanded="false" aria-controls="primary-navigation">
+      <span class="hamburger"></span>
+    </button>
 
-    <section id="services" aria-labelledby="services-title">
-      <h2 id="services-title">전문 서비스 분야</h2>
-      <ul>
-        <li>
-          <h3>개인 자산 통합 관리</h3>
-          <p>- 목표기반 자산 배분 (은퇴·교육·주택 구매)</p>
-          <p>- 투자 포트폴리오 설계 및 리밸런싱</p>
-          <p>- 위험 관리 전략 (긴급자금·재산보호)</p>
-        </li>
-        <li>
-          <h3>은퇴 자금 전략</h3>
-          <p>- 401(k)·IRA 롤오버 관련정보</p>
-          <p>- Social Security 수령 시점 전략</p>
-          <p>- 은퇴 후 지속 가능한 현금흐름 모델링</p>
-        </li>
-        <li>
-          <h3>세금 효율적 투자</h3>
-          <p>- Tax-Loss Harvesting 전략</p>
-          <p>- 고소득자 대상 절제 전략</p>
-          <p>- 자산 유형별(주식·채권) 세금 영향 비교</p>
-        </li>
-        <li>
-          <h3>교육·상속 계획</h3>
-          <p>- 529 플랜·UGMA/UTMA 비교</p>
-          <p>- 신탁 설계 및 유산 분배</p>
-          <p>- 세대간 자산 이전 절세 방안</p>
-        </li>
-        <li class="business-service">
-          <h3>사업주 맞춤 솔루션</h3>
-          <p>- 사업 시작/매각 시 자금 계획</p>
-          <p>- 사업체명의 투자 계좌 개설 및 운영</p>
-          <p>- 퇴직금 프로그램 설계</p>
-          <p>&nbsp;&nbsp;(Simple, SEP, 401k, Defined Benefit)</p>
-        </li>
-        <li>
-          <h3>생애 이벤트 대응</h3>
-          <p>- 이민·귀국 시 자산관리</p>
-          <p>- 이혼/재혼 시 자산분할·수혜자 재설정</p>
-          <p>- 상속 계획 및 수혜자 지정</p>
-          <p>&nbsp;&nbsp;(Trust/Estate 설립·유산 분배)</p>
-        </li>
+    <nav id="primary-navigation">
+      <ul role="menubar">
+        <li role="none"><a href="./index.html" class="active" role="menuitem" tabindex="0">홈</a></li>
+        <li role="none"><a href="./index.html#services" role="menuitem" tabindex="0">전문서비스</a></li>
+        <li role="none"><a href="./index.html#about" role="menuitem" tabindex="0">대표소개</a></li>
+        <li role="none"><a href="./index.html#faq" role="menuitem" tabindex="0">FAQ</a></li>
+        <li role="none"><a href="./index.html#success-cases" role="menuitem" tabindex="0">성공사례</a></li>
+        <li role="none"><a href="./pages/consultant.html" role="menuitem" tabindex="0">상담신청</a></li>
       </ul>
-    </section>
-
-<!-- 금융 전문가 소개 섹션 확장 -->
-<section id="about" aria-labelledby="about-title">
-  <h2 id="about-title">금융 전문가 소개</h2>
-  <div class="profile-box section-box">
-    <div class="profile-img-container">
-      <img src="./assets/profile-img.webp" alt="금융 전문가 이미지" class="profile-img" width="150" height="150" loading="lazy">
-    </div>
-    <div class="bio">
-      <p>
-        미국 대형 금융기관에서 10년이상 경험을 쌓은 금융 전문가들과 협력합니다. 이제는 25만불 이상의 자산을 가진 한인분들을 위해 실질적인 금융 정보 제공과 맞춤형 전문가 연결을 무료로 지원합니다. 신뢰와 투명성, 고객 중심으로 접근으로 재정적 결정을 현명하게 내릴 수 있도록 돕습니다. 
-      </p>
-    </div>
+    </nav>
   </div>
-</section>
+</header>
 
-    <section id="faq" aria-labelledby="faq-title">
-      <h2 id="faq-title">자주 묻는 질문 (FAQ)</h2>
-      
-      <div class="faq-categories" role="tablist" aria-label="FAQ 카테고리">
-        <button class="category-btn active" data-category="service" role="tab" aria-selected="true" aria-controls="service">서비스 성격 및 역할</button>
-        <button class="category-btn" data-category="usage">이용방법 및 절차</button>
-        <button class="category-btn" data-category="info">제공정보분야별</button>
-        <button class="category-btn" data-category="experts">전문가 연관 관련 안내</button>
-        <button class="category-btn" data-category="platform">플랫폼 운영 및 이용 환경</button>
-        <button class="category-btn" data-category="privacy">개인정보 및 보안 정책</button>
+
+<main role="main">
+  <section id="hero" class="hero" tabindex="-1" aria-labelledby="hero-title">
+    <h1 id="hero-title">미국 한인의 <span class="highlight">금융교육</span>과 <span class="highlight">전문가 매칭</span> 플랫폼</h1>
+    <p>자산 관리부터 은퇴, 세금, 상속까지. 복잡한 재정 이슈를 쉽게 풀어드리고, 검증된 미국 현지 전문가와의 연결을 무료로 해드립니다.</p>
+    <p>당사는 직접적인 상담 서비스가 아닌 <strong>교육 정보 제공</strong>과 <strong>검증된 전문가 연결</strong>을 중개합니다.</p>
+    <a href="./pages/consultant.html" class="btn-kakao nowrap">무료상담 신청하기</a>
+  </section>
+
+  <section id="services" aria-labelledby="services-title">
+    <h2 id="services-title">전문 서비스 분야</h2>
+    <ul>
+      <li>
+        <h3>개인 자산 통합 관리</h3>
+        <p class="nowrap">-&nbsp;목표기반&nbsp;자산&nbsp;배분&nbsp;(은퇴·교육·주택&nbsp;구매)</p>
+        <p class="nowrap">-&nbsp;투자&nbsp;포트폴리오&nbsp;설계&nbsp;및&nbsp;리밸런싱</p>
+        <p class="nowrap">-&nbsp;위험&nbsp;관리&nbsp;전략&nbsp;(긴급자금·재산보호)</p>
+      </li>
+      <li>
+        <h3>은퇴 자금 전략</h3>
+        <p class="nowrap">-&nbsp;401(k)·IRA&nbsp;롤오버&nbsp;관련정보</p>
+        <p class="nowrap">-&nbsp;Social&nbsp;Security&nbsp;수령&nbsp;시점&nbsp;전략</p>
+        <p class="nowrap">-&nbsp;은퇴&nbsp;후&nbsp;지속&nbsp;가능한&nbsp;현금흐름&nbsp;모델링</p>
+      </li>
+      <li>
+        <h3>세금 효율적 투자</h3>
+        <p class="nowrap">-&nbsp;Tax-Loss&nbsp;Harvesting 전략</p>
+        <p class="nowrap">-&nbsp;고소득자&nbsp;대상&nbsp;절제&nbsp;전략</p>
+        <p class="nowrap">-&nbsp;자산&nbsp;유형별(주식·채권)&nbsp;세금&nbsp;영향&nbsp;비교</p>
+      </li>
+      <li>
+        <h3>교육·상속 계획</h3>
+        <p class="nowrap">-&nbsp;529&nbsp;플랜·UGMA/UTMA&nbsp;비교</p>
+        <p class="nowrap">-&nbsp;신탁&nbsp;설계&nbsp;및&nbsp;유산&nbsp;분배</p>
+        <p class="nowrap">-&nbsp;세대간&nbsp;자산&nbsp;이전&nbsp;절세&nbsp;방안</p>
+      </li>
+      <li class="business-service">
+        <h3>사업주 맞춤 솔루션</h3>
+        <p class="nowrap">-&nbsp;사업&nbsp;시작/매각&nbsp;시&nbsp;자금&nbsp;계획</p>
+        <p class="nowrap">-&nbsp;사업체명의&nbsp;투자&nbsp;계좌&nbsp;개설&nbsp;및&nbsp;운영</p>
+        <p class="nowrap">-&nbsp;퇴직금&nbsp;프로그램&nbsp;설계</p>
+        <p class="nowrap">&nbsp;&nbsp;(Simple,&nbsp;SEP,&nbsp;401k,&nbsp;Defined&nbsp;Benefit)</p>
+      </li>
+      <li>
+        <h3>생애 이벤트 대응</h3>
+        <p class="nowrap">-&nbsp;이민·귀국&nbsp;시&nbsp;자산관리</p>
+        <p class="nowrap">-&nbsp;이혼/재혼&nbsp;시&nbsp;자산분할·수혜자&nbsp;재설정</p>
+        <p class="nowrap">-&nbsp;상속&nbsp;계획&nbsp;및&nbsp;수혜자&nbsp;지정</p>
+        <p class="nowrap">&nbsp;&nbsp;(Trust/Estate&nbsp;설립·유산&nbsp;분배)</p>
+      </li>
+    </ul>
+  </section>
+
+  <!-- 금융 전문가 소개 섹션 -->
+  <section id="about" aria-labelledby="about-title">
+    <div class="section-header">
+      <h2 id="about-title">금융 전문가 소개</h2>
+    </div>
+    <div class="profile-container">
+      <!-- 왼쪽 사진 공간 -->
+      <div class="profile-img-container">
+        <img src="../assets/profile-img.webp" alt="금융 전문가 이미지" class="profile-img" />
       </div>
-      
-      <!-- 카테고리 1: 서비스 성격 및 역할 -->
-      <div class="faq-section" id="service" role="tabpanel" aria-labelledby="service-tab">
-        <h3 class="category-title"><span>1</span>서비스 성격 및 역할</h3>
-        <div class="faq-items">
-          <article class="faq-item">
-            <button class="faq-question" aria-expanded="false" aria-controls="faq1-1-answer" id="faq1-1-btn">
-              1. 미주자산톡은 어떤 서비스를 하나요?
-              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
-            </button>
-            <div id="faq1-1-answer" class="faq-answer" hidden>
-              <p>미주자산톡은 미국 거주 한인을 위한 금융 정보 제공 플랫폼으로, 자산관리, 은퇴, 세금 전략 등 다양한 주제에 대한 정보를 제공하고 필요 시 전문가와 연결해드립니다.</p>
-            </div>
-          </article>
-          <article class="faq-item">
-<button aria-controls="faq1-2-answer" aria-expanded="false" class="faq-question" id="faq1-2-btn">
+  
+      <!-- 오른쪽 텍스트 공간 -->
+      <div class="bio">
+        <p>
+          미국 대형 금융기관에서 10년이상 경험을 쌓은 금융 전문가들과 협력합니다. 이제는 25만불 이상의 자산을 가진 한인분들을 위해 실질적인 금융 정보 제공과 맞춤형 전문가 연결을 무료로 지원합니다. 신뢰와 투명성, 고객 중심으로 접근으로 재정적 결정을 현명하게 내릴 수 있도록 돕습니다. 
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" aria-labelledby="faq-title">
+    <h2 id="faq-title">자주 묻는 질문 (FAQ)</h2>
+    
+    <div class="faq-categories">
+      <button class="category-btn active" data-category="service">서비스 성격 및 역할</button>
+      <button class="category-btn" data-category="usage">이용방법 및 절차</button>
+      <button class="category-btn" data-category="info">제공정보분야별</button>
+      <button class="category-btn" data-category="experts">전문가 연관 관련 안내</button>
+      <button class="category-btn" data-category="platform">플랫폼 운영 및 이용 환경</button>
+      <button class="category-btn" data-category="privacy">개인정보 및 보안 정책</button>
+    </div>
+    
+    <!-- 카테고리 1: 서비스 성격 및 역할 -->
+    <div class="faq-section" id="service">
+      <h3 class="category-title"><span>1</span>서비스 성격 및 역할</h3>
+      <div class="faq-items">
+        <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq1-1-answer" id="faq1-1-btn">
+            1. 미주자산톡은 어떤 서비스를 하나요?
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq1-1-answer" class="faq-answer" hidden>
+            <p>미주자산톡은 미국 거주 한인을 위한 금융 정보 제공 플랫폼으로, 자산관리, 은퇴, 세금 전략 등 다양한 주제에 대한 정보를 제공하고 필요 시 전문가와 연결해드립니다.</p>
+          </div>
+        </article>
+        <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq1-2-answer" id="faq1-2-btn">
             2. 어떤 사람을 위한 서비스인가요?
-            <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq1-2-answer">
-<p>25만불 이상의 자산을 가진 미국 거주 한인분들을 주요 대상으로 하고 있으며, 재정 관련 정보가 필요하거나 전문가 연결을 원하는 분들께 적합합니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq1-3-answer" aria-expanded="false" class="faq-question" id="faq1-3-btn">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq1-2-answer" class="faq-answer" hidden>
+            <p>25만불 이상의 자산을 가진 미국 거주 한인분들을 주요 대상으로 하고 있으며, 재정 관련 정보가 필요하거나 전문가 연결을 원하는 분들께 적합합니다.</p>
+          </div>
+        </article>
+        
+        <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq1-3-answer" id="faq1-3-btn">
             3. 투자 자문도 해주시나요?
-            <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq1-3-answer">
-<p>직접적인 투자 자문은 하지 않으며, 필요 시 관련 자격을 갖춘 전문가를 연결해드립니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq1-4-answer" aria-expanded="false" class="faq-question" id="faq1-4-btn">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq1-3-answer" class="faq-answer" hidden>
+            <p>직접적인 투자 자문은 하지 않으며, 필요 시 관련 자격을 갖춘 전문가를 연결해드립니다.</p>
+          </div>
+        </article>
+        
+        <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq1-4-answer" id="faq1-4-btn">
             4. 금융 상품을 판매하나요?
-            <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq1-4-answer">
-<p>아니요. 미주자산톡은 중립적인 정보 플랫폼이며, 특정 금융 상품을 판매하지 않습니다.</p>
-</div>
-</article> <article class="faq-item">
-<button aria-controls="faq1-5-answer" aria-expanded="false" class="faq-question" id="faq1-5-btn">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq1-4-answer" class="faq-answer" hidden>
+            <p>아니요. 미주자산톡은 중립적인 정보 플랫폼이며, 특정 금융 상품을 판매하지 않습니다.</p>
+          </div>
+        </article>        <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq1-5-answer" id="faq1-5-btn">
             5. 미국자산톡의 강점은 무엇인가요?
-            <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq1-5-answer">
-<p>미국 현지 전문가 네트워크, 무료 정보 제공, 사용자 친화적인 접근 방식이 강점입니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq1-6-answer" aria-expanded="false" class="faq-question" id="faq1-6-btn">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq1-5-answer" class="faq-answer" hidden>
+            <p>미국 현지 전문가 네트워크, 무료 정보 제공, 사용자 친화적인 접근 방식이 강점입니다.</p>
+          </div>
+        </article>
+        
+        <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq1-6-answer" id="faq1-6-btn">
             6. 다른 플랫폼과 어떤 차이가 있나요?
-            <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq1-6-answer">
-<p>상품 판매 중심 플랫폼이 아닌 정보 중심 플랫폼이며, 독립성과 투명성이 특징입니다.</p>
-</div>
-</article>
-</div>
-</div>
-<!-- 카테고리 2: 이용방법 및 절차 -->
-<div class="faq-section" id="usage">
-<h3 class="category-title"><span>2</span>이용방법 및 절차</h3>
-<div class="faq-items">
-<!-- FAQ 항목들 -->
-<article class="faq-item">
-<button aria-controls="faq2-1-answer" aria-expanded="false" class="faq-question" id="faq2-1-btn">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq1-6-answer" class="faq-answer" hidden>
+            <p>상품 판매 중심 플랫폼이 아닌 정보 중심 플랫폼이며, 독립성과 투명성이 특징입니다.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+    
+    <!-- 카테고리 2: 이용방법 및 절차 -->
+    <div class="faq-section" id="usage">
+      <h3 class="category-title"><span>2</span>이용방법 및 절차</h3>
+      <div class="faq-items">
+        <!-- FAQ 항목들 -->
+
+        <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq2-1-answer" id="faq2-1-btn">
             1. 상담은 어떻게 신청하나요?
-            <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq2-1-answer">
-<p>홈페이지 또는 카카오톡을 통해 간단히 상담을 신청하실 수 있습니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq2-2-answer" aria-expanded="false" class="faq-question" id="faq2-2-btn">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq2-1-answer" class="faq-answer" hidden>
+            <p>홈페이지 또는 카카오톡을 통해 간단히 상담을 신청하실 수 있습니다.</p>
+          </div>
+        </article>
+        <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq2-2-answer" id="faq2-2-btn">
             2. 신청 후에는 어떤 절차로 진행되나요?
-            <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq2-2-answer">
-<p>상담 신청 → 전문가 매칭 → 일정 조육 → 화상/전화 상담의 절차로 진행됩니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq2-3-answer" aria-expanded="false" class="faq-question" id="faq2-3-btn">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq2-2-answer" class="faq-answer" hidden>
+            <p>상담 신청 → 전문가 매칭 → 일정 조육 → 화상/전화 상담의 절차로 진행됩니다.</p>
+          </div>
+        </article>
+        
+        <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq2-3-answer" id="faq2-3-btn">
             3. 상담 예약은 언제 가능한가요?
-            <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq2-3-answer">
-<p>기본적으로 평일 오전 9시~오후 5시(PST) 사이 상담이 가능하며, 일정은 유연하게 조정 가능합니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq2-4-answer" aria-expanded="false" class="faq-question" id="faq2-4-btn">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq2-3-answer" class="faq-answer" hidden>
+            <p>기본적으로 평일 오전 9시~오후 5시(PST) 사이 상담이 가능하며, 일정은 유연하게 조정 가능합니다.</p>
+          </div>
+        </article>
+        
+        <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq2-4-answer" id="faq2-4-btn">
             4. 상담 예약을 변경하거나 취소할 수 있나요?
-            <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq2-4-answer">
-<p>언제든지 예약 변경 및 취소가 가능하며, 수수료는 없습니다.</p>
-</div>
-</article> <article class="faq-item">
-<button aria-controls="faq2-5-answer" aria-expanded="false" class="faq-question" id="faq2-5-btn">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq2-4-answer" class="faq-answer" hidden>
+            <p>언제든지 예약 변경 및 취소가 가능하며, 수수료는 없습니다.</p>
+          </div>
+        </article>        <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq2-5-answer" id="faq2-5-btn">
             5. 전문가 연결까지 얼마나 걸리나요?
-            <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq2-5-answer">
-<p>보통 24시간 이내에 연결이 진행되며, 빠르면 당일 중 연결 가능합니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq2-6-answer" aria-expanded="false" class="faq-question" id="faq2-6-btn">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq2-5-answer" class="faq-answer" hidden>
+            <p>보통 24시간 이내에 연결이 진행되며, 빠르면 당일 중 연결 가능합니다.</p>
+          </div>
+        </article>
+        
+        <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq2-6-answer" id="faq2-6-btn">
             6. 상담 이후에도 계속 지원받을 수 있나요?
-            <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq2-6-answer">
-<p>상담 이후에도 필요 시 전문가 재연결, 후속 상담 등을 도와드립니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq2-7-answer" aria-expanded="false" class="faq-question" id="faq2-7-btn">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq2-6-answer" class="faq-answer" hidden>
+            <p>상담 이후에도 필요 시 전문가 재연결, 후속 상담 등을 도와드립니다.</p>
+          </div>
+        </article>
+
+        <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq2-7-answer" id="faq2-7-btn">
             7. 전화 상담도 가능한가요?
-            <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq2-7-answer">
-<p>가능하나, 자세한 설명이나 자료 공유가 필요한 경우 화상 상담을 권장합니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq2-8-answer" aria-expanded="false" class="faq-question" id="faq2-8-btn">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq2-7-answer" class="faq-answer" hidden>
+            <p>가능하나, 자세한 설명이나 자료 공유가 필요한 경우 화상 상담을 권장합니다.</p>
+          </div>
+        </article>
+
+        <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq2-8-answer" id="faq2-8-btn">
             8. 카카오톡으로도 상담할 수 있나요?
-            <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq2-8-answer">
-<p>네, 카카오톡 채널을 통해 간편하게 상담 요청이 가능합니다.</p>
-</div>
-</article>
-</div>
-</div>
-<!-- 카테고리 3: 제공정보분야별 -->
-<div class="faq-section" id="info">
-<h3 class="category-title"><span>3</span>제공정보분야별</h3>
-<div class="faq-items">
-<!-- FAQ 항목들 -->
-<article class="faq-item">
-<button aria-controls="faq3-1-answer" aria-expanded="false" class="faq-question" id="faq3-1-btn">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq2-8-answer" class="faq-answer" hidden>
+            <p>네, 카카오톡 채널을 통해 간편하게 상담 요청이 가능합니다.</p>
+          </div>
+        </article>
+        
+      </div>
+    </div>
+    
+    <!-- 카테고리 3: 제공정보분야별 -->
+    <div class="faq-section" id="info">
+      <h3 class="category-title"><span>3</span>제공정보분야별</h3>
+      <div class="faq-items">
+        <!-- FAQ 항목들 -->
+
+                <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq3-1-answer" id="faq3-1-btn">
             1. 자산관리 상담에는 어떤 내용이 포함되나요?
-            <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq3-1-answer">
-<p>목표 기반 자산 배분, 리스크 관리, 포트폴리오 구성 등에 관한 정보 제공과 전문가 연결을 지원합니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq3-2-answer" aria-expanded="false" class="faq-question" id="faq3-2-btn">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq3-1-answer" class="faq-answer" hidden>
+            <p>목표 기반 자산 배분, 리스크 관리, 포트폴리오 구성 등에 관한 정보 제공과 전문가 연결을 지원합니다.</p>
+          </div>
+        </article>
+        <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq3-2-answer" id="faq3-2-btn">
             2. 은퇴 준비는 어떤 내용을 상담할 수 있나요?
-            <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq3-2-answer">
-<p>401(k), IRA, Social Security 수령 전략 등 은퇴 관련 다양한 정보를 안내드립니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq3-3-answer" aria-expanded="false" class="faq-question" id="faq3-3-btn">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq3-2-answer" class="faq-answer" hidden>
+            <p>401(k), IRA, Social Security 수령 전략 등 은퇴 관련 다양한 정보를 안내드립니다.</p>
+          </div>
+        </article>
+        
+        <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq3-3-answer" id="faq3-3-btn">
             3. 세금 전략도 상담 받을 수 있나요?
-            <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq3-3-answer">
-<p>Tax-Loss Harvesting, 세금 효율 구조 설계 등의 절세 전략에 대한 정보 제공이 가능합니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq3-4-answer" aria-expanded="false" class="faq-question" id="faq3-4-btn">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq3-3-answer" class="faq-answer" hidden>
+            <p>Tax-Loss Harvesting, 세금 효율 구조 설계 등의 절세 전략에 대한 정보 제공이 가능합니다.</p>
+          </div>
+        </article>
+        
+        <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq3-4-answer" id="faq3-4-btn">
             4. 자녀 교육비 준비에 대한 상담도 되나요?
-            <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq3-4-answer">
-<p>529플랜, UGMA/UTMA 등 교육비 마련 전략과 관련된 정보를 제공합니다.</p>
-</div>
-</article> <article class="faq-item">
-<button aria-controls="faq3-5-answer" aria-expanded="false" class="faq-question" id="faq3-5-btn">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq3-4-answer" class="faq-answer" hidden>
+            <p>529플랜, UGMA/UTMA 등 교육비 마련 전략과 관련된 정보를 제공합니다.</p>
+          </div>
+        </article>        <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq3-5-answer" id="faq3-5-btn">
             5. 상속 계획도 상담해주시나요?
-            <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq3-5-answer">
-<p>Living Trust 설계, 수혜자 지정 등 상속 전략에 대한 정보와 전문가 연결이 가능합니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq3-6-answer" aria-expanded="false" class="faq-question" id="faq3-6-btn">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq3-5-answer" class="faq-answer" hidden>
+            <p>Living Trust 설계, 수혜자 지정 등 상속 전략에 대한 정보와 전문가 연결이 가능합니다.</p>
+          </div>
+        </article>
+        
+        <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq3-6-answer" id="faq3-6-btn">
             6. 사업체 운영자도 상담 받을 수 있나요?
-            <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq3-6-answer">
-<p>SEP IRA&lt; Defined Benefit 등 사업체 운영자 대상 재정 전략도 상담 가능합니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq3-7-answer" aria-expanded="false" class="faq-question" id="faq3-7-btn">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq3-6-answer" class="faq-answer" hidden>
+            <p>SEP IRA< Defined Benefit 등 사업체 운영자 대상 재정 전략도 상담 가능합니다.</p>
+          </div>
+        </article>
+
+        <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq3-7-answer" id="faq3-7-btn">
             7. 이민이나 귀국할 때 자산관리도 상담 가능한가요?
-            <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq3-7-answer">
-<p>이민/귀국 시 자산 통합 관리 및 수혜자 변경 전략 등을 안내합니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq3-8-answer" aria-expanded="false" class="faq-question" id="faq3-8-btn">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq3-7-answer" class="faq-answer" hidden>
+            <p>이민/귀국 시 자산 통합 관리 및 수혜자 변경 전략 등을 안내합니다.</p>
+          </div>
+        </article>
+
+        <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq3-8-answer" id="faq3-8-btn">
             8. Tax-Loss Harvesting 전략도 상담하나요?
-            <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq3-8-answer">
-<p>네, 해당 전략은 고소득자의 젤제를 위해 유용하며 관련 정보 제공이 가능합니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq3-9-answer" aria-expanded="false" class="faq-question" id="faq3-9-btn">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq3-8-answer" class="faq-answer" hidden>
+            <p>네, 해당 전략은 고소득자의 젤제를 위해 유용하며 관련 정보 제공이 가능합니다.</p>
+          </div>
+        </article>
+
+        <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq3-9-answer" id="faq3-9-btn">
             9. IRA나 401(k)관련 정보도 제공하나요?
-            <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq3-9-answer">
-<p>네, 계좌 개설, 롤오버 전략, 수수료 구조 등에 대한 정보도 상담 가능합니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq3-10-answer" aria-expanded="false" class="faq-question" id="faq3-10-btn">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq3-9-answer" class="faq-answer" hidden>
+            <p>네, 계좌 개설, 롤오버 전략, 수수료 구조 등에 대한 정보도 상담 가능합니다.</p>
+          </div>
+        </article>
+
+        <article class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls="faq3-10-answer" id="faq3-10-btn">
             10. 신탁(Trust)설계에 대한 상담도 가능한가요?
-            <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq3-10-answer">
-<p>신탁 설계, 유언장 연계, 자산 보호 전략 등의 상담도 전문가 연결을 통해 가능합니다.</p>
-</div>
-</article>
-</div>
-</div>
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+          </button>
+          <div id="faq3-10-answer" class="faq-answer" hidden>
+            <p>신탁 설계, 유언장 연계, 자산 보호 전략 등의 상담도 전문가 연결을 통해 가능합니다.</p>
+          </div>
+        </article>
+        
+      </div>
+    </div>
+    
 <!-- 카테고리 4: 전문가 연관 관련 안내 -->
 <div class="faq-section" id="experts">
-<h3 class="category-title"><span>4</span>전문가 연관 관련 안내</h3>
-<div class="faq-items">
-<article class="faq-item">
-<button aria-controls="faq4-1-answer" aria-expanded="false" class="faq-question" id="faq4-1-btn">
+  <h3 class="category-title"><span>4</span>전문가 연관 관련 안내</h3>
+  <div class="faq-items">
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq4-1-answer" id="faq4-1-btn">
         1. 연결되는 전문가는 어떤 자격을 가지고 있나요?
-        <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq4-1-answer">
-<p>미국 내 자격을 갖춘 Registered Investment Advisor 또는 Series 7, 66, 65, 63 등 전문 자격 보유자입니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq4-2-answer" aria-expanded="false" class="faq-question" id="faq4-2-btn">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq4-1-answer" class="faq-answer" hidden>
+        <p>미국 내 자격을 갖춘 Registered Investment Advisor 또는 Series 7, 66, 65, 63 등 전문 자격 보유자입니다.</p>
+      </div>
+    </article>
+    
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq4-2-answer" id="faq4-2-btn">
         2. 지역이나 언어(한국어/영어)에 따라 전문가를 선택할 수 있나요?
-        <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq4-2-answer">
-<p>네, 고객의 지역이나 언어 선호에 따라 맞춤형 전문가를 매칭해드립니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq4-3-answer" aria-expanded="false" class="faq-question" id="faq4-3-btn">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq4-2-answer" class="faq-answer" hidden>
+        <p>네, 고객의 지역이나 언어 선호에 따라 맞춤형 전문가를 매칭해드립니다.</p>
+      </div>
+    </article>
+    
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq4-3-answer" id="faq4-3-btn">
         3. 상담은 어떤 방식(전화/화상)으로 진행되나요?
-        <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq4-3-answer">
-<p>보통 TEAMS 등의 화상 상담을 권장하며, 요청 시 전화 상담도 가능합니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq4-4-answer" aria-expanded="false" class="faq-question" id="faq4-4-btn">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq4-3-answer" class="faq-answer" hidden>
+        <p>보통 TEAMS 등의 화상 상담을 권장하며, 요청 시 전화 상담도 가능합니다.</p>
+      </div>
+    </article>
+    
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq4-4-answer" id="faq4-4-btn">
         4. 전문가는 어떤 정보까지 도와주나요?
-        <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq4-4-answer">
-<p>고객 상황을 바탕으로 맞춤 포트폴리오 제안, 세금 전략 설명 등을 도와드립니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq4-5-answer" aria-expanded="false" class="faq-question" id="faq4-5-btn">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq4-4-answer" class="faq-answer" hidden>
+        <p>고객 상황을 바탕으로 맞춤 포트폴리오 제안, 세금 전략 설명 등을 도와드립니다.</p>
+      </div>
+    </article>
+    
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq4-5-answer" id="faq4-5-btn">
         5. 상담 후 후속 조치는 어떻게 되나요?
-        <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq4-5-answer">
-<p>상담 후 전문가와의 직접 계약이 필요한 경우, 추가 일정을 안내해드립니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq4-6-answer" aria-expanded="false" class="faq-question" id="faq4-6-btn">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq4-5-answer" class="faq-answer" hidden>
+        <p>상담 후 전문가와의 직접 계약이 필요한 경우, 추가 일정을 안내해드립니다.</p>
+      </div>
+    </article>
+    
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq4-6-answer" id="faq4-6-btn">
         6. 전문가 변경 요청도 가능한가요?
-        <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq4-6-answer">
-<p>불편하신 경우 전문가 변경 요청도 가능하며, 재매칭을 도와드립니다.</p>
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq4-6-answer" class="faq-answer" hidden>
+        <p>불편하신 경우 전문가 변경 요청도 가능하며, 재매칭을 도와드립니다.</p>
+      </div>
+    </article>
+  </div>
 </div>
-</article>
-</div>
-</div>
+
 <!-- 카테고리 5: 플랫폼 운영 및 이용 환경 -->
 <div class="faq-section" id="platform">
-<h3 class="category-title"><span>5</span>플랫폼 운영 및 이용 환경</h3>
-<div class="faq-items">
-<article class="faq-item">
-<button aria-controls="faq5-1-answer" aria-expanded="false" class="faq-question" id="faq5-1-btn">
+  <h3 class="category-title"><span>5</span>플랫폼 운영 및 이용 환경</h3>
+  <div class="faq-items">
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq5-1-answer" id="faq5-1-btn">
         1. 운영시간은 어떻게 되나요?
-        <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq5-1-answer">
-<p>평일 오전 9시부터 오후 5시까지(PST) 운영되며, 주말/공휴일은 휴무입니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq5-2-answer" aria-expanded="false" class="faq-question" id="faq5-2-btn">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq5-1-answer" class="faq-answer" hidden>
+        <p>평일 오전 9시부터 오후 5시까지(PST) 운영되며, 주말/공휴일은 휴무입니다.</p>
+      </div>
+    </article>
+    
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq5-2-answer" id="faq5-2-btn">
         2. 오프라인 매장이 있나요?
-        <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq5-2-answer">
-<p>오프라인 매장은 없으며, 온라인 플랫폼 기반으로 운영됩니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq5-3-answer" aria-expanded="false" class="faq-question" id="faq5-3-btn">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq5-2-answer" class="faq-answer" hidden>
+        <p>오프라인 매장은 없으며, 온라인 플랫폼 기반으로 운영됩니다.</p>
+      </div>
+    </article>
+    
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq5-3-answer" id="faq5-3-btn">
         3. 홈페이지 주소는 어떻게 되나요?
-        <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq5-3-answer">
-<p>공식 홈페이지 주소는 <a href="https://www.mijutalk.co" target="_blank">https://www.mijutalk.co</a> 입니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq5-4-answer" aria-expanded="false" class="faq-question" id="faq5-4-btn">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq5-3-answer" class="faq-answer" hidden>
+        <p>공식 홈페이지 주소는 <a href="https://www.mijutalk.co" target="_blank">https://www.mijutalk.co</a> 입니다.</p>
+      </div>
+    </article>
+    
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq5-4-answer" id="faq5-4-btn">
         4. 모바일에서도 이용 가능한가요?
-        <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq5-4-answer">
-<p>모바일에서도 최적화된 형태로 상담 신청 및 정보 열람이 가능합니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq5-5-answer" aria-expanded="false" class="faq-question" id="faq5-5-btn">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq5-4-answer" class="faq-answer" hidden>
+        <p>모바일에서도 최적화된 형태로 상담 신청 및 정보 열람이 가능합니다.</p>
+      </div>
+    </article>
+    
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq5-5-answer" id="faq5-5-btn">
         5. 모든 서비스가 무료인가요?
-        <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq5-5-answer">
-<p>네, 전문가 연결까지의 모든 과정은 무료로 제공됩니다.</p>
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq5-5-answer" class="faq-answer" hidden>
+        <p>네, 전문가 연결까지의 모든 과정은 무료로 제공됩니다.</p>
+      </div>
+    </article>
+  </div>
 </div>
-</article>
-</div>
-</div>
+
 <!-- 카테고리 6: 개인정보 및 보안 정책 -->
 <div class="faq-section" id="privacy">
-<h3 class="category-title"><span>6</span>개인정보 및 보안 정책</h3>
-<div class="faq-items">
-<article class="faq-item">
-<button aria-controls="faq6-1-answer" aria-expanded="false" class="faq-question" id="faq6-1-btn">
+  <h3 class="category-title"><span>6</span>개인정보 및 보안 정책</h3>
+  <div class="faq-items">
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq6-1-answer" id="faq6-1-btn">
         1. 제 개인정보는 안전하게 보호되나요?
-        <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq6-1-answer">
-<p>고객 정보는 암호화되어 안전하게 보호되며, 외부에 제공되지 않습니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq6-2-answer" aria-expanded="false" class="faq-question" id="faq6-2-btn">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq6-1-answer" class="faq-answer" hidden>
+        <p>고객 정보는 암호화되어 안전하게 보호되며, 외부에 제공되지 않습니다.</p>
+      </div>
+    </article>
+    
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq6-2-answer" id="faq6-2-btn">
         2. 상담 시 입력한 정보는 어디까지 공유되나요?
-        <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq6-2-answer">
-<p>상담 신청 시 입력된 정보는 전문가 매칭을 위한 최소한의 정보만 공유됩니다.</p>
-</div>
-</article>
-<article class="faq-item">
-<button aria-controls="faq6-3-answer" aria-expanded="false" class="faq-question" id="faq6-3-btn">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq6-2-answer" class="faq-answer" hidden>
+        <p>상담 신청 시 입력된 정보는 전문가 매칭을 위한 최소한의 정보만 공유됩니다.</p>
+      </div>
+    </article>
+    
+    <article class="faq-item">
+      <button class="faq-question" aria-expanded="false" aria-controls="faq6-3-answer" id="faq6-3-btn">
         3. 미주자산톡은 중립적인 플랫폼인가요?
-        <svg aria-hidden="true" viewbox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"></path></svg>
-</button>
-<div class="faq-answer" hidden="" id="faq6-3-answer">
-<p>네, 특정 금융기관에 소속되지 않은 독립적이고 중립적인 플랫폼입니다.</p>
-</div>
-</article>
-</div>
-</div>
-</section>
-
-    <!-- 성공 사례 섹션 -->
-    <section id="success-cases" aria-labelledby="success-cases-title">
-      <h2 id="success-cases-title">성공 사례</h2>
-
-      <div class="case-result">
-        <p><em>※ 가상 시나리오: 유사한 상황에서 전문가가 제안할 수 있는 전략 예시</em></p>
-        <p>이 사례는 교육 목적의 가상 시나리오이며 실제 결과를 보장하지 않습니다.</p>
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5H7z"/></svg>
+      </button>
+      <div id="faq6-3-answer" class="faq-answer" hidden>
+        <p>네, 특정 금융기관에 소속되지 않은 독립적이고 중립적인 플랫폼입니다.</p>
       </div>
+    </article>
+  </div>
+</div>
+  </section>
 
-      <div class="filter-buttons">
-        <button class="filter-btn active" data-filter="all">
-          <i class="bi bi-grid-fill"></i>전체
-        </button>
-        <button class="filter-btn" data-filter="asset">
-          <i class="bi bi-wallet2"></i>자산관리
-        </button>
-        <button class="filter-btn" data-filter="retirement">
-          <i class="bi bi-emoji-sunglasses"></i>은퇴설계
-        </button>
-        <button class="filter-btn" data-filter="tax">
-          <i class="bi bi-calculator"></i>세금전략
-        </button>
-        <button class="filter-btn" data-filter="education">
-          <i class="bi bi-mortarboard"></i>교육계획
-        </button>
-        <button class="filter-btn" data-filter="business">
-          <i class="bi bi-briefcase"></i>사업주 솔루션
-        </button>
-        <button class="filter-btn" data-filter="inheritance">
-          <i class="bi bi-people"></i>상속계획
-        </button>
-      </div>
+  <!-- 성공 사례 섹션 -->
+  <section id="success-cases" aria-labelledby="success-cases-title">
+    <h2 id="success-cases-title">성공 사례</h2>
 
-      <div class="swiper-container">
-        <div class="swiper-wrapper">
-          <div class="swiper-slide case-card" data-category="asset retirement tax">
-            <div class="case-header">
-              <div class="category-container">
-                <span class="case-category">자산 관리</span>
-                <span class="case-category">은퇴 설계</span>
-                <span class="case-category">세금 효율화</span>
-              </div>
-              <h3 class="case-title">방치된 401(k) 통합 + Roth IRA 전환</h3>
-              <p class="case-client">40대 전문직 | 캘리포니아</p>
+  <div class="filter-buttons">
+    <button class="filter-btn active" data-filter="all">
+      <i class="bi bi-grid-fill"></i>전체
+    </button>
+    <button class="filter-btn" data-filter="asset">
+      <i class="bi bi-wallet2"></i>자산관리
+    </button>
+    <button class="filter-btn" data-filter="retirement">
+      <i class="bi bi-emoji-sunglasses"></i>은퇴설계
+    </button>
+    <button class="filter-btn" data-filter="tax">
+      <i class="bi bi-calculator"></i>세금전략
+    </button>
+    <button class="filter-btn" data-filter="education">
+      <i class="bi bi-mortarboard"></i>교육계획
+    </button>
+    <button class="filter-btn" data-filter="business">
+      <i class="bi bi-briefcase"></i>사업주 솔루션
+    </button>
+    <button class="filter-btn" data-filter="inheritance">
+      <i class="bi bi-people"></i>상속계획
+    </button>
+  </div>
+
+    <div class="swiper-container">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide case-card" data-category="asset retirement tax">
+          <div class="case-header">
+            <div class="category-container">
+              <span class="case-category">자산 관리</span>
+              <span class="case-category">은퇴 설계</span>
+              <span class="case-category">세금 효율화</span>
             </div>
-            <div class="case-content">
-              <p>과거 직장 3곳의 <strong>401(k) $420K</strong> 통합 관리</p>
-              <p>일부를 <strong>Roth IRA</strong>로 단계적 전환</p>
-            </div>
-            <div class="case-result">
-              <span class="highlight">포트폴리오 수익률 2.3% 향상</span>
-            </div>
+            <h3 class="case-title">방치된 401(k) 통합 + Roth IRA 전환</h3>
+            <p class="case-client">40대 전문직 | 캘리포니아</p>
           </div>
-          
-<div class="swiper-slide case-card" data-category="retirement tax">
-<div class="case-header">
-<div class="category-container">
-<span class="case-category">은퇴 설계</span>
-<span class="case-category">세금 효율화</span>
-</div>
-<h3 class="case-title">Traditional IRA 세액 공제</h3>
-<p class="case-client">40대 교사 | 텍사스</p>
-</div>
-<div class="case-content">
-<p><strong>2025년 최대 기여금 $7,000</strong> 완납</p>
-<p>소득 구간에 따른 공제 효율 분석</p>
-</div>
-<div class="case-result">
+          <div class="case-content">
+            <p>과거 직장 3곳의 <strong>401(k) $420K</strong> 통합 관리</p>
+            <p>일부를 <strong>Roth IRA</strong>로 단계적 전환</p>
+          </div>
+          <div class="case-result">
+            <span class="highlight">포트폴리오 수익률 2.3% 향상</span>
+          </div>
+        </div>
+        
+        <div class="swiper-slide case-card" data-category="retirement tax">
+          <div class="case-header">
+            <div class="category-container">
+              <span class="case-category">은퇴 설계</span>
+              <span class="case-category">세금 효율화</span>
+            </div>
+            <h3 class="case-title">Traditional IRA 세액 공제</h3>
+            <p class="case-client">40대 교사 | 텍사스</p>
+          </div>
+          <div class="case-content">
+            <p><strong>2025년 최대 기여금 $7,000</strong> 완납</p>
+            <p>소득 구간에 따른 공제 효율 분석</p>
+          </div>
+          <div class="case-result">
             연간 <span class="highlight">$1,680 세액 공제</span> (24% 구간)
           </div>
-</div>
-<!-- 나머지 사례들도 동일한 구조로 추가 -->
-<div class="swiper-slide case-card" data-category="asset tax">
-<div class="case-header">
-<div class="category-container">
-<span class="case-category">자산 관리</span>
-<span class="case-category">세금 효율화</span>
-</div>
-<h3 class="case-title">국채로 포트폴리오 균형</h3>
-<p class="case-client">60대 은퇴자 | 오레곤</p>
-</div>
-<div class="case-body">
-<div class="case-desc">
-<p><strong>국채(T-Bond)</strong> 30% 편입</p>
-<p>이자 소득 세금 효율화</p>
-</div>
-<div class="case-result">
-<span class="highlight">변동성 40% 감소 + 연 $2K 세금 절감</span>
-</div>
-</div>
-</div>
-<div class="swiper-slide case-card" data-category="education tax">
-<div class="case-header">
-<div class="category-container">
-<span class="case-category">교육 계획</span>
-<span class="case-category">세금 효율화</span>
-</div>
-<h3 class="case-title">529 플랜으로 교육비 마련</h3>
-<p class="case-client">40대 부모 | 일리노이</p>
-</div>
-<div class="case-body">
-<div class="case-desc">
-<p><strong>529 플랜</strong>과 <strong>UGMA</strong> 조합</p>
-<p>주별 세제 혜택 비교</p>
-</div>
-<div class="case-result">
+        </div>
+        
+        <!-- 나머지 사례들도 동일한 구조로 추가 -->
+        <div class="swiper-slide case-card" data-category="asset tax">
+          <div class="case-header">
+            <div class="category-container">
+              <span class="case-category">자산 관리</span>
+              <span class="case-category">세금 효율화</span>
+            </div>
+            <h3 class="case-title">국채로 포트폴리오 균형</h3>
+            <p class="case-client">60대 은퇴자 | 오레곤</p>
+          </div>
+          <div class="case-body">
+            <div class="case-desc">
+              <p><strong>국채(T-Bond)</strong> 30% 편입</p>
+              <p>이자 소득 세금 효율화</p>
+            </div>
+            <div class="case-result">
+              <span class="highlight">변동성 40% 감소 + 연 $2K 세금 절감</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="swiper-slide case-card" data-category="education tax">       
+          <div class="case-header">
+            <div class="category-container">
+              <span class="case-category">교육 계획</span>
+              <span class="case-category">세금 효율화</span>
+            </div>
+            <h3 class="case-title">529 플랜으로 교육비 마련</h3>
+            <p class="case-client">40대 부모 | 일리노이</p>
+          </div>
+          <div class="case-body">
+            <div class="case-desc">
+              <p><strong>529 플랜</strong>과 <strong>UGMA</strong> 조합</p>
+              <p>주별 세제 혜택 비교</p>
+            </div>
+            <div class="case-result">
               10년 간 <span class="highlight">$85K 모금</span> 완료
             </div>
-</div>
-</div><div class="swiper-slide case-card" data-category="asset inheritance tax">
-<div class="case-header">
-<div class="category-container">
-<span class="case-category">자산 관리</span>
-<span class="case-category">상속 계획</span>
-<span class="case-category">세금 효율화</span>
-</div>
-<h3 class="case-title">Trust로 상속 계획 수립</h3>
-<p class="case-client">60대 은퇴자 | 코네티컷</p>
-</div>
-<div class="case-body">
-<div class="case-desc">
-<p><strong>Living Trust</strong> 설계로 유산 분배</p>
-<p><strong>Estate</strong> 세금 최소화</p>
-</div>
-<div class="case-result">
+          </div>
+        </div><div class="swiper-slide case-card" data-category="asset inheritance tax">
+          <div class="case-header">
+            <div class="category-container">
+              <span class="case-category">자산 관리</span>
+              <span class="case-category">상속 계획</span>
+              <span class="case-category">세금 효율화</span>
+            </div>
+            <h3 class="case-title">Trust로 상속 계획 수립</h3>
+            <p class="case-client">60대 은퇴자 | 코네티컷</p>
+          </div>
+          <div class="case-body">
+            <div class="case-desc">
+              <p><strong>Living Trust</strong> 설계로 유산 분배</p>
+              <p><strong>Estate</strong> 세금 최소화</p>
+            </div>
+            <div class="case-result">
               상속비용 <span class="highlight">45% 감소</span>
-</div>
-</div>
-</div><div class="swiper-slide case-card" data-category="business retirement tax">
-<div class="case-header">
-<div class="category-container">
-<span class="case-category">사업주 솔루션</span>
-<span class="case-category">은퇴 설계</span>
-<span class="case-category">세금 효율화</span>
-</div>
-<h3 class="case-title">소상공인 SEP IRA 활용</h3>
-<p class="case-client">50대 자영업자 | 네바다</p>
-</div>
-<div class="case-body">
-<div class="case-desc">
-<p><strong>SEP IRA</strong>로 사업 수익금 25% 적립</p>
-<p>기여금 한도 최적화</p>
-</div>
-<div class="case-result">
+            </div>
+          </div>
+        </div><div class="swiper-slide case-card" data-category="business retirement tax">
+          <div class="case-header">
+            <div class="category-container">
+              <span class="case-category">사업주 솔루션</span>
+              <span class="case-category">은퇴 설계</span>
+              <span class="case-category">세금 효율화</span>
+            </div>
+            <h3 class="case-title">소상공인 SEP IRA 활용</h3>
+            <p class="case-client">50대 자영업자 | 네바다</p>
+          </div>
+          <div class="case-body">
+            <div class="case-desc">
+              <p><strong>SEP IRA</strong>로 사업 수익금 25% 적립</p>
+              <p>기여금 한도 최적화</p>
+            </div>
+            <div class="case-result">
               연간 <span class="highlight">$35K 추가 퇴직 자금</span>
-</div>
-</div>
-</div><div class="swiper-slide case-card" data-category="business retirement tax">
-<div class="case-header">
-<div class="category-container">
-<span class="case-category">사업주 솔루션</span>
-<span class="case-category">은퇴 설계</span>
-<span class="case-category">세금 효율화</span>
-</div>
-<h3 class="case-title">고소득자 Defined Benefit</h3>
-<p class="case-client">50대 의사 | 뉴멕시코</p>
-</div>
-<div class="case-body">
-<div class="case-desc">
-<p><strong>Defined Benefit 플랜</strong>으로 고액 기여</p>
-<p>연금 수령 시기 분석</p>
-</div>
-<div class="case-result">
+            </div>
+          </div>
+        </div><div class="swiper-slide case-card" data-category="business retirement tax">
+          <div class="case-header">
+            <div class="category-container">
+              <span class="case-category">사업주 솔루션</span>
+              <span class="case-category">은퇴 설계</span>
+              <span class="case-category">세금 효율화</span>
+            </div>
+            <h3 class="case-title">고소득자 Defined Benefit</h3>
+            <p class="case-client">50대 의사 | 뉴멕시코</p>
+          </div>
+          <div class="case-body">
+            <div class="case-desc">
+              <p><strong>Defined Benefit 플랜</strong>으로 고액 기여</p>
+              <p>연금 수령 시기 분석</p>
+            </div>
+            <div class="case-result">
               연간 <span class="highlight">$100K+ 세금 연기</span>
-</div>
-</div>
-</div><div class="swiper-slide case-card" data-category="business retirement tax">
-<div class="case-header">
-<div class="category-container">
-<span class="case-category">사업주 솔루션</span>
-<span class="case-category">은퇴 설계</span>
-<span class="case-category">세금 효율화</span>
-</div>
-<h3 class="case-title">소규모 사업체 Simple IRA</h3>
-<p class="case-client">40 카페 오너 | 미시간</p>
-</div>
-<div class="case-body">
-<div class="case-desc">
-<p><strong>Simple IRA</strong>로 직원 복지 강화</p>
-<p>기여금 매칭 전략</p>
-</div>
-<div class="case-result">
+            </div>
+          </div>
+        </div><div class="swiper-slide case-card" data-category="business retirement tax">
+          <div class="case-header">
+            <div class="category-container">
+              <span class="case-category">사업주 솔루션</span>
+              <span class="case-category">은퇴 설계</span>
+              <span class="case-category">세금 효율화</span>
+            </div>
+            <h3 class="case-title">소규모 사업체 Simple IRA</h3>
+            <p class="case-client">40 카페 오너 | 미시간</p>
+          </div>
+          <div class="case-body">
+            <div class="case-desc">
+              <p><strong>Simple IRA</strong>로 직원 복지 강화</p>
+              <p>기여금 매칭 전략</p>
+            </div>
+            <div class="case-result">
               직원 유지율 <span class="highlight">30% 향상</span>
-</div>
-</div>
-</div><div class="swiper-slide case-card" data-category="asset">
-<div class="case-header">
-<div class="category-container">
-<span class="case-category">자산 관리</span>
-</div>
-<h3 class="case-title">주택 구매 자금 모으기</h3>
-<p class="case-client">30대 커플 | 텍사스</p>
-</div>
-<div class="case-body">
-<div class="case-desc">
-<p>목표 기반 저축 계획</p>
-<p>투자 수익률 vs 안정성 균형</p>
-</div>
-<div class="case-result">
+            </div>
+          </div>
+        </div><div class="swiper-slide case-card" data-category="asset">
+          <div class="case-header">
+            <div class="category-container">
+              <span class="case-category">자산 관리</span>
+            </div>
+            <h3 class="case-title">주택 구매 자금 모으기</h3>
+            <p class="case-client">30대 커플 | 텍사스</p>
+          </div>
+          <div class="case-body">
+            <div class="case-desc">
+              <p>목표 기반 저축 계획</p>
+              <p>투자 수익률 vs 안정성 균형</p>
+            </div>
+            <div class="case-result">
               3년 만에 <span class="highlight">$90K 다운페이</span> 완성
             </div>
-</div>
-</div><div class="swiper-slide case-card" data-category="tax">
-<div class="case-header">
-<div class="category-container">
-<span class="case-category">세금 효율화</span>
-</div>
-<h3 class="case-title">고소득자 세금 전략</h3>
-<p class="case-client">40 변호사 | 코네티컷</p>
-</div>
-<div class="case-body">
-<div class="case-desc">
-<p><strong>Tax-Loss Harvesting</strong> 실행</p>
-<p>자산 유형별 세금 영향 분석</p>
-</div>
-<div class="case-result">
-<span class="highlight">연 $18K 세금 절감</span>
-</div>
-</div>
-</div><div class="swiper-slide case-card" data-category="business asset">
-<div class="case-header">
-<div class="category-container">
-<span class="case-category">사업주 솔루션</span>
-<span class="case-category">자산 관리</span>
-</div>
-<h3 class="case-title">사업체 명의 투자 계좌 운영</h3>
-<p class="case-client">50대 창업자 | 텍사스</p>
-</div>
-<div class="case-body">
-<div class="case-desc">
-<p>사업체 수익금 재투자 구조</p>
-<p>법인세 절감 전략</p>
-</div>
-<div class="case-result">
-<span class="highlight">연 $15K 추가 수익</span>
-</div>
-</div>
-</div><div class="swiper-slide case-card" data-category="asset">
-<div class="case-header">
-<div class="category-container">
-<span class="case-category">자산 관리</span>
-</div>
-<h3 class="case-title">이민 후 자산 관리</h3>
-<p class="case-client">50대 이민자 | 조지아</p>
-</div>
-<div class="case-body">
-<div class="case-desc">
-<p>한국-미국 자산 통합 보고</p>
-<p>통화별 자산 배분 조정</p>
-</div>
-<div class="case-result">
-              관리 효율성 <span class="highlight">50% 향상</span>
-</div>
-</div>
-</div>
-          
-        </div>
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-button-next"></div>
-        <div class="swiper-pagination"></div>
-      </div>
-
-      <p style="font-size: 0.9rem; color: #555; margin-bottom: 20px;">
-        * 본 컨설팅 결과는 개인별 상황에 따라 달라질 수 있습니다.
-      </p>
-    </section>
-
-<!-- 프리미엄 컨설팅 신청 섹션 -->
-<section id="contact" aria-labelledby="contact-title">
-  <h2 id="contact-title">프리미엄 컨설팅 신청</h2>
-  
-  <div class="consult-box section-box">
-  
-  <div class="consult-box section-box">
-      <h3>지금 바로 전문가와 상담하세요</h3>
-      <p>온라인으로 1분만에 작성하는 양식으로 빠르게 상담을 시작해보세요.</p>
-      
-      <div class="cta-button-container">
-        <a href="./pages/consultant.html" class="main-cta-btn">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
-          </svg>
-          온라인 상담 신청
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <!-- 두 번째 컨설팅 카드도 동일한 너비 유지 -->
-  <div class="consult-card">
-        <div class="consult-content">
-          <p class="options-title">
-            카카오톡이나 전화로도 편리하게 상담 예약이 가능합니다
-          </p>
-
-          <div class="option-buttons">
-            <a href="http://pf.kakao.com/_Kxmlin" class="secondary-btn kakao">
-              <img src="./assets/kakao-icon.webp" alt="카카오톡 아이콘">
-              카톡 상담
-            </a>
-
-            <a href="tel:+19498181881" class="secondary-btn phone">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
-              </svg>
-              전화 상담
-            </a>
           </div>
-
-          <p class="consult-note">
-            ※ 온라인 신청 시 24시간 내 전문 컨설턴트가 연락드립니다.<br>
-            운영시간: 월-금 09:00 - 18:00 (PST)
-          </p>
+        </div><div class="swiper-slide case-card" data-category="tax">
+          <div class="case-header">
+            <div class="category-container">
+              <span class="case-category">세금 효율화</span>
+            </div>
+            <h3 class="case-title">고소득자 세금 전략</h3>
+            <p class="case-client">40 변호사 | 코네티컷</p>
+          </div>
+          <div class="case-body">
+            <div class="case-desc">
+              <p><strong>Tax-Loss Harvesting</strong> 실행</p>
+              <p>자산 유형별 세금 영향 분석</p>
+            </div>
+            <div class="case-result">
+              <span class="highlight">연 $18K 세금 절감</span>
+            </div>
+          </div>
+        </div><div class="swiper-slide case-card" data-category="business asset">
+          <div class="case-header">
+            <div class="category-container">
+              <span class="case-category">사업주 솔루션</span>
+              <span class="case-category">자산 관리</span>
+            </div>
+            <h3 class="case-title">사업체 명의 투자 계좌 운영</h3>
+            <p class="case-client">50대 창업자 | 텍사스</p>
+          </div>
+          <div class="case-body">
+            <div class="case-desc">
+              <p>사업체 수익금 재투자 구조</p>
+              <p>법인세 절감 전략</p>
+            </div>
+            <div class="case-result">
+              <span class="highlight">연 $15K 추가 수익</span>
+            </div>
+          </div>
+        </div><div class="swiper-slide case-card" data-category="asset">
+          <div class="case-header">
+            <div class="category-container">
+              <span class="case-category">자산 관리</span>
+            </div>
+            <h3 class="case-title">이민 후 자산 관리</h3>
+            <p class="case-client">50대 이민자 | 조지아</p>
+          </div>
+          <div class="case-body">
+            <div class="case-desc">
+              <p>한국-미국 자산 통합 보고</p>
+              <p>통화별 자산 배분 조정</p>
+            </div>
+            <div class="case-result">
+              관리 효율성 <span class="highlight">50% 향상</span>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
-  </main>
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
+      <div class="swiper-pagination"></div>
+    </div>
 
-  <footer aria-label="회사 정보 및 저작권">
-    <div class="footer-container">
-      <div class="footer-brand">
-        <img src="./assets/logo-img-60-60.svg" alt="미주자산톡 로고">
-        <span class="brand-name">미주자산톡</span>
-      </div>
+    <!-- 이 부분에 결과 안내 문구 추가 -->
+    <p style="font-size: 0.9rem; color: #555; margin-bottom: 20px;">
+      * 본 컨설팅 결과는 개인별 상황에 따라 달라질 수 있습니다.
+    </p>
+  </section>
 
-      <div class="footer-links">
-        <a href="./pages/privacy.html">개인정보처리방침</a>
-        <a href="./pages/terms.html">이용약관</a>
-        <a href="mailto:privacy@mijutalk.co">개인정보보호문의</a>
-      </div>
+  <section id="contact" aria-labelledby="contact-title">
+    <h2 id="contact-title">프리미엄 컨설팅 신청</h2>
 
-      <div class="footer-info">
-        <p>상호: 미주자산톡 | 대표: 이상현</p>
-        <p>사업자등록번호: 445-60-00911 | 이메일: <a href="mailto:info@mijutalk.co">info@mijutalk.co</a></p>
-        <p>미국사업장: 5319 University Dr, Irvine, CA 92612</p>
-        <p>한국사업장: 경상남도 합천군 합천읍 대야로 888</p>
-      </div>
+    <div class="consult-card">
+      <div class="consult-content">
+        <h3>지금 바로 전문가와 상담하세요</h3>
+        <p>온라인으로 1분만에 작성하는 양식으로 빠르게 상담을 시작해보세요.</p>
 
-      <div class="footer-copy">
-        &copy; <script>document.write(new Date().getFullYear());</script> 미주자산톡. All Rights Reserved.
-      </div>
+        <div class="cta-container">
+          <!-- 메인 CTA 버튼 -->
+          <a href="./pages/consultant.html" class="main-cta-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+            </svg>
+            온라인 상담 신청
+          </a>
 
-      <div class="legal-notice">
-        <p>※ 당사는 FINRA/SEC 등록 기관이 아니며, 투자 권유를 하지 않습니다.</p>
-        <p>※ 연결된 전문가는 독립적 계약자로 당사와 고용 관계가 없습니다.</p>
+          <!-- 보조 옵션 -->
+          <div class="secondary-options">
+            <p class="options-title">카카오톡이나 전화로도 편리하게 상담 예약이 가능합니다</p>
+            <div class="option-buttons">
+              <a href="http://pf.kakao.com/_Kxmlin" class="secondary-btn kakao">
+                <img src="./assets/kakao-icon.webp" alt="카카오톡 아이콘">
+                카톡 상담
+              </a>
+              <a href="tel:+19498181881" class="secondary-btn phone">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+                </svg>
+                전화 상담
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <p class="consult-note">
+          ※ 온라인 신청 시 24시간 내 전문 컨설턴트가 연락드립니다.<br>
+          운영시간: 월-금 09:00 - 18:00 (PST)
+        </p>
       </div>
     </div>
-  </footer>
+  </section>
+</main>
 
-  <!-- 플로팅 버튼 -->
-  <div class="floating-cta">
-    <!-- 메인 버튼 -->
-    <button class="floating-btn" aria-label="상담 신청">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
-        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-        <path d="M13 8H7M17 12H7" stroke-linecap="round"/>
-      </svg>
-    </button>
-    
-    <!-- 확장 서브 버튼들 -->
-    <div class="sub-buttons">
-      <a href="./pages/consultant.html" class="sub-btn form-btn" aria-label="상담 양식 작성">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
-          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-          <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
-        </svg>
-        <span>상담신청</span>
-      </a>
-      <a href="http://pf.kakao.com/_Kxmlin" class="sub-btn kakao-btn" aria-label="카카오톡 상담">
-        <img src="./assets/kakao-icon.webp" alt="" width="20">
-        <span>카톡상담</span>
-      </a>
-      <a href="tel:+19498181881" class="sub-btn call-btn" aria-label="전화 상담">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
-          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
-        </svg>
-        <span>전화상담</span>
-      </a>
+<footer>
+  <div class="footer-container">
+    <div class="footer-brand">
+      <img src="./assets/logo-img-60-60.svg" alt="미주자산톡 로고">
+      <span class="brand-name">미주자산톡</span>
+    </div>
+
+    <div class="footer-links">
+      <a href="./pages/privacy.html">개인정보처리방침</a>
+      <a href="./pages/terms.html">이용약관</a>
+      <a href="mailto:privacy@mijutalk.co">개인정보보호문의</a>
+    </div>
+
+    <div class="footer-info">
+      <p>상호: 미주자산톡 | 대표: 이상현</p>
+      <p>사업자등록번호: 445-60-00911 | 이메일: <a href="mailto:info@mijutalk.co">info@mijutalk.co</a></p>
+      <p>미국사업장: 5319 University Dr, Irvine, CA 92612</p>
+      <p>한국사업장: 경상남도 합천군 합천읍 대야로 888</p>
+    </div>
+
+    <div class="footer-copy">
+      &copy; <script>document.write(new Date().getFullYear());</script> 미주자산톡. All Rights Reserved.
     </div>
   </div>
+</footer>
 
-<script src="./scripts/swiper-bundle.min.js" defer></script>
+<!-- 플로팅 버튼 -->
+<div class="floating-cta">
+  <!-- 메인 버튼 -->
+  <button class="floating-btn" aria-label="상담 신청">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
+      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+      <path d="M13 8H7M17 12H7" stroke-linecap="round"/>
+    </svg>
+  </button>
+  
+  <!-- 확장 서브 버튼들 -->
+  <div class="sub-buttons">
+    <a href="./pages/consultant.html" class="sub-btn form-btn" aria-label="상담 양식 작성">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
+        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+        <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+      </svg>
+      <span>상담신청</span>
+    </a>
+    <a href="http://pf.kakao.com/_Kxmlin" class="sub-btn kakao-btn" aria-label="카카오톡 상담">
+      <img src="./assets/kakao-icon.webp" alt="" width="20">
+      <span>카톡상담</span>
+    </a>
+    <a href="tel:+19498181881" class="sub-btn call-btn" aria-label="전화 상담">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
+        <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+      </svg>
+      <span>전화상담</span>
+    </a>
+  </div>
+</div>
+
+<!-- JS 연결 (body 종료 전) -->
+<script src="./scripts/swiper-bundle.min.js"></script>
+
 <script>
   document.addEventListener("DOMContentLoaded", function() {
     // Swiper 초기화
     const caseSwiper = new Swiper('.swiper-container', {
-      slidesPerView: 'auto',
-      centeredSlides: false,
+      slidesPerView: 1,
       spaceBetween: 20,
       roundLengths: true,      
       watchOverflow: true,
@@ -1222,7 +2159,7 @@ footer {
         clickable: true,
       },
       breakpoints: {
-        640: { slidesPerView: 2, centeredSlides: false, spaceBetween: 20 },
+        640: { slidesPerView: 2, spaceBetween: 20 },
         1024: { slidesPerView: 3, spaceBetween: 20 },
       }
     });
@@ -1257,49 +2194,56 @@ footer {
     window.addEventListener("scroll", updateActiveLink);
     updateActiveLink();
 
-    // 플로팅 버튼 이벤트 리스너
-    const floatingCta = document.querySelector('.floating-cta');
-    const mainBtn = floatingCta.querySelector('.floating-btn');
-    const subButtons = floatingCta.querySelector('.sub-buttons');
 
-    mainBtn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      floatingCta.classList.toggle('active');
-      
-      // 모바일에서만 동작하도록 조건 추가
-      if (window.innerWidth <= 768) {
-        if (floatingCta.classList.contains('active')) {
-          subButtons.style.display = 'flex';
-        } else {
-          subButtons.style.display = 'none';
-        }
-      }
-    });
 
-    // 문서 전체 클릭 시 메뉴 닫기 (모바일 전용)
-    document.addEventListener('click', function(e) {
-      if (window.innerWidth <= 768 && 
-          !floatingCta.contains(e.target) && 
-          floatingCta.classList.contains('active')) {
-        floatingCta.classList.remove('active');
-        subButtons.style.display = 'none';
-      }
-    });
+// 플로팅 버튼 이벤트 리스너 수정
+document.addEventListener('DOMContentLoaded', function () {
+  const floatingCta = document.querySelector('.floating-cta');
+  const mainBtn = floatingCta.querySelector('.floating-btn');
+  const subButtons = floatingCta.querySelector('.sub-buttons');
 
-    // 화면 크기 변경 시 초기화
-    window.addEventListener('resize', function() {
-      if (window.innerWidth > 768) {
-        floatingCta.classList.remove('active');
-        subButtons.style.display = 'flex';
+  mainBtn.addEventListener('click', function (e) {
+    e.stopPropagation(); // 이벤트 버블링 방지
+    floatingCta.classList.toggle('active');
+    
+    // 모바일에서만 동작하도록 조건 추가
+    if (window.innerWidth <= 768) {
+      if (floatingCta.classList.contains('active')) {
+        subButtons.style.display = 'block';
       } else {
         subButtons.style.display = 'none';
       }
-    });
+    }
+  });
 
-    // 초기 상태 설정
-    if (window.innerWidth <= 768) {
+  // 문서 전체 클릭 시 메뉴 닫기 (모바일 전용)
+  document.addEventListener('click', function(e) {
+    if (window.innerWidth <= 768 && 
+        !floatingCta.contains(e.target) && 
+        floatingCta.classList.contains('active')) {
+      floatingCta.classList.remove('active');
       subButtons.style.display = 'none';
     }
+  });
+
+  // 화면 크기 변경 시 초기화
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 768) {
+      floatingCta.classList.remove('active');
+      subButtons.style.display = 'flex'; // 데스크탑에서는 항상 보이도록
+    } else {
+      subButtons.style.display = 'none'; // 모바일에서는 처음에 숨김
+    }
+  });
+
+  // 초기 상태 설정
+  if (window.innerWidth <= 768) {
+    subButtons.style.display = 'none';
+  }
+});
+
+
+
 
     // 선택 필터 우선순위 정렬 함수
     function sortByPriority(cards, filter) {
@@ -1364,8 +2308,9 @@ footer {
     if(initialFilterBtn) {
       initialFilterBtn.click();
     }
+  });
 
-    // FAQ 아코디언 토글 기능
+   // FAQ 아코디언 토글 기능
     const faqQuestions = document.querySelectorAll('.faq-question');
     faqQuestions.forEach(button => {
       button.addEventListener('click', () => {
@@ -1421,11 +2366,9 @@ footer {
     // 카테고리 탭 기능
     const categoryButtons = document.querySelectorAll('.category-btn');
     const faqSections = document.querySelectorAll('.faq-section');
-
+    
     categoryButtons.forEach(button => {
-      button.addEventListener('click', (e) => {
-        e.preventDefault();
-        
+      button.addEventListener('click', () => {
         // 모든 버튼 비활성화
         categoryButtons.forEach(btn => btn.classList.remove('active'));
         // 클릭한 버튼 활성화
@@ -1439,13 +2382,13 @@ footer {
         });
         
         // 선택한 섹션 보이기
-        const targetSection = document.getElementById(categoryId);
-        targetSection.style.display = 'block';
-        targetSection.style.opacity = '0';
-        setTimeout(() => {
-          targetSection.style.transition = 'opacity 0.3s ease';
-          targetSection.style.opacity = '1';
-        }, 10);
+        document.getElementById(categoryId).style.display = 'block';
+        
+        // 선택한 카테고리로 스크롤 이동
+        document.getElementById(categoryId).scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
       });
     });
 
@@ -1454,64 +2397,61 @@ footer {
       faqSections.forEach((section, index) => {
         if (index !== 0) {
           section.style.display = 'none';
-        } else {
-          section.style.opacity = '1';
         }
       });
     });
 
-    // 모바일 네비게이션 토글
-    const toggleButton = document.querySelector(".menu-toggle");
-    const nav = document.getElementById("primary-navigation");
+  // 모바일 네비게이션 토글
+  const toggleButton = document.querySelector(".menu-toggle");
+  const nav = document.getElementById("primary-navigation");
 
-    if (toggleButton && nav) {
-      toggleButton.addEventListener("click", () => {
-        const isOpen = nav.classList.toggle("open");
-        toggleButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
-        toggleButton.classList.toggle("open", isOpen);
+  if (toggleButton && nav) {
+    toggleButton.addEventListener("click", () => {
+      const isOpen = nav.classList.toggle("open");
+      toggleButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      toggleButton.classList.toggle("open", isOpen);
+    });
+
+    const mobileNavLinks = nav.querySelectorAll("a");
+    mobileNavLinks.forEach(link => {
+      link.addEventListener("click", () => {
+        if (nav.classList.contains("open")) {
+          nav.classList.remove("open");
+          toggleButton.setAttribute("aria-expanded", "false");
+          toggleButton.classList.remove("open");
+        }
       });
+    });
+  }
 
-      const mobileNavLinks = nav.querySelectorAll("a");
-      mobileNavLinks.forEach(link => {
-        link.addEventListener("click", () => {
-          if (nav.classList.contains("open")) {
-            nav.classList.remove("open");
-            toggleButton.setAttribute("aria-expanded", "false");
-            toggleButton.classList.remove("open");
-          }
+  // 부드러운 스크롤
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      const hrefAttribute = this.getAttribute('href');
+
+      if (hrefAttribute === '#hero') {
+        e.preventDefault();
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
         });
-      });
-    }
+        return;
+      }
 
-    // 부드러운 스크롤
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        const hrefAttribute = this.getAttribute('href');
+      if (hrefAttribute && hrefAttribute.length > 1 && document.querySelector(hrefAttribute)) {
+        e.preventDefault();
+        const targetElement = document.querySelector(hrefAttribute);
+        if (targetElement) {
+          const headerHeight = document.querySelector('header').offsetHeight;
+          const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+          const offsetPosition = elementPosition - headerHeight;
 
-        if (hrefAttribute === '#hero') {
-          e.preventDefault();
           window.scrollTo({
-            top: 0,
+            top: offsetPosition,
             behavior: "smooth"
           });
-          return;
         }
-
-        if (hrefAttribute && hrefAttribute.length > 1 && document.querySelector(hrefAttribute)) {
-          e.preventDefault();
-          const targetElement = document.querySelector(hrefAttribute);
-          if (targetElement) {
-            const headerHeight = document.querySelector('header').offsetHeight;
-            const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
-            const offsetPosition = elementPosition - headerHeight;
-
-            window.scrollTo({
-              top: offsetPosition,
-              behavior: "smooth"
-            });
-          }
-        }
-      });
+      }
     });
   });
 </script>
