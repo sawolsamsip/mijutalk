@@ -109,12 +109,17 @@
     @media (max-width: 768px) {
 
     .filter-buttons {
-    justify-content: flex-start;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
     }
 
     .filter-buttons .filter-btn {
     flex: 1 1 calc(50% - 10px);
     text-align: center;
+    }
+    .filter-buttons .filter-btn.wide {
+      flex: 1 1 100%;
     }
       
       .nowrap, #services li p, 
