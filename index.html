@@ -367,7 +367,30 @@ section {
   line-height: 1.4;
   margin-bottom: 8px;
 }
+/* 금융 전문가 소개 & 프리미엄 컨설팅 박스 공통 스타일 */
+.profile-container,
+.consult-card {
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.08);
+  padding: 40px;
+}
 
+/* 금융 전문가 소개 박스 특수 스타일 */
+.profile-container {
+  text-align: center;
+}
+
+/* 프리미엄 컨설팅 박스 특수 스타일 */
+.consult-card {
+  border-top: 6px solid var(--color-secondary);
+  text-align: center;
+  margin-bottom: 30px;
+}
+  
 /* Profile Section */
 .profile-container {
   display: flex;
@@ -1068,6 +1091,12 @@ footer a:hover {
 }
 
 @media (max-width: 768px) {
+  .profile-container,
+  .consult-card {
+    padding: 30px 20px;
+    margin: 0 15px 30px;
+    width: calc(100% - 30px);
+  }
   /* 모바일에서 섹션 간격 추가 */
   section {
     margin-bottom: 40px;
@@ -1999,28 +2028,29 @@ footer a:hover {
       </p>
     </section>
 
-    <section id="contact" aria-labelledby="contact-title">
-      <h2 id="contact-title">프리미엄 컨설팅 신청</h2>
-
-      <!-- 메인 온라인 상담 카드 -->
-<div class="consult-card">
-  <div class="consult-content">
-    <h3>지금 바로 전문가와 상담하세요</h3>
-    <p>온라인으로 1분만에 작성하는 양식으로 빠르게 상담을 시작해보세요.</p>
-    <div class="cta-button-container">
-      <a href="./pages/consultant.html" class="main-cta-btn">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-          <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
-        </svg>
-        온라인 상담 신청
-      </a>
+<!-- 프리미엄 컨설팅 신청 섹션 -->
+<section id="contact" aria-labelledby="contact-title">
+  <h2 id="contact-title">프리미엄 컨설팅 신청</h2>
+  
+  <div class="consult-card">
+    <div class="consult-content">
+      <h3>지금 바로 전문가와 상담하세요</h3>
+      <p>온라인으로 1분만에 작성하는 양식으로 빠르게 상담을 시작해보세요.</p>
+      
+      <div class="cta-button-container">
+        <a href="./pages/consultant.html" class="main-cta-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+          </svg>
+          온라인 상담 신청
+        </a>
+      </div>
     </div>
   </div>
-</div>
 
-      <!-- 보조 상담 카드 -->
-      <div class="consult-card">
+  <!-- 두 번째 컨설팅 카드도 동일한 너비 유지 -->
+  <div class="consult-card">
         <div class="consult-content">
           <p class="options-title">
             카카오톡이나 전화로도 편리하게 상담 예약이 가능합니다
