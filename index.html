@@ -1042,6 +1042,26 @@ footer p {
 
 /* Mobile Responsive Styles */
 @media (max-width: 768px) {
+  .consult-content {
+    max-width: 100%;
+  }
+  .main-cta-btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 1rem;
+  }
+  .consult-content h3 {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+  }
+
+  .consult-content p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0 auto 15px;
+    width: 100%;
+  }
+  
  .faq-question {
     padding: 15px 20px;
     font-size: 1rem;
@@ -1151,11 +1171,12 @@ footer p {
   
   /* 성공 사례 모바일 스타일 */
   .swiper-slide {
-    width: 85% !important;
+    width: calc(100vw - 40px) !important;
     margin-right: 15px !important;
     min-width: 85% !important; /* 추가 */
     box-sizing: border-box;
     min-height: 380px;
+    padding: 20px;
   }
   
   .case-content p,
@@ -1169,10 +1190,10 @@ footer p {
   
   .case-result {
     background: #f8f9fa;
-    padding: 12px;
+    padding: 10px;
     border-radius: 8px;
     margin-top: 15px;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
   }
   
   .case-result em {
@@ -1188,7 +1209,8 @@ footer p {
   
   .swiper-container {
     padding: 0 15px !important;
-    margin: 0 auto;
+    margin: 0 -15px;
+    width: calc(100% + 30px);
   }
   
   .swiper-button-next,
@@ -1209,6 +1231,7 @@ footer p {
     word-break: keep-all;
     font-size: .93rem;
     letter-spacing: -.2px;
+    max-width: 100%;
   }
   
   /* Floating CTA 모바일 스타일 */
