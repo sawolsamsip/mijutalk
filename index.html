@@ -708,7 +708,6 @@
     }
 
     .consult-card {
-      white-space: nowrap;
       background: white;
       border-radius: 16px;
       padding: 40px;
@@ -725,6 +724,12 @@
       margin: 0 auto;
     }
 
+    .consult-content p {
+  white-space: normal;
+  word-break: break-word; /* 긴 단어도 강제 줄바꿈 */
+  overflow-wrap: break-word; /* 단어 중간에서 줄바꿈 */
+}
+    
     .consult-content h3 {
       font-size: 1.5rem;
       color: #003366;
@@ -1009,7 +1014,19 @@
 
     /* 모바일 대응 */
     @media (max-width: 768px) {
-
+      .nowrap {
+        white-space: normal;
+        word-break: keep-all;
+        display: block;
+        width: 100%;
+      }
+      .consult-card {
+        padding: 20px; /* 패딩 축소 */
+      }
+      
+      .consult-content h3 {
+        font-size: 1.3rem; /* 제목 크기 축소 */
+      }
             .faq-item {
         margin-bottom: 20px;
       }
