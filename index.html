@@ -746,7 +746,8 @@ section {
   word-break: keep-all;
   background: #fff;
   border-radius: 12px;
-  padding: 40px 40px;
+  padding: 24px;
+  margin-bottom: 24px;
   box-shadow: 0 8px 30px rgba(0,0,0,0.08);
   width: 100%;
   box-sizing: border-box;
@@ -761,6 +762,9 @@ section {
 }
 
 .consult-content {
+    display: flex;
+  flex-direction: column;
+  gap: 16px;
   max-width: 100%; /* 제한 없애기 */
   margin: 0 auto;
   text-align: center;
@@ -793,11 +797,6 @@ section {
   box-shadow: 0 6px 16px rgba(0,80,158,.4);
 }
 
-.secondary-options {
-  margin-top: 40px;
-  padding-top: 30px;
-  border-top: 1px solid #ddd;
-}
 
 .options-title {
   color: #666;
@@ -2207,49 +2206,54 @@ html, body {
 
   </section>
 
-  <section id="contact" aria-labelledby="contact-title">
-    <h2 id="contact-title">프리미엄 컨설팅 신청</h2>
+<section id="contact" aria-labelledby="contact-title">
+  <h2 id="contact-title">프리미엄 컨설팅 신청</h2>
 
-    <div class="consult-card">
-      <div class="consult-content">
-        <h3>지금 바로 전문가와 상담하세요</h3>
-        <p>온라인으로 1분만에 작성하는 양식으로 빠르게 상담을 시작해보세요.</p>
+  <!-- 메인 온라인 상담 카드 -->
+  <div class="consult-card">
+    <div class="consult-content">
+      <h3>지금 바로 전문가와 상담하세요</h3>
+      <p>온라인으로 1분만에 작성하는 양식으로 빠르게 상담을 시작해보세요.</p>
 
-        <div class="cta-container">
-          <!-- 메인 CTA 버튼 -->
-          <a href="./pages/consultant.html" class="main-cta-btn">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
-            </svg>
-            온라인 상담 신청
-          </a>
-
-          <!-- 보조 옵션 -->
-          <div class="secondary-options">
-            <p class="options-title">카카오톡이나 전화로도 편리하게 상담 예약이 가능합니다</p>
-            <div class="option-buttons">
-              <a href="http://pf.kakao.com/_Kxmlin" class="secondary-btn kakao">
-                <img src="./assets/kakao-icon.webp" alt="카카오톡 아이콘">
-                카톡 상담
-              </a>
-              <a href="tel:+19498181881" class="secondary-btn phone">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
-                </svg>
-                전화 상담
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <p class="consult-note">
-          ※ 온라인 신청 시 24시간 내 전문 컨설턴트가 연락드립니다.<br>
-          운영시간: 월-금 09:00 - 18:00 (PST)
-        </p>
-      </div>
+      <a href="./pages/consultant.html" class="main-cta-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+        </svg>
+        온라인 상담 신청
+      </a>
     </div>
-  </section>
+  </div>
+
+  <!-- 보조 상담 카드: 구조, 디자인 모두 동일하게 맞춤 -->
+  <div class="consult-card">
+    <div class="consult-content">
+      <p class="options-title">
+        카카오톡이나 전화로도 편리하게 상담 예약이 가능합니다
+      </p>
+
+      <div class="option-buttons">
+        <a href="http://pf.kakao.com/_Kxmlin" class="secondary-btn kakao">
+          <img src="./assets/kakao-icon.webp" alt="카카오톡 아이콘">
+          카톡 상담
+        </a>
+
+        <a href="tel:+19498181881" class="secondary-btn phone">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+          </svg>
+          전화 상담
+        </a>
+      </div>
+
+      <p class="consult-note">
+        ※ 온라인 신청 시 24시간 내 전문 컨설턴트가 연락드립니다.<br>
+        운영시간: 월-금 09:00 - 18:00 (PST)
+      </p>
+    </div>
+  </div>
+</section>
+
 </main>
 
 <footer>
