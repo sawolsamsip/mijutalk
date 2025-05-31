@@ -85,7 +85,7 @@ h2 {
   font-weight: 700;
   margin-bottom: 24px;
   font-size: 2rem;
-  border-left: 6px solid var(--color-secondary); /* 노란색 줄 추가 */
+  border-left: 6px solid var(--color-secondary) !important; /* 강제 적용 */
   padding-left: 12px; /* 텍스트와 줄 사이 간격 */
   line-height: 1.3;
   transition: border-color 0.3s ease; /* 부드러운 색상 변화 */
@@ -735,7 +735,8 @@ section {
 }
 
 .consult-card {
-  white-space: nowrap;
+  white-space: normal !important; /* nowrap 제거 */
+  word-break: keep-all;
   background: #fff;
   border-radius: 16px;
   padding: 40px;
@@ -1118,7 +1119,7 @@ footer p {
   
   /* 성공 사례 모바일 스타일 */
   .swiper-slide {
-    width: 85% !important;
+    width: 280px !important;
     margin-right: 15px !important;
     box-sizing: border-box;
   }
@@ -1149,7 +1150,8 @@ footer p {
   }
   
   .swiper-container {
-    padding: 0 20px !important;
+    padding: 0 15px !important;
+    margin: 0 auto;
   }
   
   .swiper-button-next,
@@ -1206,7 +1208,16 @@ footer p {
     min-width: 110px;
   }
 }
-
+.consult-card {
+    padding: 25px 15px !important;
+  }
+.consult-content p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0 auto;
+  max-width: 90%;
+}
+    
 @media (max-width: 600px) {
   .option-buttons {
     flex-direction: column;
