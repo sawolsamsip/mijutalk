@@ -441,37 +441,25 @@
 
     .filter-buttons {
       display: flex;
-      justify-content: center;
       flex-wrap: wrap;
       gap: 12px;
-      margin-bottom: 25px;
+      justify-content: center;
+      margin-bottom: 40px;
     }
+
     
 .filter-btn {
-  padding: 12px 24px;
-  background: #e0e6ed;
-  border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  color: #003366;
-  font-size: 0.95rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+      padding: 10px 20px;
+      background: #e0e6ed;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      color: #003366;
+      font-size: 0.95rem;
 }
     
-.filter-btn:hover, .filter-btn.active {
-  background: var(--color-primary);
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-}
-
-.filter-btn i {
-  font-size: 1.1rem;
-}
 
     .swiper-container {
   position: relative;
@@ -660,18 +648,7 @@
     }
 
     @media (max-width: 768px) {
-  .filter-buttons {
-    justify-content: flex-start;
-    overflow-x: auto;
-    padding-bottom: 10px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    gap: 8px;
-  }
-  
-  .filter-buttons::-webkit-scrollbar {
-    display: none;
-  }
+
   
   .filter-btn {
     padding: 10px 20px;
