@@ -439,7 +439,39 @@
       padding: 40px 0;
     }
 
+    .filter-buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+    
+.filter-btn {
+  padding: 12px 24px;
+  background: #e0e6ed;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  color: #003366;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+    
+.filter-btn:hover, .filter-btn.active {
+  background: var(--color-primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
 
+.filter-btn i {
+  font-size: 1.1rem;
+}
 
     .swiper-container {
   position: relative;
@@ -628,7 +660,24 @@
     }
 
     @media (max-width: 768px) {
-
+  .filter-buttons {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 8px;
+  }
+  
+  .filter-buttons::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .filter-btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
       
       .swiper-slide {
         width: 100% !important;
@@ -1731,26 +1780,26 @@
   <section id="success-cases" aria-labelledby="success-cases-title">
     <h2 id="success-cases-title">성공 사례</h2>
 
-  <div class="faq-categories">
-    <button class="category-btn active" data-filter="all">
+  <div class="filter-buttons">
+    <button class="filter-btn active" data-filter="all">
       <i class="bi bi-grid-fill"></i>전체
     </button>
-    <button class="category-btn" data-filter="asset">
+    <button class="filter-btn" data-filter="asset">
       <i class="bi bi-wallet2"></i>자산관리
     </button>
-    <button class="category-btn" data-filter="retirement">
+    <button class="filter-btn" data-filter="retirement">
       <i class="bi bi-emoji-sunglasses"></i>은퇴설계
     </button>
-    <button class="category-btn" data-filter="tax">
+    <button class="filter-btn" data-filter="tax">
       <i class="bi bi-calculator"></i>세금전략
     </button>
-    <button class="category-btn" data-filter="education">
+    <button class="filter-btn" data-filter="education">
       <i class="bi bi-mortarboard"></i>교육계획
     </button>
-    <button class="category-btn" data-filter="business">
+    <button class="filter-btn" data-filter="business">
       <i class="bi bi-briefcase"></i>사업주 솔루션
     </button>
-    <button class="category-btn" data-filter="inheritance">
+    <button class="filter-btn" data-filter="inheritance">
       <i class="bi bi-people"></i>상속계획
     </button>
   </div>
@@ -2219,7 +2268,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // 필터 버튼 이벤트
-    const filterButtons = document.querySelectorAll('.category-btn');
+    const filterButtons = document.querySelectorAll('.filter-btn');
     filterButtons.forEach(btn => {
       btn.addEventListener('click', function() {
         // 활성 버튼 토글
@@ -2259,7 +2308,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // 초기 필터 강제 클릭 (전체 보이도록)
-    const initialFilterBtn = document.querySelector('.category-btn[data-filter="all"]');
+    const initialFilterBtn = document.querySelector('.filter-btn[data-filter="all"]');
     if(initialFilterBtn) {
       initialFilterBtn.click();
     }
