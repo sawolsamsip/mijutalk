@@ -746,8 +746,8 @@ section {
   word-break: keep-all;
   background: #fff;
   border-radius: 12px;
-  padding: 30px 30px;
-  box-shadow: 0 6px 20px rgba(0,0,0,.08);
+  padding: 40px 40px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
   width: 100%;
   box-sizing: border-box;
   border-top: 6px solid var(--color-secondary);
@@ -755,14 +755,15 @@ section {
   overflow-wrap: break-word;
   word-break: keep-word;
   overflow: hidden;
-  max-width: 700px;
+  max-width: 900px;
   margin: 0 auto;
   text-align: center;
 }
 
 .consult-content {
-  max-width: 700px;
+  max-width: 100%; /* 제한 없애기 */
   margin: 0 auto;
+  text-align: center;
 }
 
 .consult-content h3 {
@@ -793,9 +794,9 @@ section {
 }
 
 .secondary-options {
-  border-top: 1px solid #eee;
+  margin-top: 40px;
   padding-top: 30px;
-  margin-top: 25px;
+  border-top: 1px solid #ddd;
 }
 
 .options-title {
@@ -808,7 +809,7 @@ section {
 .option-buttons {
   display: flex;
   margin-top: 20px;
-  gap: 16px;
+  gap: 24px;
   justify-content: center;
   flex-wrap: wrap;
 }
