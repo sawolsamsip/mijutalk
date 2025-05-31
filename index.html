@@ -1146,6 +1146,82 @@
       animation: pulse 3s ease-in-out infinite;
     }
 
+    /* FAQ 카테고리 메뉴 스타일 */
+.faq-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e0e6ed;
+}
+
+.category-btn {
+  padding: 10px 16px;
+  border-radius: 20px;
+  border: none;
+  background: #e0e6ed;
+  color: #003366;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.category-btn.active {
+  background: var(--color-primary);
+  color: white;
+}
+
+.category-btn:hover {
+  background: #00509e;
+  color: white;
+}
+
+.category-title {
+  font-size: 1.3rem;
+  color: var(--color-primary);
+  margin: 25px 0 15px;
+  padding-left: 10px;
+  position: relative;
+}
+
+.category-title span {
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  background: var(--color-secondary);
+  color: var(--color-primary);
+  border-radius: 50%;
+  text-align: center;
+  line-height: 25px;
+  margin-right: 8px;
+  font-weight: 700;
+}
+
+/* 반응형 조정 */
+@media (max-width: 768px) {
+  .faq-categories {
+    overflow-x: auto;
+    padding-bottom: 10px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+  }
+  
+  .faq-categories::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .category-btn {
+    padding: 8px 14px;
+    font-size: 0.85rem;
+  }
+}
+    
+
   </style>
 </head>
 <body>
