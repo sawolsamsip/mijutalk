@@ -717,6 +717,7 @@
       box-sizing: border-box;
       border-top: 6px solid var(--color-secondary);
       text-align: center;
+      word-break: keep-all;
     }
 
     .consult-content {
@@ -728,6 +729,8 @@
       font-size: 1.5rem;
       color: #003366;
       margin-bottom: 30px;
+      word-break: break-word; /* 긴 단어도 강제 줄바꿈 */
+      overflow-wrap: break-word; /* 단어 중간에서도 줄바꿈 */
     }
 
     /* 메인 CTA 버튼 */
