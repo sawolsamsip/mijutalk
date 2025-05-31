@@ -517,6 +517,7 @@ section {
 
 /* Success Cases Section */
 #success-cases {
+  overflow: hidden;
   padding: 40px 0;
 }
 
@@ -552,13 +553,14 @@ section {
 .swiper-container {
   position: relative;
   overflow: hidden;
-  padding: 0 50px;
+  padding: 0 50px !important;
   margin: 0 auto;
   width: 100%;
   max-width: 1100px;
 }
 
 .swiper-wrapper {
+  padding: 10px 0;
   padding-left: 0;
   padding-right: 0;
   display: flex;
@@ -567,8 +569,9 @@ section {
 }
 
 .swiper-slide {
+  width: calc(33.333% - 20px) !important;
   min-height: 320px;
-  margin-right: 20px;
+  margin-right: 20px !important;
   box-sizing: border-box;
   flex-shrink: 0;
   width: auto;
@@ -1152,6 +1155,7 @@ footer p {
     margin-right: 15px !important;
     min-width: 85% !important; /* 추가 */
     box-sizing: border-box;
+    min-height: 380px;
   }
   
   .case-content p,
@@ -1183,7 +1187,7 @@ footer p {
   }
   
   .swiper-container {
-    padding: 0 5px !important;
+    padding: 0 15px !important;
     margin: 0 auto;
   }
   
@@ -2259,7 +2263,7 @@ html, body {
     // Swiper 초기화
     const caseSwiper = new Swiper('.swiper-container', {
       slidesPerView: 'auto',
-      centeredSlides: true,
+      centeredSlides: false,
       spaceBetween: 20,
       roundLengths: true,      
       watchOverflow: true,
