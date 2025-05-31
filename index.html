@@ -258,19 +258,7 @@ section {
   scroll-margin-top: 70px;
 }
 
-/* Hero Section */
-.hero {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeInUp 1s ease forwards;
-  background: linear-gradient(135deg, #0078d7, #004e92);
-  border-radius: 12px;
-  color: #fff;
-  padding: 60px 40px;
-  text-align: center;
-  margin: 0 auto 60px;
-  max-width: 100%;
-}
+
 
 @keyframes fadeInUp {
   to {
@@ -391,19 +379,7 @@ section {
   margin-bottom: 30px;
 }
   
-/* Profile Section */
-.profile-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  background-color: #fff;
-  padding: 40px 30px;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0,0,0,.08);
-  max-width: 100%;
-  margin: 0 auto;
-}
+
 
 .profile-img {
   width: 150px;
@@ -762,24 +738,54 @@ section {
   background: #ffb800;
 }
 
+/* 공통 박스 스타일 추가 */
+.hero,
+.profile-container,
+.consult-card {
+  max-width: 900px;
+  width: calc(100% - 40px);
+  margin: 0 auto;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.08);
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+/* 히어로 박스 특수 스타일 */
+.hero {
+  background: linear-gradient(135deg, #0078d7, #004e92);
+  color: #fff;
+  text-align: center;
+  margin-bottom: 60px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 1s ease forwards;
+}
+
+/* 금융 전문가 소개 박스 */
+.profile-container {
+  background: #fff;
+  text-align: center;
+  margin-bottom: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 프리미엄 컨설팅 박스 */
+.consult-card {
+  background: #fff;
+  border-top: 6px solid var(--color-secondary);
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+  
 /* Contact Section */
 #contact {
   position: relative;
 }
 
-.consult-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 30px;
-  margin-bottom: 24px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
-  width: 100%;
-  box-sizing: border-box;
-  border-top: 6px solid var(--color-secondary);
-  text-align: center;
-  max-width: 900px;
-  margin: 0 auto 30px;
-}
 
 .consult-content {
   display: flex;
@@ -1091,12 +1097,20 @@ footer a:hover {
 }
 
 @media (max-width: 768px) {
+
+  .hero,
   .profile-container,
   .consult-card {
-    padding: 30px 20px;
-    margin: 0 15px 30px;
     width: calc(100% - 30px);
+    padding: 30px 20px;
+    margin-bottom: 40px;
   }
+  
+  .hero {
+    margin: 20px auto 40px;
+    border-radius: 12px;
+  }
+
   /* 모바일에서 섹션 간격 추가 */
   section {
     margin-bottom: 40px;
@@ -1153,11 +1167,6 @@ footer a:hover {
     color: var(--color-primary);
   }
   
-  .hero {
-    padding: 40px 20px;
-    border-radius: 12;
-    margin: 20px 15px 40px;
-  }
 
   /* 전문서비스 분야 간격 */
   #services {
