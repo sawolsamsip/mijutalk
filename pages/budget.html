@@ -494,10 +494,8 @@
   }
 
 function updateUI() {
-    // 데이터 저장
+    // 데이터 저장 및 계산 (기존과 동일)
     localStorage.setItem('budgetData', JSON.stringify(budgetData));
-    
-    // 계산
     const preTaxTotal = budgetData.preTax.reduce((sum, item) => sum + item.amount, 0);
     const taxTotal = budgetData.taxes.reduce((sum, item) => sum + item.amount, 0);
     const postTaxTotal = budgetData.postTax.reduce((sum, item) => sum + item.amount, 0);
@@ -506,33 +504,27 @@ function updateUI() {
     const expensesTotal = budgetData.expenses.reduce((sum, item) => sum + item.amount, 0);
     const remaining = netIncome - expensesTotal;
 
-    // 월급 대비 비율 계산 함수
+    // 비율 계산 함수
     const calcPercentage = (value) => budgetData.income > 0 ? 
         (Math.abs(value) / budgetData.income * 100).toFixed(1) : 0;
 
-    // 화면 업데이트 (변경된 부분)
+    // 금액 + % 표시 (한 곳에만 표시)
     document.getElementById('gross-income').innerHTML = 
         `${formatMoney(budgetData.income)} <em class="percentage">(100%)</em>`;
-    
     document.getElementById('pre-tax-deductions').innerHTML = 
         `${formatMoney(preTaxTotal)} <em class="percentage">(${calcPercentage(preTaxTotal)}%)</em>`;
-    
     document.getElementById('taxable-income').innerHTML = 
         `${formatMoney(taxableIncome)} <em class="percentage">(${calcPercentage(taxableIncome)}%)</em>`;
-    
     document.getElementById('tax-total').innerHTML = 
         `${formatMoney(taxTotal)} <em class="percentage">(${calcPercentage(taxTotal)}%)</em>`;
-    
     document.getElementById('post-tax-deductions').innerHTML = 
         `${formatMoney(postTaxTotal)} <em class="percentage">(${calcPercentage(postTaxTotal)}%)</em>`;
-    
     document.getElementById('net-income').innerHTML = 
         `${formatMoney(netIncome)} <em class="percentage">(${calcPercentage(netIncome)}%)</em>`;
 
-    // summary-cards는 기존 방식 유지 (textContent 사용)
+    // summary-cards 업데이트 (기존 방식 유지)
     document.getElementById('net-income-card').textContent = formatMoney(netIncome);
     document.getElementById('expenses-total-card').textContent = formatMoney(expensesTotal);
-    
     const remainingElement = document.getElementById('remaining-balance');
     remainingElement.textContent = formatMoney(remaining);
     remainingElement.className = remaining >= 0 ? 'card-amount positive' : 'card-amount negative';
@@ -542,15 +534,6 @@ function updateUI() {
     renderList('pre-tax-list', budgetData.preTax);
     renderList('post-tax-list', budgetData.postTax);
     renderExpenses();
-
-    // 화살표 옆에 비율 표시 (선택 사항)
-    document.querySelectorAll('.flow-arrow').forEach(arrow => {
-        const nextItem = arrow.nextElementSibling;
-        if (nextItem.classList.contains('flow-item')) {
-            const percentage = nextItem.querySelector('.percentage')?.textContent;
-            if (percentage) arrow.innerHTML = `↓<small>${percentage}</small>`;
-        }
-    });
 }
 
 // 기존 코드에서 renderList 함수 수정
