@@ -40,7 +40,7 @@
       border-radius: 4px;
     }
     select {
-      height: 46px; /* 입력 필드와 동일한 높이 */
+      height: 46px;
     }
     button {
       background: var(--primary);
@@ -171,19 +171,9 @@
     .utility-btn.print {
       background: #9b59b6;
     }
-    .custom-input-container {
+    .category-input-container {
       display: none;
-      margin: 8px 0;
-    }
-    .input-group {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-    .input-group select, 
-    .input-group input[type="number"],
-    .input-group button {
-      margin: 0;
+      margin-top: 8px;
     }
     @media (max-width: 600px) {
       .flex {
@@ -242,10 +232,10 @@
       <option value="CA SDI">CA SDI</option>
       <option value="custom">직접 입력</option>
     </select>
-    <div id="tax-custom-container" class="custom-input-container">
+    <div id="tax-custom-container" class="category-input-container">
       <input type="text" id="tax-custom-name" placeholder="세금 항목명 입력">
     </div>
-    <div class="input-group">
+    <div class="flex">
       <input type="number" id="tax-amount" placeholder="금액 ($)" value="0">
       <button onclick="updateTax()">적용</button>
     </div>
@@ -264,10 +254,10 @@
       <option value="MSEAP">MSEAP</option>
       <option value="custom">직접 입력</option>
     </select>
-    <div id="pre-tax-custom-container" class="custom-input-container">
+    <div id="pre-tax-custom-container" class="category-input-container">
       <input type="text" id="pre-tax-custom-name" placeholder="공제 항목명 입력">
     </div>
-    <div class="input-group">
+    <div class="flex">
       <input type="number" id="pre-tax-amount" placeholder="금액 ($)" value="0">
       <button onclick="updateDeduction('preTax')">적용</button>
     </div>
@@ -288,10 +278,10 @@
       <option value="Accident Insurance">Accident Insurance</option>
       <option value="custom">직접 입력</option>
     </select>
-    <div id="post-tax-custom-container" class="custom-input-container">
+    <div id="post-tax-custom-container" class="category-input-container">
       <input type="text" id="post-tax-custom-name" placeholder="공제 항목명 입력">
     </div>
-    <div class="input-group">
+    <div class="flex">
       <input type="number" id="post-tax-amount" placeholder="금액 ($)" value="0">
       <button onclick="updateDeduction('postTax')">적용</button>
     </div>
@@ -443,8 +433,7 @@
       { id: 'finance', name: '💳 금융' },
       { id: 'travel', name: '✈️ 여행' },
       { id: 'saving', name: '💰 저축' },
-      { id: 'business', name: '💼 업무' },
-      { id: 'other', name: '📌 기타' }
+      { id: 'business', name: '💼 업무' }
     ]
   };
 
@@ -678,23 +667,47 @@
 
   function addCategory() {
     const newCategory = document.getElementById('new-category').value.trim();
-    if (!newCategory) return;
+    if (!newCategory) {
+      alert('카테고리명을 입력해주세요!');
+      return;
+    }
 
     const emoji = prompt('이모지를 입력해주세요 (예: 🎮)', '📌');
     const id = newCategory.toLowerCase().replace(/\s+/g, '-');
     
+    // 새 카테고리 추가
     budgetData.categories.push({
       id,
       name: `${emoji || '📌'} ${newCategory}`
     });
 
+    // select 요소 업데이트
     const select = document.getElementById('category');
-    const option = document.createElement('option');
-    option.value = id;
-    option.textContent = `${emoji || '📌'} ${newCategory}`;
-    select.appendChild(option);
     
+    // 기존 직접 입력 옵션 제거
+    const customOption = select.querySelector('option[value="custom"]');
+    if (customOption) select.removeChild(customOption);
+    
+    // 새 옵션 추가
+    const newOption = document.createElement('option');
+    newOption.value = id;
+    newOption.textContent = `${emoji || '📌'} ${newCategory}`;
+    select.appendChild(newOption);
+    
+    // 직접 입력 옵션 다시 추가
+    const newCustomOption = document.createElement('option');
+    newCustomOption.value = 'custom';
+    newCustomOption.textContent = '✏️ 직접 입력';
+    select.appendChild(newCustomOption);
+    
+    // 새로 추가된 카테고리 선택
+    select.value = id;
+    
+    // 입력 필드 초기화 및 숨기기
     document.getElementById('new-category').value = '';
+    document.getElementById('category-input-container').style.display = 'none';
+    
+    updateUI();
   }
 
   // 6. 유틸리티 함수들
@@ -759,8 +772,7 @@
           { id: 'finance', name: '💳 금융' },
           { id: 'travel', name: '✈️ 여행' },
           { id: 'saving', name: '💰 저축' },
-          { id: 'business', name: '💼 업무' },
-          { id: 'other', name: '📌 기타' }
+          { id: 'business', name: '💼 업무' }
         ]
       });
       initDefaultData();
@@ -768,84 +780,84 @@
     }
   }
 
-// 7. 초기화
-document.addEventListener('DOMContentLoaded', function() {
-  // 데이터 초기화
-  if (!localStorage.getItem('budgetData')) {
-    initDefaultData();
-  } else {
-    const savedData = JSON.parse(localStorage.getItem('budgetData'));
-    Object.assign(budgetData, savedData);
-  }
-  
-  // 직접 입력 필드 토글 (세금, 공제 항목)
-  document.querySelectorAll('select[id$="-type"]').forEach(select => {
-    select.addEventListener('change', function() {
-      const type = this.id.replace('-type', '');
-      const container = document.getElementById(`${type}-custom-container`);
-      
+  // 7. 초기화
+  document.addEventListener('DOMContentLoaded', function() {
+    // 데이터 초기화
+    if (!localStorage.getItem('budgetData')) {
+      initDefaultData();
+    } else {
+      const savedData = JSON.parse(localStorage.getItem('budgetData'));
+      Object.assign(budgetData, savedData);
+    }
+    
+    // 직접 입력 필드 토글 (세금, 공제 항목)
+    document.querySelectorAll('select[id$="-type"]').forEach(select => {
+      select.addEventListener('change', function() {
+        const type = this.id.replace('-type', '');
+        const container = document.getElementById(`${type}-custom-container`);
+        
+        if (this.value === 'custom') {
+          container.style.display = 'block';
+          document.getElementById(`${type}-custom-name`).focus();
+        } else {
+          container.style.display = 'none';
+          document.getElementById(`${type}-amount`).focus();
+        }
+      });
+    });
+
+    // 카테고리 직접 입력 토글
+    document.getElementById('category').addEventListener('change', function() {
+      const container = document.getElementById('category-input-container');
       if (this.value === 'custom') {
-        container.style.display = 'block';
-        document.getElementById(`${type}-custom-name`).focus();
+        container.style.display = 'flex';
+        document.getElementById('new-category').focus();
       } else {
         container.style.display = 'none';
-        document.getElementById(`${type}-amount`).focus();
       }
     });
-  });
 
-  // 카테고리 직접 입력 토글
-  document.getElementById('category').addEventListener('change', function() {
-    const container = document.getElementById('category-input-container');
-    if (this.value === 'custom') {
-      container.style.display = 'block';
-      document.getElementById('new-category').focus();
-    } else {
-      container.style.display = 'none';
-    }
-  });
+    // 이벤트 리스너
+    document.getElementById('income').addEventListener('input', function() {
+      budgetData.income = parseFloat(this.value) || 0;
+      updateUI();
+    });
+    
+    document.getElementById('tax-amount').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') updateTax();
+    });
+    
+    document.getElementById('pre-tax-amount').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') updateDeduction('preTax');
+    });
+    
+    document.getElementById('post-tax-amount').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') updateDeduction('postTax');
+    });
+    
+    document.getElementById('expense-amount').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') addExpense();
+    });
+    
+    document.getElementById('tax-custom-name').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') updateTax();
+    });
+    
+    document.getElementById('pre-tax-custom-name').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') updateDeduction('preTax');
+    });
+    
+    document.getElementById('post-tax-custom-name').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') updateDeduction('postTax');
+    });
+    
+    document.getElementById('new-category').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') addCategory();
+    });
 
-  // 이벤트 리스너
-  document.getElementById('income').addEventListener('input', function() {
-    budgetData.income = parseFloat(this.value) || 0;
+    // 초기 UI 업데이트
     updateUI();
   });
-  
-  document.getElementById('tax-amount').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') updateTax();
-  });
-  
-  document.getElementById('pre-tax-amount').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') updateDeduction('preTax');
-  });
-  
-  document.getElementById('post-tax-amount').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') updateDeduction('postTax');
-  });
-  
-  document.getElementById('expense-amount').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') addExpense();
-  });
-  
-  document.getElementById('tax-custom-name').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') updateTax();
-  });
-  
-  document.getElementById('pre-tax-custom-name').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') updateDeduction('preTax');
-  });
-  
-  document.getElementById('post-tax-custom-name').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') updateDeduction('postTax');
-  });
-  
-  document.getElementById('new-category').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') addCategory();
-  });
-
-  // 초기 UI 업데이트
-  updateUI();
-});
 </script>
 </body>
 </html>
