@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>예산 관리 시스템 (USD)</title>
   <script src="../scripts/chart.js"></script>
+
+
   <style>
     :root {
       --primary: #3498db;
@@ -320,6 +322,23 @@
         gap: 20px;
     }
 
+    /* --- 차트 높이 문제 해결을 위한 코드 추가/수정 시작 --- */
+    .charts-grid > div {
+        /* 각 차트 컨테이너의 높이 제한 */
+        position: relative; /* 자식 요소의 위치 지정을 위해 필요할 수 있습니다 */
+        height: 350px; /* 차트 컨테이너의 고정 높이 */
+        /* 또는 max-height: 400px; 등으로 최대 높이를 설정할 수도 있습니다. */
+    }
+
+    .charts-grid canvas {
+        /* 부모 div의 100%를 채우도록 설정 */
+        width: 100% !important;
+        height: 100% !important;
+        /* Chart.js가 인라인으로 스타일을 적용할 수 있으므로 !important를 사용하여 강제합니다. */
+    }
+    /* --- 차트 높이 문제 해결을 위한 코드 추가/수정 끝 --- */
+
+
     @media (max-width: 600px) {
       .flex {
         flex-direction: column;
@@ -364,6 +383,10 @@
       }
       .charts-grid {
           grid-template-columns: 1fr; /* Single column on small screens */
+      }
+      /* 작은 화면에서도 차트 높이 유지 */
+      .charts-grid > div { /* @media 쿼리 안에 있는 기존 스타일을 덮어쓰거나 추가 */
+          height: 300px; /* 모바일 등 작은 화면에서 차트 컨테이너 높이 조정 */
       }
     }
     @media print {
