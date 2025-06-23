@@ -312,8 +312,9 @@
 
     // ----- 공제 추가 -----
     function addDeduction(type) {
-      const nameField = document.getElementById(`${type}-name`);
-      const amountField = document.getElementById(`${type}-amount`);
+      const prefix = type === 'preTax' ? 'pre-tax' : 'post-tax'; // ID 접두사 통일
+      const nameField = document.getElementById(`${prefix}-name`);
+      const amountField = document.getElementById(`${prefix}-amount`);
       
       if (!nameField.value || !amountField.value) {
         alert('항목명과 금액을 입력해주세요!');
