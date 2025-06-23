@@ -302,7 +302,7 @@
     /* Chart specific styles */
     .chart-container {
         margin-top: 25px;
-        padding: 15px;
+        padding: 15px 10px;
         background: white;
         border-radius: 8px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -310,7 +310,7 @@
     .chart-container h3 {
         text-align: center;
         color: var(--text-color);
-        margin-bottom: 15px;
+        margin-bottom: 10px;
         border-bottom: 1px solid #eee;
         padding-bottom: 10px;
     }
@@ -1114,8 +1114,10 @@
                 maintainAspectRatio: false, // Allow charts to resize within their containers
                 plugins: {
                     legend: {
-                        position: 'right',
+                        position: 'bottom',
                         labels: {
+                          boxWidth: 12,
+                          pdding: 10,
                             font: {
                                 size: 14
                             }
