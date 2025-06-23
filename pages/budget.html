@@ -76,91 +76,73 @@
       border-radius: 20px;
       font-size: 0.8em;
     }
-    #remaining {
-      font-size: 1.5em;
+    .income-flow {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 25px;
+    }
+    .flow-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px;
+      margin: 5px 0;
+      background: white;
+      border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .flow-item.highlighted {
+      border-left: 4px solid #e74c3c;
+    }
+    .flow-item.result {
+      border-left: 4px solid #2ecc71;
       font-weight: bold;
     }
-    .positive {
+    .flow-arrow {
+      text-align: center;
+      color: #7f8c8d;
+      margin: 2px 0;
+    }
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+    .summary-card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .summary-card.accent {
+      border-top: 4px solid #3498db;
+    }
+    .card-label {
+      font-size: 1em;
+      color: #7f8c8d;
+      margin-bottom: 5px;
+    }
+    .card-amount {
+      font-size: 1.8em;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    .card-amount.positive {
       color: var(--success);
     }
-    .negative {
+    .card-amount.negative {
       color: var(--danger);
+    }
+    .card-sub {
+      font-size: 0.7em;
+      color: #bdc3c7;
     }
     @media (max-width: 600px) {
       .flex {
         flex-direction: column;
       }
     }
-      .income-flow {
-    background: #f8f9fa;
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 25px;
-  }
-  .flow-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px;
-    margin: 5px 0;
-    background: white;
-    border-radius: 6px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  }
-  .flow-item.highlighted {
-    border-left: 4px solid #e74c3c;
-  }
-  .flow-item.result {
-    border-left: 4px solid #2ecc71;
-    font-weight: bold;
-  }
-  .flow-label {
-    color: #34495e;
-  }
-  .flow-amount {
-    font-weight: 500;
-  }
-  .flow-arrow {
-    text-align: center;
-    color: #7f8c8d;
-    margin: 2px 0;
-  }
-  .summary-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-  }
-  .summary-card {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    text-align: center;
-  }
-  .summary-card.accent {
-    border-top: 4px solid #3498db;
-  }
-  .card-label {
-    font-size: 1em;
-    color: #7f8c8d;
-    margin-bottom: 5px;
-  }
-  .card-amount {
-    font-size: 1.8em;
-    font-weight: bold;
-    margin: 10px 0;
-  }
-  .card-amount.positive {
-    color: #2ecc71;
-  }
-  .card-amount.negative {
-    color: #e74c3c;
-  }
-  .card-sub {
-    font-size: 0.7em;
-    color: #bdc3c7;
-  }
-
-    
   </style>
 </head>
 <body>
@@ -234,7 +216,6 @@
   <!-- 5. 지출 관리 -->
   <div class="card">
     <h2>지출 관리</h2>
-    
     <div class="flex">
       <div style="flex: 1;">
         <label>카테고리</label>
@@ -266,66 +247,54 @@
       </div>
     </div>
     <button onclick="addExpense()">지출 추가</button>
-
     <div class="item-list" id="expenses-list"></div>
   </div>
 
   <!-- 6. 결산 -->
   <div class="card">
     <h2>📊 월별 재무 현황</h2>
-    
-    <!-- 1. 소득 계층 구조 -->
     <div class="income-flow">
       <div class="flow-item">
         <span class="flow-label">세전 월급</span>
         <span class="flow-amount">$<span id="gross-income">0</span></span>
       </div>
-      
       <div class="flow-arrow">↓</div>
       <div class="flow-item highlighted">
         <span class="flow-label">세전 공제</span>
         <span class="flow-amount">-$<span id="pre-tax-deductions">0</span></span>
       </div>
-      
       <div class="flow-arrow">↓</div>
       <div class="flow-item">
         <span class="flow-label">과세 소득</span>
         <span class="flow-amount">$<span id="taxable-income">0</span></span>
       </div>
-      
       <div class="flow-arrow">↓</div>
       <div class="flow-item highlighted">
         <span class="flow-label">세금</span>
         <span class="flow-amount">-$<span id="tax-total">0</span></span>
       </div>
-      
       <div class="flow-arrow">↓</div>
       <div class="flow-item highlighted">
         <span class="flow-label">세후 공제</span>
         <span class="flow-amount">-$<span id="post-tax-deductions">0</span></span>
       </div>
-      
       <div class="flow-arrow">↓</div>
       <div class="flow-item result">
         <span class="flow-label">순수입</span>
         <span class="flow-amount">$<span id="net-income">0</span></span>
       </div>
     </div>
-  
-    <!-- 2. 핵심 지표 박스 -->
     <div class="summary-cards">
       <div class="summary-card">
         <div class="card-label">순수입</div>
         <div class="card-amount positive">$<span id="net-income-card">0</span></div>
         <div class="card-sub">(과세 소득 - 세금 - 세후 공제)</div>
       </div>
-      
       <div class="summary-card">
         <div class="card-label">총 지출</div>
         <div class="card-amount negative">$<span id="expenses-total-card">0</span></div>
         <div class="card-sub">(모든 카테고리 합계)</div>
       </div>
-      
       <div class="summary-card accent">
         <div class="card-label">남은 잔액</div>
         <div class="card-amount">$<span id="remaining-balance">0</span></div>
@@ -405,7 +374,7 @@
     }));
     
     localStorage.setItem('budgetData', JSON.stringify(budgetData));
-    console.log("✅ 기본 항목 생성됨"); // 확인용
+    console.log("✅ 기본 항목 생성됨");
   }
 
   // 4. 공통 함수들
@@ -444,19 +413,18 @@
     remainingElement.style.color = remaining >= 0 ? '#2ecc71' : '#e74c3c';
 
     // 목록 렌더링
-    renderList('tax-list', budgetData.taxes, 'taxes');
-    renderList('pre-tax-list', budgetData.preTax, 'preTax');
-    renderList('post-tax-list', budgetData.postTax, 'postTax');
+    renderList('tax-list', budgetData.taxes);
+    renderList('pre-tax-list', budgetData.preTax);
+    renderList('post-tax-list', budgetData.postTax);
     renderExpenses();
   }
 
-  function renderList(elementId, items, type) {
-    console.log(`렌더링: ${type}`, items); // 어떤 데이터가 넘어오는지 확인
+  function renderList(elementId, items) {
     const container = document.getElementById(elementId);
     container.innerHTML = items.map(item => `
       <div class="expense-item">
         <span>${item.name}: $${formatMoney(item.amount)}</span>
-        <button onclick="deleteItem('${type}', ${item.id})" class="delete-btn">삭제</button>
+        <button onclick="deleteItem('${item.type}', ${item.id})" class="delete-btn">삭제</button>
       </div>
     `).join('');
   }
@@ -486,7 +454,6 @@
     updateUI();
   }
 
-  // [1] 드롭다운 지원 추가 함수
   function getSelectedItem(type) {
     const selectElement = document.getElementById(`${type}-type`);
     const inputElement = document.getElementById(`${type}-amount`);
@@ -506,7 +473,7 @@
     
     return { name, amount };
   }
-  
+
   function addTax() {
     const item = getSelectedItem('tax');
     if (!item) return;
@@ -523,7 +490,8 @@
   }
 
   function addDeduction(type) {
-    const item = getSelectedItem(`${type}-tax`);
+    const prefix = type === 'preTax' ? 'pre-tax' : 'post-tax';
+    const item = getSelectedItem(prefix);
     if (!item) return;
     
     budgetData[type].push({
@@ -534,38 +502,7 @@
     });
     
     updateUI();
-    document.getElementById(`${type}-tax-amount`).value = '';
-  }
-
-  // 드롭다운 선택 시 자동으로 금액 입력창으로 포커스 이동
-document.querySelectorAll('select[id$="-type"]').forEach(select => {
-  select.addEventListener('change', function() {
-    if (this.value !== 'custom') {
-      this.nextElementSibling.nextElementSibling.focus();
-    }
-  });
-});
-
-  function addDeduction(type) {
-    const prefix = type === 'preTax' ? 'pre-tax' : 'post-tax';
-    const nameField = document.getElementById(`${prefix}-name`);
-    const amountField = document.getElementById(`${prefix}-amount`);
-    
-    if (!nameField.value || !amountField.value) {
-      alert('항목명과 금액을 입력해주세요!');
-      return;
-    }
-
-    budgetData[type].push({
-      id: Date.now(),
-      type,
-      name: nameField.value,
-      amount: parseFloat(amountField.value)
-    });
-
-    updateUI();
-    nameField.value = '';
-    amountField.value = '';
+    document.getElementById(`${prefix}-amount`).value = '';
   }
 
   function addExpense() {
@@ -614,34 +551,24 @@ document.querySelectorAll('select[id$="-type"]').forEach(select => {
 
   // 6. 초기화
   document.addEventListener('DOMContentLoaded', function() {
+    // 데이터 초기화
     if (!localStorage.getItem('budgetData')) {
       initDefaultData();
-      console.log("기본 항목 생성 완료!"); // 확인용 로그
     } else {
       const savedData = JSON.parse(localStorage.getItem('budgetData'));
-      // 기존 데이터와 기본 항목 병합
-      budgetData.taxes = [...DEFAULT_DEDUCTIONS.taxes.map(item => ({
-        ...item,
-        id: Date.now() + Math.random(),
-        type: 'taxes'
-      })), ...(savedData.taxes || [])];
-      
-      budgetData.preTax = [...DEFAULT_DEDUCTIONS.preTax.map(item => ({
-        ...item,
-        id: Date.now() + Math.random(),
-        type: 'preTax'
-      })), ...(savedData.preTax || [])];
-      
-      budgetData.postTax = [...DEFAULT_DEDUCTIONS.postTax.map(item => ({
-        ...item,
-        id: Date.now() + Math.random(),
-        type: 'postTax'
-      })), ...(savedData.postTax || [])];
+      Object.assign(budgetData, savedData);
     }
     
-    updateUI();
-    
-    // 이벤트 리스너 연결
+    // 드롭다운 포커스 이벤트
+    document.querySelectorAll('select[id$="-type"]').forEach(select => {
+      select.addEventListener('change', function() {
+        if (this.value !== 'custom') {
+          this.nextElementSibling.focus();
+        }
+      });
+    });
+
+    // 이벤트 리스너
     document.getElementById('income').addEventListener('input', updateUI);
     document.getElementById('tax-amount').addEventListener('keypress', function(e) {
       if (e.key === 'Enter') addTax();
@@ -655,9 +582,10 @@ document.querySelectorAll('select[id$="-type"]').forEach(select => {
     document.getElementById('expense-amount').addEventListener('keypress', function(e) {
       if (e.key === 'Enter') addExpense();
     });
+
+    // 초기 UI 업데이트
+    updateUI();
   });
 </script>
-  
-
 </body>
 </html>
