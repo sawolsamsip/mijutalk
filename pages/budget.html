@@ -2,95 +2,316 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>나만의 예산 관리</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mijutalk - 고급 예산 관리</title>
   <style>
-    body { 
-      font-family: 'Malgun Gothic', sans-serif; 
-      max-width: 600px; 
-      margin: 0 auto; 
-      padding: 20px;
+    :root {
+      --primary: #3498db;
+      --danger: #e74c3c;
+      --success: #2ecc71;
     }
-    h1 { color: #2c3e50; }
-    .input-group { margin-bottom: 15px; }
-    input, button, select {
-      padding: 10px;
+    body {
+      font-family: 'Arial', sans-serif;
+      line-height: 1.6;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+    h1, h2 {
+      color: #2c3e50;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 10px;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    input, select, button {
+      padding: 12px;
+      margin: 8px 0;
       width: 100%;
       box-sizing: border-box;
+      border: 1px solid #ddd;
+      border-radius: 4px;
     }
-    button { 
-      background: #3498db; 
-      color: white; 
+    button {
+      background: var(--primary);
+      color: white;
       border: none;
       cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s;
     }
-    #result { 
-      margin-top: 20px; 
+    button:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+    .delete-btn {
+      background: var(--danger);
+      padding: 8px 12px;
+      width: auto;
+    }
+    .edit-btn {
+      background: #f39c12;
+      padding: 8px 12px;
+      width: auto;
+    }
+    .flex {
+      display: flex;
+      gap: 10px;
+    }
+    #expenses-list {
+      margin-top: 20px;
+    }
+    .expense-item {
+      background: white;
       padding: 15px;
-      background: #f8f9fa;
-      border-radius: 5px;
+      margin-bottom: 10px;
+      border-left: 4px solid var(--primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .badge {
+      background: #eee;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.8em;
+    }
+    #balance {
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+    .positive {
+      color: var(--success);
+    }
+    .negative {
+      color: var(--danger);
+    }
+    @media (max-width: 600px) {
+      .flex {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>📊 간단 예산 관리</h1>
+  <h1>💎 Mijutalk 고급 예산 관리</h1>
   
-  <!-- 월급 입력 -->
-  <div class="input-group">
-    <h3>💰 월급</h3>
-    <input type="number" id="income" placeholder="예: 3000000">
+  <!-- 1. 수입 입력 -->
+  <div class="card">
+    <h2>💰 월급 및 공제</h2>
+    <label>월 급여 (세전)</label>
+    <input type="number" id="gross-income" placeholder="예: 5000000">
+    
+    <h3>세전 공제 (Pre-tax)</h3>
+    <div class="flex">
+      <input type="text" id="pre-tax-name" placeholder="항목명 (예: 401k)">
+      <input type="number" id="pre-tax-amount" placeholder="금액 (원)">
+      <button onclick="addDeduction('pre')">추가</button>
+    </div>
+    <div id="pre-tax-list"></div>
+
+    <h3>세후 공제 (Post-tax)</h3>
+    <div class="flex">
+      <input type="text" id="post-tax-name" placeholder="항목명 (예: 건강보험)">
+      <input type="number" id="post-tax-amount" placeholder="금액 (원)">
+      <button onclick="addDeduction('post')">추가</button>
+    </div>
+    <div id="post-tax-list"></div>
   </div>
-  
-  <!-- 세전 공제 -->
-  <div class="input-group">
-    <h3>🧾 세전 공제 (예: 401k, 보험)</h3>
-    <input type="number" id="preTax" placeholder="예: 200000">
+
+  <!-- 2. 지출 관리 -->
+  <div class="card">
+    <h2>🛒 지출 관리</h2>
+    
+    <div class="flex">
+      <div style="flex: 1;">
+        <label>카테고리</label>
+        <div class="flex">
+          <select id="category">
+            <option value="food">🍔 식비</option>
+            <option value="rent">🏠 주거비</option>
+          </select>
+          <input type="text" id="new-category" placeholder="새 카테고리">
+          <button onclick="addCategory()">+</button>
+        </div>
+      </div>
+      <div style="flex: 1;">
+        <label>항목명</label>
+        <input type="text" id="expense-name" placeholder="예: 맥도날드 점심">
+      </div>
+      <div style="flex: 1;">
+        <label>금액</label>
+        <input type="number" id="expense-amount" placeholder="원">
+      </div>
+    </div>
+    <button onclick="addExpense()">지출 추가</button>
+
+    <div id="expenses-list"></div>
   </div>
-  
-  <!-- 세후 공제 -->
-  <div class="input-group">
-    <h3>💳 세후 공제 (예: 건강보험)</h3>
-    <input type="number" id="postTax" placeholder="예: 150000">
+
+  <!-- 3. 결산 -->
+  <div class="card">
+    <h2>📊 월별 결산</h2>
+    <div class="flex">
+      <div style="flex: 1;">
+        <p>세전 급여: <span id="display-gross">0</span>원</p>
+        <p>세전 공제: <span id="display-pre-tax">0</span>원</p>
+        <p>세후 공제: <span id="display-post-tax">0</span>원</p>
+        <p><strong>순수입: <span id="net-income">0</span>원</strong></p>
+      </div>
+      <div style="flex: 1;">
+        <p>총 지출: <span id="total-expenses">0</span>원</p>
+        <p><strong>남은 잔액: <span id="balance">0</span>원</strong></p>
+      </div>
+    </div>
   </div>
-  
-  <!-- 지출 입력 -->
-  <div class="input-group">
-    <h3>🛒 지출</h3>
-    <select id="category">
-      <option value="food">🍔 식비</option>
-      <option value="rent">🏠 월세</option>
-      <option value="transport">🚗 교통비</option>
-    </select>
-    <input type="number" id="expense" placeholder="예: 50000">
-  </div>
-  
-  <button onclick="calculate()">계산하기</button>
-  
-  <!-- 결과 표시 -->
-  <div id="result"></div>
 
   <script>
-    function calculate() {
-      // 1. 입력값 가져오기
-      const income = parseInt(document.getElementById("income").value) || 0;
-      const preTax = parseInt(document.getElementById("preTax").value) || 0;
-      const postTax = parseInt(document.getElementById("postTax").value) || 0;
-      const expense = parseInt(document.getElementById("expense").value) || 0;
-      const category = document.getElementById("category").value;
+    // 데이터 저장 객체
+    const budgetData = {
+      grossIncome: 0,
+      preTax: [],
+      postTax: [],
+      expenses: [],
+      categories: ['food', 'rent']
+    };
+
+    // ----- 공제 항목 추가 -----
+    function addDeduction(type) {
+      const nameField = document.getElementById(`${type}-tax-name`);
+      const amountField = document.getElementById(`${type}-tax-amount`);
       
-      // 2. 계산
-      const netIncome = income - preTax - postTax;
-      const balance = netIncome - expense;
-      
-      // 3. 결과 출력
-      const resultHTML = `
-        <h2>📌 최종 결과</h2>
-        <p>순수입: ${netIncome.toLocaleString()}원</p>
-        <p>지출 (${category}): ${expense.toLocaleString()}원</p>
-        <p><strong>남은 금액: ${balance.toLocaleString()}원</strong></p>
-      `;
-      
-      document.getElementById("result").innerHTML = resultHTML;
+      if (!nameField.value || !amountField.value) {
+        alert('항목명과 금액을 입력해주세요!');
+        return;
+      }
+
+      const deduction = {
+        id: Date.now(),
+        name: nameField.value,
+        amount: parseInt(amountField.value)
+      };
+
+      budgetData[`${type}Tax`].push(deduction);
+      updateUI();
+      nameField.value = '';
+      amountField.value = '';
     }
+
+    // ----- 카테고리 추가 -----
+    function addCategory() {
+      const newCategory = document.getElementById('new-category').value.trim();
+      if (!newCategory) return;
+
+      const emoji = prompt('이모지를 입력해주세요 (예: 🚗)', '📌');
+      const value = newCategory.toLowerCase().replace(/\s+/g, '-');
+      
+      budgetData.categories.push(value);
+      
+      // select 옵션 추가
+      const select = document.getElementById('category');
+      const option = document.createElement('option');
+      option.value = value;
+      option.textContent = `${emoji || '📌'} ${newCategory}`;
+      select.appendChild(option);
+      
+      document.getElementById('new-category').value = '';
+    }
+
+    // ----- 지출 추가 -----
+    function addExpense() {
+      const category = document.getElementById('category').value;
+      const name = document.getElementById('expense-name').value;
+      const amount = document.getElementById('expense-amount').value;
+
+      if (!name || !amount) {
+        alert('항목명과 금액을 입력해주세요!');
+        return;
+      }
+
+      const expense = {
+        id: Date.now(),
+        category,
+        name,
+        amount: parseInt(amount),
+        date: new Date().toLocaleDateString()
+      };
+
+      budgetData.expenses.push(expense);
+      updateUI();
+      document.getElementById('expense-name').value = '';
+      document.getElementById('expense-amount').value = '';
+    }
+
+    // ----- 항목 삭제 -----
+    function deleteItem(type, id) {
+      budgetData[type] = budgetData[type].filter(item => item.id !== id);
+      updateUI();
+    }
+
+    // ----- UI 업데이트 -----
+    function updateUI() {
+      // 급여 업데이트
+      budgetData.grossIncome = parseInt(document.getElementById('gross-income').value) || 0;
+
+      // 공제 합계 계산
+      const preTaxTotal = budgetData.preTax.reduce((sum, item) => sum + item.amount, 0);
+      const postTaxTotal = budgetData.postTax.reduce((sum, item) => sum + item.amount, 0);
+      const netIncome = budgetData.grossIncome - preTaxTotal - postTaxTotal;
+
+      // 지출 합계 계산
+      const expensesTotal = budgetData.expenses.reduce((sum, item) => sum + item.amount, 0);
+      const balance = netIncome - expensesTotal;
+
+      // ----- 공제 목록 렌더링 -----
+      document.getElementById('pre-tax-list').innerHTML = budgetData.preTax.map(item => `
+        <div class="expense-item">
+          <span>${item.name}: ${item.amount.toLocaleString()}원</span>
+          <button onclick="deleteItem('preTax', ${item.id})" class="delete-btn">삭제</button>
+        </div>
+      `).join('');
+
+      document.getElementById('post-tax-list').innerHTML = budgetData.postTax.map(item => `
+        <div class="expense-item">
+          <span>${item.name}: ${item.amount.toLocaleString()}원</span>
+          <button onclick="deleteItem('postTax', ${item.id})" class="delete-btn">삭제</button>
+        </div>
+      `).join('');
+
+      // ----- 지출 목록 렌더링 -----
+      document.getElementById('expenses-list').innerHTML = budgetData.expenses.map(item => `
+        <div class="expense-item">
+          <div>
+            <span class="badge">${document.getElementById('category').options[budgetData.categories.indexOf(item.category)].text}</span>
+            ${item.name} (${item.date})
+          </div>
+          <div>
+            <span>${item.amount.toLocaleString()}원</span>
+            <button onclick="deleteItem('expenses', ${item.id})" class="delete-btn">삭제</button>
+          </div>
+        </div>
+      `).join('');
+
+      // ----- 결산 업데이트 -----
+      document.getElementById('display-gross').textContent = budgetData.grossIncome.toLocaleString();
+      document.getElementById('display-pre-tax').textContent = preTaxTotal.toLocaleString();
+      document.getElementById('display-post-tax').textContent = postTaxTotal.toLocaleString();
+      document.getElementById('net-income').textContent = netIncome.toLocaleString();
+      document.getElementById('total-expenses').textContent = expensesTotal.toLocaleString();
+      
+      const balanceElement = document.getElementById('balance');
+      balanceElement.textContent = balance.toLocaleString();
+      balanceElement.className = balance >= 0 ? 'positive' : 'negative';
+    }
+
+    // ----- 초기화 -----
+    document.getElementById('gross-income').addEventListener('input', updateUI);
   </script>
 </body>
 </html>
