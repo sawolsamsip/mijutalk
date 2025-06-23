@@ -232,6 +232,15 @@
       font-size: 0.8em;
       margin-left: 5px;
     }
+    .flow-amount .percentage {
+  color: #7f8c8d;
+  font-size: 0.8em;
+  font-style: normal;
+  margin-left: 3px;
+}
+.flow-item.result .percentage {
+  color: var(--success);
+}
   </style>
 </head>
 <body>
@@ -351,50 +360,41 @@
   </div>
 
   <!-- 6. 결산 -->
-  <div class="card">
-    <h2>📊 월별 재무 현황</h2>
-    <div class="income-flow">
-      <div class="flow-item">
-        <span class="flow-label">세전 월급</span>
-        <span class="flow-amount">$<span id="gross-income">0</span></span>
-      </div>
-      <div class="flow-arrow">↓</div>
-      <div class="flow-item highlighted">
-        <span class="flow-label">세전 공제</span>
-        <span class="flow-amount">-$<span id="pre-tax-deductions">0</span></span>
-      </div>
-      <div class="flow-arrow">↓</div>
-      <div class="flow-item">
-        <span class="flow-label">과세 소득</span>
-        <span class="flow-amount">$<span id="taxable-income">0</span></span>
-      </div>
-      <div class="flow-arrow">↓</div>
-      <div class="flow-item highlighted">
-        <span class="flow-label">세금</span>
-        <span class="flow-amount">-$<span id="tax-total">0</span></span>
-      </div>
-      <div class="flow-arrow">↓</div>
-      <div class="flow-item highlighted">
-        <span class="flow-label">세후 공제</span>
-        <span class="flow-amount">-$<span id="post-tax-deductions">0</span></span>
-      </div>
-      <div class="flow-arrow">↓</div>
-      <div class="flow-item result">
-        <span class="flow-label">순수입</span>
-        <span class="flow-amount">$<span id="net-income">0</span></span>
-      </div>
+<div class="card">
+  <h2>📊 월별 재무 현황</h2>
+  <div class="income-flow">
+    <div class="flow-item">
+      <span class="flow-label">세전 월급</span>
+      <span class="flow-amount">$<span id="gross-income">0</span> <em class="percentage">(100%)</em></span>
     </div>
-    <div class="summary-cards">
-      <div class="summary-card">
-        <div class="card-label">순수입</div>
-        <div class="card-amount positive">$<span id="net-income-card">0</span></div>
-        <div class="card-sub">(과세 소득 - 세금 - 세후 공제)</div>
-      </div>
-      <div class="summary-card">
-        <div class="card-label">총 지출</div>
-        <div class="card-amount negative">$<span id="expenses-total-card">0</span></div>
-        <div class="card-sub">(모든 카테고리 합계)</div>
-      </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item highlighted">
+      <span class="flow-label">세전 공제</span>
+      <span class="flow-amount">-$<span id="pre-tax-deductions">0</span> <em class="percentage">(0%)</em></span>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item">
+      <span class="flow-label">과세 소득</span>
+      <span class="flow-amount">$<span id="taxable-income">0</span> <em class="percentage">(0%)</em></span>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item highlighted">
+      <span class="flow-label">세금</span>
+      <span class="flow-amount">-$<span id="tax-total">0</span> <em class="percentage">(0%)</em></span>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item highlighted">
+      <span class="flow-label">세후 공제</span>
+      <span class="flow-amount">-$<span id="post-tax-deductions">0</span> <em class="percentage">(0%)</em></span>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item result">
+      <span class="flow-label">순수입</span>
+      <span class="flow-amount">$<span id="net-income">0</span> <em class="percentage">(0%)</em></span>
+    </div>
+  </div>
+
+      
       <div class="summary-card accent">
         <div class="card-label">남은 잔액</div>
         <div class="card-amount">$<span id="remaining-balance">0</span></div>
@@ -493,7 +493,7 @@
     });
   }
 
-  function updateUI() {
+function updateUI() {
     // 데이터 저장
     localStorage.setItem('budgetData', JSON.stringify(budgetData));
     
@@ -506,13 +506,30 @@
     const expensesTotal = budgetData.expenses.reduce((sum, item) => sum + item.amount, 0);
     const remaining = netIncome - expensesTotal;
 
-    // 화면 업데이트
-    document.getElementById('gross-income').textContent = formatMoney(budgetData.income);
-    document.getElementById('pre-tax-deductions').textContent = formatMoney(preTaxTotal);
-    document.getElementById('taxable-income').textContent = formatMoney(taxableIncome);
-    document.getElementById('tax-total').textContent = formatMoney(taxTotal);
-    document.getElementById('post-tax-deductions').textContent = formatMoney(postTaxTotal);
-    document.getElementById('net-income').textContent = formatMoney(netIncome);
+    // 월급 대비 비율 계산 함수
+    const calcPercentage = (value) => budgetData.income > 0 ? 
+        (Math.abs(value) / budgetData.income * 100).toFixed(1) : 0;
+
+    // 화면 업데이트 (변경된 부분)
+    document.getElementById('gross-income').innerHTML = 
+        `${formatMoney(budgetData.income)} <em class="percentage">(100%)</em>`;
+    
+    document.getElementById('pre-tax-deductions').innerHTML = 
+        `${formatMoney(preTaxTotal)} <em class="percentage">(${calcPercentage(preTaxTotal)}%)</em>`;
+    
+    document.getElementById('taxable-income').innerHTML = 
+        `${formatMoney(taxableIncome)} <em class="percentage">(${calcPercentage(taxableIncome)}%)</em>`;
+    
+    document.getElementById('tax-total').innerHTML = 
+        `${formatMoney(taxTotal)} <em class="percentage">(${calcPercentage(taxTotal)}%)</em>`;
+    
+    document.getElementById('post-tax-deductions').innerHTML = 
+        `${formatMoney(postTaxTotal)} <em class="percentage">(${calcPercentage(postTaxTotal)}%)</em>`;
+    
+    document.getElementById('net-income').innerHTML = 
+        `${formatMoney(netIncome)} <em class="percentage">(${calcPercentage(netIncome)}%)</em>`;
+
+    // summary-cards는 기존 방식 유지 (textContent 사용)
     document.getElementById('net-income-card').textContent = formatMoney(netIncome);
     document.getElementById('expenses-total-card').textContent = formatMoney(expensesTotal);
     
@@ -525,7 +542,16 @@
     renderList('pre-tax-list', budgetData.preTax);
     renderList('post-tax-list', budgetData.postTax);
     renderExpenses();
-  }
+
+    // 화살표 옆에 비율 표시 (선택 사항)
+    document.querySelectorAll('.flow-arrow').forEach(arrow => {
+        const nextItem = arrow.nextElementSibling;
+        if (nextItem.classList.contains('flow-item')) {
+            const percentage = nextItem.querySelector('.percentage')?.textContent;
+            if (percentage) arrow.innerHTML = `↓<small>${percentage}</small>`;
+        }
+    });
+}
 
 // 기존 코드에서 renderList 함수 수정
 function renderList(elementId, items) {
