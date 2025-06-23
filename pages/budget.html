@@ -549,10 +549,29 @@
   document.addEventListener('DOMContentLoaded', function() {
     if (!localStorage.getItem('budgetData')) {
       initDefaultData();
+      console.log("기본 항목 생성 완료!"); // 확인용 로그
     } else {
-      // 저장된 데이터 불러오기
-      Object.assign(budgetData, JSON.parse(localStorage.getItem('budgetData')));
+      const savedData = JSON.parse(localStorage.getItem('budgetData'));
+      // 기존 데이터와 기본 항목 병합
+      budgetData.taxes = [...DEFAULT_DEDUCTIONS.taxes.map(item => ({
+        ...item,
+        id: Date.now() + Math.random(),
+        type: 'taxes'
+      })), ...(savedData.taxes || [])];
+      
+      budgetData.preTax = [...DEFAULT_DEDUCTIONS.preTax.map(item => ({
+        ...item,
+        id: Date.now() + Math.random(),
+        type: 'preTax'
+      })), ...(savedData.preTax || [])];
+      
+      budgetData.postTax = [...DEFAULT_DEDUCTIONS.postTax.map(item => ({
+        ...item,
+        id: Date.now() + Math.random(),
+        type: 'postTax'
+      })), ...(savedData.postTax || [])];
     }
+    
     updateUI();
     
     // 이벤트 리스너 연결
