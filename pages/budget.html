@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>나만의 예산 관리</title>
+  <style>
+    body { 
+      font-family: 'Malgun Gothic', sans-serif; 
+      max-width: 600px; 
+      margin: 0 auto; 
+      padding: 20px;
+    }
+    h1 { color: #2c3e50; }
+    .input-group { margin-bottom: 15px; }
+    input, button, select {
+      padding: 10px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    button { 
+      background: #3498db; 
+      color: white; 
+      border: none;
+      cursor: pointer;
+    }
+    #result { 
+      margin-top: 20px; 
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>📊 간단 예산 관리</h1>
+  
+  <!-- 월급 입력 -->
+  <div class="input-group">
+    <h3>💰 월급</h3>
+    <input type="number" id="income" placeholder="예: 3000000">
+  </div>
+  
+  <!-- 세전 공제 -->
+  <div class="input-group">
+    <h3>🧾 세전 공제 (예: 401k, 보험)</h3>
+    <input type="number" id="preTax" placeholder="예: 200000">
+  </div>
+  
+  <!-- 세후 공제 -->
+  <div class="input-group">
+    <h3>💳 세후 공제 (예: 건강보험)</h3>
+    <input type="number" id="postTax" placeholder="예: 150000">
+  </div>
+  
+  <!-- 지출 입력 -->
+  <div class="input-group">
+    <h3>🛒 지출</h3>
+    <select id="category">
+      <option value="food">🍔 식비</option>
+      <option value="rent">🏠 월세</option>
+      <option value="transport">🚗 교통비</option>
+    </select>
+    <input type="number" id="expense" placeholder="예: 50000">
+  </div>
+  
+  <button onclick="calculate()">계산하기</button>
+  
+  <!-- 결과 표시 -->
+  <div id="result"></div>
+
+  <script>
+    function calculate() {
+      // 1. 입력값 가져오기
+      const income = parseInt(document.getElementById("income").value) || 0;
+      const preTax = parseInt(document.getElementById("preTax").value) || 0;
+      const postTax = parseInt(document.getElementById("postTax").value) || 0;
+      const expense = parseInt(document.getElementById("expense").value) || 0;
+      const category = document.getElementById("category").value;
+      
+      // 2. 계산
+      const netIncome = income - preTax - postTax;
+      const balance = netIncome - expense;
+      
+      // 3. 결과 출력
+      const resultHTML = `
+        <h2>📌 최종 결과</h2>
+        <p>순수입: ${netIncome.toLocaleString()}원</p>
+        <p>지출 (${category}): ${expense.toLocaleString()}원</p>
+        <p><strong>남은 금액: ${balance.toLocaleString()}원</strong></p>
+      `;
+      
+      document.getElementById("result").innerHTML = resultHTML;
+    }
+  </script>
+</body>
+</html>
