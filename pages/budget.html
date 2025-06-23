@@ -379,6 +379,7 @@
     }));
     
     localStorage.setItem('budgetData', JSON.stringify(budgetData));
+    console.log("✅ 기본 항목 생성됨"); // 확인용
   }
 
   // 4. 공통 함수들
@@ -424,6 +425,7 @@
   }
 
   function renderList(elementId, items, type) {
+    console.log(`렌더링: ${type}`, items); // 어떤 데이터가 넘어오는지 확인
     const container = document.getElementById(elementId);
     container.innerHTML = items.map(item => `
       <div class="expense-item">
