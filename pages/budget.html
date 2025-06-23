@@ -486,10 +486,10 @@
 
     // 3. 기본 데이터 초기화 함수
     function initDefaultData() {
-      budgetData.taxes = DEFAULT_DEDUCTIONS.taxes.map(item => ({
-        ...item,
-        id: Date.now() + Math.random(),
-        type: 'taxes'
+budgetData.taxes = DEFAULT_DEDUCTIONS.taxes.map(item => ({
+  ...item,
+  id: Date.now() + Math.random().toString(36).substr(2, 9), 
+  type: 'taxes'
       }));
       
       budgetData.preTax = DEFAULT_DEDUCTIONS.preTax.map(item => ({
@@ -509,13 +509,16 @@
     }
 
     // 4. 공통 함수들
-    function formatMoney(amount) {
-      return amount.toLocaleString('en-US', { 
-        style: 'decimal', 
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2 
-      });
-    }
+function formatMoney(amount) {
+  // 숫자가 아닌 경우 처리
+  if (isNaN(amount)) return "0.00";
+  
+  // 소수점 이하 2자리로 고정
+  const fixed = parseFloat(amount).toFixed(2);
+  
+  // 천 단위 구분자 추가
+  return fixed.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
     function updateUI() {
       // 데이터 저장
@@ -635,7 +638,7 @@
 
     function getTypeName(type) {
       const names = {
-        'tax': '세금',
+        'taxes': '세금',
         'preTax': '세전 공제',
         'postTax': '세후 공제'
       };
