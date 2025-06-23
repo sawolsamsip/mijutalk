@@ -39,6 +39,9 @@
       border: 1px solid #ddd;
       border-radius: 4px;
     }
+    select {
+      height: 46px; /* 입력 필드와 동일한 높이 */
+    }
     button {
       background: var(--primary);
       color: white;
@@ -76,6 +79,15 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+    }
+    .expense-item-content {
+      flex: 1;
+      min-width: 150px;
+    }
+    .expense-item-actions {
+      display: flex;
+      flex-shrink: 0;
     }
     .badge {
       background: #eee;
@@ -148,7 +160,8 @@
     .utility-buttons {
       display: flex;
       gap: 10px;
-      margin-bottom: 20px;
+      margin: 20px 0;
+      justify-content: center;
     }
     .utility-btn {
       background: #95a5a6;
@@ -158,20 +171,35 @@
     .utility-btn.print {
       background: #9b59b6;
     }
-    .edit-amount-input {
-      width: 100px;
-      padding: 5px;
-      margin-right: 5px;
+    .custom-input-container {
+      display: none;
+      margin: 8px 0;
+    }
+    .input-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .input-group select, 
+    .input-group input[type="number"],
+    .input-group button {
+      margin: 0;
     }
     @media (max-width: 600px) {
       .flex {
         flex-direction: column;
       }
       .utility-buttons {
-        flex-direction: column;
+        flex-wrap: wrap;
       }
-      .edit-amount-input {
-        width: 60px;
+      .expense-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .expense-item-actions {
+        margin-top: 10px;
+        width: 100%;
+        justify-content: flex-end;
       }
     }
     @media print {
@@ -195,14 +223,6 @@
 </head>
 <body>
   <h1>💰 예산 관리 시스템 (USD)</h1>
-  
-  <!-- 유틸리티 버튼 -->
-  <div class="utility-buttons">
-    <button onclick="saveData()" class="utility-btn">💾 저장하기</button>
-    <button onclick="loadData()" class="utility-btn">📂 불러오기</button>
-    <button onclick="window.print()" class="utility-btn print">🖨️ 인쇄하기</button>
-    <button onclick="resetData()" class="utility-btn">🔄 초기화</button>
-  </div>
 
   <!-- 1. 수입 입력 -->
   <div class="card">
@@ -213,15 +233,19 @@
   <!-- 2. 세금 -->
   <div class="card">
     <h2>세금</h2>
-    <div class="flex">
-      <select id="tax-type">
-        <option value="" disabled selected>세금 종류 선택</option>
-        <option value="Federal Withholding">Federal Withholding</option>
-        <option value="State Tax (CA)">State Tax (CA)</option>
-        <option value="OASDI (Social Security)">OASDI (Social Security)</option>
-        <option value="Medicare">Medicare</option>
-        <option value="CA SDI">CA SDI</option>
-      </select>
+    <select id="tax-type">
+      <option value="" disabled selected>세금 종류 선택</option>
+      <option value="Federal Withholding">Federal Withholding</option>
+      <option value="State Tax (CA)">State Tax (CA)</option>
+      <option value="OASDI (Social Security)">OASDI (Social Security)</option>
+      <option value="Medicare">Medicare</option>
+      <option value="CA SDI">CA SDI</option>
+      <option value="custom">직접 입력</option>
+    </select>
+    <div id="tax-custom-container" class="custom-input-container">
+      <input type="text" id="tax-custom-name" placeholder="세금 항목명 입력">
+    </div>
+    <div class="input-group">
       <input type="number" id="tax-amount" placeholder="금액 ($)" value="0">
       <button onclick="updateTax()">적용</button>
     </div>
@@ -231,15 +255,19 @@
   <!-- 3. 세전 공제 -->
   <div class="card">
     <h2>세전 공제</h2>
-    <div class="flex">
-      <select id="pre-tax-type">
-        <option value="" disabled selected>공제 항목 선택</option>
-        <option value="401k Traditional">401k Traditional</option>
-        <option value="Medical Premium">Medical Premium</option>
-        <option value="Dental Premium">Dental Premium</option>
-        <option value="Vision Premium">Vision Premium</option>
-        <option value="MSEAP">MSEAP</option>
-      </select>
+    <select id="pre-tax-type">
+      <option value="" disabled selected>공제 항목 선택</option>
+      <option value="401k Traditional">401k Traditional</option>
+      <option value="Medical Premium">Medical Premium</option>
+      <option value="Dental Premium">Dental Premium</option>
+      <option value="Vision Premium">Vision Premium</option>
+      <option value="MSEAP">MSEAP</option>
+      <option value="custom">직접 입력</option>
+    </select>
+    <div id="pre-tax-custom-container" class="custom-input-container">
+      <input type="text" id="pre-tax-custom-name" placeholder="공제 항목명 입력">
+    </div>
+    <div class="input-group">
       <input type="number" id="pre-tax-amount" placeholder="금액 ($)" value="0">
       <button onclick="updateDeduction('preTax')">적용</button>
     </div>
@@ -249,17 +277,21 @@
   <!-- 4. 세후 공제 -->
   <div class="card">
     <h2>세후 공제</h2>
-    <div class="flex">
-      <select id="post-tax-type">
-        <option value="" disabled selected>공제 항목 선택</option>
-        <option value="401k Roth">401k Roth</option>
-        <option value="Legal Services">Legal Services</option>
-        <option value="LTD">LTD</option>
-        <option value="Stock Purchase Plan">Stock Purchase Plan</option>
-        <option value="AD&D">AD&D</option>
-        <option value="Critical Illness">Critical Illness</option>
-        <option value="Accident Insurance">Accident Insurance</option>
-      </select>
+    <select id="post-tax-type">
+      <option value="" disabled selected>공제 항목 선택</option>
+      <option value="401k Roth">401k Roth</option>
+      <option value="Legal Services">Legal Services</option>
+      <option value="LTD">LTD</option>
+      <option value="Stock Purchase Plan">Stock Purchase Plan</option>
+      <option value="AD&D">AD&D</option>
+      <option value="Critical Illness">Critical Illness</option>
+      <option value="Accident Insurance">Accident Insurance</option>
+      <option value="custom">직접 입력</option>
+    </select>
+    <div id="post-tax-custom-container" class="custom-input-container">
+      <input type="text" id="post-tax-custom-name" placeholder="공제 항목명 입력">
+    </div>
+    <div class="input-group">
       <input type="number" id="post-tax-amount" placeholder="금액 ($)" value="0">
       <button onclick="updateDeduction('postTax')">적용</button>
     </div>
@@ -354,6 +386,14 @@
         <div class="card-sub">(순수입 - 총 지출)</div>
       </div>
     </div>
+  </div>
+
+  <!-- 유틸리티 버튼 (하단으로 이동) -->
+  <div class="utility-buttons">
+    <button onclick="saveData()" class="utility-btn">💾 저장하기</button>
+    <button onclick="loadData()" class="utility-btn">📂 불러오기</button>
+    <button onclick="window.print()" class="utility-btn print">🖨️ 인쇄하기</button>
+    <button onclick="resetData()" class="utility-btn">🔄 초기화</button>
   </div>
 
 <script>
@@ -477,8 +517,10 @@
     const container = document.getElementById(elementId);
     container.innerHTML = items.map(item => `
       <div class="expense-item">
-        <span>${item.name}: $${formatMoney(item.amount)}</span>
-        <div>
+        <div class="expense-item-content">
+          <span>${item.name}: $${formatMoney(item.amount)}</span>
+        </div>
+        <div class="expense-item-actions">
           <button onclick="editItem('${item.type}', ${item.id})" class="edit-btn">수정</button>
           <button onclick="deleteItem('${item.type}', ${item.id})" class="delete-btn">삭제</button>
         </div>
@@ -492,11 +534,11 @@
       const category = budgetData.categories.find(cat => cat.id === item.category);
       return `
         <div class="expense-item">
-          <div>
+          <div class="expense-item-content">
             <span class="badge">${category ? category.name : '📌'}</span>
             ${item.name}
           </div>
-          <div>
+          <div class="expense-item-actions">
             <span>$${formatMoney(item.amount)}</span>
             <button onclick="deleteItem('expenses', ${item.id})" class="delete-btn">삭제</button>
           </div>
@@ -525,9 +567,18 @@
   function updateTax() {
     const selectElement = document.getElementById('tax-type');
     const inputElement = document.getElementById('tax-amount');
+    const customNameElement = document.getElementById('tax-custom-name');
     
-    const name = selectElement.value;
+    let name = selectElement.value;
     const amount = parseFloat(inputElement.value);
+    
+    if (name === 'custom') {
+      name = customNameElement.value;
+      if (!name) {
+        alert('직접 입력 항목명을 입력해주세요!');
+        return;
+      }
+    }
     
     if (!name || isNaN(amount)) {
       alert('항목과 금액을 정확히 입력해주세요!');
@@ -552,15 +603,26 @@
     
     updateUI();
     inputElement.value = '0';
+    customNameElement.value = '';
+    document.getElementById('tax-custom-container').style.display = 'none';
   }
 
   function updateDeduction(type) {
     const prefix = type === 'preTax' ? 'pre-tax' : 'post-tax';
     const selectElement = document.getElementById(`${prefix}-type`);
     const inputElement = document.getElementById(`${prefix}-amount`);
+    const customNameElement = document.getElementById(`${prefix}-custom-name`);
     
-    const name = selectElement.value;
+    let name = selectElement.value;
     const amount = parseFloat(inputElement.value);
+    
+    if (name === 'custom') {
+      name = customNameElement.value;
+      if (!name) {
+        alert('직접 입력 항목명을 입력해주세요!');
+        return;
+      }
+    }
     
     if (!name || isNaN(amount)) {
       alert('항목과 금액을 정확히 입력해주세요!');
@@ -585,6 +647,8 @@
     
     updateUI();
     inputElement.value = '0';
+    customNameElement.value = '';
+    document.getElementById(`${prefix}-custom-container`).style.display = 'none';
   }
 
   function addExpense() {
@@ -712,6 +776,22 @@
       Object.assign(budgetData, savedData);
     }
     
+    // 직접 입력 필드 토글
+    document.querySelectorAll('select[id$="-type"]').forEach(select => {
+      select.addEventListener('change', function() {
+        const type = this.id.replace('-type', '');
+        const container = document.getElementById(`${type}-custom-container`);
+        
+        if (this.value === 'custom') {
+          container.style.display = 'block';
+          document.getElementById(`${type}-custom-name`).focus();
+        } else {
+          container.style.display = 'none';
+          document.getElementById(`${type}-amount`).focus();
+        }
+      });
+    });
+
     // 이벤트 리스너
     document.getElementById('income').addEventListener('input', function() {
       budgetData.income = parseFloat(this.value) || 0;
@@ -729,6 +809,15 @@
     });
     document.getElementById('expense-amount').addEventListener('keypress', function(e) {
       if (e.key === 'Enter') addExpense();
+    });
+    document.getElementById('tax-custom-name').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') updateTax();
+    });
+    document.getElementById('pre-tax-custom-name').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') updateDeduction('preTax');
+    });
+    document.getElementById('post-tax-custom-name').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') updateDeduction('postTax');
     });
 
     // 초기 UI 업데이트
