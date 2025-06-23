@@ -160,6 +160,10 @@
       border-left: 4px solid var(--success);
       font-weight: bold;
     }
+    .flow-item.info { /* For total deductions/taxes */
+        border-left: 4px solid var(--warning);
+        font-weight: bold;
+    }
     .flow-arrow {
       text-align: center;
       color: var(--medium-gray);
@@ -521,6 +525,11 @@
         <span class="flow-amount">-$<span id="post-tax-deductions">0.00</span> <em class="percentage highlighted-percentage"></em></span>
       </div>
       <div class="flow-arrow">↓</div>
+      <div class="flow-item info">
+        <span class="flow-label">**총 공제 및 세금 합계**</span>
+        <span class="flow-amount">-$<span id="total-deductions-taxes">0.00</span> <em class="percentage highlighted-percentage"></em></span>
+      </div>
+      <div class="flow-arrow">↓</div>
       <div class="flow-item result">
         <span class="flow-label">**순수입 (실수령액)**</span>
         <span class="flow-amount">$<span id="net-income">0.00</span> <em class="percentage highlighted-percentage"></em></span>
@@ -691,6 +700,7 @@
       const preTaxTotal = budgetData.preTax.reduce((sum, item) => sum + item.amount, 0);
       const taxTotal = budgetData.taxes.reduce((sum, item) => sum + item.amount, 0);
       const postTaxTotal = budgetData.postTax.reduce((sum, item) => sum + item.amount, 0);
+      const totalDeductionsAndTaxes = preTaxTotal + taxTotal + postTaxTotal; // New calculation
       const taxableIncome = grossIncome - preTaxTotal;
       const netIncome = taxableIncome - taxTotal - postTaxTotal;
       const expensesTotal = budgetData.expenses.reduce((sum, item) => sum + item.amount, 0);
@@ -713,6 +723,10 @@
 
       document.getElementById('post-tax-deductions').innerHTML =
         `${formatMoney(postTaxTotal)} <em class="percentage highlighted-percentage">(${calculatePercentage(postTaxTotal, grossIncome)})</em>`;
+
+      // Update new total deductions and taxes
+      document.getElementById('total-deductions-taxes').innerHTML =
+        `${formatMoney(totalDeductionsAndTaxes)} <em class="percentage highlighted-percentage">(${calculatePercentage(totalDeductionsAndTaxes, grossIncome)})</em>`;
 
       document.getElementById('net-income').innerHTML =
         `${formatMoney(netIncome)} <em class="percentage highlighted-percentage">(${calculatePercentage(netIncome, grossIncome)})</em>`;
@@ -866,11 +880,11 @@
     }
 
     function editItem(type, id) {
-      cancelEdit(); // Cancel any ongoing edit
+      cancelEdit(); // 기존 수정 모드 해제
       const item = budgetData[type].find(item => item.id === id);
       if (item) {
         editingItem = { ...item, type: type };
-        updateUI(); // Re-render to show edit inputs
+        updateUI(); // UI를 다시 그려서 수정 모드를 반영
       }
     }
 
@@ -898,14 +912,14 @@
         budgetData[type][itemIndex].category = newCategory;
       }
 
-      editingItem = null; // Clear editing state
+      editingItem = null; // 수정 상태 해제
       updateUI();
     }
 
     function cancelEdit() {
       if (editingItem) {
         editingItem = null;
-        updateUI(); // Re-render to revert to display mode
+        updateUI(); // 수정 모드 해제 후 UI 다시 그리기
       }
     }
 
@@ -1006,119 +1020,61 @@
     // Chart Functions
     function updateCharts(grossIncome, preTaxTotal, taxTotal, postTaxTotal, expensesTotal, remaining) {
         // --- 1. Income Flow Chart (총 수입 대비 배분) ---
-        let incomeFlowLabels;
-        let incomeFlowData;
-        let incomeFlowColors;
+        let incomeFlowLabels = [];
+        let incomeFlowData = [];
+        let incomeFlowColors = [];
+        const baseColors = generateColors(5); // Enough for common categories
 
-        // If gross income is 0, chart cannot show proportions, show a simple "No Income"
         if (grossIncome <= 0) {
             incomeFlowLabels = ['수입 없음'];
-            incomeFlowData = [1]; // A dummy value to show a slice
-            incomeFlowColors = ['#DCDCDC']; // Gray
+            incomeFlowData = [1];
+            incomeFlowColors = ['#DCDCDC'];
         } else {
-            // Data for the slices
-            const dataMap = {
-                '세전 공제': preTaxTotal,
-                '세금': taxTotal,
-                '세후 공제': postTaxTotal,
-                '총 지출': expensesTotal,
-                '남은 잔액': remaining
-            };
-
-            incomeFlowLabels = [];
-            incomeFlowData = [];
-            incomeFlowColors = [];
-            const baseColors = generateColors(Object.keys(dataMap).length);
-            let colorIndex = 0;
-
-            // Collect only positive amounts for the chart
-            for (const label in dataMap) {
-                let value = dataMap[label];
-                if (label === '남은 잔액' && value < 0) {
-                    // If remaining is negative, it's essentially overspending.
-                    // Visually, it means expenses exceeded net income.
-                    // For a pie chart, we can add the absolute overspent amount to expenses.
-                    // This creates a "More Expenses" scenario rather than a negative slice.
-                    continue; // Skip negative remaining for now, will be covered by total spent.
-                }
-                if (value > 0) {
-                    incomeFlowLabels.push(label);
-                    incomeFlowData.push(value);
-                    incomeFlowColors.push(baseColors[colorIndex % baseColors.length]);
-                } else if (label === '남은 잔액' && value === 0) {
-                    // Include 0 remaining if it's explicitly 0 and not negative
-                    incomeFlowLabels.push(label);
-                    incomeFlowData.push(value);
-                    incomeFlowColors.push(baseColors[colorIndex % baseColors.length]);
-                }
-                colorIndex++;
+            // Collect all positive values for the chart
+            if (preTaxTotal > 0) {
+                incomeFlowLabels.push('세전 공제');
+                incomeFlowData.push(preTaxTotal);
+                incomeFlowColors.push(baseColors[0]);
             }
+            if (taxTotal > 0) {
+                incomeFlowLabels.push('세금');
+                incomeFlowData.push(taxTotal);
+                incomeFlowColors.push(baseColors[1]);
+            }
+            if (postTaxTotal > 0) {
+                incomeFlowLabels.push('세후 공제');
+                incomeFlowData.push(postTaxTotal);
+                incomeFlowColors.push(baseColors[2]);
+            }
+            // For remaining/expenses, adjust for negative remaining for visualization
+            let effectiveExpenses = expensesTotal;
+            let effectiveRemaining = remaining;
 
-            // If remaining is negative, increase '총 지출' to cover it for chart visualization
             if (remaining < 0) {
-                const totalSpentAmount = preTaxTotal + taxTotal + postTaxTotal + expensesTotal - remaining; // Remaining is negative, so adding its absolute value
-                if (totalSpentAmount > grossIncome) {
-                    // If total spent (including negative remaining) exceeds gross income,
-                    // we need to adjust percentages relative to gross income.
-                    // This is complex for a pie chart representing 100% of income.
-                    // A bar chart would be better for showcasing overspending.
-                    // For now, simplify: if remaining is negative, treat it as more consumption.
-                    const spentSoFar = preTaxTotal + taxTotal + postTaxTotal + expensesTotal;
-                    // If all positive deductions and expenses are less than gross income,
-                    // and remaining is negative, then part of the 'expenses' slice effectively
-                    // represents funds *beyond* net income.
-                    // For a simple pie chart of 'gross income allocation', negative remaining is tricky.
-                    // Let's assume for visualization: if remaining is negative, it means
-                    // that much more was "spent" than earned in the net income, so it comes from somewhere else.
-                    // For a pie chart of 'Gross Income Allocation', it implies spending of 100% of income.
-                    incomeFlowLabels = ['총 사용액', '초과 지출']; // Example: if it needs to be shown
-                    incomeFlowData = [grossIncome, Math.abs(remaining)]; // This makes sense only if we show 'what happened to 100% + overspend'
-                    incomeFlowColors = ['#42A5F5', '#EF5350']; // Use a red for overspend. This isn't perfect for a pie chart sum to 100%
-                                                               // A better solution is not to show negative remaining on this chart.
-
-                    // More robust solution: filter only positive values and ensure they sum up to gross income
-                    incomeFlowLabels = [];
-                    incomeFlowData = [];
-                    colorIndex = 0;
-
-                    const positiveAllocations = [preTaxTotal, taxTotal, postTaxTotal, expensesTotal]; // Add positive components
-                    const positiveLabels = ['세전 공제', '세금', '세후 공제', '총 지출'];
-
-                    positiveAllocations.forEach((val, idx) => {
-                        if (val > 0) {
-                            incomeFlowLabels.push(positiveLabels[idx]);
-                            incomeFlowData.push(val);
-                            incomeFlowColors.push(baseColors[colorIndex % baseColors.length]);
-                            colorIndex++;
-                        }
-                    });
-
-                    // The 'remaining' is now negative, so it implies grossIncome - sum(positives) < 0.
-                    // We can choose to either:
-                    // 1. Exclude 'remaining' if it's negative (simpler pie chart)
-                    // 2. Show 'overspent' as a separate slice
-                    // 3. Adjust other slices to sum to 100% (less accurate but visually simpler)
-                    // Option 1 is most common for this type of allocation pie chart.
-                    if (incomeFlowData.length === 0) {
-                        incomeFlowLabels = ['모든 수입 소진됨'];
-                        incomeFlowData = [grossIncome > 0 ? grossIncome : 1]; // Fallback if income is there but all spent
-                        incomeFlowColors = ['#7f8c8d'];
-                    }
-
-                }
+                // If remaining is negative (overspent), add the absolute value to expenses for chart.
+                // This assumes overspending increases the 'expenses' slice.
+                effectiveExpenses += Math.abs(remaining);
+                effectiveRemaining = 0; // Remaining is visually zero or included in expenses
             }
-            // Ensure data is not empty if some categories are zero.
+
+            if (effectiveExpenses > 0) {
+                incomeFlowLabels.push('총 지출');
+                incomeFlowData.push(effectiveExpenses);
+                incomeFlowColors.push(baseColors[3]);
+            }
+            if (effectiveRemaining > 0) { // Only show positive remaining
+                incomeFlowLabels.push('남은 잔액');
+                incomeFlowData.push(effectiveRemaining);
+                incomeFlowColors.push(baseColors[4]);
+            }
+
+            // Fallback if all calculated values are zero but gross income exists
             if (incomeFlowData.length === 0 && grossIncome > 0) {
-                incomeFlowLabels = ['남은 잔액']; // If all other deductions are 0 and gross income > 0
-                incomeFlowData = [grossIncome];
-                incomeFlowColors = ['#2ecc71']; // Green for remaining
-            } else if (incomeFlowData.length === 0 && grossIncome === 0) {
-                incomeFlowLabels = ['수입 없음'];
-                incomeFlowData = [1];
-                incomeFlowColors = ['#DCDCDC'];
+                 incomeFlowLabels.push('총 수입 (전액 사용됨)');
+                 incomeFlowData.push(grossIncome);
+                 incomeFlowColors.push('#7f8c8d');
             }
         }
-
 
         const incomeFlowCtx = document.getElementById('incomeFlowChart').getContext('2d');
         if (incomeFlowChart) {
@@ -1181,9 +1137,9 @@
 
         // Handle case where total expenses are zero
         if (expenseCategoryData.reduce((sum, val) => sum + val, 0) === 0) {
-            expenseCategoryLabels.push('지출 없음');
-            expenseCategoryData.push(1); // Dummy value to show an empty pie chart visually
-            expenseCategoryColors.push('#DCDCDC'); // Gray for no expenses
+            expenseCategoryLabels = ['지출 없음'];
+            expenseCategoryData = [1]; // Dummy value to show an empty pie chart visually
+            expenseCategoryColors = ['#DCDCDC']; // Gray for no expenses
         }
 
         const expenseCategoryCtx = document.getElementById('expenseCategoryChart').getContext('2d');
@@ -1347,24 +1303,26 @@
 
     // 7. 초기화 및 이벤트 리스너 설정
     document.addEventListener('DOMContentLoaded', function() {
+      // Load saved data or initialize default data
       if (!localStorage.getItem('budgetData')) {
         initDefaultData();
       } else {
         const savedData = JSON.parse(localStorage.getItem('budgetData'));
-        Object.assign(budgetData, {
-          income: savedData.income || 0,
-          taxes: savedData.taxes || [],
-          preTax: savedData.preTax || [],
-          postTax: savedData.postTax || [],
-          expenses: savedData.expenses || [],
-          categories: savedData.categories || [
+        // Deep copy to ensure original objects are not mutated
+        budgetData.income = savedData.income || 0;
+        budgetData.taxes = savedData.taxes ? savedData.taxes.map(item => ({...item})) : [];
+        budgetData.preTax = savedData.preTax ? savedData.preTax.map(item => ({...item})) : [];
+        budgetData.postTax = savedData.postTax ? savedData.postTax.map(item => ({...item})) : [];
+        budgetData.expenses = savedData.expenses ? savedData.expenses.map(item => ({...item})) : [];
+        budgetData.categories = savedData.categories ? savedData.categories.map(item => ({...item})) : [
             { id: 'housing', name: '🏠 주거' }, { id: 'food', name: '🍔 식비' },
             { id: 'transportation', name: '🚗 교통' }, { id: 'health', name: '🏥 건강' },
             { id: 'family', name: '👪 가족' }, { id: 'shopping', name: '🛍️ 쇼핑' },
             { id: 'finance', name: '💳 금융' }, { id: 'travel', name: '✈️ 여행' },
             { id: 'saving', name: '💰 저축' }, { id: 'business', name: '💼 업무' }
-          ]
-        });
+          ];
+
+        // Ensure default deduction types are present if missing after loading
         DEFAULT_DEDUCTIONS.taxes.forEach(defaultItem => {
             if (!budgetData.taxes.some(item => item.name === defaultItem.name)) {
                 budgetData.taxes.push({ ...defaultItem, id: generateUniqueId(), type: 'taxes' });
@@ -1384,6 +1342,7 @@
 
       populateCategorySelect();
 
+      // Event listeners for select boxes to show/hide custom input
       document.querySelectorAll('select[id$="-type"]').forEach(select => {
         select.addEventListener('change', function() {
           const type = this.id.replace('-type', '');
@@ -1418,6 +1377,7 @@
         updateUI();
       });
 
+      // Event listeners for 'Enter' key to apply input
       document.getElementById('tax-amount').addEventListener('keypress', function(e) { if (e.key === 'Enter') updateCategorizedItem('taxes'); });
       document.getElementById('pre-tax-amount').addEventListener('keypress', function(e) { if (e.key === 'Enter') updateCategorizedItem('preTax'); });
       document.getElementById('post-tax-amount').addEventListener('keypress', function(e) { if (e.key === 'Enter') updateCategorizedItem('postTax'); });
@@ -1427,7 +1387,8 @@
       document.getElementById('post-tax-custom-name').addEventListener('keypress', function(e) { if (e.key === 'Enter') updateCategorizedItem('postTax'); });
       document.getElementById('new-category').addEventListener('keypress', function(e) { if (e.key === 'Enter') addCategory(); });
 
-      updateUI(); // Initial UI update and chart rendering
+      // Initial UI update and chart rendering after DOM is loaded
+      updateUI();
     });
   </script>
 </body>
