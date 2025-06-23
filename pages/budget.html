@@ -91,6 +91,76 @@
         flex-direction: column;
       }
     }
+      .income-flow {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 25px;
+  }
+  .flow-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+    margin: 5px 0;
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .flow-item.highlighted {
+    border-left: 4px solid #e74c3c;
+  }
+  .flow-item.result {
+    border-left: 4px solid #2ecc71;
+    font-weight: bold;
+  }
+  .flow-label {
+    color: #34495e;
+  }
+  .flow-amount {
+    font-weight: 500;
+  }
+  .flow-arrow {
+    text-align: center;
+    color: #7f8c8d;
+    margin: 2px 0;
+  }
+  .summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+  }
+  .summary-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+  .summary-card.accent {
+    border-top: 4px solid #3498db;
+  }
+  .card-label {
+    font-size: 1em;
+    color: #7f8c8d;
+    margin-bottom: 5px;
+  }
+  .card-amount {
+    font-size: 1.8em;
+    font-weight: bold;
+    margin: 10px 0;
+  }
+  .card-amount.positive {
+    color: #2ecc71;
+  }
+  .card-amount.negative {
+    color: #e74c3c;
+  }
+  .card-sub {
+    font-size: 0.7em;
+    color: #bdc3c7;
+  }
+
+    
   </style>
 </head>
 <body>
@@ -176,19 +246,64 @@
 
   <!-- 6. 결산 -->
   <div class="card">
-    <h2>월별 결산</h2>
-    <div class="flex">
-      <div style="flex: 1;">
-        <p>세전 월급: $<span id="gross-income">0</span></p>
-        <p>세전 공제: $<span id="total-pre-tax">0</span></p>
-        <p>과세 소득: $<span id="taxable-income">0</span></p>
-        <p>세금: $<span id="total-tax">0</span></p>
-        <p>세후 공제: $<span id="total-post-tax">0</span></p>
-        <p><strong>순수입: $<span id="net-income">0</span></strong></p>
+    <h2>📊 월별 재무 현황</h2>
+    
+    <!-- 1. 소득 계층 구조 -->
+    <div class="income-flow">
+      <div class="flow-item">
+        <span class="flow-label">세전 월급</span>
+        <span class="flow-amount">$<span id="gross-income">0</span></span>
       </div>
-      <div style="flex: 1;">
-        <p>총 지출: $<span id="total-expenses">0</span></p>
-        <p><strong>남은 잔액: $<span id="remaining">0</span></strong></p>
+      
+      <div class="flow-arrow">↓</div>
+      <div class="flow-item highlighted">
+        <span class="flow-label">세전 공제</span>
+        <span class="flow-amount">-$<span id="pre-tax-deductions">0</span></span>
+      </div>
+      
+      <div class="flow-arrow">↓</div>
+      <div class="flow-item">
+        <span class="flow-label">과세 소득</span>
+        <span class="flow-amount">$<span id="taxable-income">0</span></span>
+      </div>
+      
+      <div class="flow-arrow">↓</div>
+      <div class="flow-item highlighted">
+        <span class="flow-label">세금</span>
+        <span class="flow-amount">-$<span id="tax-total">0</span></span>
+      </div>
+      
+      <div class="flow-arrow">↓</div>
+      <div class="flow-item highlighted">
+        <span class="flow-label">세후 공제</span>
+        <span class="flow-amount">-$<span id="post-tax-deductions">0</span></span>
+      </div>
+      
+      <div class="flow-arrow">↓</div>
+      <div class="flow-item result">
+        <span class="flow-label">순수입</span>
+        <span class="flow-amount">$<span id="net-income">0</span></span>
+      </div>
+    </div>
+  
+    <!-- 2. 핵심 지표 박스 -->
+    <div class="summary-cards">
+      <div class="summary-card">
+        <div class="card-label">순수입</div>
+        <div class="card-amount positive">$<span id="net-income-card">0</span></div>
+        <div class="card-sub">(과세 소득 - 세금 - 세후 공제)</div>
+      </div>
+      
+      <div class="summary-card">
+        <div class="card-label">총 지출</div>
+        <div class="card-amount negative">$<span id="expenses-total-card">0</span></div>
+        <div class="card-sub">(모든 카테고리 합계)</div>
+      </div>
+      
+      <div class="summary-card accent">
+        <div class="card-label">남은 잔액</div>
+        <div class="card-amount">$<span id="remaining-balance">0</span></div>
+        <div class="card-sub">(순수입 - 총 지출)</div>
       </div>
     </div>
   </div>
@@ -252,6 +367,23 @@
       renderList('pre-tax-list', budgetData.preTax, 'preTax');
       renderList('post-tax-list', budgetData.postTax, 'postTax');
       renderExpenses();
+
+      // 1. 소득 흐름 업데이트
+      document.getElementById('gross-income').textContent = formatMoney(budgetData.income);
+      document.getElementById('pre-tax-deductions').textContent = formatMoney(preTaxTotal);
+      document.getElementById('taxable-income').textContent = formatMoney(taxableIncome);
+      document.getElementById('tax-total').textContent = formatMoney(taxTotal);
+      document.getElementById('post-tax-deductions').textContent = formatMoney(postTaxTotal);
+      document.getElementById('net-income').textContent = formatMoney(netIncome);
+  
+      // 2. 핵심 지표 업데이트
+      document.getElementById('net-income-card').textContent = formatMoney(netIncome);
+      document.getElementById('expenses-total-card').textContent = formatMoney(expensesTotal);
+      document.getElementById('remaining-balance').textContent = formatMoney(remaining);
+  
+      // 3. 색상 강조
+      const balanceElement = document.getElementById('remaining-balance');
+      balanceElement.parentElement.style.color = remaining >= 0 ? '#2ecc71' : '#e74c3c';
     }
 
     function renderList(elementId, items, type) {
