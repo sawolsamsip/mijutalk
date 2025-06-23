@@ -547,11 +547,11 @@
 
   // 6. 초기화
   document.addEventListener('DOMContentLoaded', function() {
-    const savedData = localStorage.getItem('budgetData');
-    if (savedData) {
-      Object.assign(budgetData, JSON.parse(savedData));
-    } else {
+    if (!localStorage.getItem('budgetData')) {
       initDefaultData();
+    } else {
+      // 저장된 데이터 불러오기
+      Object.assign(budgetData, JSON.parse(localStorage.getItem('budgetData')));
     }
     updateUI();
     
