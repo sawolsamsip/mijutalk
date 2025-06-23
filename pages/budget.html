@@ -39,6 +39,13 @@
       border: 1px solid #ddd;
       border-radius: 4px;
     }
+    /* Specific fix for labels within flex containers */
+    .card label:not(.sr-only) { /* Apply to visible labels, not screen-reader-only ones */
+      display: block; /* Ensure they take full width */
+      margin-bottom: 5px; /* Add some spacing below label */
+      font-weight: bold;
+      color: #555;
+    }
     select {
       height: 46px;
     }
@@ -76,7 +83,17 @@
     .flex {
       display: flex;
       gap: 10px;
+      align-items: flex-end; /* Align items to the bottom */
     }
+    /* Make flex items within .flex fill space */
+    .flex > div {
+      flex: 1; /* Distribute space equally */
+    }
+    /* Ensure inputs within flex items take full width of their flex parent */
+    .flex input, .flex select {
+        margin: 0; /* Remove vertical margin within flex item */
+    }
+
     .item-list {
       margin-top: 20px;
     }
@@ -185,6 +202,7 @@
       font-size: 0.8em;
       color: #7f8c8d;
       margin-top: 5px;
+      font-weight: bold; /* Make percentages stand out */
     }
     .utility-buttons {
       display: flex;
@@ -204,6 +222,27 @@
       display: none; /* Controlled by JS */
       margin-top: 8px;
     }
+    /* Specific styling for custom input containers to prevent wrapping */
+    #tax-custom-container .flex,
+    #pre-tax-custom-container .flex,
+    #post-tax-custom-container .flex,
+    #category-input-container.flex {
+        align-items: center; /* Align items centrally for single line display */
+    }
+    #tax-custom-container input,
+    #pre-tax-custom-container input,
+    #post-tax-custom-container input,
+    #category-input-container input {
+        margin-right: 10px; /* Space between input and button */
+    }
+    #tax-custom-container button,
+    #pre-tax-custom-container button,
+    #post-tax-custom-container button,
+    #category-input-container button {
+        flex-shrink: 0; /* Prevent button from shrinking */
+        width: auto; /* Allow button to take natural width */
+    }
+
     .total-summary {
       margin-top: 15px;
       padding: 12px;
@@ -236,9 +275,25 @@
     .flow-item.result .percentage {
       color: var(--success);
     }
+    .sr-only { /* For screen readers only */
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap; /* added for better compatibility */
+      border: 0;
+    }
     @media (max-width: 600px) {
       .flex {
         flex-direction: column;
+        align-items: stretch; /* Stretch items in column layout */
+      }
+      /* Remove specific flex overrides for small screens */
+      .flex > div {
+        flex: auto;
       }
       .utility-buttons {
         flex-wrap: wrap;
@@ -251,6 +306,29 @@
         margin-top: 10px;
         width: 100%;
         justify-content: flex-end;
+      }
+      /* Adjust custom input containers for small screens */
+      #tax-custom-container .flex,
+      #pre-tax-custom-container .flex,
+      #post-tax-custom-container .flex,
+      #category-input-container.flex {
+        flex-direction: row; /* Keep them in a row for these specific cases */
+        flex-wrap: wrap; /* Allow wrapping if truly necessary, but try to keep them inline */
+        align-items: center;
+      }
+      #tax-custom-container input,
+      #pre-tax-custom-container input,
+      #post-tax-custom-container input,
+      #category-input-container input {
+        flex: 1; /* Allow input to grow */
+        min-width: 120px; /* Ensure minimum width */
+      }
+      #tax-custom-container button,
+      #pre-tax-custom-container button,
+      #post-tax-custom-container button,
+      #category-input-container button {
+        width: auto; /* Buttons take natural width */
+        flex-shrink: 0; /* Prevent buttons from shrinking too much */
       }
     }
     @media print {
@@ -281,13 +359,13 @@
 
   <div class="card">
     <h2>월급</h2>
-    <label for="income" class="sr-only">세전 월급액</label>
-    <input type="number" id="income" placeholder="세전 월급액 ($)">
+    <label for="income">세전 월급액 ($)</label>
+    <input type="number" id="income" placeholder="0">
   </div>
 
   <div class="card">
     <h2>세금</h2>
-    <label for="tax-type" class="sr-only">세금 종류</label>
+    <label for="tax-type">세금 종류</label>
     <select id="tax-type">
       <option value="" disabled selected>세금 종류 선택</option>
       <option value="Federal Withholding">Federal Withholding</option>
@@ -297,11 +375,9 @@
       <option value="CA SDI">CA SDI</option>
       <option value="custom">직접 입력</option>
     </select>
-    <div id="tax-custom-container" class="category-input-container">
+    <div id="tax-custom-container" class="category-input-container flex">
       <label for="tax-custom-name" class="sr-only">세금 항목명</label>
       <input type="text" id="tax-custom-name" placeholder="세금 항목명 입력">
-    </div>
-    <div class="flex">
       <label for="tax-amount" class="sr-only">금액</label>
       <input type="number" id="tax-amount" placeholder="금액 ($)">
       <button onclick="updateCategorizedItem('taxes')">적용</button>
@@ -311,7 +387,7 @@
 
   <div class="card">
     <h2>세전 공제</h2>
-    <label for="pre-tax-type" class="sr-only">공제 항목</label>
+    <label for="pre-tax-type">공제 항목</label>
     <select id="pre-tax-type">
       <option value="" disabled selected>공제 항목 선택</option>
       <option value="401k Traditional">401k Traditional</option>
@@ -321,11 +397,9 @@
       <option value="MSEAP">MSEAP</option>
       <option value="custom">직접 입력</option>
     </select>
-    <div id="pre-tax-custom-container" class="category-input-container">
+    <div id="pre-tax-custom-container" class="category-input-container flex">
       <label for="pre-tax-custom-name" class="sr-only">공제 항목명</label>
       <input type="text" id="pre-tax-custom-name" placeholder="공제 항목명 입력">
-    </div>
-    <div class="flex">
       <label for="pre-tax-amount" class="sr-only">금액</label>
       <input type="number" id="pre-tax-amount" placeholder="금액 ($)">
       <button onclick="updateCategorizedItem('preTax')">적용</button>
@@ -335,7 +409,7 @@
 
   <div class="card">
     <h2>세후 공제</h2>
-    <label for="post-tax-type" class="sr-only">공제 항목</label>
+    <label for="post-tax-type">공제 항목</label>
     <select id="post-tax-type">
       <option value="" disabled selected>공제 항목 선택</option>
       <option value="401k Roth">401k Roth</option>
@@ -347,11 +421,9 @@
       <option value="Accident Insurance">Accident Insurance</option>
       <option value="custom">직접 입력</option>
     </select>
-    <div id="post-tax-custom-container" class="category-input-container">
+    <div id="post-tax-custom-container" class="category-input-container flex">
       <label for="post-tax-custom-name" class="sr-only">공제 항목명</label>
       <input type="text" id="post-tax-custom-name" placeholder="공제 항목명 입력">
-    </div>
-    <div class="flex">
       <label for="post-tax-amount" class="sr-only">금액</label>
       <input type="number" id="post-tax-amount" placeholder="금액 ($)">
       <button onclick="updateCategorizedItem('postTax')">적용</button>
@@ -366,13 +438,6 @@
         <label for="category">카테고리</label>
         <select id="category">
           </select>
-        <div id="category-input-container" class="category-input-container">
-          <div class="flex">
-            <label for="new-category" class="sr-only">새 카테고리명</label>
-            <input type="text" id="new-category" placeholder="새 카테고리명 입력">
-            <button onclick="addCategory()">추가</button>
-          </div>
-        </div>
       </div>
       <div style="flex: 2;">
         <label for="expense-name">항목명</label>
@@ -383,6 +448,11 @@
         <input type="number" id="expense-amount" placeholder="$">
       </div>
     </div>
+    <div id="category-input-container" class="category-input-container flex">
+        <label for="new-category" class="sr-only">새 카테고리명</label>
+        <input type="text" id="new-category" placeholder="새 카테고리명 입력" style="flex: 1;">
+        <button onclick="addCategory()" style="flex-shrink: 0; width: auto;">추가</button>
+    </div>
     <button onclick="addExpense()">지출 추가</button>
     <div class="item-list" id="expenses-list"></div>
   </div>
@@ -392,32 +462,32 @@
     <div class="income-flow">
       <div class="flow-item">
         <span class="flow-label">세전 월급</span>
-        <span class="flow-amount">$<span id="gross-income">0.00</span></span>
+        <span class="flow-amount">$<span id="gross-income">0.00</span> <em class="percentage">(100.0%)</em></span>
       </div>
       <div class="flow-arrow">↓</div>
       <div class="flow-item highlighted">
         <span class="flow-label">세전 공제</span>
-        <span class="flow-amount">-$<span id="pre-tax-deductions">0.00</span> <em class="percentage">(0.0%)</em></span>
+        <span class="flow-amount">-$<span id="pre-tax-deductions">0.00</span> <em class="percentage"></em></span>
       </div>
       <div class="flow-arrow">↓</div>
       <div class="flow-item">
         <span class="flow-label">과세 소득</span>
-        <span class="flow-amount">$<span id="taxable-income">0.00</span></span>
+        <span class="flow-amount">$<span id="taxable-income">0.00</span> <em class="percentage"></em></span>
       </div>
       <div class="flow-arrow">↓</div>
       <div class="flow-item highlighted">
         <span class="flow-label">세금</span>
-        <span class="flow-amount">-$<span id="tax-total">0.00</span> <em class="percentage">(0.0%)</em></span>
+        <span class="flow-amount">-$<span id="tax-total">0.00</span> <em class="percentage"></em></span>
       </div>
       <div class="flow-arrow">↓</div>
       <div class="flow-item highlighted">
         <span class="flow-label">세후 공제</span>
-        <span class="flow-amount">-$<span id="post-tax-deductions">0.00</span> <em class="percentage">(0.0%)</em></span>
+        <span class="flow-amount">-$<span id="post-tax-deductions">0.00</span> <em class="percentage"></em></span>
       </div>
       <div class="flow-arrow">↓</div>
       <div class="flow-item result">
         <span class="flow-label">순수입</span>
-        <span class="flow-amount">$<span id="net-income">0.00</span></span>
+        <span class="flow-amount">$<span id="net-income">0.00</span> <em class="percentage"></em></span>
       </div>
     </div>
 
@@ -426,16 +496,19 @@
         <div class="card-label">순수입</div>
         <div class="card-amount positive">$<span id="net-income-card">0.00</span></div>
         <div class="card-sub">(과세 소득 - 세금 - 세후 공제)</div>
+        <div class="card-percentage" id="net-income-percentage"></div>
       </div>
       <div class="summary-card">
         <div class="card-label">총 지출</div>
         <div class="card-amount negative">$<span id="expenses-total-card">0.00</span></div>
         <div class="card-sub">(모든 카테고리 합계)</div>
+        <div class="card-percentage" id="expenses-percentage"></div>
       </div>
       <div class="summary-card accent">
         <div class="card-label">남은 잔액</div>
         <div class="card-amount">$<span id="remaining-balance">0.00</span></div>
         <div class="card-sub">(순수입 - 총 지출)</div>
+        <div class="card-percentage" id="remaining-percentage"></div>
       </div>
     </div>
   </div>
@@ -549,28 +622,47 @@
       return parseFloat(amount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
+    function calculatePercentage(value, totalIncome) {
+        if (totalIncome === 0) return "0.0%"; // Avoid division by zero
+        return ((value / totalIncome) * 100).toFixed(1) + '%';
+    }
+
     function updateUI() {
       // Save data immediately
       localStorage.setItem('budgetData', JSON.stringify(budgetData));
 
       // Calculations
+      const grossIncome = budgetData.income;
       const preTaxTotal = budgetData.preTax.reduce((sum, item) => sum + item.amount, 0);
       const taxTotal = budgetData.taxes.reduce((sum, item) => sum + item.amount, 0);
       const postTaxTotal = budgetData.postTax.reduce((sum, item) => sum + item.amount, 0);
-      const taxableIncome = budgetData.income - preTaxTotal;
+      const taxableIncome = grossIncome - preTaxTotal;
       const netIncome = taxableIncome - taxTotal - postTaxTotal;
       const expensesTotal = budgetData.expenses.reduce((sum, item) => sum + item.amount, 0);
       const remaining = netIncome - expensesTotal;
 
-      const income = budgetData.income || 1; // Prevent division by zero
+      // Update income input
+      document.getElementById('income').value = grossIncome;
 
       // Update flow section
-      document.getElementById('gross-income').textContent = formatMoney(budgetData.income);
-      document.getElementById('pre-tax-deductions').innerHTML = `${formatMoney(preTaxTotal)} <em class="percentage">(${(preTaxTotal / income * 100).toFixed(1)}%)</em>`;
-      document.getElementById('taxable-income').textContent = formatMoney(taxableIncome);
-      document.getElementById('tax-total').innerHTML = `${formatMoney(taxTotal)} <em class="percentage">(${(taxTotal / income * 100).toFixed(1)}%)</em>`;
-      document.getElementById('post-tax-deductions').innerHTML = `${formatMoney(postTaxTotal)} <em class="percentage">(${(postTaxTotal / income * 100).toFixed(1)}%)</em>`;
-      document.getElementById('net-income').textContent = formatMoney(netIncome);
+      document.getElementById('gross-income').textContent = formatMoney(grossIncome);
+      // Percentage for gross income is always 100% (already in HTML)
+
+      document.getElementById('pre-tax-deductions').innerHTML =
+        `-${formatMoney(preTaxTotal)} <em class="percentage">(${calculatePercentage(preTaxTotal, grossIncome)})</em>`;
+
+      document.getElementById('taxable-income').innerHTML =
+        `${formatMoney(taxableIncome)} <em class="percentage">(${calculatePercentage(taxableIncome, grossIncome)})</em>`;
+
+      document.getElementById('tax-total').innerHTML =
+        `-${formatMoney(taxTotal)} <em class="percentage">(${calculatePercentage(taxTotal, grossIncome)})</em>`;
+
+      document.getElementById('post-tax-deductions').innerHTML =
+        `-${formatMoney(postTaxTotal)} <em class="percentage">(${calculatePercentage(postTaxTotal, grossIncome)})</em>`;
+
+      document.getElementById('net-income').innerHTML =
+        `${formatMoney(netIncome)} <em class="percentage">(${calculatePercentage(netIncome, grossIncome)})</em>`;
+
 
       // Update summary cards
       document.getElementById('net-income-card').textContent = formatMoney(netIncome);
@@ -580,38 +672,25 @@
       remainingElement.textContent = formatMoney(remaining);
       remainingElement.className = remaining >= 0 ? 'card-amount positive' : 'card-amount negative';
 
-      // Update income input
-      document.getElementById('income').value = budgetData.income;
-
       // Update percentages on summary cards
-      document.querySelectorAll('.summary-card .card-percentage').forEach(el => el.remove());
-
-      const netIncomePercentage = income > 0 ? (netIncome / income * 100).toFixed(1) : 0;
-      const expensesPercentage = income > 0 ? (expensesTotal / income * 100).toFixed(1) : 0;
-      const remainingPercentage = income > 0 ? (remaining / income * 100).toFixed(1) : 0;
-
-      document.querySelector('.summary-card:nth-child(1)').insertAdjacentHTML('beforeend',
-        `<div class="card-percentage">월급 대비 ${netIncomePercentage}%</div>`);
-      document.querySelector('.summary-card:nth-child(2)').insertAdjacentHTML('beforeend',
-        `<div class="card-percentage">월급 대비 ${expensesPercentage}%</div>`);
-      document.querySelector('.summary-card:nth-child(3)').insertAdjacentHTML('beforeend',
-        `<div class="card-percentage">월급 대비 ${remainingPercentage}%</div>`);
+      document.getElementById('net-income-percentage').textContent = `월급 대비 ${calculatePercentage(netIncome, grossIncome)}`;
+      document.getElementById('expenses-percentage').textContent = `월급 대비 ${calculatePercentage(expensesTotal, grossIncome)}`;
+      document.getElementById('remaining-percentage').textContent = `월급 대비 ${calculatePercentage(remaining, grossIncome)}`;
 
       // Render lists
-      renderList('tax-list', budgetData.taxes);
-      renderList('pre-tax-list', budgetData.preTax);
-      renderList('post-tax-list', budgetData.postTax);
-      renderExpenses();
+      renderList('tax-list', budgetData.taxes, grossIncome);
+      renderList('pre-tax-list', budgetData.preTax, grossIncome);
+      renderList('post-tax-list', budgetData.postTax, grossIncome);
+      renderExpenses(grossIncome);
       populateCategorySelect();
     }
 
     let editingItem = null; // To store the item being edited
 
-    function renderList(elementId, items) {
+    function renderList(elementId, items, totalIncome) {
       const container = document.getElementById(elementId);
       const type = elementId.replace('-list', '');
       const total = items.reduce((sum, item) => sum + item.amount, 0);
-      const percentage = budgetData.income > 0 ? (total / budgetData.income * 100).toFixed(1) : 0;
 
       container.innerHTML = `
         ${items.map(item => `
@@ -639,16 +718,15 @@
         <div class="total-summary">
           <div class="summary-row">
             <span class="summary-label">총 ${getTypeName(type)}</span>
-            <span class="summary-value">$${formatMoney(total)} <span class="percentage">(${percentage}%)</span></span>
+            <span class="summary-value">$${formatMoney(total)} <span class="percentage">(${calculatePercentage(total, totalIncome)})</span></span>
           </div>
         </div>
       `;
     }
 
-    function renderExpenses() {
+    function renderExpenses(totalIncome) {
       const container = document.getElementById('expenses-list');
       const total = budgetData.expenses.reduce((sum, item) => sum + item.amount, 0);
-      const percentage = budgetData.income > 0 ? (total / budgetData.income * 100).toFixed(1) : 0;
 
       container.innerHTML = `
         ${budgetData.expenses.map(item => {
@@ -684,7 +762,7 @@
         <div class="total-summary">
           <div class="summary-row">
             <span class="summary-label">총 지출</span>
-            <span class="summary-value">$${formatMoney(total)} <span class="percentage">(${percentage}%)</span></span>
+            <span class="summary-value">$${formatMoney(total)} <span class="percentage">(${calculatePercentage(total, totalIncome)})</span></span>
           </div>
         </div>
       `;
@@ -892,7 +970,7 @@
 
         const a = document.createElement('a');
         a.href = url;
-        a.download = `budget_data_${new Date().toISOString().slice(0, 10)}.json`; // YYYY-MM-DD
+        a.download = `budget_data_${new Date().toISOString().slice(0, 10)}.json`; //YYYY-MM-DD
         document.body.appendChild(a);
         a.click();
 
@@ -940,7 +1018,6 @@
 
           // Merge categories - add new ones, but don't remove existing custom ones if not in loaded data
           if (Array.isArray(loadedData.categories)) {
-            const defaultCategories = DEFAULT_DEDUCTIONS.categories || []; // Assuming DEFAULT_DEDUCTIONS might have categories
             const currentCategoryIds = new Set(budgetData.categories.map(c => c.id));
 
             loadedData.categories.forEach(newCat => {
@@ -1031,7 +1108,7 @@
           const amountInput = document.getElementById(`${type}-amount`);
 
           if (this.value === 'custom') {
-            container.style.display = 'block';
+            container.style.display = 'flex'; /* Use flex to control layout */
             customNameInput.focus();
           } else {
             container.style.display = 'none';
@@ -1047,7 +1124,7 @@
       document.getElementById('category').addEventListener('change', function() {
         const container = document.getElementById('category-input-container');
         if (this.value === 'custom') {
-          container.style.display = 'flex';
+          container.style.display = 'flex'; /* Use flex to control layout */
           document.getElementById('new-category').focus();
         } else {
           container.style.display = 'none';
