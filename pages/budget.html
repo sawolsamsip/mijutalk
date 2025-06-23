@@ -176,7 +176,15 @@
   <div class="card">
     <h2>세금</h2>
     <div class="flex">
-      <input type="text" id="tax-name" placeholder="세금 종류 (예: 연방세)">
+      <select id="tax-type">
+        <option value="" disabled selected>세금 종류 선택</option>
+        <option value="Federal Withholding">Federal Withholding</option>
+        <option value="State Tax (CA)">State Tax (CA)</option>
+        <option value="OASDI (Social Security)">OASDI (Social Security)</option>
+        <option value="Medicare">Medicare</option>
+        <option value="CA SDI">CA SDI</option>
+        <option value="custom">직접 입력</option>
+      </select>
       <input type="number" id="tax-amount" placeholder="금액 ($)">
       <button onclick="addTax()">추가</button>
     </div>
@@ -187,7 +195,15 @@
   <div class="card">
     <h2>세전 공제</h2>
     <div class="flex">
-      <input type="text" id="pre-tax-name" placeholder="항목명 (예: 401k)">
+      <select id="pre-tax-type">
+        <option value="" disabled selected>공제 항목 선택</option>
+        <option value="401k Traditional">401k Traditional</option>
+        <option value="Medical Premium">Medical Premium</option>
+        <option value="Dental Premium">Dental Premium</option>
+        <option value="Vision Premium">Vision Premium</option>
+        <option value="MSEAP">MSEAP</option>
+        <option value="custom">직접 입력</option>
+      </select>
       <input type="number" id="pre-tax-amount" placeholder="금액 ($)">
       <button onclick="addDeduction('preTax')">추가</button>
     </div>
@@ -198,7 +214,17 @@
   <div class="card">
     <h2>세후 공제</h2>
     <div class="flex">
-      <input type="text" id="post-tax-name" placeholder="항목명 (예: 건강보험)">
+      <select id="post-tax-type">
+        <option value="" disabled selected>공제 항목 선택</option>
+        <option value="401k Roth">401k Roth</option>
+        <option value="Legal Services">Legal Services</option>
+        <option value="LTD">LTD</option>
+        <option value="Stock Purchase Plan">Stock Purchase Plan</option>
+        <option value="AD&D">AD&D</option>
+        <option value="Critical Illness">Critical Illness</option>
+        <option value="Accident Insurance">Accident Insurance</option>
+        <option value="custom">직접 입력</option>
+      </select>
       <input type="number" id="post-tax-amount" placeholder="금액 ($)">
       <button onclick="addDeduction('postTax')">추가</button>
     </div>
@@ -460,26 +486,65 @@
     updateUI();
   }
 
-  function addTax() {
-    const name = document.getElementById('tax-name').value;
-    const amount = parseFloat(document.getElementById('tax-amount').value);
-
-    if (!name || isNaN(amount)) {
-      alert('세금 종류와 금액을 입력해주세요!');
-      return;
+  // [1] 드롭다운 지원 추가 함수
+  function getSelectedItem(type) {
+    const selectElement = document.getElementById(`${type}-type`);
+    const inputElement = document.getElementById(`${type}-amount`);
+    
+    let name = selectElement.value;
+    const amount = parseFloat(inputElement.value);
+    
+    if (name === 'custom') {
+      name = prompt("항목명을 입력하세요:");
+      if (!name) return null;
     }
-
+    
+    if (!name || isNaN(amount)) {
+      alert('항목과 금액을 정확히 입력해주세요!');
+      return null;
+    }
+    
+    return { name, amount };
+  }
+  
+  function addTax() {
+    const item = getSelectedItem('tax');
+    if (!item) return;
+    
     budgetData.taxes.push({
       id: Date.now(),
       type: 'taxes',
-      name,
-      amount
+      name: item.name,
+      amount: item.amount
     });
-
+    
     updateUI();
-    document.getElementById('tax-name').value = '';
     document.getElementById('tax-amount').value = '';
   }
+
+  function addDeduction(type) {
+    const item = getSelectedItem(`${type}-tax`);
+    if (!item) return;
+    
+    budgetData[type].push({
+      id: Date.now(),
+      type,
+      name: item.name,
+      amount: item.amount
+    });
+    
+    updateUI();
+    document.getElementById(`${type}-tax-amount`).value = '';
+  }
+
+  // 드롭다운 선택 시 자동으로 금액 입력창으로 포커스 이동
+document.querySelectorAll('select[id$="-type"]').forEach(select => {
+  select.addEventListener('change', function() {
+    if (this.value !== 'custom') {
+      this.nextElementSibling.nextElementSibling.focus();
+    }
+  });
+});
 
   function addDeduction(type) {
     const prefix = type === 'preTax' ? 'pre-tax' : 'post-tax';
