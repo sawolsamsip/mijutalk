@@ -299,41 +299,49 @@
       border: 0;
     }
 
-    /* Chart specific styles */
-    .chart-container {
-        margin-top: 25px;
-        padding: 15px 10px;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    .chart-container h3 {
-        text-align: center;
-        color: var(--text-color);
-        margin-bottom: 10px;
-        border-bottom: 1px solid #eee;
-        padding-bottom: 10px;
-    }
-    .charts-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 20px;
-    }
+/* Chart specific styles */
+.chart-container {
+    margin-top: 25px;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+.chart-container h3 {
+    text-align: center;
+    color: var(--text-color);
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+.charts-grid {
+    display: grid;
+    /* 작은 화면에서는 1열, 큰 화면에서는 2열로 자동 조절 */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    align-items: start; /* 각 그리드 아이템의 상단을 정렬 */
+}
 
-  .charts-grid > div {
-      position: relative;
-      height: 280px; /* 차트 높이 줄임 (기존 350px에서 조정) */
-      min-height: 280px; /* 최소 높이 설정 */
-      overflow: hidden; /* 내용이 넘치지 않도록 */
-  }
+/* --- 차트 높이, 크기 및 정렬 개선 코드 시작 --- */
+.charts-grid > div {
+    position: relative;
+    height: 400px; /* 각 차트 컨테이너의 고정 높이 증가 (필요에 따라 조절) */
+    display: flex;
+    flex-direction: column; /* 제목과 캔버스를 수직으로 정렬 */
+    justify-content: flex-start; /* 내용을 상단에 배치 */
+    align-items: center; /* 캔버스와 제목을 중앙 정렬 */
+    padding-bottom: 20px; /* 범례가 캔버스 아래로 내려올 공간 확보 */
+}
 
-  .charts-grid canvas {
-      max-width: 100% !important;
-      max-height: 100% !important;
-      width: auto !important;
-      height: auto !important;
-      object-fit: contain; /* 비율 유지하면서 컨테이너에 맞춤 */
-  }
+.charts-grid canvas {
+    max-width: 100%; /* 부모 너비에 맞춤 */
+    max-height: calc(100% - 60px); /* 부모 높이에서 제목 등 제외한 공간 (350px - 50px = 300px) */
+    width: 100% !important;
+    height: auto !important; /* 높이는 자동으로 조절되도록 */
+    aspect-ratio: 1 / 1; /* 차트의 가로세로 비율을 1:1로 고정하여 원형 유지 및 크기 균일화 */
+    box-sizing: border-box; /* 패딩, 보더가 너비/높이에 포함되도록 */
+    margin-top: 10px; /* 제목 아래 여백 */
+}
 
     @media (max-width: 600px) {
       .flex {
@@ -377,14 +385,13 @@
         width: auto;
         flex-shrink: 0;
       }
-      .charts-grid {
-          grid-template-columns: 1fr; /* Single column on small screens */
-      }
-      /* 작은 화면에서도 차트 높이 유지 */
-      .charts-grid > div {
-          height: 250px; /* 모바일에서 더 작게 */
-          min-height: 250px;
-      }
+ .charts-grid {
+        grid-template-columns: 1fr; /* Single column on small screens */
+    }
+    /* 작은 화면에서도 차트 높이 유지 */
+    .charts-grid > div {
+        height: 350px; /* 모바일 등 작은 화면에서 차트 컨테이너 높이 조정 */
+    }
     }
     @media print {
       body {
@@ -406,11 +413,12 @@
       .expense-item-actions {
         display: none;
       }
-      canvas { /* Ensure charts are visible in print */
-        max-width: 100%;
-        height: auto !important;
-        display: block;
-      }
+    canvas { /* Ensure charts are visible in print */
+      max-width: 100%;
+      height: auto !important;
+      display: block;
+      aspect-ratio: 1 / 1; /* 인쇄 시에도 비율 유지 */
+    }
     }
   </style>
 </head>
