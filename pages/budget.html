@@ -4,12 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>예산 관리 시스템 (USD)</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
       --primary: #3498db;
       --danger: #e74c3c;
       --success: #2ecc71;
       --warning: #f39c12;
+      --text-color: #2c3e50;
+      --light-gray: #f9f9f9;
+      --medium-gray: #7f8c8d;
     }
     body {
       font-family: 'Malgun Gothic', sans-serif;
@@ -17,10 +21,11 @@
       max-width: 900px;
       margin: 0 auto;
       padding: 20px;
-      background-color: #f9f9f9;
+      background-color: var(--light-gray);
+      color: var(--text-color);
     }
     h1, h2 {
-      color: #2c3e50;
+      color: var(--text-color);
       border-bottom: 2px solid var(--primary);
       padding-bottom: 10px;
     }
@@ -39,10 +44,9 @@
       border: 1px solid #ddd;
       border-radius: 4px;
     }
-    /* Specific fix for labels within flex containers */
-    .card label:not(.sr-only) { /* Apply to visible labels, not screen-reader-only ones */
-      display: block; /* Ensure they take full width */
-      margin-bottom: 5px; /* Add some spacing below label */
+    .card label:not(.sr-only) {
+      display: block;
+      margin-bottom: 5px;
       font-weight: bold;
       color: #555;
     }
@@ -75,7 +79,7 @@
       background: var(--success);
     }
     .cancel-edit-btn {
-      background: #7f8c8d;
+      background: var(--medium-gray);
       padding: 8px 12px;
       width: auto;
       margin-right: 5px;
@@ -83,15 +87,13 @@
     .flex {
       display: flex;
       gap: 10px;
-      align-items: flex-end; /* Align items to the bottom */
+      align-items: flex-end;
     }
-    /* Make flex items within .flex fill space */
     .flex > div {
-      flex: 1; /* Distribute space equally */
+      flex: 1;
     }
-    /* Ensure inputs within flex items take full width of their flex parent */
     .flex input, .flex select {
-        margin: 0; /* Remove vertical margin within flex item */
+        margin: 0;
     }
 
     .item-list {
@@ -152,21 +154,22 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
     .flow-item.highlighted {
-      border-left: 4px solid #e74c3c;
+      border-left: 4px solid var(--danger);
     }
     .flow-item.result {
-      border-left: 4px solid #2ecc71;
+      border-left: 4px solid var(--success);
       font-weight: bold;
     }
     .flow-arrow {
       text-align: center;
-      color: #7f8c8d;
+      color: var(--medium-gray);
       margin: 2px 0;
     }
     .summary-cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 15px;
+      margin-top: 20px;
     }
     .summary-card {
       background: white;
@@ -180,7 +183,7 @@
     }
     .card-label {
       font-size: 1em;
-      color: #7f8c8d;
+      color: var(--medium-gray);
       margin-bottom: 5px;
     }
     .card-amount {
@@ -200,9 +203,13 @@
     }
     .card-percentage {
       font-size: 0.8em;
-      color: #7f8c8d;
+      color: var(--medium-gray);
       margin-top: 5px;
-      font-weight: bold; /* Make percentages stand out */
+      font-weight: bold;
+    }
+    .card-percentage .highlighted-percentage {
+      color: var(--primary); /* Highlight color for percentages */
+      font-weight: bold;
     }
     .utility-buttons {
       display: flex;
@@ -219,28 +226,27 @@
       background: #9b59b6;
     }
     .category-input-container {
-      display: none; /* Controlled by JS */
+      display: none;
       margin-top: 8px;
     }
-    /* Specific styling for custom input containers to prevent wrapping */
     #tax-custom-container .flex,
     #pre-tax-custom-container .flex,
     #post-tax-custom-container .flex,
     #category-input-container.flex {
-        align-items: center; /* Align items centrally for single line display */
+        align-items: center;
     }
     #tax-custom-container input,
     #pre-tax-custom-container input,
     #post-tax-custom-container input,
     #category-input-container input {
-        margin-right: 10px; /* Space between input and button */
+        margin-right: 10px;
     }
     #tax-custom-container button,
     #pre-tax-custom-container button,
     #post-tax-custom-container button,
     #category-input-container button {
-        flex-shrink: 0; /* Prevent button from shrinking */
-        width: auto; /* Allow button to take natural width */
+        flex-shrink: 0;
+        width: auto;
     }
 
     .total-summary {
@@ -256,7 +262,7 @@
       margin: 5px 0;
     }
     .total-summary .summary-label {
-      color: #7f8c8d;
+      color: var(--medium-gray);
     }
     .total-summary .summary-value {
       font-weight: bold;
@@ -265,17 +271,19 @@
       color: var(--primary);
       font-size: 0.8em;
       margin-left: 5px;
+      font-weight: bold;
     }
     .flow-amount .percentage {
-      color: #7f8c8d;
+      color: var(--primary); /* Highlighted percentage */
       font-size: 0.8em;
       font-style: normal;
       margin-left: 3px;
+      font-weight: bold;
     }
     .flow-item.result .percentage {
-      color: var(--success);
+      color: var(--success); /* Green for positive results */
     }
-    .sr-only { /* For screen readers only */
+    .sr-only {
       position: absolute;
       width: 1px;
       height: 1px;
@@ -283,15 +291,36 @@
       margin: -1px;
       overflow: hidden;
       clip: rect(0,0,0,0);
-      white-space: nowrap; /* added for better compatibility */
+      white-space: nowrap;
       border: 0;
     }
+
+    /* Chart specific styles */
+    .chart-container {
+        margin-top: 25px;
+        padding: 15px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .chart-container h3 {
+        text-align: center;
+        color: var(--text-color);
+        margin-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+    .charts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
     @media (max-width: 600px) {
       .flex {
         flex-direction: column;
-        align-items: stretch; /* Stretch items in column layout */
+        align-items: stretch;
       }
-      /* Remove specific flex overrides for small screens */
       .flex > div {
         flex: auto;
       }
@@ -307,28 +336,30 @@
         width: 100%;
         justify-content: flex-end;
       }
-      /* Adjust custom input containers for small screens */
       #tax-custom-container .flex,
       #pre-tax-custom-container .flex,
       #post-tax-custom-container .flex,
       #category-input-container.flex {
-        flex-direction: row; /* Keep them in a row for these specific cases */
-        flex-wrap: wrap; /* Allow wrapping if truly necessary, but try to keep them inline */
+        flex-direction: row;
+        flex-wrap: wrap;
         align-items: center;
       }
       #tax-custom-container input,
       #pre-tax-custom-container input,
       #post-tax-custom-container input,
       #category-input-container input {
-        flex: 1; /* Allow input to grow */
-        min-width: 120px; /* Ensure minimum width */
+        flex: 1;
+        min-width: 120px;
       }
       #tax-custom-container button,
       #pre-tax-custom-container button,
       #post-tax-custom-container button,
       #category-input-container button {
-        width: auto; /* Buttons take natural width */
-        flex-shrink: 0; /* Prevent buttons from shrinking too much */
+        width: auto;
+        flex-shrink: 0;
+      }
+      .charts-grid {
+          grid-template-columns: 1fr; /* Single column on small screens */
       }
     }
     @media print {
@@ -336,7 +367,7 @@
         padding: 0;
         background: white;
       }
-      .card {
+      .card, .chart-container {
         box-shadow: none;
         border: 1px solid #ddd;
         page-break-inside: avoid;
@@ -350,6 +381,11 @@
       }
       .expense-item-actions {
         display: none;
+      }
+      canvas { /* Ensure charts are visible in print */
+        max-width: 100%;
+        height: auto !important;
+        display: block;
       }
     }
   </style>
@@ -461,54 +497,62 @@
     <h2>📊 월별 재무 현황</h2>
     <div class="income-flow">
       <div class="flow-item">
-        <span class="flow-label">세전 월급</span>
-        <span class="flow-amount">$<span id="gross-income">0.00</span> <em class="percentage">(100.0%)</em></span>
+        <span class="flow-label">세전 월급 (총 수입)</span>
+        <span class="flow-amount">$<span id="gross-income">0.00</span> <em class="percentage highlighted-percentage">(100.0%)</em></span>
       </div>
       <div class="flow-arrow">↓</div>
       <div class="flow-item highlighted">
         <span class="flow-label">세전 공제</span>
-        <span class="flow-amount">-$<span id="pre-tax-deductions">0.00</span> <em class="percentage"></em></span>
+        <span class="flow-amount">-$<span id="pre-tax-deductions">0.00</span> <em class="percentage highlighted-percentage"></em></span>
       </div>
       <div class="flow-arrow">↓</div>
       <div class="flow-item">
-        <span class="flow-label">과세 소득</span>
-        <span class="flow-amount">$<span id="taxable-income">0.00</span> <em class="percentage"></em></span>
+        <span class="flow-label">**과세 소득**</span>
+        <span class="flow-amount">$<span id="taxable-income">0.00</span> <em class="percentage highlighted-percentage"></em></span>
       </div>
       <div class="flow-arrow">↓</div>
       <div class="flow-item highlighted">
         <span class="flow-label">세금</span>
-        <span class="flow-amount">-$<span id="tax-total">0.00</span> <em class="percentage"></em></span>
+        <span class="flow-amount">-$<span id="tax-total">0.00</span> <em class="percentage highlighted-percentage"></em></span>
       </div>
       <div class="flow-arrow">↓</div>
       <div class="flow-item highlighted">
         <span class="flow-label">세후 공제</span>
-        <span class="flow-amount">-$<span id="post-tax-deductions">0.00</span> <em class="percentage"></em></span>
+        <span class="flow-amount">-$<span id="post-tax-deductions">0.00</span> <em class="percentage highlighted-percentage"></em></span>
       </div>
       <div class="flow-arrow">↓</div>
       <div class="flow-item result">
-        <span class="flow-label">순수입</span>
-        <span class="flow-amount">$<span id="net-income">0.00</span> <em class="percentage"></em></span>
+        <span class="flow-label">**순수입 (실수령액)**</span>
+        <span class="flow-amount">$<span id="net-income">0.00</span> <em class="percentage highlighted-percentage"></em></span>
       </div>
     </div>
 
     <div class="summary-cards">
       <div class="summary-card">
-        <div class="card-label">순수입</div>
-        <div class="card-amount positive">$<span id="net-income-card">0.00</span></div>
-        <div class="card-sub">(과세 소득 - 세금 - 세후 공제)</div>
-        <div class="card-percentage" id="net-income-percentage"></div>
-      </div>
-      <div class="summary-card">
         <div class="card-label">총 지출</div>
         <div class="card-amount negative">$<span id="expenses-total-card">0.00</span></div>
-        <div class="card-sub">(모든 카테고리 합계)</div>
-        <div class="card-percentage" id="expenses-percentage"></div>
+        <div class="card-sub">(순수입에서 사용된 금액)</div>
+        <div class="card-percentage">총 수입의 <span id="expenses-percentage-card" class="highlighted-percentage">0.0%</span></div>
       </div>
       <div class="summary-card accent">
         <div class="card-label">남은 잔액</div>
         <div class="card-amount">$<span id="remaining-balance">0.00</span></div>
-        <div class="card-sub">(순수입 - 총 지출)</div>
-        <div class="card-percentage" id="remaining-percentage"></div>
+        <div class="card-sub">(순수입 - 총 지출 = 저축/투자)</div>
+        <div class="card-percentage">총 수입의 <span id="remaining-percentage-card" class="highlighted-percentage">0.0%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card chart-container">
+    <h2>📈 재무 분석 차트</h2>
+    <div class="charts-grid">
+      <div>
+        <h3>자금 흐름 배분 (총 수입 대비)</h3>
+        <canvas id="incomeFlowChart"></canvas>
+      </div>
+      <div>
+        <h3>지출 카테고리별 비중 (총 지출 대비)</h3>
+        <canvas id="expenseCategoryChart"></canvas>
       </div>
     </div>
   </div>
@@ -569,6 +613,10 @@
       ]
     };
 
+    // Chart instances
+    let incomeFlowChart;
+    let expenseCategoryChart;
+
     // Helper to generate unique IDs
     function generateUniqueId() {
       return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
@@ -594,11 +642,8 @@
         type: 'postTax'
       }));
 
-      // Set income to 0 when initializing defaults
       budgetData.income = 0;
-      // Clear expenses
       budgetData.expenses = [];
-      // Reset categories to default if it's a full reset, otherwise merge
       budgetData.categories = [
         { id: 'housing', name: '🏠 주거' },
         { id: 'food', name: '🍔 식비' },
@@ -627,6 +672,16 @@
         return ((value / totalIncome) * 100).toFixed(1) + '%';
     }
 
+    // Function to generate distinct colors for charts
+    function generateColors(num) {
+        const colors = [
+            '#42A5F5', '#66BB6A', '#FFCA28', '#EF5350', '#AB47BC', '#78909C', '#26A69A', '#FF7043',
+            '#7E57C2', '#BDBDBD', '#FFEE58', '#8D6E63', '#9CCC65', '#29B6F6', '#FFAB91', '#AFB42B'
+        ];
+        // Cycle through or pick distinct colors if more are needed
+        return Array.from({ length: num }, (_, i) => colors[i % colors.length]);
+    }
+
     function updateUI() {
       // Save data immediately
       localStorage.setItem('budgetData', JSON.stringify(budgetData));
@@ -646,36 +701,33 @@
 
       // Update flow section
       document.getElementById('gross-income').textContent = formatMoney(grossIncome);
-      // Percentage for gross income is always 100% (already in HTML)
 
       document.getElementById('pre-tax-deductions').innerHTML =
-        `-${formatMoney(preTaxTotal)} <em class="percentage">(${calculatePercentage(preTaxTotal, grossIncome)})</em>`;
+        `-${formatMoney(preTaxTotal)} <em class="percentage highlighted-percentage">(${calculatePercentage(preTaxTotal, grossIncome)})</em>`;
 
       document.getElementById('taxable-income').innerHTML =
-        `${formatMoney(taxableIncome)} <em class="percentage">(${calculatePercentage(taxableIncome, grossIncome)})</em>`;
+        `${formatMoney(taxableIncome)} <em class="percentage highlighted-percentage">(${calculatePercentage(taxableIncome, grossIncome)})</em>`;
 
       document.getElementById('tax-total').innerHTML =
-        `-${formatMoney(taxTotal)} <em class="percentage">(${calculatePercentage(taxTotal, grossIncome)})</em>`;
+        `-${formatMoney(taxTotal)} <em class="percentage highlighted-percentage">(${calculatePercentage(taxTotal, grossIncome)})</em>`;
 
       document.getElementById('post-tax-deductions').innerHTML =
-        `-${formatMoney(postTaxTotal)} <em class="percentage">(${calculatePercentage(postTaxTotal, grossIncome)})</em>`;
+        `-${formatMoney(postTaxTotal)} <em class="percentage highlighted-percentage">(${calculatePercentage(postTaxTotal, grossIncome)})</em>`;
 
       document.getElementById('net-income').innerHTML =
-        `${formatMoney(netIncome)} <em class="percentage">(${calculatePercentage(netIncome, grossIncome)})</em>`;
-
+        `${formatMoney(netIncome)} <em class="percentage highlighted-percentage">(${calculatePercentage(netIncome, grossIncome)})</em>`;
 
       // Update summary cards
-      document.getElementById('net-income-card').textContent = formatMoney(netIncome);
       document.getElementById('expenses-total-card').textContent = formatMoney(expensesTotal);
+      document.getElementById('remaining-balance').textContent = formatMoney(remaining);
 
       const remainingElement = document.getElementById('remaining-balance');
       remainingElement.textContent = formatMoney(remaining);
       remainingElement.className = remaining >= 0 ? 'card-amount positive' : 'card-amount negative';
 
       // Update percentages on summary cards
-      document.getElementById('net-income-percentage').textContent = `월급 대비 ${calculatePercentage(netIncome, grossIncome)}`;
-      document.getElementById('expenses-percentage').textContent = `월급 대비 ${calculatePercentage(expensesTotal, grossIncome)}`;
-      document.getElementById('remaining-percentage').textContent = `월급 대비 ${calculatePercentage(remaining, grossIncome)}`;
+      document.getElementById('expenses-percentage-card').textContent = calculatePercentage(expensesTotal, grossIncome);
+      document.getElementById('remaining-percentage-card').textContent = calculatePercentage(remaining, grossIncome);
 
       // Render lists
       renderList('tax-list', budgetData.taxes, grossIncome);
@@ -683,9 +735,12 @@
       renderList('post-tax-list', budgetData.postTax, grossIncome);
       renderExpenses(grossIncome);
       populateCategorySelect();
+      
+      // Update Charts
+      updateCharts(grossIncome, preTaxTotal, taxTotal, postTaxTotal, expensesTotal, remaining);
     }
 
-    let editingItem = null; // To store the item being edited
+    let editingItem = null;
 
     function renderList(elementId, items, totalIncome) {
       const container = document.getElementById(elementId);
@@ -780,8 +835,8 @@
 
     function populateCategorySelect() {
       const select = document.getElementById('category');
-      const currentSelected = select.value; // Keep track of current selection
-      select.innerHTML = ''; // Clear existing options
+      const currentSelected = select.value;
+      select.innerHTML = '';
 
       budgetData.categories.forEach(cat => {
         const option = document.createElement('option');
@@ -790,13 +845,11 @@
         select.appendChild(option);
       });
 
-      // Add the "custom" option last
       const customOption = document.createElement('option');
       customOption.value = 'custom';
       customOption.textContent = '✏️ 직접 입력';
       select.appendChild(customOption);
 
-      // Restore previous selection if still valid, otherwise select default or first
       if (budgetData.categories.some(cat => cat.id === currentSelected) || currentSelected === 'custom') {
         select.value = currentSelected;
       } else {
@@ -813,13 +866,11 @@
     }
 
     function editItem(type, id) {
-      // Cancel any existing edit
       cancelEdit();
-
       const item = budgetData[type].find(item => item.id === id);
       if (item) {
-        editingItem = { ...item, type: type }; // Store a copy and its type
-        updateUI(); // Re-render to show edit inputs
+        editingItem = { ...item, type: type };
+        updateUI();
       }
     }
 
@@ -842,20 +893,19 @@
       budgetData[type][itemIndex].name = newName;
       budgetData[type][itemIndex].amount = newAmount;
 
-      // Handle category change for expenses
       if (type === 'expenses') {
         const newCategory = document.getElementById(`edit-category-${id}`).value;
         budgetData[type][itemIndex].category = newCategory;
       }
 
-      editingItem = null; // Clear editing state
+      editingItem = null;
       updateUI();
     }
 
     function cancelEdit() {
       if (editingItem) {
         editingItem = null;
-        updateUI(); // Re-render to revert to display mode
+        updateUI();
       }
     }
 
@@ -884,10 +934,8 @@
       let item = budgetData[type].find(item => item.name === name);
 
       if (item) {
-        // Update existing item
         item.amount = amount;
       } else {
-        // Add new item
         budgetData[type].push({
           id: generateUniqueId(),
           type: type,
@@ -897,10 +945,9 @@
       }
 
       updateUI();
-      // Reset form fields
       inputAmountElement.value = '0';
       customNameElement.value = '';
-      selectElement.value = ''; // Reset select to placeholder
+      selectElement.value = '';
       document.getElementById(`${prefix}-custom-container`).style.display = 'none';
     }
 
@@ -935,34 +982,199 @@
       }
 
       const emoji = prompt('이모지를 입력해주세요 (예: 🎮)', '📌');
-      const id = newCategoryName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''); // Basic sanitization
+      const id = newCategoryName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 
-      // Check for duplicate ID to prevent issues
       if (budgetData.categories.some(cat => cat.id === id)) {
         alert('이미 같은 이름의 카테고리가 존재합니다. 다른 이름을 사용해주세요.');
         return;
       }
 
-      // Add new category
       budgetData.categories.push({
         id: id,
         name: `${emoji || '📌'} ${newCategoryName}`
       });
 
-      populateCategorySelect(); // Re-populate the select element
-      document.getElementById('category').value = id; // Select the newly added category
+      populateCategorySelect();
+      document.getElementById('category').value = id;
 
-      // Reset input field and hide container
       document.getElementById('new-category').value = '';
       document.getElementById('category-input-container').style.display = 'none';
 
-      updateUI(); // Update UI to reflect category changes
+      updateUI();
+    }
+
+    // Chart Functions
+    function updateCharts(grossIncome, preTaxTotal, taxTotal, postTaxTotal, expensesTotal, remaining) {
+        // --- 1. Income Flow Chart (총 수입 대비 배분) ---
+        const incomeFlowLabels = ['세전 공제', '세금', '세후 공제', '총 지출', '남은 잔액'];
+        const incomeFlowData = [
+            preTaxTotal,
+            taxTotal,
+            postTaxTotal,
+            expensesTotal,
+            remaining
+        ];
+
+        // Ensure all values are non-negative for chart display
+        const cleanedIncomeFlowData = incomeFlowData.map(val => Math.max(0, val));
+        
+        // Filter out zero values for better chart representation if grossIncome is zero
+        let finalIncomeFlowLabels = [];
+        let finalIncomeFlowData = [];
+        let finalIncomeFlowColors = [];
+        const baseColors = generateColors(incomeFlowLabels.length);
+
+        if (grossIncome > 0) {
+            cleanedIncomeFlowData.forEach((value, index) => {
+                if (value > 0) {
+                    finalIncomeFlowLabels.push(incomeFlowLabels[index]);
+                    finalIncomeFlowData.push(value);
+                    finalIncomeFlowColors.push(baseColors[index]);
+                }
+            });
+            // If remaining is negative, adjust it to 0 for chart and re-allocate from expenses or another category
+            if (remaining < 0) {
+                 const negativeRemainingIndex = incomeFlowLabels.indexOf('남은 잔액');
+                 if (negativeRemainingIndex !== -1) {
+                     // Try to absorb negative remaining into total expenses for chart visual
+                     const expensesIndex = incomeFlowLabels.indexOf('총 지출');
+                     if (expensesIndex !== -1 && finalIncomeFlowData[expensesIndex] !== undefined) {
+                         finalIncomeFlowData[expensesIndex] += remaining; // Subtract negative remaining
+                         if (finalIncomeFlowData[expensesIndex] < 0) finalIncomeFlowData[expensesIndex] = 0; // Prevent negative expenses
+                     }
+                     // Remove '남은 잔액' if it was negative
+                     finalIncomeFlowData.splice(finalIncomeFlowLabels.indexOf('남은 잔액'), 1);
+                     finalIncomeFlowLabels.splice(finalIncomeFlowLabels.indexOf('남은 잔액'), 1);
+                     finalIncomeFlowColors.splice(finalIncomeFlowLabels.indexOf('남은 잔액'), 1);
+                 }
+            }
+            if (finalIncomeFlowData.reduce((sum, val) => sum + val, 0) === 0) {
+                 // If all filtered values sum to zero, add a placeholder for 'Gross Income'
+                 finalIncomeFlowLabels = ['총 수입'];
+                 finalIncomeFlowData = [grossIncome];
+                 finalIncomeFlowColors = ['#A8DADC']; // A light color
+            }
+        } else {
+            // If gross income is 0, show a single slice for 100% income.
+            finalIncomeFlowLabels = ['수입 없음'];
+            finalIncomeFlowData = [1]; // Represent 100% as 1 unit
+            finalIncomeFlowColors = ['#DCDCDC']; // Gray for no income
+        }
+
+
+        const incomeFlowCtx = document.getElementById('incomeFlowChart').getContext('2d');
+        if (incomeFlowChart) {
+            incomeFlowChart.data.labels = finalIncomeFlowLabels;
+            incomeFlowChart.data.datasets[0].data = finalIncomeFlowData;
+            incomeFlowChart.data.datasets[0].backgroundColor = finalIncomeFlowColors;
+            incomeFlowChart.update();
+        } else {
+            incomeFlowChart = new Chart(incomeFlowCtx, {
+                type: 'pie',
+                data: {
+                    labels: finalIncomeFlowLabels,
+                    datasets: [{
+                        data: finalIncomeFlowData,
+                        backgroundColor: finalIncomeFlowColors,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    const value = context.parsed;
+                                    const sum = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = (value / sum * 100).toFixed(1);
+                                    return `${label}$${formatMoney(value)} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- 2. Expense Category Chart (총 지출 대비 비중) ---
+        const expenseCategoryMap = new Map();
+        budgetData.expenses.forEach(expense => {
+            const categoryName = budgetData.categories.find(cat => cat.id === expense.category)?.name || '기타';
+            expenseCategoryMap.set(categoryName, (expenseCategoryMap.get(categoryName) || 0) + expense.amount);
+        });
+
+        const expenseCategoryLabels = Array.from(expenseCategoryMap.keys());
+        const expenseCategoryData = Array.from(expenseCategoryMap.values());
+        const expenseCategoryColors = generateColors(expenseCategoryLabels.length);
+
+        const expenseCategoryCtx = document.getElementById('expenseCategoryChart').getContext('2d');
+        if (expenseCategoryChart) {
+            expenseCategoryChart.data.labels = expenseCategoryLabels;
+            expenseCategoryChart.data.datasets[0].data = expenseCategoryData;
+            expenseCategoryChart.data.datasets[0].backgroundColor = expenseCategoryColors;
+            expenseCategoryChart.update();
+        } else {
+            expenseCategoryChart = new Chart(expenseCategoryCtx, {
+                type: 'pie',
+                data: {
+                    labels: expenseCategoryLabels,
+                    datasets: [{
+                        data: expenseCategoryData,
+                        backgroundColor: expenseCategoryColors,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    const value = context.parsed;
+                                    const sum = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    // Handle sum of 0 to prevent NaN for percentage
+                                    const percentage = sum === 0 ? '0.0' : (value / sum * 100).toFixed(1);
+                                    return `${label}$${formatMoney(value)} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
     }
 
     // 6. 유틸리티 함수들
     function saveData() {
       try {
-        updateUI(); // Ensure data is most current before saving
+        updateUI();
 
         const dataStr = JSON.stringify(budgetData, null, 2);
         const blob = new Blob([dataStr], { type: 'application/json;charset=utf-8' });
@@ -970,7 +1182,7 @@
 
         const a = document.createElement('a');
         a.href = url;
-        a.download = `budget_data_${new Date().toISOString().slice(0, 10)}.json`; //YYYY-MM-DD
+        a.download = `budget_data_${new Date().toISOString().slice(0, 10)}.json`;
         document.body.appendChild(a);
         a.click();
 
@@ -998,7 +1210,6 @@
           const fileContent = await readFileAsText(file);
           const loadedData = JSON.parse(fileContent);
 
-          // Basic validation for loaded data structure
           if (!loadedData ||
               !Array.isArray(loadedData.taxes) ||
               !Array.isArray(loadedData.preTax) ||
@@ -1007,25 +1218,38 @@
             throw new Error('잘못된 데이터 형식입니다. 파일이 손상되었거나 올바른 형식의 파일이 아닙니다.');
           }
 
-          // Assign loaded data, keeping current income value or defaulting to 0
           Object.assign(budgetData, {
-            income: loadedData.income !== undefined ? loadedData.income : 0, // Preserve 0 explicitly
+            income: loadedData.income !== undefined ? loadedData.income : 0,
             taxes: loadedData.taxes,
             preTax: loadedData.preTax,
             postTax: loadedData.postTax,
             expenses: loadedData.expenses
           });
 
-          // Merge categories - add new ones, but don't remove existing custom ones if not in loaded data
           if (Array.isArray(loadedData.categories)) {
             const currentCategoryIds = new Set(budgetData.categories.map(c => c.id));
-
             loadedData.categories.forEach(newCat => {
               if (!currentCategoryIds.has(newCat.id)) {
                 budgetData.categories.push(newCat);
               }
             });
           }
+
+          DEFAULT_DEDUCTIONS.taxes.forEach(defaultItem => {
+            if (!budgetData.taxes.some(item => item.name === defaultItem.name)) {
+                budgetData.taxes.push({ ...defaultItem, id: generateUniqueId(), type: 'taxes' });
+            }
+          });
+          DEFAULT_DEDUCTIONS.preTax.forEach(defaultItem => {
+            if (!budgetData.preTax.some(item => item.name === defaultItem.name)) {
+                budgetData.preTax.push({ ...defaultItem, id: generateUniqueId(), type: 'preTax' });
+            }
+          });
+          DEFAULT_DEDUCTIONS.postTax.forEach(defaultItem => {
+            if (!budgetData.postTax.some(item => item.name === defaultItem.name)) {
+                budgetData.postTax.push({ ...defaultItem, id: generateUniqueId(), type: 'postTax' });
+            }
+          });
 
           updateUI();
           alert('데이터가 성공적으로 불러와졌습니다!');
@@ -1050,7 +1274,7 @@
     function resetData() {
       if (confirm('정말로 모든 데이터를 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
         localStorage.removeItem('budgetData');
-        initDefaultData(); // Re-initialize with default structure
+        initDefaultData();
         updateUI();
         alert('모든 데이터가 초기화되었습니다.');
       }
@@ -1058,19 +1282,17 @@
 
     // 7. 초기화 및 이벤트 리스너 설정
     document.addEventListener('DOMContentLoaded', function() {
-      // Load data from localStorage or initialize defaults
       if (!localStorage.getItem('budgetData')) {
         initDefaultData();
       } else {
         const savedData = JSON.parse(localStorage.getItem('budgetData'));
-        // Deep merge to ensure all properties exist if older data loaded
         Object.assign(budgetData, {
           income: savedData.income || 0,
           taxes: savedData.taxes || [],
           preTax: savedData.preTax || [],
           postTax: savedData.postTax || [],
           expenses: savedData.expenses || [],
-          categories: savedData.categories || [ // Ensure categories are loaded or default
+          categories: savedData.categories || [
             { id: 'housing', name: '🏠 주거' }, { id: 'food', name: '🍔 식비' },
             { id: 'transportation', name: '🚗 교통' }, { id: 'health', name: '🏥 건강' },
             { id: 'family', name: '👪 가족' }, { id: 'shopping', name: '🛍️ 쇼핑' },
@@ -1078,7 +1300,6 @@
             { id: 'saving', name: '💰 저축' }, { id: 'business', name: '💼 업무' }
           ]
         });
-        // Ensure default deduction items are present if missing from loaded data
         DEFAULT_DEDUCTIONS.taxes.forEach(defaultItem => {
             if (!budgetData.taxes.some(item => item.name === defaultItem.name)) {
                 budgetData.taxes.push({ ...defaultItem, id: generateUniqueId(), type: 'taxes' });
@@ -1096,10 +1317,8 @@
         });
       }
 
-      // Populate initial category select options
       populateCategorySelect();
 
-      // Event Listeners for custom input fields
       document.querySelectorAll('select[id$="-type"]').forEach(select => {
         select.addEventListener('change', function() {
           const type = this.id.replace('-type', '');
@@ -1108,11 +1327,10 @@
           const amountInput = document.getElementById(`${type}-amount`);
 
           if (this.value === 'custom') {
-            container.style.display = 'flex'; /* Use flex to control layout */
+            container.style.display = 'flex';
             customNameInput.focus();
           } else {
             container.style.display = 'none';
-            // If user switches back to a predefined type, try to find existing amount
             const existingItem = budgetData[type].find(item => item.name === this.value);
             amountInput.value = existingItem ? existingItem.amount : '0';
             amountInput.focus();
@@ -1120,24 +1338,21 @@
         });
       });
 
-      // Event Listener for expense category custom input
       document.getElementById('category').addEventListener('change', function() {
         const container = document.getElementById('category-input-container');
         if (this.value === 'custom') {
-          container.style.display = 'flex'; /* Use flex to control layout */
+          container.style.display = 'flex';
           document.getElementById('new-category').focus();
         } else {
           container.style.display = 'none';
         }
       });
 
-      // Input event listeners for immediate UI updates
       document.getElementById('income').addEventListener('input', function() {
         budgetData.income = parseFloat(this.value) || 0;
         updateUI();
       });
 
-      // Keypress 'Enter' to apply
       document.getElementById('tax-amount').addEventListener('keypress', function(e) { if (e.key === 'Enter') updateCategorizedItem('taxes'); });
       document.getElementById('pre-tax-amount').addEventListener('keypress', function(e) { if (e.key === 'Enter') updateCategorizedItem('preTax'); });
       document.getElementById('post-tax-amount').addEventListener('keypress', function(e) { if (e.key === 'Enter') updateCategorizedItem('postTax'); });
@@ -1147,8 +1362,6 @@
       document.getElementById('post-tax-custom-name').addEventListener('keypress', function(e) { if (e.key === 'Enter') updateCategorizedItem('postTax'); });
       document.getElementById('new-category').addEventListener('keypress', function(e) { if (e.key === 'Enter') addCategory(); });
 
-
-      // Initial UI update
       updateUI();
     });
   </script>
