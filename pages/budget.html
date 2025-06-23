@@ -248,18 +248,18 @@
       remainingElement.className = remaining >= 0 ? 'positive' : 'negative';
 
       // 목록 렌더링
-      renderList('tax-list', budgetData.taxes);
-      renderList('pre-tax-list', budgetData.preTax);
-      renderList('post-tax-list', budgetData.postTax);
+      renderList('tax-list', budgetData.taxes, 'taxes');
+      renderList('pre-tax-list', budgetData.preTax, 'preTax');
+      renderList('post-tax-list', budgetData.postTax, 'postTax');
       renderExpenses();
     }
 
-    function renderList(elementId, items) {
+    function renderList(elementId, items, type) {
       const container = document.getElementById(elementId);
       container.innerHTML = items.map(item => `
         <div class="expense-item">
           <span>${item.name}: $${formatMoney(item.amount)}</span>
-          <button onclick="deleteItem('${item.type}', ${item.id})" class="delete-btn">삭제</button>
+          <button onclick="deleteItem('${type}', ${item.id})" class="delete-btn">삭제</button>
         </div>
       `).join('');
     }
