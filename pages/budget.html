@@ -623,8 +623,8 @@
     };
 
     // Chart instances
-    let incomeFlowChart;
-    let expenseCategoryChart;
+    let incomeFlowChartInstance = null;
+    let expenseCategoryChartInstance = null;
 
     // Helper to generate unique IDs
     function generateUniqueId() {
@@ -1027,10 +1027,9 @@
 
         if (grossIncome <= 0) {
             incomeFlowLabels = ['수입 없음'];
-            incomeFlowData = [1];
+            incomeFlowData = [1]; // Use a dummy value to make the pie chart visible
             incomeFlowColors = ['#DCDCDC'];
         } else {
-            // Collect all positive values for the chart
             if (preTaxTotal > 0) {
                 incomeFlowLabels.push('세전 공제');
                 incomeFlowData.push(preTaxTotal);
@@ -1046,15 +1045,15 @@
                 incomeFlowData.push(postTaxTotal);
                 incomeFlowColors.push(baseColors[2]);
             }
-            // For remaining/expenses, adjust for negative remaining for visualization
+            
             let effectiveExpenses = expensesTotal;
             let effectiveRemaining = remaining;
 
+            // If remaining is negative, treat it as part of "total expenses"
+            // for chart visualization. Pie charts don't handle negative values well.
             if (remaining < 0) {
-                // If remaining is negative (overspent), add the absolute value to expenses for chart.
-                // This assumes overspending increases the 'expenses' slice.
                 effectiveExpenses += Math.abs(remaining);
-                effectiveRemaining = 0; // Remaining is visually zero or included in expenses
+                effectiveRemaining = 0; // Set remaining to 0 for the chart
             }
 
             if (effectiveExpenses > 0) {
@@ -1062,67 +1061,63 @@
                 incomeFlowData.push(effectiveExpenses);
                 incomeFlowColors.push(baseColors[3]);
             }
-            if (effectiveRemaining > 0) { // Only show positive remaining
+            if (effectiveRemaining > 0) { // Only add positive remaining to the chart
                 incomeFlowLabels.push('남은 잔액');
                 incomeFlowData.push(effectiveRemaining);
                 incomeFlowColors.push(baseColors[4]);
             }
-
-            // Fallback if all calculated values are zero but gross income exists
-            if (incomeFlowData.length === 0 && grossIncome > 0) {
-                 incomeFlowLabels.push('총 수입 (전액 사용됨)');
-                 incomeFlowData.push(grossIncome);
-                 incomeFlowColors.push('#7f8c8d');
+            
+            // If all values are zero but gross income is positive, show it as 'Remaining'
+            if (incomeFlowData.reduce((a, b) => a + b, 0) === 0 && grossIncome > 0) {
+                incomeFlowLabels = ['남은 잔액'];
+                incomeFlowData = [grossIncome];
+                incomeFlowColors = ['#2ecc71']; // Green for remaining
             }
         }
 
         const incomeFlowCtx = document.getElementById('incomeFlowChart').getContext('2d');
-        if (incomeFlowChart) {
-            incomeFlowChart.data.labels = incomeFlowLabels;
-            incomeFlowChart.data.datasets[0].data = incomeFlowData;
-            incomeFlowChart.data.datasets[0].backgroundColor = incomeFlowColors;
-            incomeFlowChart.update();
-        } else {
-            incomeFlowChart = new Chart(incomeFlowCtx, {
-                type: 'pie',
-                data: {
-                    labels: incomeFlowLabels,
-                    datasets: [{
-                        data: incomeFlowData,
-                        backgroundColor: incomeFlowColors,
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            position: 'right',
-                            labels: {
-                                font: {
-                                    size: 14
-                                }
+        if (incomeFlowChartInstance) {
+            incomeFlowChartInstance.destroy(); // Destroy existing chart
+        }
+        incomeFlowChartInstance = new Chart(incomeFlowCtx, {
+            type: 'pie',
+            data: {
+                labels: incomeFlowLabels,
+                datasets: [{
+                    data: incomeFlowData,
+                    backgroundColor: incomeFlowColors,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // Allow charts to resize within their containers
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            font: {
+                                size: 14
                             }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    const value = context.parsed;
-                                    const sum = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const percentage = sum === 0 ? '0.0' : (value / sum * 100).toFixed(1);
-                                    return `${label}$${formatMoney(value)} (${percentage}%)`;
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
                                 }
+                                const value = context.parsed;
+                                const sum = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = sum === 0 ? '0.0' : (value / sum * 100).toFixed(1);
+                                return `${label}$${formatMoney(value)} (${percentage}%)`;
                             }
                         }
                     }
                 }
-            });
-        }
+            }
+        });
 
         // --- 2. Expense Category Chart (총 지출 대비 비중) ---
         const expenseCategoryMap = new Map();
@@ -1131,9 +1126,9 @@
             expenseCategoryMap.set(categoryName, (expenseCategoryMap.get(categoryName) || 0) + expense.amount);
         });
 
-        const expenseCategoryLabels = Array.from(expenseCategoryMap.keys());
-        const expenseCategoryData = Array.from(expenseCategoryMap.values());
-        const expenseCategoryColors = generateColors(expenseCategoryLabels.length);
+        let expenseCategoryLabels = Array.from(expenseCategoryMap.keys());
+        let expenseCategoryData = Array.from(expenseCategoryMap.values());
+        let expenseCategoryColors = generateColors(expenseCategoryLabels.length);
 
         // Handle case where total expenses are zero
         if (expenseCategoryData.reduce((sum, val) => sum + val, 0) === 0) {
@@ -1143,53 +1138,49 @@
         }
 
         const expenseCategoryCtx = document.getElementById('expenseCategoryChart').getContext('2d');
-        if (expenseCategoryChart) {
-            expenseCategoryChart.data.labels = expenseCategoryLabels;
-            expenseCategoryChart.data.datasets[0].data = expenseCategoryData;
-            expenseCategoryChart.data.datasets[0].backgroundColor = expenseCategoryColors;
-            expenseCategoryChart.update();
-        } else {
-            expenseCategoryChart = new Chart(expenseCategoryCtx, {
-                type: 'pie',
-                data: {
-                    labels: expenseCategoryLabels,
-                    datasets: [{
-                        data: expenseCategoryData,
-                        backgroundColor: expenseCategoryColors,
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            position: 'right',
-                            labels: {
-                                font: {
-                                    size: 14
-                                }
+        if (expenseCategoryChartInstance) {
+            expenseCategoryChartInstance.destroy(); // Destroy existing chart
+        }
+        expenseCategoryChartInstance = new Chart(expenseCategoryCtx, {
+            type: 'pie',
+            data: {
+                labels: expenseCategoryLabels,
+                datasets: [{
+                    data: expenseCategoryData,
+                    backgroundColor: expenseCategoryColors,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // Allow charts to resize within their containers
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            font: {
+                                size: 14
                             }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    const value = context.parsed;
-                                    const sum = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    // Handle sum of 0 to prevent NaN for percentage
-                                    const percentage = sum === 0 ? '0.0' : (value / sum * 100).toFixed(1);
-                                    return `${label}$${formatMoney(value)} (${percentage}%)`;
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
                                 }
+                                const value = context.parsed;
+                                const sum = context.dataset.data.reduce((a, b) => a + b, 0);
+                                // Handle sum of 0 to prevent NaN for percentage
+                                const percentage = sum === 0 ? '0.0' : (value / sum * 100).toFixed(1);
+                                return `${label}$${formatMoney(value)} (${percentage}%)`;
                             }
                         }
                     }
                 }
-            });
-        }
+            }
+        });
     }
 
     // 6. 유틸리티 함수들
