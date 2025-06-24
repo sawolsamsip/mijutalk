@@ -77,6 +77,7 @@ function updateUILanguage() {
     // HTML 요소의 ID를 사용하여 텍스트 업데이트
     // HTML 파일에 ID를 추가했던 모든 요소들을 여기서 업데이트합니다.
     document.title = translations.app_title; // <head> 태그의 title
+    document.getElementById('app-title-head').textContent = translations.app_title;
     document.getElementById('app-title').textContent = translations.app_title;
 
     // 월 수입 섹션
@@ -97,7 +98,6 @@ function updateUILanguage() {
 
     // 세금 종류 드롭다운의 옵션 텍스트 업데이트 (value는 그대로 유지)
     // 이 부분은 translations 파일의 key 이름과 option value가 일치해야 합니다.
-    // 현재 HTML의 option value가 translations 키와 일치하도록 수정되어 있습니다.
     const taxTypeSelect = document.getElementById('tax-type');
     Array.from(taxTypeSelect.options).forEach(option => {
         if (option.value !== "" && option.value !== "custom") {
@@ -179,6 +179,7 @@ function updateUILanguage() {
     document.getElementById('total-expenses-card-sub').textContent = translations.total_expenses_card_sub;
     document.getElementById('remaining-balance-card-label').textContent = translations.remaining_balance_card_label;
     document.getElementById('remaining-balance-card-sub').textContent = translations.remaining_balance_card_sub;
+    // 이 부분은 총 수입의 X% 와 같이 동적으로 문장이 구성되므로, translations.of 키를 사용합니다.
     document.getElementById('expenses-percentage-text').innerHTML = `${translations.gross_income_label.split('(')[0].trim()} ${translations.of} <span id="expenses-percentage-card" class="highlighted-percentage">${document.getElementById('expenses-percentage-card').textContent}</span>`;
     document.getElementById('remaining-percentage-text').innerHTML = `${translations.gross_income_label.split('(')[0].trim()} ${translations.of} <span id="remaining-percentage-card" class="highlighted-percentage">${document.getElementById('remaining-percentage-card').textContent}</span>`;
 
@@ -271,7 +272,7 @@ function updateUI() {
   const grossIncome = budgetData.income;
   const preTaxTotal = budgetData.preTax.reduce((sum, item) => sum + item.amount, 0);
   const taxTotal = budgetData.taxes.reduce((sum, item) => sum + item.amount, 0);
-  const postTaxTotal = budgetData.postTax.reduce((sum, item) => sum + item.amount, 0);
+  const postTaxTotal = budgetData.postTax.reduce((sum, item => sum + item.amount, 0);
   const totalDeductionsAndTaxes = preTaxTotal + taxTotal + postTaxTotal; // New calculation
   const taxableIncome = grossIncome - preTaxTotal;
   const netIncome = taxableIncome - taxTotal - postTaxTotal;
@@ -343,22 +344,22 @@ function renderList(elementId, items, totalIncome) {
            </div>
            <div class="expense-item-actions">
              <button onclick="saveEdit('${type}', '${item.id}')" class="save-edit-btn">${translations.save_button.replace('💾 ', '')}</button>
-             <button onclick="cancelEdit()" class="cancel-edit-btn">${translations.cancel_button || '취소'}</button>
+             <button onclick="cancelEdit()" class="cancel-edit-btn">${translations.cancel_button || 'Cancel'}</button>
            </div>`
           :
           `<div class="expense-item-content">
              <span>${item.name}: $${formatMoney(item.amount)}</span>
            </div>
            <div class="expense-item-actions">
-             <button onclick="editItem('${type}', '${item.id}')" class="edit-btn">${translations.edit_button || '수정'}</button>
-             <button onclick="deleteItem('${type}', '${item.id}')" class="delete-btn">${translations.delete_button || '삭제'}</button>
+             <button onclick="editItem('${type}', '${item.id}')" class="edit-btn">${translations.edit_button || 'Edit'}</button>
+             <button onclick="deleteItem('${type}', '${item.id}')" class="delete-btn">${translations.delete_button || 'Delete'}</button>
            </div>`
         }
       </div>
     `).join('')}
     <div class="total-summary">
       <div class="summary-row">
-        <span class="summary-label">${translations[`total_${type}_label`] || `총 ${getTypeName(type)}`}</span>
+        <span class="summary-label">${translations[`total_${type}_label`] || `Total ${getTypeName(type)}`}</span>
         <span class="summary-value">$${formatMoney(total)} <span class="percentage">(${calculatePercentage(total, totalIncome)})</span></span>
       </div>
     </div>
@@ -386,7 +387,7 @@ function renderExpenses(totalIncome) {
              </div>
              <div class="expense-item-actions">
                <button onclick="saveEdit('expenses', '${item.id}')" class="save-edit-btn">${translations.save_button.replace('💾 ', '')}</button>
-               <button onclick="cancelEdit()" class="cancel-edit-btn">${translations.cancel_button || '취소'}</button>
+               <button onclick="cancelEdit()" class="cancel-edit-btn">${translations.cancel_button || 'Cancel'}</button>
              </div>`
             :
             `<div class="expense-item-content">
@@ -395,8 +396,8 @@ function renderExpenses(totalIncome) {
              </div>
              <span class="expense-item-amount">$${formatMoney(item.amount)}</span>
              <div class="expense-item-actions">
-               <button onclick="editItem('expenses', '${item.id}')" class="edit-btn">${translations.edit_button || '수정'}</button>
-               <button onclick="deleteItem('expenses', '${item.id}')" class="delete-btn">${translations.delete_button || '삭제'}</button>
+               <button onclick="editItem('expenses', '${item.id}')" class="edit-btn">${translations.edit_button || 'Edit'}</button>
+               <button onclick="deleteItem('expenses', '${item.id}')" class="delete-btn">${translations.delete_button || 'Delete'}</button>
              </div>`
           }
         </div>
@@ -968,11 +969,13 @@ document.addEventListener('DOMContentLoaded', function() {
     initDefaultData();
   } else {
     const savedData = JSON.parse(localStorage.getItem('budgetData'));
+    // Deep copy to ensure original objects are not mutated
     budgetData.income = savedData.income || 0;
     budgetData.taxes = savedData.taxes ? savedData.taxes.map(item => ({...item})) : [];
     budgetData.preTax = savedData.preTax ? savedData.preTax.map(item => ({...item})) : [];
     budgetData.postTax = savedData.postTax ? savedData.postTax.map(item => ({...item})) : [];
     budgetData.expenses = savedData.expenses ? savedData.expenses.map(item => ({...item})) : [];
+    // 카테고리 로딩 시 언어에 맞는 이름으로 설정되지 않도록 id와 원래 이름만 저장하고 표시될때 번역하도록
     budgetData.categories = savedData.categories ? savedData.categories.map(item => ({id: item.id, name: item.name})) : [
       { id: 'housing', name: '🏠 주거' }, { id: 'food', name: '🍔 식비' },
       { id: 'transportation', name: '🚗 교통' }, { id: 'health', name: '🏥 건강' },
@@ -998,25 +1001,28 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // 기존 언어 선택 드롭다운 대신 버튼에 이벤트 리스너 추가
-  const langButtons = document.querySelectorAll('.lang-button');
-  if (langButtons.length > 0) {
-    // 초기 로드 시 활성 버튼 설정
-    langButtons.forEach(button => {
-        if (button.dataset.lang === currentLanguage) {
-            button.classList.add('active');
-        } else {
-            button.classList.remove('active');
-        }
-        button.addEventListener('click', function() {
-            // 모든 버튼의 active 클래스 제거
-            langButtons.forEach(btn => btn.classList.remove('active'));
-            // 클릭된 버튼에 active 클래스 추가
-            this.classList.add('active');
-
-            localStorage.setItem('appLanguage', this.dataset.lang); // 선택된 언어 로컬 스토리지에 저장
-            loadTranslations(this.dataset.lang); // 선택된 언어로 번역 로드
+  // 언어 선택 드롭다운에 이벤트 리스너 추가
+  const langSelect = document.getElementById('language-select');
+  if (langSelect) {
+    // 옵션 텍스트를 언어 파일에서 가져오도록 업데이트 (초기 로드 시)
+    // HTML에 하드코딩된 옵션 텍스트는 이 함수를 통해 번역될 것임.
+    // 이모티콘은 그대로 유지됩니다.
+    const updateSelectOptions = () => {
+        Array.from(langSelect.options).forEach(option => {
+            const langCode = option.value;
+            let displayString = '';
+            if (langCode === 'ko') displayString = '🇰🇷 한국어';
+            else if (langCode === 'en') displayString = '🇺🇸 English';
+            else if (langCode === 'zh') displayString = '🇨🇳 简体中文';
+            option.textContent = displayString;
         });
+    };
+    updateSelectOptions(); // 초기 로드 시 옵션 텍스트 업데이트
+
+    langSelect.value = currentLanguage; // 로컬 스토리지에서 불러온 언어로 설정
+    langSelect.addEventListener('change', function() {
+      localStorage.setItem('appLanguage', this.value); // 선택된 언어 로컬 스토리지에 저장
+      loadTranslations(this.value); // 선택된 언어로 번역 로드
     });
   }
 
