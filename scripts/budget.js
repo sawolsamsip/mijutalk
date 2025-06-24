@@ -1,27 +1,27 @@
 // 1. 기본 공제 항목 정의
 const DEFAULT_DEDUCTIONS = {
   taxes: [
-    { name: "Federal Withholding", amount: 0 },
-    { name: "State Tax (CA)", amount: 0 },
-    { name: "OASDI (Social Security)", amount: 0 },
-    { name: "Medicare", amount: 0 },
-    { name: "CA SDI", amount: 0 }
+    { name: "federal_withholding", amount: 0 },
+    { name: "state_tax_ca", amount: 0 },
+    { name: "oasdi_social_security", amount: 0 },
+    { name: "medicare", amount: 0 },
+    { name: "ca_sdi", amount: 0 }
   ],
   preTax: [
-    { name: "401k Traditional", amount: 0 },
-    { name: "Medical Premium", amount: 0 },
-    { name: "Dental Premium", amount: 0 },
-    { name: "Vision Premium", amount: 0 },
-    { name: "MSEAP", amount: 0 }
+    { name: "four_01k_traditional", amount: 0 },
+    { name: "medical_premium", amount: 0 },
+    { name: "dental_premium", amount: 0 },
+    { name: "vision_premium", amount: 0 },
+    { name: "mseap", amount: 0 }
   ],
   postTax: [
-    { name: "401k Roth", amount: 0 },
-    { name: "Legal Services", amount: 0 },
-    { name: "LTD", amount: 0 },
-    { name: "Stock Purchase Plan", amount: 0 },
-    { name: "AD&D", amount: 0 },
-    { name: "Critical Illness", amount: 0 },
-    { name: "Accident Insurance", amount: 0 }
+    { name: "four_01k_roth", amount: 0 },
+    { name: "legal_services", amount: 0 },
+    { name: "ltd", amount: 0 },
+    { name: "stock_purchase_plan", amount: 0 },
+    { name: "ad_and_d", amount: 0 },
+    { name: "critical_illness", amount: 0 },
+    { name: "accident_insurance", amount: 0 }
   ]
 };
 
@@ -33,7 +33,7 @@ const budgetData = {
   postTax: [],
   expenses: [],
   categories: [
-    { id: 'housing', name: '🏠 주거' },
+    { id: 'housing', name: '🏠 주거' }, // 이름은 ID에 맞게 번역될 것이므로 기본값 유지
     { id: 'food', name: '🍔 식비' },
     { id: 'transportation', name: '🚗 교통' },
     { id: 'health', name: '🏥 건강' },
@@ -97,15 +97,12 @@ function updateUILanguage() {
     document.getElementById('tax-apply-button').textContent = translations.apply_button;
 
     // 세금 종류 드롭다운의 옵션 텍스트 업데이트 (value는 그대로 유지)
-    // 이 부분은 translations 파일의 key 이름과 option value가 일치해야 합니다.
     const taxTypeSelect = document.getElementById('tax-type');
     Array.from(taxTypeSelect.options).forEach(option => {
-        if (option.value !== "" && option.value !== "custom") {
-            // "Federal Withholding" -> translations.federal_withholding 키로 변환
-            const key = option.value.toLowerCase().replace(/ /g, '_').replace(/\(ca\)/g, 'ca'); // 예: "State Tax (CA)" -> "state_tax_ca"
-            if (translations[key]) {
-                option.textContent = translations[key];
-            }
+        if (option.value === "custom") {
+            option.textContent = translations.custom_input;
+        } else if (option.value !== "") {
+            option.textContent = translations[option.value] || option.value; // value가 번역 키임
         }
     });
 
@@ -123,11 +120,10 @@ function updateUILanguage() {
 
     const preTaxTypeSelect = document.getElementById('pre-tax-type');
     Array.from(preTaxTypeSelect.options).forEach(option => {
-        if (option.value !== "" && option.value !== "custom") {
-            const key = option.value.toLowerCase().replace(/ /g, '_').replace(/401k/g, 'four_01k'); // 401k와 같은 특수 케이스 처리
-            if (translations[key]) {
-                option.textContent = translations[key];
-            }
+        if (option.value === "custom") {
+            option.textContent = translations.custom_input;
+        } else if (option.value !== "") {
+            option.textContent = translations[option.value] || option.value;
         }
     });
 
@@ -144,11 +140,10 @@ function updateUILanguage() {
 
     const postTaxTypeSelect = document.getElementById('post-tax-type');
     Array.from(postTaxTypeSelect.options).forEach(option => {
-        if (option.value !== "" && option.value !== "custom") {
-            const key = option.value.toLowerCase().replace(/ /g, '_').replace(/401k/g, 'four_01k');
-            if (translations[key]) {
-                option.textContent = translations[key];
-            }
+        if (option.value === "custom") {
+            option.textContent = translations.custom_input;
+        } else if (option.value !== "") {
+            option.textContent = translations[option.value] || option.value;
         }
     });
 
@@ -346,7 +341,7 @@ function renderList(elementId, items, totalIncome) {
       <div class="expense-item" data-id="${item.id}" data-type="${type}">
         ${editingItem && editingItem.id === item.id ?
           `<div class="expense-item-content">
-             <input type="text" value="${item.name}" id="edit-name-${item.id}" placeholder="${translations.item_name_placeholder}">
+             <input type="text" value="${translations[item.name] || item.name}" id="edit-name-${item.id}" placeholder="${translations.item_name_placeholder}">
              <input type="number" value="${item.amount}" id="edit-amount-${item.id}" placeholder="${translations.amount_placeholder}">
            </div>
            <div class="expense-item-actions">
@@ -355,7 +350,7 @@ function renderList(elementId, items, totalIncome) {
            </div>`
           :
           `<div class="expense-item-content">
-             <span>${item.name}: $${formatMoney(item.amount)}</span>
+             <span>${translations[item.name] || item.name}: $${formatMoney(item.amount)}</span>
            </div>
            <div class="expense-item-actions">
              <button onclick="editItem('${type}', '${item.id}')" class="edit-btn">${translations.edit_button || 'Edit'}</button>
@@ -366,7 +361,7 @@ function renderList(elementId, items, totalIncome) {
     `).join('')}
     <div class="total-summary">
       <div class="summary-row">
-        <span class="summary-label">${translations[`total_${type}_label`] || `Total ${getTypeName(type)}`}</span>
+        <span class="summary-label">${translations[`total_${type}_label`]}</span>
         <span class="summary-value">$${formatMoney(total)} <span class="percentage">(${calculatePercentage(total, totalIncome)})</span></span>
       </div>
     </div>
@@ -431,6 +426,8 @@ function renderExpenses(totalIncome) {
   `;
 }
 
+// getTypeName 함수는 더 이상 사용되지 않으므로 제거합니다.
+/*
 function getTypeName(type) {
   const names = {
     'taxes': translations.taxes_type || '세금',
@@ -440,6 +437,7 @@ function getTypeName(type) {
   };
   return names[type] || type;
 }
+*/
 
 function populateCategorySelect() {
   const select = document.getElementById('category');
@@ -466,10 +464,12 @@ function populateCategorySelect() {
 }
 
 // Helper: Convert "Federal Withholding" to "federal_withholding" for translation key
+// 이 함수는 더 이상 사용되지 않습니다.
+/*
 function textToKey(text) {
     return text.toLowerCase().replace(/ /g, '_').replace(/\(|\)/g, '').replace(/\&/g, 'and');
 }
-
+*/
 
 // 5. CRUD 함수들 (alert/confirm 메시지 번역 적용)
 function deleteItem(type, id) {
@@ -531,11 +531,11 @@ function updateCategorizedItem(type) {
   const inputAmountElement = document.getElementById(`${prefix}-amount-input`); // ID 변경
   const customNameInput = document.getElementById(`${prefix}-custom-name`); // input 변수명 변경
 
-  let name = selectElement.value;
+  let name = selectElement.value; // 여기서 name은 번역 키 (예: "federal_withholding")
   const amount = parseFloat(inputAmountElement.value);
 
   if (name === 'custom') {
-    name = customNameInput.value.trim();
+    name = customNameInput.value.trim(); // 커스텀 입력은 실제 텍스트가 됨
     if (!name) {
       alert(translations.enter_custom_item_name);
       return;
@@ -547,15 +547,19 @@ function updateCategorizedItem(type) {
     return;
   }
 
+  // 이제 항목을 찾을 때, `name`이 번역 키인 경우와 직접 입력한 텍스트인 경우를 모두 고려해야 합니다.
+  // DEFAULT_DEDUCTIONS에 있는 항목은 `name`이 번역 키이므로, 해당 키를 가진 항목을 찾습니다.
+  // 커스텀 항목은 `name` 자체가 실제 항목 이름이므로, `name`이 일치하는 항목을 찾습니다.
   let item = budgetData[type].find(item => item.name === name);
 
   if (item) {
     item.amount = amount;
   } else {
+    // DEFAULT_DEDUCTIONS에 없는 새로운 커스텀 항목일 수 있음
     budgetData[type].push({
       id: generateUniqueId(),
       type: type,
-      name,
+      name, // 여기서는 name이 번역 키 또는 직접 입력한 텍스트가 됩니다.
       amount
     });
   }
@@ -900,6 +904,7 @@ function loadData() {
         });
       }
 
+      // 기본 공제 항목을 로드된 데이터와 병합
       DEFAULT_DEDUCTIONS.taxes.forEach(defaultItem => {
           if (!budgetData.taxes.some(item => item.name === defaultItem.name)) {
               budgetData.taxes.push({ ...defaultItem, id: generateUniqueId(), type: 'taxes' });
@@ -964,6 +969,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const savedData = JSON.parse(localStorage.getItem('budgetData'));
     // Deep copy to ensure original objects are not mutated
     budgetData.income = savedData.income || 0;
+    // 기존 항목 이름이 번역 키와 일치하지 않을 수 있으므로, 기본 항목을 로드할 때도 번역 키 기준으로 처리
     budgetData.taxes = savedData.taxes ? savedData.taxes.map(item => ({...item})) : [];
     budgetData.preTax = savedData.preTax ? savedData.preTax.map(item => ({...item})) : [];
     budgetData.postTax = savedData.postTax ? savedData.postTax.map(item => ({...item})) : [];
@@ -978,6 +984,7 @@ document.addEventListener('DOMContentLoaded', function() {
     ];
 
     DEFAULT_DEDUCTIONS.taxes.forEach(defaultItem => {
+        // 기존 데이터에 이름(번역 키)이 같은 항목이 없으면 추가
         if (!budgetData.taxes.some(item => item.name === defaultItem.name)) {
             budgetData.taxes.push({ ...defaultItem, id: generateUniqueId(), type: 'taxes' });
         }
@@ -1037,6 +1044,7 @@ document.addEventListener('DOMContentLoaded', function() {
       } else {
         container.style.display = 'none';
         const existingItem = budgetData[type].find(item => item.name === this.value);
+        // 기존 항목이 있으면 해당 금액으로 초기화
         amountInput.value = existingItem ? existingItem.amount : '0';
         amountInput.focus();
       }
