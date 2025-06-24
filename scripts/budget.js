@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
             total_expenses_card_label: "총 지출", total_expenses_card_sub: "(순수입에서 사용)", remaining_balance_card_label: "남은 잔액", remaining_balance_card_sub: "(저축/투자 가능)", expenses_percentage_text: "총 수입의", remaining_percentage_text: "총 수입의",
             alert_valid_amount: "올바른 금액을 입력하세요.", alert_custom_name: "사용자 지정 항목의 이름을 입력하세요.", alert_item_exists: "' 이미 이 카테고리에 존재합니다.", alert_fill_all_fields: "모든 지출 필드를 올바른 데이터로 채우세요.", alert_category_exists: "카테고리가 이미 존재합니다.",
             confirm_reset: "모든 데이터를 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다.", alert_data_saved: "데이터가 성공적으로 저장되었습니다.", alert_save_failed: "데이터 저장에 실패했습니다.", alert_data_loaded: "데이터를 성공적으로 불러왔습니다.", alert_load_failed: "데이터 불러오기에 실패했습니다. 데이터가 손상되었을 수 있습니다.", alert_no_data: "저장된 데이터가 없습니다.", alert_data_reset: "데이터가 초기화되었습니다.",
-            confirm_delete_item: "정말로 이 항목을 삭제하시겠습니까?" // Added missing translation key
+            confirm_delete_item: "정말로 이 항목을 삭제하시겠습니까?" 
         },
         en: {
             'app-title': '💰 Budget Management System (USD)', 'income-title': 'Salary', 'income-label': 'Gross Monthly Salary ($)', 
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
             confirm_delete_item: "Are you sure you want to delete this item?"
         },
         zh: {
-            'app-title': '💰 预算管理系统 (USD)', 'income-title': '薪수', 'income-label': '세전 월급액 ($)', 
+            'app-title': '💰 预算管理系统 (USD)', 'income-title': '薪水', 'income-label': '세전 월급액 ($)', 
             'tax-title': '세금', 'tax-type-label': '세종', 'tax-select-placeholder': '선택 세종', 'tax-option-custom': '自定义', 'tax_custom_name_placeholder': '输入税项名称', 'tax-amount-placeholder': '金額 ($)', 'tax-add-button': '添加', 'tax-update-button': '更新', 'tax-cancel-button': '取消', 
             'pre-tax-title': '세전 공제', 'pre-tax-type-label': '공제 항목', 'pre-tax-select-placeholder': '선택 공제 항목', 'pre-tax-option-custom': '自定义', 'pre_tax_custom_name_placeholder': '输入扣除名称', 'pre-tax-amount-placeholder': '金額 ($)', 'pre-tax-add-button': '添加', 'pre-tax-update-button': '更新', 'pre-tax-cancel-button': '取消', 
             'post-tax-title': '세후 공제', 'post-tax-type-label': '공제 항목', 'post-tax-select-placeholder': '선택 공제 항목', 'post-tax-option-custom': '自定义', 'post_tax_custom_name_placeholder': '输入扣除名称', 'post-tax-amount-placeholder': '金額 ($)', 'post-tax-add-button': '添加', 'post-tax-update-button': '更新', 'post-tax-cancel-button': '取消',
@@ -467,17 +467,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Toggle visibility of input fields based on select choice.
         select.addEventListener('change', () => {
-            // If we are currently in edit mode for this section and the user changes the select value,
-            // we should exit edit mode and reset the fields.
-            if (editingItemId !== null) {
-                setSectionEditMode(false);
-            }
-            
-            // This line correctly handles showing/hiding the input container based on whether a valid option is selected.
-            // If select.value is empty (placeholder), display is 'none'. Otherwise, 'flex'.
+            // Always hide edit buttons and show add button when select changes
+            // This ensures a clean state for adding a new item
+            addButton.classList.remove('hidden');
+            updateButton.classList.add('hidden');
+            cancelButton.classList.add('hidden');
+            editingItemId = null; // Important: Clear editing state
+
             inputContainer.style.display = select.value ? 'flex' : 'none';
             customNameInput.style.display = select.value === 'custom' ? 'block' : 'none';
             
+            // Clear the input fields when a new selection is made, unless it's 'custom' and we want to preserve input for a custom item name
+            if (select.value !== 'custom') {
+                customNameInput.value = '';
+            }
+            amountInput.value = '';
+
             // Focus on the appropriate input field
             if (select.value === 'custom') customNameInput.focus();
             else if (select.value) amountInput.focus();
@@ -533,7 +538,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.addEventListener('click', async (e) => {
         if (e.target.classList.contains('item-delete-btn')) {
             const { id, category } = e.target.dataset;
-            // Confirm deletion only for taxes, preTax, postTax
+            // Confirm deletion for any categorized item
             if (await showConfirmDialog(translations[state.language].confirm_delete_item)) {
                 state[category] = state[category].filter(item => item.id !== id);
                 fullUpdate();
