@@ -1,161 +1,173 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="app-title-head">예산 관리 시스템 (USD)</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="app-title-head">예산 관리 시스템 (USD)</title>
 
-  <!-- Chart.js 핵심 라이브러리 (로컬 파일) -->
-  <script src="../scripts/chart.js"></script>
-  <!-- chartjs-plugin-datalabels 플러그인 (로컬 파일) -->
-  <script src="../scripts/chartjs-plugin-datalabels.min.js"></script>
+    <!-- Chart.js 핵심 라이브러리 (로컬 파일) -->
+    <script src="../scripts/chart.js"></script>
+    <!-- chartjs-plugin-datalabels 플러그인 (로컬 파일) -->
+    <script src="../scripts/chartjs-plugin-datalabels.min.js"></script>
 
-  <!-- Link to your external CSS file -->
-  <link rel="stylesheet" href="../scripts/budget.css">
-  
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="../scripts/budget.css">
 </head>
 <body>
-  <header class="app-header">
-    <h1 id="app-title">💰 예산 관리 시스템 (USD)</h1>
-    <div class="language-selector-wrapper">
-      <label for="language-select" class="sr-only" id="language-label">언어 선택</label>
-      <select id="language-select">
-        <option value="ko">🇰🇷 한국어</option>
-        <option value="en">🇺🇸 English</option>
-        <option value="zh">🇨🇳 简体中文</option>
-      </select>
-    </div>
-  </header>
-
-  <main>
-    <div class="card">
-      <h2 id="income-title">월급</h2>
-      <label for="income" id="income-label">세전 월급액 ($)</label>
-      <input type="number" id="income" placeholder="0">
-    </div>
-
-    <!-- Category Section Template -->
-    <div class="card" data-category="taxes">
-      <h2 id="tax-title">세금</h2>
-      <label for="taxes-type" id="tax-type-label">세금 종류</label>
-      <select id="taxes-type" class="category-select">
-        <option value="" disabled selected id="tax-select-placeholder">세금 종류 선택</option>
-        <option value="federal_withholding">Federal Withholding</option>
-        <option value="state_tax_ca">State Tax (CA)</option>
-        <option value="oasdi_social_security">OASDI (Social Security)</option>
-        <option value="medicare">Medicare</option>
-        <option value="ca_sdi">CA SDI</option>
-        <option value="custom" id="tax-option-custom">직접 입력</option>
-      </select>
-      <div class="category-input-container" style="display: none;">
-        <input type="text" class="custom-name-input" placeholder="세금 항목명 입력" style="display: none;">
-        <input type="number" class="amount-input" placeholder="금액 ($)">
-        <button class="add-item-btn" id="tax-apply-button">적용</button>
-      </div>
-      <div class="item-list" id="taxes-list"></div>
-    </div>
-
-    <div class="card" data-category="preTax">
-      <h2 id="pre-tax-title">세전 공제</h2>
-      <label for="preTax-type" id="pre-tax-type-label">공제 항목</label>
-      <select id="preTax-type" class="category-select">
-        <option value="" disabled selected id="pre-tax-select-placeholder">공제 항목 선택</option>
-        <option value="four_01k_traditional">401k Traditional</option>
-        <option value="medical_premium">Medical Premium</option>
-        <option value="dental_premium">Dental Premium</option>
-        <option value="vision_premium">Vision Premium</option>
-        <option value="mseap">MSEAP</option>
-        <option value="custom" id="pre-tax-option-custom">직접 입력</option>
-      </select>
-      <div class="category-input-container" style="display: none;">
-        <input type="text" class="custom-name-input" placeholder="공제 항목명 입력" style="display: none;">
-        <input type="number" class="amount-input" placeholder="금액 ($)">
-        <button class="add-item-btn" id="pre-tax-apply-button">적용</button>
-      </div>
-      <div class="item-list" id="preTax-list"></div>
-    </div>
-
-    <div class="card" data-category="postTax">
-      <h2 id="post-tax-title">세후 공제</h2>
-      <label for="postTax-type" id="post-tax-type-label">공제 항목</label>
-      <select id="postTax-type" class="category-select">
-        <option value="" disabled selected id="post-tax-select-placeholder">공제 항목 선택</option>
-        <option value="four_01k_roth">401k Roth</option>
-        <option value="legal_services">Legal Services</option>
-        <option value="ltd">LTD</option>
-        <option value="stock_purchase_plan">Stock Purchase Plan</option>
-        <option value="ad_and_d">AD&D</option>
-        <option value="critical_illness">Critical Illness</option>
-        <option value="accident_insurance">Accident Insurance</option>
-        <option value="custom" id="post-tax-option-custom">직접 입력</option>
-      </select>
-      <div class="category-input-container" style="display: none;">
-        <input type="text" class="custom-name-input" placeholder="공제 항목명 입력" style="display: none;">
-        <input type="number" class="amount-input" placeholder="금액 ($)">
-        <button class="add-item-btn" id="post-tax-apply-button">적용</button>
-      </div>
-      <div class="item-list" id="postTax-list"></div>
-    </div>
-
-    <div class="card">
-      <h2 id="expense-management-title">지출 관리</h2>
-      <div class="flex">
-        <div style="flex: 1;">
-          <label for="category" id="category-label">카테고리</label>
-          <select id="category"></select>
+    <header class="app-header">
+        <h1 id="app-title">💰 예산 관리 시스템 (USD)</h1>
+        <div class="language-selector-wrapper">
+            <label for="language-select" class="sr-only" id="language-label">언어 선택</label>
+            <select id="language-select">
+                <option value="ko">🇰🇷 한국어</option>
+                <option value="en">🇺🇸 English</option>
+                <option value="zh">🇨🇳 简体中文</option>
+            </select>
         </div>
-        <div style="flex: 2;">
-          <label for="expense-name" id="expense-name-label">항목명</label>
-          <input type="text" id="expense-name" placeholder="예: 월세">
+    </header>
+
+    <main>
+        <div class="card">
+            <h2 id="income-title">월급</h2>
+            <label for="income" id="income-label">세전 월급액 ($)</label>
+            <input type="number" id="income" placeholder="0">
         </div>
-        <div style="flex: 1;">
-          <label for="expense-amount" id="expense-amount-label">금액</label>
-          <input type="number" id="expense-amount" placeholder="$">
+
+        <!-- Taxes Section -->
+        <div class="card" data-category="taxes">
+            <h2 id="tax-title">세금</h2>
+            <label for="taxes-type" id="tax-type-label">세금 종류</label>
+            <select id="taxes-type" class="category-select">
+                <option value="" disabled selected id="tax-select-placeholder">세금 종류 선택</option>
+                <option value="federal_withholding">Federal Withholding</option>
+                <option value="state_tax_ca">State Tax (CA)</option>
+                <option value="oasdi_social_security">OASDI (Social Security)</option>
+                <option value="medicare">Medicare</option>
+                <option value="ca_sdi">CA SDI</option>
+                <option value="custom" id="tax-option-custom">직접 입력</option>
+            </select>
+            <div class="category-input-container" style="display: none;">
+                <input type="text" class="custom-name-input" placeholder="세금 항목명 입력" style="display: none;">
+                <input type="number" class="amount-input" placeholder="금액 ($)">
+                <button class="add-item-btn" id="tax-apply-button">적용</button>
+            </div>
+            <div class="item-list" id="taxes-list"></div>
         </div>
-      </div>
-      <div class="category-input-container">
-          <label for="new-category" class="sr-only" id="new-category-label">새 카테고리명</label>
-          <input type="text" id="new-category" placeholder="새 카테고리명 입력" style="flex: 1;">
-          <button id="add-category-button" style="flex-shrink: 0; width: auto;">카테고리 추가</button>
-      </div>
-      <button id="add-expense-button" style="width: 100%; margin-top: 1rem;">지출 추가</button>
-      <div class="item-list" id="expenses-list"></div>
+
+        <!-- Pre-Tax Deductions Section -->
+        <div class="card" data-category="preTax">
+            <h2 id="pre-tax-title">세전 공제</h2>
+            <label for="preTax-type" id="pre-tax-type-label">공제 항목</label>
+            <select id="preTax-type" class="category-select">
+                <option value="" disabled selected id="pre-tax-select-placeholder">공제 항목 선택</option>
+                <option value="four_01k_traditional">401k Traditional</option>
+                <option value="medical_premium">Medical Premium</option>
+                <option value="dental_premium">Dental Premium</option>
+                <option value="vision_premium">Vision Premium</option>
+                <option value="mseap">MSEAP</option>
+                <option value="custom" id="pre-tax-option-custom">직접 입력</option>
+            </select>
+            <div class="category-input-container" style="display: none;">
+                <input type="text" class="custom-name-input" placeholder="공제 항목명 입력" style="display: none;">
+                <input type="number" class="amount-input" placeholder="금액 ($)">
+                <button class="add-item-btn" id="pre-tax-apply-button">적용</button>
+            </div>
+            <div class="item-list" id="preTax-list"></div>
+        </div>
+
+        <!-- Post-Tax Deductions Section -->
+        <div class="card" data-category="postTax">
+            <h2 id="post-tax-title">세후 공제</h2>
+            <label for="postTax-type" id="post-tax-type-label">공제 항목</label>
+            <select id="postTax-type" class="category-select">
+                <option value="" disabled selected id="post-tax-select-placeholder">공제 항목 선택</option>
+                <option value="four_01k_roth">401k Roth</option>
+                <option value="legal_services">Legal Services</option>
+                <option value="ltd">LTD</option>
+                <option value="stock_purchase_plan">Stock Purchase Plan</option>
+                <option value="ad_and_d">AD&D</option>
+                <option value="critical_illness">Critical Illness</option>
+                <option value="accident_insurance">Accident Insurance</option>
+                <option value="custom" id="post-tax-option-custom">직접 입력</option>
+            </select>
+            <div class="category-input-container" style="display: none;">
+                <input type="text" class="custom-name-input" placeholder="공제 항목명 입력" style="display: none;">
+                <input type="number" class="amount-input" placeholder="금액 ($)">
+                <button class="add-item-btn" id="post-tax-apply-button">적용</button>
+            </div>
+            <div class="item-list" id="postTax-list"></div>
+        </div>
+
+        <!-- Expense Management Section -->
+        <div class="card">
+            <h2 id="expense-management-title">지출 관리</h2>
+            <div class="flex">
+                <div style="flex: 1;">
+                    <label for="category" id="category-label">카테고리</label>
+                    <select id="category"></select>
+                </div>
+                <div style="flex: 2;">
+                    <label for="expense-name" id="expense-name-label">항목명</label>
+                    <input type="text" id="expense-name" placeholder="예: 월세">
+                </div>
+                <div style="flex: 1;">
+                    <label for="expense-amount" id="expense-amount-label">금액</label>
+                    <input type="number" id="expense-amount" placeholder="$">
+                </div>
+            </div>
+            <div class="category-input-container">
+                <label for="new-category" class="sr-only" id="new-category-label">새 카테고리명</label>
+                <input type="text" id="new-category" placeholder="새 카테고리명 입력" style="flex: 1;">
+                <button id="add-category-button" style="flex-shrink: 0; width: auto;">카테고리 추가</button>
+            </div>
+            <button id="add-expense-button" style="width: 100%; margin-top: 1rem;">지출 추가</button>
+            <div class="item-list" id="expenses-list"></div>
+        </div>
+
+        <!-- Monthly Financial Status Section -->
+        <div class="card">
+            <h2 id="monthly-financial-status-title">📊 월별 재무 현황</h2>
+            <div class="income-flow">
+                <!-- Flow items will be dynamically updated by JS -->
+            </div>
+            <div class="summary-cards">
+                <!-- Summary cards will be dynamically updated by JS -->
+            </div>
+        </div>
+
+        <!-- Financial Analysis Charts Section -->
+        <div class="card chart-container">
+            <h2 id="financial-analysis-chart-title">📈 재무 분석 차트</h2>
+            <div class="charts-grid">
+                <div>
+                    <h3 id="income-flow-chart-title">자금 흐름 배분 (총 수입 대비)</h3>
+                    <canvas id="incomeFlowChart"></canvas>
+                </div>
+                <div>
+                    <h3 id="expense-category-chart-title">지출 카테고리별 비중 (총 지출 대비)</h3>
+                    <canvas id="expenseCategoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Utility Buttons Section -->
+        <div class="utility-buttons">
+            <button class="utility-btn" id="save-button">💾 저장하기</button>
+            <button class="utility-btn" id="load-button">📂 불러오기</button>
+            <button class="utility-btn print" onclick="window.print()">🖨️ 인쇄하기</button>
+            <button class="utility-btn" id="reset-button" style="background-color: var(--danger-color);">🔄 초기화</button>
+        </div>
+    </main>
+
+    <!-- Custom Modal Structure -->
+    <div id="custom-modal-overlay" class="modal-overlay">
+        <div class="modal-content">
+            <div id="modal-message" class="modal-message"></div>
+            <div id="modal-buttons" class="modal-buttons"></div>
+        </div>
     </div>
 
-    <div class="card">
-      <h2 id="monthly-financial-status-title">📊 월별 재무 현황</h2>
-      <div class="income-flow">
-        <!-- Flow items will be dynamically updated by JS -->
-      </div>
-      <div class="summary-cards">
-        <!-- Summary cards will be dynamically updated by JS -->
-      </div>
-    </div>
-
-    <div class="card chart-container">
-      <h2 id="financial-analysis-chart-title">📈 재무 분석 차트</h2>
-      <div class="charts-grid">
-        <div>
-          <h3 id="income-flow-chart-title">자금 흐름 배분 (총 수입 대비)</h3>
-          <canvas id="incomeFlowChart"></canvas>
-        </div>
-        <div>
-          <h3 id="expense-category-chart-title">지출 카테고리별 비중 (총 지출 대비)</h3>
-          <canvas id="expenseCategoryChart"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <div class="utility-buttons">
-      <button class="utility-btn" id="save-button">💾 저장하기</button>
-      <button class="utility-btn" id="load-button">📂 불러오기</button>
-      <button class="utility-btn print" onclick="window.print()">🖨️ 인쇄하기</button>
-      <button class="utility-btn" id="reset-button" style="background-color: var(--danger-color);">🔄 초기화</button>
-    </div>
-  </main>
-
-  <!-- Link to your external JS file -->
-  <script src="../scripts/budget.js"></script>
-  
+    <!-- Link to external JS file -->
+    <script src="../scripts/budget.js"></script>
 </body>
 </html>
