@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // --- IMPORTANT: Register Chart.js plugins ---
     // This is crucial for datalabels to appear on charts.
+    // Ensure Chart.js and ChartDataLabels are loaded from HTML before this point.
     Chart.register(ChartDataLabels);
 
     // --- STATE MANAGEMENT ---
@@ -47,14 +48,14 @@ document.addEventListener('DOMContentLoaded', () => {
             confirm_delete_item: "Are you sure you want to delete this item?"
         },
         zh: {
-            'app-title': '💰 预算管理系统 (USD)', 'income-title': '薪水', 'income-label': '세전 월급액 ($)', 
+            'app-title': '💰 预算管理系统 (USD)', 'income-title': '薪수', 'income-label': '세전 월급액 ($)', 
             'tax-title': '세금', 'tax-type-label': '세종', 'tax-select-placeholder': '선택 세종', 'tax-option-custom': '自定义', 'tax_custom_name_placeholder': '输入税项名称', 'tax-amount-placeholder': '金額 ($)', 'tax-add-button': '添加', 'tax-update-button': '更新', 'tax-cancel-button': '取消', 
             'pre-tax-title': '세전 공제', 'pre-tax-type-label': '공제 항목', 'pre-tax-select-placeholder': '선택 공제 항목', 'pre-tax-option-custom': '自定义', 'pre_tax_custom_name_placeholder': '输入扣除名称', 'pre-tax-amount-placeholder': '金額 ($)', 'pre-tax-add-button': '添加', 'pre-tax-update-button': '更新', 'pre-tax-cancel-button': '取消', 
             'post-tax-title': '세후 공제', 'post-tax-type-label': '공제 항목', 'post-tax-select-placeholder': '선택 공제 항목', 'post-tax-option-custom': '自定义', 'post_tax_custom_name_placeholder': '输入扣除名称', 'post-tax-amount-placeholder': '金額 ($)', 'post-tax-add-button': '添加', 'post-tax-update-button': '更新', 'post-tax-cancel-button': '取消',
             'expense-management-title': '지출 관리', 'category-label': '类别', 'expense-name-label': '항목명', 'expense-name-placeholder': '예: 월세', 'expense-amount-label': '金額', 
             'new-category-placeholder': '输入新类别名称', 'add-category-button': '添加类别', 'add-expense-button': '添加支出', 'update-expense-button': '更新支出', 'cancel-expense-button': '取消', 
             'monthly-financial-status-title': '📊 每월 재무 현황', 'financial-analysis-chart-title': '📈 재무 분석 차트', 'income-flow-chart-title': '資金流分配 (與總收入相比)', 'expense-category-chart-title': '按类别划分的支出明细 (與總支出相比)', 
-            'save-button': '💾 保存', 'load-button': '📂 加载', 'print-button': '🖨️ 打印', 'reset-button': '🔄 초기화',
+            'save-button': '💾 保存', 'load-button': '📂 加载', 'print-button': '🖨️ 인쇄하기', 'reset-button': '🔄 초기화',
             gross_income_label: "총薪수 (총收入)", pre_tax_deductions_label: "세전 공제", taxable_income_label: "应税收入", tax_total_label: "세금", post_tax_deductions_label: "세후 공제", total_deductions_taxes_label: "총 공제 및 세금", net_income_label: "净收入 (实得工资)", 
             total_expenses_card_label: "总支出", total_expenses_card_sub: "(从净收入中支出)", remaining_balance_card_label: "剩余余额", remaining_balance_card_sub: "(用於储蓄/投资)", expenses_percentage_text: "총收入의", remaining_percentage_text: "총收入의",
             alert_valid_amount: "请输入有效金額。", alert_custom_name: "请输入自定义项目的名称。", alert_item_exists: "' 已存在于此类别中。", alert_fill_all_fields: "请用有效数据填写所有费用字段。", alert_category_exists: "类别已存在。",
@@ -148,26 +149,44 @@ document.addEventListener('DOMContentLoaded', () => {
         // Explicitly update placeholders for dynamic/complex elements that might not match simple ID patterns
         document.querySelector('[data-category="taxes"] .custom-name-input').placeholder = t.tax_custom_name_placeholder;
         document.querySelector('[data-category="taxes"] .amount-input').placeholder = t['tax-amount-placeholder'];
-        document.querySelector('[data-category="taxes"] .add-item-btn').textContent = t['tax-add-button']; // Update '적용' to '추가'
+        // The add-item-btn text needs to be updated here for initial load
+        if (document.querySelector('[data-category="taxes"] .add-item-btn')) {
+            document.querySelector('[data-category="taxes"] .add-item-btn').textContent = t['tax-add-button'];
+        }
         
         document.querySelector('[data-category="preTax"] .custom-name-input').placeholder = t.pre_tax_custom_name_placeholder;
         document.querySelector('[data-category="preTax"] .amount-input').placeholder = t['pre-tax-amount-placeholder'];
-        document.querySelector('[data-category="preTax"] .add-item-btn').textContent = t['pre-tax-add-button']; // Update '적용' to '추가'
+        if (document.querySelector('[data-category="preTax"] .add-item-btn')) {
+            document.querySelector('[data-category="preTax"] .add-item-btn').textContent = t['pre-tax-add-button'];
+        }
 
         document.querySelector('[data-category="postTax"] .custom-name-input').placeholder = t.post_tax_custom_name_placeholder;
         document.querySelector('[data-category="postTax"] .amount-input').placeholder = t['post-tax-amount-placeholder'];
-        document.querySelector('[data-category="postTax"] .add-item-btn').textContent = t['post-tax-add-button']; // Update '적용' to '추가'
+        if (document.querySelector('[data-category="postTax"] .add-item-btn')) {
+            document.querySelector('[data-category="postTax"] .add-item-btn').textContent = t['post-tax-add-button'];
+        }
 
 
         document.getElementById('expense-name').placeholder = t['expense-name-placeholder'];
-        document.getElementById('expense-amount').placeholder = t['expense-amount-label']; // FIX: changed to use expense-amount-label
+        document.getElementById('expense-amount').placeholder = t['expense-amount-label']; 
         document.getElementById('new-category').placeholder = t['new-category-placeholder'];
-        document.getElementById('add-expense-button').textContent = t['add-expense-button']; // Update original add button
+        document.getElementById('add-expense-button').textContent = t['add-expense-button']; 
 
         // If update/cancel buttons exist, update their text
         if (updateExpenseBtn) updateExpenseBtn.textContent = t['update-expense-button'];
         if (cancelExpenseBtn) cancelExpenseBtn.textContent = t['cancel-expense-button'];
 
+        // Update button texts for section-specific update/cancel buttons
+        categorySections.forEach(section => {
+            const category = section.dataset.category;
+            const updateBtn = section.querySelector('.update-item-btn');
+            const cancelBtn = section.querySelector('.cancel-item-btn');
+            const addBtn = section.querySelector('.add-item-btn'); // Also update add button text
+
+            if (updateBtn) updateBtn.textContent = t[`${category}-update-button`];
+            if (cancelBtn) cancelBtn.textContent = t[`${category}-cancel-button`];
+            if (addBtn) addBtn.textContent = t[`${category}-add-button`]; // Important: update 'Add' button text too
+        });
 
         document.documentElement.lang = lang.split('-')[0]; // Set the HTML lang attribute
         fullUpdate(); // Re-render all components with new language
@@ -233,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const taxTotal = state.taxes.reduce((sum, item) => sum + item.amount, 0);
         const postTaxDeductions = state.postTax.reduce((sum, item) => sum + item.amount, 0);
         const totalDeductionsAndTaxes = preTaxDeductions + taxTotal + postTaxDeductions;
-        const netIncome = Math.max(0, income - totalDeductionsAnd2.taxes);
+        const netIncome = Math.max(0, income - totalDeductionsAndTaxes);
         const expensesTotal = state.expenses.reduce((sum, item) => sum + item.amount, 0);
         const remainingBalance = netIncome - expensesTotal;
 
@@ -514,14 +533,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.addEventListener('click', async (e) => {
         if (e.target.classList.contains('item-delete-btn')) {
             const { id, category } = e.target.dataset;
-            // Confirm deletion only for taxes, preTax, postTax (add translations later)
-            if (category !== 'expenses' && await showConfirmDialog(translations[state.language].confirm_delete_item || "정말로 이 항목을 삭제하시겠습니까?")) {
+            // Confirm deletion only for taxes, preTax, postTax
+            if (await showConfirmDialog(translations[state.language].confirm_delete_item)) {
                 state[category] = state[category].filter(item => item.id !== id);
                 fullUpdate();
-            } else if (category === 'expenses') { 
-                state[category] = state[category].filter(item => item.id !== id);
-                fullUpdate();
-            }
+            } 
         } else if (e.target.classList.contains('item-edit-btn')) {
             const { id, category } = e.target.dataset;
             const itemToEdit = state[category].find(item => item.id === id);
@@ -650,14 +666,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (savedData) {
             try {
                 const loadedState = JSON.parse(savedData);
-                // Ensure expenseCategories is an array if not present in old data
-                if (!loadedState.expenseCategories) {
-                    loadedState.expenseCategories = ['주거', '교통', '식비', '생활', '오락', '기타'];
-                }
-                Object.assign(state, loadedState);
-                incomeInput.value = state.income;
-                langSelect.value = state.language;
-                setLanguage(state.language); // Re-set language to update all UI elements
+                // Robustly initialize arrays if they are missing or null in loaded state
+                state.income = loadedState.income || 0;
+                state.taxes = Array.isArray(loadedState.taxes) ? loadedState.taxes : [];
+                state.preTax = Array.isArray(loadedState.preTax) ? loadedState.preTax : [];
+                state.postTax = Array.isArray(loadedState.postTax) ? loadedState.postTax : [];
+                state.expenses = Array.isArray(loadedState.expenses) ? loadedState.expenses : [];
+                state.expenseCategories = Array.isArray(loadedState.expenseCategories) ? loadedState.expenseCategories : ['주거', '교통', '식비', '생활', '오락', '기타'];
+                
+                langSelect.value = loadedState.language || 'ko';
+                setLanguage(langSelect.value); // Re-set language to update all UI elements
                 await showAlertDialog(t.alert_data_loaded);
             } catch(error) {
                 console.error('Failed to parse saved data:', error);
@@ -674,7 +692,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const confirmed = await showConfirmDialog(t.confirm_reset);
         if (confirmed) {
             localStorage.removeItem('budgetAppData');
-            state = { language: state.language, income: 0, taxes: [], preTax: [], postTax: [], expenses: [], expenseCategories: ['주거', '교통', '식비', '생활', '오락', '기타'], };
+            // Reset to initial state, ensuring all arrays are empty.
+            state = { 
+                language: state.language, 
+                income: 0, 
+                taxes: [], 
+                preTax: [], 
+                postTax: [], 
+                expenses: [], 
+                expenseCategories: ['주거', '교통', '식비', '생활', '오락', '기타'], 
+            };
             incomeInput.value = '';
             setLanguage(state.language); // Re-set language to update all UI elements
             await showAlertDialog(t.alert_data_reset);
