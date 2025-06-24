@@ -335,17 +335,11 @@ function renderList(elementId, items, totalIncome) {
 
   // 금액이 0이 아닌 항목들만 필터링
   const nonZeroItems = items.filter(item => item.amount !== 0);
-  const total = nonZeroItems.reduce((sum, item) => sum + item.amount, 0);
+  const total = items.reduce((sum, item) => sum + item.amount, 0); // Always calculate total based on ALL items
 
-  // 유효한 항목이 없으면 전체 섹션을 숨김 (카드 자체는 유지하고 목록만 비움)
-  // 부모 카드 엘리먼트를 찾아서 display: none 처리
+  // 부모 카드 엘리먼트를 찾아서 항상 보이도록 설정합니다.
   const parentCard = container.closest('.card');
-  if (nonZeroItems.length === 0) {
-    if (parentCard) parentCard.style.display = 'none';
-    return;
-  } else {
-    if (parentCard) parentCard.style.display = ''; // 다시 보이도록
-  }
+  if (parentCard) parentCard.style.display = '';
 
   container.innerHTML = `
     ${nonZeroItems.map(item => `
@@ -613,7 +607,7 @@ function addCategory() {
 
   budgetData.categories.push({
     id: id,
-    name: `${emoji || '📌'} ${newCategoryName}` // 이모지 + 원본 이름 저장. 표시 시 번역 사용.
+    name: `${emoji || '�'} ${newCategoryName}` // 이모지 + 원본 이름 저장. 표시 시 번역 사용.
   });
 
   populateCategorySelect();
