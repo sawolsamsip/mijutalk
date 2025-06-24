@@ -28,7 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
             gross_income_label: "세전 월급 (총 수입)", pre_tax_deductions_label: "세전 공제", taxable_income_label: "과세 소득", tax_total_label: "세금", post_tax_deductions_label: "세후 공제", total_deductions_taxes_label: "총 공제 및 세금", net_income_label: "순수입 (실수령액)", 
             total_expenses_card_label: "총 지출", total_expenses_card_sub: "(순수입에서 사용)", remaining_balance_card_label: "남은 잔액", remaining_balance_card_sub: "(저축/투자 가능)", expenses_percentage_text: "총 수입의", remaining_percentage_text: "총 수입의",
             alert_valid_amount: "올바른 금액을 입력하세요.", alert_custom_name: "사용자 지정 항목의 이름을 입력하세요.", alert_item_exists: "' 이미 이 카테고리에 존재합니다.", alert_fill_all_fields: "모든 지출 필드를 올바른 데이터로 채우세요.", alert_category_exists: "카테고리가 이미 존재합니다.",
-            confirm_reset: "모든 데이터를 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다.", alert_data_saved: "데이터가 성공적으로 저장되었습니다.", alert_save_failed: "데이터 저장에 실패했습니다.", alert_data_loaded: "데이터를 성공적으로 불러왔습니다.", alert_load_failed: "데이터 불러오기에 실패했습니다. 데이터가 손상되었을 수 있습니다.", alert_no_data: "저장된 데이터가 없습니다.", alert_data_reset: "데이터가 초기화되었습니다."
+            confirm_reset: "모든 데이터를 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다.", alert_data_saved: "데이터가 성공적으로 저장되었습니다.", alert_save_failed: "데이터 저장에 실패했습니다.", alert_data_loaded: "데이터를 성공적으로 불러왔습니다.", alert_load_failed: "데이터 불러오기에 실패했습니다. 데이터가 손상되었을 수 있습니다.", alert_no_data: "저장된 데이터가 없습니다.", alert_data_reset: "데이터가 초기화되었습니다.",
+            confirm_delete_item: "정말로 이 항목을 삭제하시겠습니까?" // Added missing translation key
         },
         en: {
             'app-title': '💰 Budget Management System (USD)', 'income-title': 'Salary', 'income-label': 'Gross Monthly Salary ($)', 
@@ -42,7 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
             gross_income_label: "Gross Salary (Total Income)", pre_tax_deductions_label: "Pre-Tax Deductions", taxable_income_label: "Taxable Income", tax_total_label: "Taxes", post_tax_deductions_label: "Post-Tax Deductions", total_deductions_taxes_label: "Total Deductions & Taxes", net_income_label: "Net Income (Take-Home Pay)", 
             total_expenses_card_label: "Total Expenses", total_expenses_card_sub: "(spent from Net Income)", remaining_balance_card_label: "Remaining Balance", remaining_balance_card_sub: "(for Savings/Investments)", expenses_percentage_text: "of Gross Income", remaining_percentage_text: "of Gross Income",
             alert_valid_amount: "Please enter a valid amount.", alert_custom_name: "Please enter a name for the custom item.", alert_item_exists: "' already exists in this category.", alert_fill_all_fields: "Please fill all expense fields with valid data.", alert_category_exists: "Category already exists.",
-            confirm_reset: "Are you sure you want to reset all data? This cannot be undone.", alert_data_saved: "Data saved successfully!", alert_save_failed: "Failed to save data.", alert_data_loaded: "Data loaded successfully!", alert_load_failed: "Failed to load data. It might be corrupted.", alert_no_data: "No saved data found.", alert_data_reset: "Data has been reset."
+            confirm_reset: "Are you sure you want to reset all data? This cannot be undone.", alert_data_saved: "Data saved successfully!", alert_save_failed: "Failed to save data.", alert_data_loaded: "Data loaded successfully!", alert_load_failed: "Failed to load data. It might be corrupted.", alert_no_data: "No saved data found.", alert_data_reset: "Data has been reset.",
+            confirm_delete_item: "Are you sure you want to delete this item?"
         },
         zh: {
             'app-title': '💰 预算管理系统 (USD)', 'income-title': '薪水', 'income-label': '세전 월급액 ($)', 
@@ -54,9 +56,10 @@ document.addEventListener('DOMContentLoaded', () => {
             'monthly-financial-status-title': '📊 每월 재무 현황', 'financial-analysis-chart-title': '📈 재무 분석 차트', 'income-flow-chart-title': '資金流分配 (與總收入相比)', 'expense-category-chart-title': '按类别划分的支出明细 (與總支出相比)', 
             'save-button': '💾 保存', 'load-button': '📂 加载', 'print-button': '🖨️ 打印', 'reset-button': '🔄 초기화',
             gross_income_label: "총薪수 (총收入)", pre_tax_deductions_label: "세전 공제", taxable_income_label: "应税收入", tax_total_label: "세금", post_tax_deductions_label: "세후 공제", total_deductions_taxes_label: "총 공제 및 세금", net_income_label: "净收入 (实得工资)", 
-            total_expenses_card_label: "총 지출", total_expenses_card_sub: "(从净收入中支出)", remaining_balance_card_label: "剩余余额", remaining_balance_card_sub: "(用於储蓄/投资)", expenses_percentage_text: "총收入의", remaining_percentage_text: "총收入의",
+            total_expenses_card_label: "总支出", total_expenses_card_sub: "(从净收入中支出)", remaining_balance_card_label: "剩余余额", remaining_balance_card_sub: "(用於储蓄/投资)", expenses_percentage_text: "총收入의", remaining_percentage_text: "총收入의",
             alert_valid_amount: "请输入有效金額。", alert_custom_name: "请输入自定义项目的名称。", alert_item_exists: "' 已存在于此类别中。", alert_fill_all_fields: "请用有效数据填写所有费用字段。", alert_category_exists: "类别已存在。",
-            confirm_reset: "您确定要重置所有数据吗？此操作无法撤销。", alert_data_saved: "数据保存成功！", alert_save_failed: "数据保存失败。", alert_data_loaded: "数据加载成功！", alert_load_failed: "加载数据失败。数据可能已损坏。", alert_no_data: "未找到保存的数据。", alert_data_reset: "数据已重置。"
+            confirm_reset: "您确定要重置所有数据吗？此操作无法撤销。", alert_data_saved: "数据保存成功！", alert_save_failed: "数据保存失败。", alert_data_loaded: "数据加载成功！", alert_load_failed: "加载数据失败。数据可能已损坏。", alert_no_data: "未找到保存的数据。", alert_data_reset: "数据已重置。",
+            confirm_delete_item: "您确定要删除此项目吗？"
         },
     };
 
@@ -230,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const taxTotal = state.taxes.reduce((sum, item) => sum + item.amount, 0);
         const postTaxDeductions = state.postTax.reduce((sum, item) => sum + item.amount, 0);
         const totalDeductionsAndTaxes = preTaxDeductions + taxTotal + postTaxDeductions;
-        const netIncome = Math.max(0, income - totalDeductionsAndTaxes);
+        const netIncome = Math.max(0, income - totalDeductionsAnd2.taxes);
         const expensesTotal = state.expenses.reduce((sum, item) => sum + item.amount, 0);
         const remainingBalance = netIncome - expensesTotal;
 
@@ -363,21 +366,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const customNameInput = section.querySelector('.custom-name-input');
         const amountInput = section.querySelector('.amount-input');
         const addButton = section.querySelector('.add-item-btn');
-        // Create or get the update and cancel buttons
+        
+        // Create or get the update and cancel buttons.
+        // Ensure they are hidden by default by adding the 'hidden' class.
         let updateButton = section.querySelector('.update-item-btn');
         let cancelButton = section.querySelector('.cancel-item-btn');
 
         if (!updateButton) {
             updateButton = document.createElement('button');
-            updateButton.className = 'update-item-btn hidden';
-            updateButton.textContent = translations[state.language][`${category}-update-button`];
+            updateButton.className = 'update-item-btn hidden'; // Ensure hidden initially
             inputContainer.appendChild(updateButton);
         }
         if (!cancelButton) {
             cancelButton = document.createElement('button');
-            cancelButton.className = 'cancel-item-btn hidden utility-btn';
-            cancelButton.textContent = translations[state.language][`${category}-cancel-button`];
-            cancelButton.style.backgroundColor = '#6c757d'; // Default gray for utility buttons
+            cancelButton.className = 'cancel-item-btn hidden utility-btn'; // Ensure hidden initially
+            cancelButton.style.backgroundColor = '#6c757d'; 
             inputContainer.appendChild(cancelButton);
         }
 
@@ -391,7 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
          * @param {object | null} item - The item object to edit (if entering edit mode).
          */
         const setSectionEditMode = (isEditing, item = null) => {
-            const t = translations[state.language]; // Get translations inside function
+            const t = translations[state.language]; 
             if (isEditing) {
                 // Hide 'Add' button, show 'Update' and 'Cancel'
                 addButton.classList.add('hidden');
@@ -409,16 +412,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         select.value = item.name;
                         customNameInput.style.display = 'none'; // Hide custom input if a standard option is selected
                     } else {
-                        select.value = 'custom';
-                        customNameInput.value = item.name;
+                        select.value = 'custom'; // Select 'Custom' option
+                        customNameInput.value = item.name; // Set custom input value
                         customNameInput.style.display = 'block'; // Show custom input for custom item
                     }
                     amountInput.value = item.amount;
                     inputContainer.style.display = 'flex'; // Ensure input container is visible
                     
                     // Manually trigger change to ensure other related UI updates (if any) occur
+                    // This is crucial for the select's change listener to re-evaluate the display.
                     const event = new Event('change');
-                    select.dispatchEvent(event);
+                    select.dispatchEvent(event); 
                 }
             } else {
                 // Show 'Add' button, hide 'Update' and 'Cancel'
@@ -510,11 +514,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.addEventListener('click', async (e) => {
         if (e.target.classList.contains('item-delete-btn')) {
             const { id, category } = e.target.dataset;
-            // Confirm deletion only for taxes, preTax, postTax
+            // Confirm deletion only for taxes, preTax, postTax (add translations later)
             if (category !== 'expenses' && await showConfirmDialog(translations[state.language].confirm_delete_item || "정말로 이 항목을 삭제하시겠습니까?")) {
                 state[category] = state[category].filter(item => item.id !== id);
                 fullUpdate();
-            } else if (category === 'expenses') { // For expenses, delete directly without confirmation for now (can be added)
+            } else if (category === 'expenses') { 
                 state[category] = state[category].filter(item => item.id !== id);
                 fullUpdate();
             }
