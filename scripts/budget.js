@@ -679,12 +679,12 @@ function updateCharts(grossIncome, preTaxTotal, taxTotal, postTaxTotal, expenses
                 legend: {
                     position: 'bottom', // 항상 하단에 배치
                     labels: {
-                        boxWidth: 12,
+                        boxWidth: 12, // 레이블 색상 상자 크기 조정
                         padding: 10,
                         font: {
                             size: 14
                         },
-                        // 범례에 퍼센티지 추가
+                        // 범례에 항목명과 퍼센테지만 표시
                         generateLabels: function(chart) {
                             const data = chart.data;
                             if (data.labels.length && data.datasets.length) {
@@ -692,7 +692,7 @@ function updateCharts(grossIncome, preTaxTotal, taxTotal, postTaxTotal, expenses
                                 return data.labels.map(function(label, i) {
                                     const value = data.datasets[0].data[i];
                                     const percentage = total === 0 ? '0.0' : (value / total * 100).toFixed(1);
-                                    let text = `${label}: $${formatMoney(value)} (${percentage}%)`;
+                                    let text = `${label} (${percentage}%)`; // 금액 제거
                                     return {
                                         text: text,
                                         fillStyle: data.datasets[0].backgroundColor[i],
@@ -717,7 +717,7 @@ function updateCharts(grossIncome, preTaxTotal, taxTotal, postTaxTotal, expenses
                             const value = context.parsed;
                             const sum = context.dataset.data.reduce((a, b) => a + b, 0);
                             const percentage = sum === 0 ? '0.0' : (value / sum * 100).toFixed(1);
-                            return `${label}$${formatMoney(value)} (${percentage}%)`;
+                            return `${label}$${formatMoney(value)} (${percentage}%)`; // 툴팁에서는 금액 유지
                         }
                     }
                 },
@@ -785,7 +785,7 @@ function updateCharts(grossIncome, preTaxTotal, taxTotal, postTaxTotal, expenses
                         font: {
                             size: 14
                         },
-                        // 범례에 퍼센티지 추가
+                        // 범례에 항목명과 퍼센테지만 표시
                         generateLabels: function(chart) {
                             const data = chart.data;
                             if (data.labels.length && data.datasets.length) {
@@ -793,7 +793,7 @@ function updateCharts(grossIncome, preTaxTotal, taxTotal, postTaxTotal, expenses
                                 return data.labels.map(function(label, i) {
                                     const value = data.datasets[0].data[i];
                                     const percentage = total === 0 ? '0.0' : (value / total * 100).toFixed(1);
-                                    let text = `${label}: $${formatMoney(value)} (${percentage}%)`;
+                                    let text = `${label} (${percentage}%)`; // 금액 제거
                                     return {
                                         text: text,
                                         fillStyle: data.datasets[0].backgroundColor[i],
@@ -819,7 +819,7 @@ function updateCharts(grossIncome, preTaxTotal, taxTotal, postTaxTotal, expenses
                             const sum = context.dataset.data.reduce((a, b) => a + b, 0);
                             // Handle sum of 0 to prevent NaN for percentage
                             const percentage = sum === 0 ? '0.0' : (value / sum * 100).toFixed(1);
-                            return `${label}$${formatMoney(value)} (${percentage}%)`;
+                            return `${label}$${formatMoney(value)} (${percentage}%)`; // 툴팁에서는 금액 유지
                         }
                     }
                 },
