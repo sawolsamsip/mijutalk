@@ -607,7 +607,7 @@ function addCategory() {
 
   budgetData.categories.push({
     id: id,
-    name: `${emoji || '�'} ${newCategoryName}` // 이모지 + 원본 이름 저장. 표시 시 번역 사용.
+    name: `${emoji || '📌'} ${newCategoryName}` // 이모지 + 원본 이름 저장. 표시 시 번역 사용.
   });
 
   populateCategorySelect();
@@ -703,7 +703,7 @@ function updateCharts(grossIncome, preTaxTotal, taxTotal, postTaxTotal, expenses
                         font: {
                             size: 14
                         },
-                        // 범례에 항목명과 퍼센테지만 표시
+                        // 범례에 항목명과 퍼센테지만 표시 (이모티콘 제거)
                         generateLabels: function(chart) {
                             const data = chart.data;
                             if (data.labels.length && data.datasets.length) {
@@ -711,7 +711,9 @@ function updateCharts(grossIncome, preTaxTotal, taxTotal, postTaxTotal, expenses
                                 return data.labels.map(function(label, i) {
                                     const value = data.datasets[0].data[i];
                                     const percentage = total === 0 ? '0.0' : (value / total * 100).toFixed(1);
-                                    let text = `${label} (${percentage}%)`; // 금액 제거
+                                    // 이모티콘을 제거합니다. (유니코드 이모티콘 및 이모티콘 선택자 제거)
+                                    const cleanLabel = label.replace(/(\p{Emoji_Presentation}|\p{Emoji}\uFE0F|\p{Emoji_Modifier_Base}|\p{Emoji_Modifier})/gu, '').trim();
+                                    let text = `${cleanLabel} (${percentage}%)`; // 클린된 레이블 사용
                                     return {
                                         text: text,
                                         fillStyle: data.datasets[0].backgroundColor[i],
@@ -788,7 +790,7 @@ function updateCharts(grossIncome, preTaxTotal, taxTotal, postTaxTotal, expenses
                         font: {
                             size: 14
                         },
-                        // 범례에 항목명과 퍼센테지만 표시
+                        // 범례에 항목명과 퍼센테지만 표시 (이모티콘 제거)
                         generateLabels: function(chart) {
                             const data = chart.data;
                             if (data.labels.length && data.datasets.length) {
@@ -796,7 +798,9 @@ function updateCharts(grossIncome, preTaxTotal, taxTotal, postTaxTotal, expenses
                                 return data.labels.map(function(label, i) {
                                     const value = data.datasets[0].data[i];
                                     const percentage = total === 0 ? '0.0' : (value / total * 100).toFixed(1);
-                                    let text = `${label} (${percentage}%)`; // 금액 제거
+                                    // 이모티콘을 제거합니다. (유니코드 이모티콘 및 이모티콘 선택자 제거)
+                                    const cleanLabel = label.replace(/(\p{Emoji_Presentation}|\p{Emoji}\uFE0F|\p{Emoji_Modifier_Base}|\p{Emoji_Modifier})/gu, '').trim();
+                                    let text = `${cleanLabel} (${percentage}%)`; // 클린된 레이블 사용
                                     return {
                                         text: text,
                                         fillStyle: data.datasets[0].backgroundColor[i],
