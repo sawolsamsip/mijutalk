@@ -1,4 +1,3 @@
-  <style>
     :root {
       --primary: #3498db;
       --danger: #e74c3c;
@@ -413,4 +412,3 @@
       aspect-ratio: 1 / 1; /* 인쇄 시에도 비율 유지 */
     }
     }
-  </style>
