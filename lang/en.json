@@ -12,7 +12,7 @@
   "apply_button": "Apply",
 
   "federal_withholding": "Federal Withholding",
-  "state_tax_ca": "State Tax (CA)",
+  "state_tax_ca": "State Tax (California)",
   "oasdi_social_security": "OASDI (Social Security)",
   "medicare": "Medicare",
   "ca_sdi": "CA SDI",
@@ -23,10 +23,10 @@
   "mseap": "MSEAP",
   "four_01k_roth": "401k Roth",
   "legal_services": "Legal Services",
-  "ltd": "LTD",
+  "ltd": "Long-Term Disability",
   "stock_purchase_plan": "Stock Purchase Plan",
   "ad_and_d": "AD&D",
-  "critical_illness": "Critical Illness",
+  "critical_illness": "Critical Illness Insurance",
   "accident_insurance": "Accident Insurance",
 
   "pre_tax_title": "Pre-Tax Deductions",
@@ -42,23 +42,23 @@
   "add_expense_button": "Add Expense",
 
   "monthly_financial_status_title": "📊 Monthly Financial Status",
-  "gross_income_label": "Gross Income (Pre-tax Salary)",
+  "gross_income_label": "Gross Monthly Salary (Total Income)",
   "pre_tax_deduction_label": "Pre-Tax Deductions",
   "taxable_income_label": "**Taxable Income**",
   "tax_total_label": "Taxes",
   "post_tax_deduction_label": "Post-Tax Deductions",
   "total_deductions_taxes_label": "**Total Deductions & Taxes**",
-  "net_income_label": "**Net Income (Take-home Pay)**",
+  "net_income_label": "**Net Income (Take-Home Pay)**",
 
   "total_expenses_card_label": "Total Expenses",
-  "total_expenses_card_sub": "(Used from Net Income)",
+  "total_expenses_card_sub": "(Amount spent from net income)",
   "remaining_balance_card_label": "Remaining Balance",
   "remaining_balance_card_sub": "(Net Income - Total Expenses = Savings/Investment)",
   "of": "of",
 
-  "financial_analysis_chart_title": "📈 Financial Analysis Charts",
-  "income_flow_chart_title": "Income Flow Distribution (vs. Gross Income)",
-  "expense_category_chart_title": "Expense Category Breakdown (vs. Total Expenses)",
+  "financial_analysis_chart_title": "📈 Financial Analysis Chart",
+  "income_flow_chart_title": "Fund Flow Allocation (vs. Total Income)",
+  "expense_category_chart_title": "Expense Category Distribution (vs. Total Expenses)",
 
   "save_button": "💾 Save",
   "load_button": "📂 Load",
@@ -89,6 +89,10 @@
   "post_tax_type": "Post-Tax Deductions",
   "total_expenses_type": "Total Expenses",
   "remaining_balance_type": "Remaining Balance",
+
+  "total_taxes_label": "Total Taxes",
+  "total_preTax_label": "Total Pre-Tax Deductions",
+  "total_postTax_label": "Total Post-Tax Deductions",
 
   "category_housing": "🏠 Housing",
   "category_food": "🍔 Food",
