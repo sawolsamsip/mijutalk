@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'new-category-placeholder': '输入新类别名称', 'add-category-button': '添加类别', 'add-expense-button': '添加支出', 'update-expense-button': '更新支出', 'cancel-expense-button': '取消', 
             'monthly-financial-status-title': '📊 每월 재무 현황', 'financial-analysis-chart-title': '📈 재무 분석 차트', 'income-flow-chart-title': '資金流分配 (與總收入相比)', 'expense-category-chart-title': '按类别划分的支出明细 (與總支出相比)', 
             'save-button': '💾 保存', 'load-button': '📂 加载', 'print-button': '🖨️ 인쇄하기', 'reset-button': '🔄 초기화',
-            gross_income_label: "총薪수 (총收入)", pre_tax_deductions_label: "세전 공제", taxable_income_label: "应税收入", tax_total_label: "세금", post_tax_deductions_label: "세후 공제", total_deductions_taxes_label: "총 공제 및 세금", net_income_label: "净收入 (实得工资)", 
+            gross_income_label: "총薪수 (총收入)", pre_tax_deductions_label: "세전 공제", taxable_income_label: "应税收入", tax_total_label: "세금", post_tax_deductions_label: "세후 공제", total_deductions_taxes_label: "总 공제 및 세금", net_income_label: "净收入 (实得工资)", 
             total_expenses_card_label: "总支出", total_expenses_card_sub: "(从净收入中支出)", remaining_balance_card_label: "剩余余额", remaining_balance_card_sub: "(用於储蓄/投资)", expenses_percentage_text: "총收入의", remaining_percentage_text: "총收入의",
             alert_valid_amount: "请输入有效金額。", alert_custom_name: "请输入自定义项目的名称。", alert_item_exists: "' 已存在于此类别中。", alert_fill_all_fields: "请用有效数据填写所有费用字段。", alert_category_exists: "类别已存在。",
             confirm_reset: "您确定要重置所有数据吗？此操作无法撤销。", alert_data_saved: "数据保存成功！", alert_save_failed: "数据保存失败。", alert_data_loaded: "数据加载成功！", alert_load_failed: "加载数据失败。数据可能已损坏。", alert_no_data: "未找到保存的数据。", alert_data_reset: "数据已重置。",
@@ -467,25 +467,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Toggle visibility of input fields based on select choice.
         select.addEventListener('change', () => {
-            // Always hide edit buttons and show add button when select changes
-            // This ensures a clean state for adding a new item
-            addButton.classList.remove('hidden');
-            updateButton.classList.add('hidden');
-            cancelButton.classList.add('hidden');
-            editingItemId = null; // Important: Clear editing state
+            // Always reset the state of this section to "add new item" mode
+            // This will hide update/cancel buttons and ensure 'Add' is visible.
+            // It will also clear the input fields and hide the custom name input.
+            // IMPORTANT: setSectionEditMode(false) also sets inputContainer.style.display = 'none'
+            // We need to ensure that if a valid option is selected, it becomes 'flex' again.
+            setSectionEditMode(false); // Resets the form and hides inputContainer
 
-            inputContainer.style.display = select.value ? 'flex' : 'none';
-            customNameInput.style.display = select.value === 'custom' ? 'block' : 'none';
-            
-            // Clear the input fields when a new selection is made, unless it's 'custom' and we want to preserve input for a custom item name
-            if (select.value !== 'custom') {
-                customNameInput.value = '';
+            // Now, based on the NEW selection, determine if inputs should be visible
+            if (select.value) { // If anything other than the placeholder is selected
+                inputContainer.style.display = 'flex'; // Show the main input container
+                if (select.value === 'custom') {
+                    customNameInput.style.display = 'block'; // Show custom input for 'custom'
+                    customNameInput.focus();
+                } else {
+                    customNameInput.style.display = 'none'; // Hide custom input for non-'custom'
+                    amountInput.focus();
+                }
+            } else {
+                // If the placeholder is selected (select.value is empty), ensure everything is hidden
+                inputContainer.style.display = 'none';
+                customNameInput.style.display = 'none';
             }
-            amountInput.value = '';
 
-            // Focus on the appropriate input field
-            if (select.value === 'custom') customNameInput.focus();
-            else if (select.value) amountInput.focus();
+            // Clear amounts when changing selection to avoid carrying over old values
+            amountInput.value = '';
+            if (select.value !== 'custom') {
+                customNameInput.value = ''; // Only clear custom name if not 'custom' option
+            }
         });
         
         // Add item handler (original 'Apply' button, now 'Add')
