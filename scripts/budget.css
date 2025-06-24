@@ -412,3 +412,45 @@
       aspect-ratio: 1 / 1; /* 인쇄 시에도 비율 유지 */
     }
     }
+.app-header {
+    display: flex;
+    justify-content: space-between; /* 양쪽 끝 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+    margin-bottom: 20px;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee; /* 하단 구분선 */
+}
+
+.language-selector {
+    display: flex;
+    gap: 8px; /* 버튼 사이 간격 */
+}
+
+.lang-button {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+    border-radius: 8px; /* 둥근 모서리 */
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px; /* 이모티콘과 텍스트 사이 간격 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 약간의 그림자 */
+}
+
+.lang-button:hover {
+    background-color: #e0e0e0;
+    border-color: #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* 호버 시 그림자 강조 */
+    transform: translateY(-1px); /* 약간 위로 떠오르는 효과 */
+}
+
+.lang-button.active {
+    background-color: #007bff; /* 활성 버튼 색상 */
+    color: #fff;
+    border-color: #007bff;
+    box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
+}
