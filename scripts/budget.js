@@ -261,7 +261,7 @@ function generateColors(num) {
       '#7E57C2', '#BDBDBD', '#FFEE58', '#8D6E63', '#9CCC65', '#29B6F6', '#FFAB91', '#AFB42B'
     ];
     // Cycle through or pick distinct colors if more are needed
-    return Array.from({ length: num }, (_, i) => colors[i % colors.length]);
+    return Array.from({ length: num }, (_, i) => colors[i % num]); // 변경: colors.length 대신 num 사용
 }
 
 function updateUI() {
@@ -677,7 +677,7 @@ function updateCharts(grossIncome, preTaxTotal, taxTotal, postTaxTotal, expenses
             maintainAspectRatio: false, // Allow charts to resize within their containers
             plugins: {
                 legend: {
-                    position: window.innerWidth <= 768 ? 'bottom' : 'right', // 화면 크기에 따라 범례 위치 변경
+                    position: 'bottom', // 항상 하단에 배치
                     labels: {
                         boxWidth: 12,
                         padding: 10,
@@ -693,10 +693,6 @@ function updateCharts(grossIncome, preTaxTotal, taxTotal, postTaxTotal, expenses
                                     const value = data.datasets[0].data[i];
                                     const percentage = total === 0 ? '0.0' : (value / total * 100).toFixed(1);
                                     let text = `${label}: $${formatMoney(value)} (${percentage}%)`;
-                                    // 작은 화면에서 텍스트 길이를 줄임 (선택 사항, 필요 시 활성화)
-                                    // if (window.innerWidth <= 768 && text.length > 30) {
-                                    //     text = label.substring(0, 15) + '...'; // 예시: 길이에 따라 자르기
-                                    // }
                                     return {
                                         text: text,
                                         fillStyle: data.datasets[0].backgroundColor[i],
@@ -784,7 +780,7 @@ function updateCharts(grossIncome, preTaxTotal, taxTotal, postTaxTotal, expenses
             maintainAspectRatio: false, // Allow charts to resize within their containers
             plugins: {
                 legend: {
-                    position: window.innerWidth <= 768 ? 'bottom' : 'right', // 화면 크기에 따라 범례 위치 변경
+                    position: 'bottom', // 항상 하단에 배치
                     labels: {
                         font: {
                             size: 14
@@ -798,10 +794,6 @@ function updateCharts(grossIncome, preTaxTotal, taxTotal, postTaxTotal, expenses
                                     const value = data.datasets[0].data[i];
                                     const percentage = total === 0 ? '0.0' : (value / total * 100).toFixed(1);
                                     let text = `${label}: $${formatMoney(value)} (${percentage}%)`;
-                                    // 작은 화면에서 텍스트 길이를 줄임 (선택 사항, 필요 시 활성화)
-                                    // if (window.innerWidth <= 768 && text.length > 30) {
-                                    //     text = label.substring(0, 15) + '...'; // 예시: 길이에 따라 자르기
-                                    // }
                                     return {
                                         text: text,
                                         fillStyle: data.datasets[0].backgroundColor[i],
