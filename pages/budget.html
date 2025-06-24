@@ -39,11 +39,12 @@
     <label for="tax-type" id="tax-type-label">세금 종류</label>
     <select id="tax-type">
       <option value="" disabled selected id="tax-select-placeholder">세금 종류 선택</option>
-      <option value="Federal Withholding">Federal Withholding</option>
-      <option value="State Tax (CA)">State Tax (CA)</option>
-      <option value="OASDI (Social Security)">OASDI (Social Security)</option>
-      <option value="Medicare">Medicare</option>
-      <option value="CA SDI">CA SDI</option>
+      <!-- VALUE 속성을 번역 키와 일치하도록 수정 -->
+      <option value="federal_withholding">Federal Withholding</option>
+      <option value="state_tax_ca">State Tax (CA)</option>
+      <option value="oasdi_social_security">OASDI (Social Security)</option>
+      <option value="medicare">Medicare</option>
+      <option value="ca_sdi">CA SDI</option>
       <option value="custom" id="tax-option-custom">직접 입력</option>
     </select>
     <div id="tax-custom-container" class="category-input-container flex">
@@ -61,11 +62,12 @@
     <label for="pre-tax-type" id="pre-tax-type-label">공제 항목</label>
     <select id="pre-tax-type">
       <option value="" disabled selected id="pre-tax-select-placeholder">공제 항목 선택</option>
-      <option value="401k Traditional">401k Traditional</option>
-      <option value="Medical Premium">Medical Premium</option>
-      <option value="Dental Premium">Dental Premium</option>
-      <option value="Vision Premium">Vision Premium</option>
-      <option value="MSEAP">MSEAP</option>
+      <!-- VALUE 속성을 번역 키와 일치하도록 수정 -->
+      <option value="four_01k_traditional">401k Traditional</option>
+      <option value="medical_premium">Medical Premium</option>
+      <option value="dental_premium">Dental Premium</option>
+      <option value="vision_premium">Vision Premium</option>
+      <option value="mseap">MSEAP</option>
       <option value="custom" id="pre-tax-option-custom">직접 입력</option>
     </select>
     <div id="pre-tax-custom-container" class="category-input-container flex">
@@ -83,13 +85,14 @@
     <label for="post-tax-type" id="post-tax-type-label">공제 항목</label>
     <select id="post-tax-type">
       <option value="" disabled selected id="post-tax-select-placeholder">공제 항목 선택</option>
-      <option value="401k Roth">401k Roth</option>
-      <option value="Legal Services">Legal Services</option>
-      <option value="LTD">LTD</option>
-      <option value="Stock Purchase Plan">Stock Purchase Plan</option>
-      <option value="AD&D">AD&D</option>
-      <option value="Critical Illness">Critical Illness</option>
-      <option value="Accident Insurance">Accident Insurance</option>
+      <!-- VALUE 속성을 번역 키와 일치하도록 수정 -->
+      <option value="four_01k_roth">401k Roth</option>
+      <option value="legal_services">Legal Services</option>
+      <option value="ltd">LTD</option>
+      <option value="stock_purchase_plan">Stock Purchase Plan</option>
+      <option value="ad_and_d">AD&D</option>
+      <option value="critical_illness">Critical Illness</option>
+      <option value="accident_insurance">Accident Insurance</option>
       <option value="custom" id="post-tax-option-custom">직접 입력</option>
     </select>
     <div id="post-tax-custom-container" class="category-input-container flex">
