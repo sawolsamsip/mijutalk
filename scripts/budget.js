@@ -968,22 +968,19 @@ document.addEventListener('DOMContentLoaded', function() {
     initDefaultData();
   } else {
     const savedData = JSON.parse(localStorage.getItem('budgetData'));
-    // Deep copy to ensure original objects are not mutated
     budgetData.income = savedData.income || 0;
     budgetData.taxes = savedData.taxes ? savedData.taxes.map(item => ({...item})) : [];
     budgetData.preTax = savedData.preTax ? savedData.preTax.map(item => ({...item})) : [];
     budgetData.postTax = savedData.postTax ? savedData.postTax.map(item => ({...item})) : [];
     budgetData.expenses = savedData.expenses ? savedData.expenses.map(item => ({...item})) : [];
-    // 카테고리 로딩 시 언어에 맞는 이름으로 설정되지 않도록 id와 원래 이름만 저장하고 표시될때 번역하도록
     budgetData.categories = savedData.categories ? savedData.categories.map(item => ({id: item.id, name: item.name})) : [
       { id: 'housing', name: '🏠 주거' }, { id: 'food', name: '🍔 식비' },
       { id: 'transportation', name: '🚗 교통' }, { id: 'health', name: '🏥 건강' },
       { id: 'family', name: '👪 가족' }, { id: 'shopping', name: '🛍️ 쇼핑' },
       { id: 'finance', name: '💳 금융' }, { id: 'travel', name: '✈️ 여행' },
-      { id: 'saving', name: '� 저축' }, { id: 'business', name: '💼 업무' }
+      { id: 'saving', name: '💰 저축' }, { id: 'business', name: '💼 업무' }
     ];
 
-    // Ensure default deduction types are present if missing after loading
     DEFAULT_DEDUCTIONS.taxes.forEach(defaultItem => {
         if (!budgetData.taxes.some(item => item.name === defaultItem.name)) {
             budgetData.taxes.push({ ...defaultItem, id: generateUniqueId(), type: 'taxes' });
@@ -1001,13 +998,25 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // 언어 드롭다운 초기화
-  const langSelect = document.getElementById('language-select');
-  if (langSelect) {
-    langSelect.value = currentLanguage; // 로컬 스토리지에서 불러온 언어로 설정
-    langSelect.addEventListener('change', function() {
-      localStorage.setItem('appLanguage', this.value); // 선택된 언어 로컬 스토리지에 저장
-      loadTranslations(this.value); // 선택된 언어로 번역 로드
+  // 기존 언어 선택 드롭다운 대신 버튼에 이벤트 리스너 추가
+  const langButtons = document.querySelectorAll('.lang-button');
+  if (langButtons.length > 0) {
+    // 초기 로드 시 활성 버튼 설정
+    langButtons.forEach(button => {
+        if (button.dataset.lang === currentLanguage) {
+            button.classList.add('active');
+        } else {
+            button.classList.remove('active');
+        }
+        button.addEventListener('click', function() {
+            // 모든 버튼의 active 클래스 제거
+            langButtons.forEach(btn => btn.classList.remove('active'));
+            // 클릭된 버튼에 active 클래스 추가
+            this.classList.add('active');
+
+            localStorage.setItem('appLanguage', this.dataset.lang); // 선택된 언어 로컬 스토리지에 저장
+            loadTranslations(this.dataset.lang); // 선택된 언어로 번역 로드
+        });
     });
   }
 
@@ -1021,14 +1030,13 @@ document.addEventListener('DOMContentLoaded', function() {
       const type = this.id.replace('-type', '');
       const container = document.getElementById(`${type}-custom-container`);
       const customNameInput = document.getElementById(`${type}-custom-name`);
-      const amountInput = document.getElementById(`${type}-amount-input`); // ID 변경
+      const amountInput = document.getElementById(`${type}-amount-input`);
 
       if (this.value === 'custom') {
         container.style.display = 'flex';
         customNameInput.focus();
       } else {
         container.style.display = 'none';
-        // HTML option value와 JSON key가 일치하도록 수정되어 있다고 가정하고 name 대신 value로 찾기
         const existingItem = budgetData[type].find(item => item.name === this.value);
         amountInput.value = existingItem ? existingItem.amount : '0';
         amountInput.focus();
@@ -1052,8 +1060,8 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Event listeners for 'Enter' key to apply input
-  document.getElementById('tax-amount-input').addEventListener('keypress', function(e) { if (e.key === 'Enter') updateCategorizedItem('taxes'); }); // ID 변경
-  document.getElementById('pre-tax-amount-input').addEventListener('keypress', function(e) { if (e.key === 'Enter') updateCategorizedItem('preTax'); }); // ID 변경
-  document.getElementById('post-tax-amount-input').addEventListener('keypress', function(e) { if (e.key === 'Enter') updateCategorizedItem('postTax'); }); // ID 변경
+  document.getElementById('tax-amount-input').addEventListener('keypress', function(e) { if (e.key === 'Enter') updateCategorizedItem('taxes'); });
+  document.getElementById('pre-tax-amount-input').addEventListener('keypress', function(e) { if (e.key === 'Enter') updateCategorizedItem('preTax'); });
+  document.getElementById('post-tax-amount-input').addEventListener('keypress', function(e) { if (e.key === 'Enter') updateCategorizedItem('postTax'); });
   document.getElementById('expense-amount').addEventListener('keypress', function(e) { if (e.key === 'Enter') addExpense(); });
 });
