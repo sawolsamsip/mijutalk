@@ -45,17 +45,17 @@ document.addEventListener('DOMContentLoaded', () => {
             confirm_reset: "Are you sure you want to reset all data? This cannot be undone.", alert_data_saved: "Data saved successfully!", alert_save_failed: "Failed to save data.", alert_data_loaded: "Data loaded successfully!", alert_load_failed: "Failed to load data. It might be corrupted.", alert_no_data: "No saved data found.", alert_data_reset: "Data has been reset."
         },
         zh: {
-            'app-title': '💰 预算管理系统 (USD)', 'income-title': '薪水', 'income-label': '税前月薪 ($)', 
-            'tax-title': '税款', 'tax-type-label': '税种', 'tax-select-placeholder': '选择税种', 'tax-option-custom': '自定义', 'tax_custom_name_placeholder': '输入税项名称', 'tax-amount-placeholder': '金额 ($)', 'tax-add-button': '添加', 'tax-update-button': '更新', 'tax-cancel-button': '取消', 
-            'pre-tax-title': '税前扣除', 'pre-tax-type-label': '扣除项目', 'pre-tax-select-placeholder': '选择扣除项目', 'pre-tax-option-custom': '自定义', 'pre_tax_custom_name_placeholder': '输入扣除名称', 'pre-tax-amount-placeholder': '金额 ($)', 'pre-tax-add-button': '添加', 'pre-tax-update-button': '更新', 'pre-tax-cancel-button': '取消', 
-            'post-tax-title': '税后扣除', 'post-tax-type-label': '扣除项目', 'post-tax-select-placeholder': '选择扣除项目', 'post-tax-option-custom': '自定义', 'post_tax_custom_name_placeholder': '输入扣除名称', 'post-tax-amount-placeholder': '金额 ($)', 'post-tax-add-button': '添加', 'post-tax-update-button': '更新', 'post-tax-cancel-button': '取消',
-            'expense-management-title': '지출 관리', 'category-label': '카테고리', 'expense-name-label': '항목명', 'expense-name-placeholder': '例如：房租', 'expense-amount-label': '金额', 
+            'app-title': '💰 预算管理系统 (USD)', 'income-title': '薪水', 'income-label': '세전 월급액 ($)', 
+            'tax-title': '세금', 'tax-type-label': '세종', 'tax-select-placeholder': '선택 세종', 'tax-option-custom': '自定义', 'tax_custom_name_placeholder': '输入税项名称', 'tax-amount-placeholder': '金額 ($)', 'tax-add-button': '添加', 'tax-update-button': '更新', 'tax-cancel-button': '取消', 
+            'pre-tax-title': '세전 공제', 'pre-tax-type-label': '공제 항목', 'pre-tax-select-placeholder': '선택 공제 항목', 'pre-tax-option-custom': '自定义', 'pre_tax_custom_name_placeholder': '输入扣除名称', 'pre-tax-amount-placeholder': '金額 ($)', 'pre-tax-add-button': '添加', 'pre-tax-update-button': '更新', 'pre-tax-cancel-button': '取消', 
+            'post-tax-title': '세후 공제', 'post-tax-type-label': '공제 항목', 'post-tax-select-placeholder': '선택 공제 항목', 'post-tax-option-custom': '自定义', 'post_tax_custom_name_placeholder': '输入扣除名称', 'post-tax-amount-placeholder': '金額 ($)', 'post-tax-add-button': '添加', 'post-tax-update-button': '更新', 'post-tax-cancel-button': '取消',
+            'expense-management-title': '지출 관리', 'category-label': '类别', 'expense-name-label': '항목명', 'expense-name-placeholder': '예: 월세', 'expense-amount-label': '金額', 
             'new-category-placeholder': '输入新类别名称', 'add-category-button': '添加类别', 'add-expense-button': '添加支出', 'update-expense-button': '更新支出', 'cancel-expense-button': '取消', 
             'monthly-financial-status-title': '📊 每월 재무 현황', 'financial-analysis-chart-title': '📈 재무 분석 차트', 'income-flow-chart-title': '資金流分配 (與總收入相比)', 'expense-category-chart-title': '按类别划分的支出明细 (與總支出相比)', 
-            'save-button': '💾 保存', 'load-button': '📂 加载', 'print-button': '🖨️ 打印', 'reset-button': '🔄 重置',
-            gross_income_label: "总薪水 (总收入)", pre_tax_deductions_label: "税前扣除", taxable_income_label: "应税收入", tax_total_label: "税款", post_tax_deductions_label: "税后扣除", total_deductions_taxes_label: "总扣除和税款", net_income_label: "净收入 (实得工资)", 
-            total_expenses_card_label: "总支出", total_expenses_card_sub: "(从净收入中支出)", remaining_balance_card_label: "剩余余额", remaining_balance_card_sub: "(用于储蓄/投资)", expenses_percentage_text: "总收入的", remaining_percentage_text: "总收入的",
-            alert_valid_amount: "请输入有效金额。", alert_custom_name: "请输入自定义项目的名称。", alert_item_exists: "' 已存在于此类别中。", alert_fill_all_fields: "请用有效数据填写所有费用字段。", alert_category_exists: "类别已存在。",
+            'save-button': '💾 保存', 'load-button': '📂 加载', 'print-button': '🖨️ 인쇄하기', 'reset-button': '🔄 초기화',
+            gross_income_label: "총薪水 (총收入)", pre_tax_deductions_label: "세전 공제", taxable_income_label: "应税收入", tax_total_label: "세금", post_tax_deductions_label: "세후 공제", total_deductions_taxes_label: "총 공제 및 세금", net_income_label: "净收入 (实得工资)", 
+            total_expenses_card_label: "총 지출", total_expenses_card_sub: "(从净收入中支出)", remaining_balance_card_label: "剩余余额", remaining_balance_card_sub: "(用於储蓄/投资)", expenses_percentage_text: "총收入의", remaining_percentage_text: "총收入의",
+            alert_valid_amount: "请输入有效金額。", alert_custom_name: "请输入自定义项目的名称。", alert_item_exists: "' 已存在于此类别中。", alert_fill_all_fields: "请用有效数据填写所有费用字段。", alert_category_exists: "类别已存在。",
             confirm_reset: "您确定要重置所有数据吗？此操作无法撤销。", alert_data_saved: "数据保存成功！", alert_save_failed: "数据保存失败。", alert_data_loaded: "数据加载成功！", alert_load_failed: "加载数据失败。数据可能已损坏。", alert_no_data: "未找到保存的数据。", alert_data_reset: "数据已重置。"
         },
     };
@@ -385,17 +385,29 @@ document.addEventListener('DOMContentLoaded', () => {
         let editingItemId = null;
 
         const setEditMode = (isEditing, item = null) => {
+            const t = translations[state.language]; // Get translations inside function
             if (isEditing) {
                 addButton.classList.add('hidden');
                 updateButton.classList.remove('hidden');
                 cancelButton.classList.remove('hidden');
                 if (item) {
                     editingItemId = item.id;
-                    select.value = item.name === 'Custom' ? 'custom' : item.name; // Set select value
-                    customNameInput.value = item.name === 'Custom' ? item.name : '';
+                    // Check if the item.name exists as a standard option value
+                    const optionExists = Array.from(select.options).some(option => option.value === item.name);
+                    if (optionExists && item.name !== 'Custom') { // Check for 'Custom' to avoid selecting it if it's a real item name
+                        select.value = item.name;
+                        customNameInput.style.display = 'none'; // Hide custom input if a standard option is selected
+                    } else {
+                        select.value = 'custom';
+                        customNameInput.value = item.name;
+                        customNameInput.style.display = 'block'; // Show custom input
+                    }
                     amountInput.value = item.amount;
-                    inputContainer.style.display = 'flex';
-                    customNameInput.style.display = item.name === 'Custom' ? 'block' : 'none';
+                    inputContainer.style.display = 'flex'; // Ensure container is visible
+                    
+                    // Manually trigger change to update input container visibility if needed
+                    const event = new Event('change');
+                    select.dispatchEvent(event);
                 }
             } else {
                 addButton.classList.remove('hidden');
@@ -406,12 +418,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 select.value = '';
                 customNameInput.value = '';
                 amountInput.value = '';
-                inputContainer.style.display = 'none';
+                inputContainer.style.display = 'none'; // Hide container
                 customNameInput.style.display = 'none';
             }
         };
 
         // Toggle visibility of input fields based on select choice.
+        // Also ensure that if user changes selection while in edit mode, it resets.
         select.addEventListener('change', () => {
             setEditMode(false); // Exit edit mode when select changes
             inputContainer.style.display = select.value ? 'flex' : 'none';
@@ -465,62 +478,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // Handles deletion of items from any list.
+    // Handles deletion and editing of items from any list.
     document.body.addEventListener('click', async (e) => {
         if (e.target.classList.contains('item-delete-btn')) {
             const { id, category } = e.target.dataset;
             state[category] = state[category].filter(item => item.id !== id);
             fullUpdate();
         } else if (e.target.classList.contains('item-edit-btn')) {
-            // Handle edit button click
             const { id, category } = e.target.dataset;
             const itemToEdit = state[category].find(item => item.id === id);
+
             if (itemToEdit) {
-                const section = document.querySelector(`.card[data-category="${category}"]`);
-                const select = section.querySelector('.category-select');
-                const customNameInput = section.querySelector('.custom-name-input');
-                const amountInput = section.querySelector('.amount-input');
-                const addButton = section.querySelector('.add-item-btn');
-                const updateButton = section.querySelector('.update-item-btn');
-                const cancelButton = section.querySelector('.cancel-item-btn');
-
-                // Set inputs to item's values
-                if (select) { // Check if select exists
-                     const optionExists = Array.from(select.options).some(option => option.value === itemToEdit.name);
-                    if (itemToEdit.name && optionExists) {
-                        select.value = itemToEdit.name;
-                        customNameInput.style.display = 'none'; // Hide custom input if a standard option is selected
-                    } else {
-                        select.value = 'custom';
-                        customNameInput.value = itemToEdit.name;
-                        customNameInput.style.display = 'block'; // Show custom input
-                    }
-                     // Manually trigger change to show/hide input container
-                    const event = new Event('change');
-                    select.dispatchEvent(event);
-                }
-                amountInput.value = itemToEdit.amount;
-
-                // Show update/cancel buttons, hide add button for this section
-                addButton.classList.add('hidden');
-                updateButton.classList.remove('hidden');
-                cancelButton.classList.remove('hidden');
-
-                // Store editing item ID for the specific section
-                const sectionSpecificState = categorySectionsStates.get(category);
-                if (sectionSpecificState) {
-                    sectionSpecificState.editingItemId = id;
-                }
-                
-                // For the expense section specifically
+                // Determine which section's inputs to populate
                 if (category === 'expenses') {
+                    // For expenses, handle separately due to different input structure
                     expenseCategorySelect.value = itemToEdit.category;
                     expenseNameInput.value = itemToEdit.name;
                     expenseAmountInput.value = itemToEdit.amount;
 
                     addExpenseBtn.classList.add('hidden');
-                    if (!updateExpenseBtn) { // Create update/cancel buttons if they don't exist
-                        const expenseButtonContainer = addExpenseBtn.parentNode; // Get parent container for positioning
+                    // Create update/cancel buttons if they don't exist
+                    if (!updateExpenseBtn) { 
+                        const expenseButtonContainer = addExpenseBtn.parentNode;
                         updateExpenseBtn = document.createElement('button');
                         updateExpenseBtn.id = 'update-expense-button';
                         updateExpenseBtn.textContent = translations[state.language]['update-expense-button'];
@@ -531,10 +510,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         cancelExpenseBtn = document.createElement('button');
                         cancelExpenseBtn.id = 'cancel-expense-button';
                         cancelExpenseBtn.textContent = translations[state.language]['cancel-expense-button'];
-                        cancelExpenseBtn.className = 'utility-btn'; // Use utility-btn class for consistent styling
+                        cancelExpenseBtn.className = 'utility-btn';
                         cancelExpenseBtn.style.width = '100%';
                         cancelExpenseBtn.style.marginTop = '1rem';
-                        cancelExpenseBtn.style.backgroundColor = '#6c757d'; // Gray background for cancel
+                        cancelExpenseBtn.style.backgroundColor = '#6c757d';
                         expenseButtonContainer.insertBefore(cancelExpenseBtn, addExpenseBtn);
 
                         // Attach event listeners for expense update/cancel buttons
@@ -546,7 +525,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             if (!categoryVal || !name || isNaN(amount) || amount <= 0) { await showAlertDialog(t.alert_fill_all_fields); return; }
 
-                            // Update the expense item
                             state.expenses = state.expenses.map(exp =>
                                 exp.id === editingItemIdForExpenses ? { ...exp, category: categoryVal, name, amount } : exp
                             );
@@ -560,17 +538,137 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     updateExpenseBtn.classList.remove('hidden');
                     cancelExpenseBtn.classList.remove('hidden');
-                    // Set editing ID for expenses
-                    editingItemIdForExpenses = id;
+                    editingItemIdForExpenses = id; // Set editing ID for expenses
+                } else {
+                    // For tax, preTax, postTax sections
+                    const section = document.querySelector(`.card[data-category="${category}"]`);
+                    const select = section.querySelector('.category-select');
+                    const customNameInput = section.querySelector('.custom-name-input');
+                    const amountInput = section.querySelector('.amount-input');
+                    const addButton = section.querySelector('.add-item-btn');
+                    const updateButton = section.querySelector('.update-item-btn');
+                    const cancelButton = section.querySelector('.cancel-item-btn');
+
+                    // Set inputs and buttons for the specific section
+                    const setSectionEditMode = section.setEditMode; // Retrieve the section's setEditMode function
+                    if (setSectionEditMode) {
+                        setSectionEditMode(true, itemToEdit); // Pass the item to populate inputs
+                    }
                 }
             }
         }
     });
 
-    // To manage editing state for each category section
+    // To manage editing state for each category section (unused but kept for context if needed)
     const categorySectionsStates = new Map();
     categorySections.forEach(section => {
-        categorySectionsStates.set(section.dataset.category, { editingItemId: null });
+        // Attach the setEditMode function directly to the section element for easier access
+        const select = section.querySelector('.category-select');
+        const inputContainer = section.querySelector('.category-input-container');
+        const customNameInput = section.querySelector('.custom-name-input');
+        const amountInput = section.querySelector('.amount-input');
+        const addButton = section.querySelector('.add-item-btn');
+        let updateButton = section.querySelector('.update-item-btn');
+        let cancelButton = section.querySelector('.cancel-item-btn');
+
+        // Create these buttons dynamically if they don't exist already (for robustness)
+        if (!updateButton) {
+            updateButton = document.createElement('button');
+            updateButton.className = 'update-item-btn hidden';
+            inputContainer.appendChild(updateButton);
+        }
+        if (!cancelButton) {
+            cancelButton = document.createElement('button');
+            cancelButton.className = 'cancel-item-btn hidden utility-btn';
+            cancelButton.style.backgroundColor = '#6c757d';
+            inputContainer.appendChild(cancelButton);
+        }
+
+        let sectionEditingItemId = null; // Separate editing ID for each section
+
+        section.setEditMode = (isEditing, item = null) => {
+            const t = translations[state.language];
+            if (isEditing) {
+                addButton.classList.add('hidden');
+                updateButton.classList.remove('hidden');
+                cancelButton.classList.remove('hidden');
+                // Update button texts based on current language
+                updateButton.textContent = t[`${section.dataset.category}-update-button`];
+                cancelButton.textContent = t[`${section.dataset.category}-cancel-button`];
+
+                if (item) {
+                    sectionEditingItemId = item.id;
+                    // Check if the item.name exists as a standard option value
+                    const optionExists = Array.from(select.options).some(option => option.value === item.name);
+                    if (optionExists && select.querySelector(`option[value="${item.name}"]`)) { // Also ensure option element exists
+                        select.value = item.name;
+                        customNameInput.style.display = 'none';
+                    } else {
+                        select.value = 'custom';
+                        customNameInput.value = item.name;
+                        customNameInput.style.display = 'block';
+                    }
+                    amountInput.value = item.amount;
+                    inputContainer.style.display = 'flex'; // Ensure container is visible
+                    // Manually trigger change to update input container visibility if needed
+                    const event = new Event('change');
+                    select.dispatchEvent(event);
+                }
+            } else {
+                addButton.classList.remove('hidden');
+                updateButton.classList.add('hidden');
+                cancelButton.classList.add('hidden');
+                // Revert button text to 'Add'
+                addButton.textContent = t[`${section.dataset.category}-add-button`];
+                sectionEditingItemId = null;
+                select.value = '';
+                customNameInput.value = '';
+                amountInput.value = '';
+                inputContainer.style.display = 'none';
+                customNameInput.style.display = 'none';
+            }
+        };
+
+        // Attach event listeners for the section's update/cancel buttons
+        updateButton.addEventListener('click', async () => {
+            const t = translations[state.language];
+            const amount = parseFloat(amountInput.value);
+            if (isNaN(amount) || amount <= 0) { await showAlertDialog(t.alert_valid_amount); return; }
+            
+            let name = select.value === 'custom' ? customNameInput.value.trim() : select.options[select.selectedIndex].text;
+            if (select.value === 'custom' && !name) { await showAlertDialog(t.alert_custom_name); return; }
+            
+            if(state[category].some(item => item.id !== sectionEditingItemId && item.name.toLowerCase() === name.toLowerCase())) {
+                await showAlertDialog(`'${name}'` + t.alert_item_exists); return;
+            }
+
+            state[category] = state[category].map(item =>
+                item.id === sectionEditingItemId ? { ...item, name, amount } : item
+            );
+            section.setEditMode(false);
+            fullUpdate();
+        });
+
+        cancelButton.addEventListener('click', () => {
+            section.setEditMode(false);
+        });
+
+        // Ensure add button also uses the setEditMode function for resetting
+        addButton.addEventListener('click', async () => {
+            const t = translations[state.language];
+            const amount = parseFloat(amountInput.value);
+            if (isNaN(amount) || amount <= 0) { await showAlertDialog(t.alert_valid_amount); return; }
+            
+            let name = select.value === 'custom' ? customNameInput.value.trim() : select.options[select.selectedIndex].text;
+            if (select.value === 'custom' && !name) { await showAlertDialog(t.alert_custom_name); return; }
+            
+            if(state[category].some(item => item.name.toLowerCase() === name.toLowerCase())) { await showAlertDialog(`'${name}'` + t.alert_item_exists); return; }
+
+            state[category].push({ id: generateId(), name, amount });
+            
+            section.setEditMode(false); // Reset inputs after adding
+            fullUpdate();
+        });
     });
 
     // Helper function to reset expense form and buttons
