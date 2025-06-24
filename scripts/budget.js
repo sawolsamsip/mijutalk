@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'expense-management-title': '지출 관리', 'category-label': '类别', 'expense-name-label': '항목명', 'expense-name-placeholder': '예: 월세', 'expense-amount-label': '金額', 
             'new-category-placeholder': '输入新类别名称', 'add-category-button': '添加类别', 'add-expense-button': '添加支出', 'update-expense-button': '更新支出', 'cancel-expense-button': '取消', 
             'monthly-financial-status-title': '📊 每월 재무 현황', 'financial-analysis-chart-title': '📈 재무 분석 차트', 'income-flow-chart-title': '資金流分配 (與總收入相比)', 'expense-category-chart-title': '按类别划分的支出明细 (與總支出相比)', 
-            'save-button': '💾 保存', 'load-button': '📂 加载', 'print-button': '🖨️ 인쇄하기', 'reset-button': '🔄 초기화',
+            'save-button': '💾 保存', 'load-button': '📂 加载', 'print-button': '🖨️ 打印', 'reset-button': '🔄 초기화',
             gross_income_label: "총薪水 (총收入)", pre_tax_deductions_label: "세전 공제", taxable_income_label: "应税收入", tax_total_label: "세금", post_tax_deductions_label: "세후 공제", total_deductions_taxes_label: "총 공제 및 세금", net_income_label: "净收入 (实得工资)", 
             total_expenses_card_label: "총 지출", total_expenses_card_sub: "(从净收入中支出)", remaining_balance_card_label: "剩余余额", remaining_balance_card_sub: "(用於储蓄/投资)", expenses_percentage_text: "총收入의", remaining_percentage_text: "총收入의",
             alert_valid_amount: "请输入有效金額。", alert_custom_name: "请输入自定义项目的名称。", alert_item_exists: "' 已存在于此类别中。", alert_fill_all_fields: "请用有效数据填写所有费用字段。", alert_category_exists: "类别已存在。",
@@ -418,7 +418,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 select.value = '';
                 customNameInput.value = '';
                 amountInput.value = '';
-                inputContainer.style.display = 'none'; // Hide container
+                // Removed: inputContainer.style.display = 'none'; // This was causing the issue
                 customNameInput.style.display = 'none';
             }
         };
@@ -427,7 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Also ensure that if user changes selection while in edit mode, it resets.
         select.addEventListener('change', () => {
             setEditMode(false); // Exit edit mode when select changes
-            inputContainer.style.display = select.value ? 'flex' : 'none';
+            inputContainer.style.display = select.value ? 'flex' : 'none'; // This correctly sets display based on selection
             customNameInput.style.display = select.value === 'custom' ? 'block' : 'none';
             if (select.value === 'custom') customNameInput.focus();
             else if (select.value) amountInput.focus();
@@ -559,8 +559,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // To manage editing state for each category section (unused but kept for context if needed)
-    const categorySectionsStates = new Map();
+    // To manage editing state for each category section
     categorySections.forEach(section => {
         // Attach the setEditMode function directly to the section element for easier access
         const select = section.querySelector('.category-select');
@@ -624,7 +623,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 select.value = '';
                 customNameInput.value = '';
                 amountInput.value = '';
-                inputContainer.style.display = 'none';
+                inputContainer.style.display = 'none'; // Correctly hide the input container when not editing
                 customNameInput.style.display = 'none';
             }
         };
