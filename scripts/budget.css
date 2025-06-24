@@ -1,284 +1,296 @@
+    /* General Styling */
     :root {
-      --primary: #3498db;
-      --danger: #e74c3c;
-      --success: #2ecc71;
-      --warning: #f39c12;
-      --text-color: #2c3e50;
-      --light-gray: #f9f9f9;
-      --medium-gray: #7f8c8d;
+      --primary-color: #4a90e2;
+      --secondary-color: #50e3c2;
+      --accent-color: #f5a623;
+      --background-color: #f4f7f6;
+      --card-background: #ffffff;
+      --text-color: #333;
+      --label-color: #555;
+      --border-color: #e0e0e0;
+      --danger-color: #d0021b;
+      --success-color: #7ed321;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     body {
-      font-family: 'Malgun Gothic', sans-serif;
-      line-height: 1.6;
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: var(--light-gray);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--background-color);
       color: var(--text-color);
+      margin: 0;
+      padding: 0 1rem 2rem;
     }
-    h1, h2 {
-      color: var(--text-color);
-      border-bottom: 2px solid var(--primary);
-      padding-bottom: 10px;
-    }
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-    }
-    input, select, button {
-      padding: 12px;
-      margin: 8px 0;
-      width: 100%;
-      box-sizing: border-box;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
-    .card label:not(.sr-only) {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-      color: #555;
-    }
-    select {
-      height: 46px;
-    }
-    button {
-      background: var(--primary);
+    .app-header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       color: white;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-      transition: all 0.3s;
-    }
-    button:hover {
-      opacity: 0.9;
-    }
-    .delete-btn {
-      background: var(--danger);
-      padding: 8px 12px;
-      width: auto;
-    }
-    .edit-btn, .save-edit-btn {
-      background: var(--warning);
-      padding: 8px 12px;
-      width: auto;
-      margin-right: 5px;
-    }
-    .save-edit-btn {
-      background: var(--success);
-    }
-    .cancel-edit-btn {
-      background: var(--medium-gray);
-      padding: 8px 12px;
-      width: auto;
-      margin-right: 5px;
-    }
-    .flex {
+      padding: 1.5rem 2rem;
+      text-align: center;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+      box-shadow: var(--shadow);
+      margin: 0 -1rem 2rem;
       display: flex;
-      gap: 10px;
-      align-items: flex-end;
+      justify-content: space-between;
+      align-items: center;
     }
-    .flex > div {
-      flex: 1;
-    }
-    .flex input, .flex select {
-        margin: 0;
+    #app-title {
+      margin: 0;
+      font-size: 1.8rem;
     }
 
-    .item-list {
-      margin-top: 20px;
+    /* Language Selector */
+    .language-selector-wrapper {
+      position: relative;
     }
-    .expense-item {
-      background: white;
-      padding: 15px;
-      margin-bottom: 10px;
-      border-left: 4px solid var(--primary);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .expense-item-content {
-      flex: 1;
-      min-width: 150px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .expense-item-amount {
-      min-width: 100px;
-      text-align: right;
-      padding-right: 10px;
-    }
-    .expense-item-actions {
-      display: flex;
-      flex-shrink: 0;
-    }
-    .expense-item input[type="text"],
-    .expense-item input[type="number"] {
-      width: auto;
-      flex: 1;
-      margin: 0;
-      padding: 8px;
-    }
-    .badge {
-      background: #eee;
-      padding: 3px 8px;
-      border-radius: 20px;
-      font-size: 0.8em;
-    }
-    .income-flow {
-      background: #f8f9fa;
-      border-radius: 10px;
-      padding: 15px;
-      margin-bottom: 25px;
-    }
-    .flow-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 12px;
-      margin: 5px 0;
-      background: white;
-      border-radius: 6px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    .flow-item.highlighted {
-      border-left: 4px solid var(--danger);
-    }
-    .flow-item.result {
-      border-left: 4px solid var(--success);
-      font-weight: bold;
-    }
-    .flow-item.info { /* For total deductions/taxes */
-        border-left: 4px solid var(--warning);
-        font-weight: bold;
-    }
-    .flow-arrow {
-      text-align: center;
-      color: var(--medium-gray);
-      margin: 2px 0;
-    }
-    .summary-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      margin-top: 20px;
-    }
-    .summary-card {
-      background: white;
-      padding: 20px;
+    #language-select {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
       border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      text-align: center;
+      font-size: 1rem;
+      cursor: pointer;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
     }
-    .summary-card.accent {
-      border-top: 4px solid var(--primary);
+    #language-select:focus {
+      outline: 2px solid var(--accent-color);
     }
-    .card-label {
-      font-size: 1em;
-      color: var(--medium-gray);
-      margin-bottom: 5px;
+
+    /* Cards */
+    .card {
+      background-color: var(--card-background);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow);
     }
-    .card-amount {
-      font-size: 1.8em;
+    .card h2 {
+      margin-top: 0;
+      color: var(--primary-color);
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Form Elements */
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--label-color);
+      font-weight: 600;
+    }
+    input[type="number"], input[type="text"], select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+    }
+
+    button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
       font-weight: bold;
-      margin: 10px 0;
+      transition: background-color 0.3s ease, transform 0.1s ease;
     }
-    .card-amount.positive {
-      color: var(--success);
+    button:hover {
+      background-color: #357abd;
     }
-    .card-amount.negative {
-      color: var(--danger);
+    button:active {
+        transform: scale(0.98);
     }
-    .card-sub {
-      font-size: 0.7em;
-      color: #bdc3c7;
-    }
-    .card-percentage {
-      font-size: 0.8em;
-      color: var(--medium-gray);
-      margin-top: 5px;
-      font-weight: bold;
-    }
-    .card-percentage .highlighted-percentage {
-      color: var(--primary); /* Highlight color for percentages */
-      font-weight: bold;
-    }
-    .utility-buttons {
-      display: flex;
-      gap: 10px;
-      margin: 20px 0;
-      justify-content: center;
-    }
-    .utility-btn {
-      background: #95a5a6;
-      padding: 10px 15px;
-      width: auto;
-    }
-    .utility-btn.print {
-      background: #9b59b6;
-    }
+
+    /* Input group for adding items */
     .category-input-container {
-      display: none;
-      margin-top: 8px;
-    }
-    #tax-custom-container .flex,
-    #pre-tax-custom-container .flex,
-    #post-tax-custom-container .flex,
-    #category-input-container.flex {
+        display: flex;
+        gap: 1rem;
         align-items: center;
+        margin-top: 1rem;
     }
-    #tax-custom-container input,
-    #pre-tax-custom-container input,
-    #post-tax-custom-container input,
-    #category-input-container input {
-        margin-right: 10px;
+    .category-input-container input {
+        margin-bottom: 0;
     }
-    #tax-custom-container button,
-    #pre-tax-custom-container button,
-    #post-tax-custom-container button,
-    #category-input-container button {
+    .category-input-container button {
         flex-shrink: 0;
         width: auto;
     }
 
-    .total-summary {
-      margin-top: 15px;
-      padding: 12px;
-      background: #f8f9fa;
-      border-radius: 6px;
-      font-size: 0.9em;
+    /* Item Lists */
+    .item-list {
+      margin-top: 1rem;
     }
-    .total-summary .summary-row {
+    .item {
       display: flex;
       justify-content: space-between;
-      margin: 5px 0;
+      align-items: center;
+      padding: 0.75rem;
+      background-color: #f9f9f9;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
     }
-    .total-summary .summary-label {
-      color: var(--medium-gray);
+    .item-name {
+      font-weight: 500;
     }
-    .total-summary .summary-value {
+    .item-amount {
+      font-weight: bold;
+      color: var(--danger-color);
+    }
+    .item-delete-btn {
+      background-color: var(--danger-color);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      font-weight: bold;
+      line-height: 24px;
+      text-align: center;
+    }
+    
+    /* Financial Status Flow */
+    .income-flow {
+      margin: 2rem 0;
+    }
+    .flow-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.8rem;
+      border-radius: 8px;
+      margin: 0.25rem 0;
+    }
+    .flow-item.highlighted {
+      background-color: #fff8e1;
+    }
+    .flow-item.info {
+        background-color: #e3f2fd;
+        font-weight: bold;
+    }
+    .flow-item.result {
+      background-color: #e8f5e9;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    .flow-label {
+      font-weight: 500;
+    }
+    .flow-amount {
       font-weight: bold;
     }
-    .total-summary .percentage {
-      color: var(--primary);
-      font-size: 0.8em;
-      margin-left: 5px;
+    .flow-arrow {
+      text-align: center;
+      font-size: 1.5rem;
+      color: var(--primary-color);
+      margin: -0.5rem 0;
+    }
+    .percentage {
+        color: #757575;
+        font-style: italic;
+        font-size: 0.9em;
+        margin-left: 8px;
+    }
+    .highlighted-percentage {
+        color: var(--accent-color);
+        font-weight: bold;
+    }
+
+    /* Summary Cards */
+    .summary-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .summary-card {
+      background: var(--card-background);
+      border: 1px solid var(--border-color);
+      padding: 1.5rem;
+      border-radius: 12px;
+      text-align: center;
+    }
+    .summary-card.accent {
+        border-top: 5px solid var(--success-color);
+    }
+    .summary-card:not(.accent) {
+        border-top: 5px solid var(--danger-color);
+    }
+    .card-label {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--label-color);
+    }
+    .card-amount {
+      font-size: 2rem;
       font-weight: bold;
+      margin: 0.5rem 0;
     }
-    .flow-amount .percentage {
-      color: var(--primary); /* Highlighted percentage */
-      font-size: 0.8em;
-      font-style: normal;
-      margin-left: 3px;
-      font-weight: bold;
+    .card-amount.negative {
+        color: var(--danger-color);
     }
-    .flow-item.result .percentage {
-      color: var(--success); /* Green for positive results */
+    .card-amount:not(.negative) {
+        color: var(--success-color);
     }
+    .card-sub {
+        font-size: 0.9rem;
+        color: #777;
+    }
+    .card-percentage {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    /* Charts */
+    .chart-container {
+      margin-top: 2rem;
+    }
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    @media (min-width: 900px) {
+      .charts-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .charts-grid h3 {
+        text-align: center;
+        color: var(--label-color);
+    }
+
+    /* Utility Buttons */
+    .utility-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+    .utility-btn {
+        background-color: #6c757d;
+    }
+     .utility-btn.print {
+        background-color: #17a2b8;
+    }
+     .utility-btn:hover {
+        opacity: 0.9;
+    }
+    
+    /* Screen reader only */
     .sr-only {
       position: absolute;
       width: 1px;
@@ -286,367 +298,13 @@
       padding: 0;
       margin: -1px;
       overflow: hidden;
-      clip: rect(0,0,0,0);
+      clip: rect(0, 0, 0, 0);
       white-space: nowrap;
       border: 0;
     }
 
-/* Chart specific styles */
-.chart-container {
-    margin-top: 25px;
-    padding: 15px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-.chart-container h3 {
-    text-align: center;
-    color: var(--text-color);
-    margin-bottom: 15px;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
-}
-.charts-grid {
-    display: grid;
-    /* 작은 화면에서는 1열, 큰 화면에서는 2열로 자동 조절 */
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    align-items: start; /* 각 그리드 아이템의 상단을 정렬 */
-}
-
-/* --- 차트 높이, 크기 및 정렬 개선 코드 시작 --- */
-.charts-grid > div {
-    position: relative;
-    height: 280px; /* 각 차트 컨테이너의 고정 높이 증가 (필요에 따라 조절) */
-    display: flex;
-    flex-direction: column; /* 제목과 캔버스를 수직으로 정렬 */
-    justify-content: flex-start; /* 내용을 상단에 배치 */
-    align-items: center; /* 캔버스와 제목을 중앙 정렬 */
-    padding-bottom: 20px; /* 범례가 캔버스 아래로 내려올 공간 확보 */
-}
-
-.charts-grid canvas {
-    max-width: 100%; /* 부모 너비에 맞춤 */
-    max-height: calc(100% - 60px); /* 부모 높이에서 제목 등 제외한 공간 (350px - 50px = 300px) */
-    width: 100% !important;
-    height: auto !important; /* 높이는 자동으로 조절되도록 */
-    aspect-ratio: 1 / 1; /* 차트의 가로세로 비율을 1:1로 고정하여 원형 유지 및 크기 균일화 */
-    box-sizing: border-box; /* 패딩, 보더가 너비/높이에 포함되도록 */
-    margin-top: 10px; /* 제목 아래 여백 */
-}
-
-    @media (max-width: 600px) {
-      .flex {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .flex > div {
-        flex: auto;
-      }
-      .utility-buttons {
-        flex-wrap: wrap;
-      }
-      .expense-item {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .expense-item-actions {
-        margin-top: 10px;
-        width: 100%;
-        justify-content: flex-end;
-      }
-      #tax-custom-container .flex,
-      #pre-tax-custom-container .flex,
-      #post-tax-custom-container .flex,
-      #category-input-container.flex {
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-items: center;
-      }
-      #tax-custom-container input,
-      #pre-tax-custom-container input,
-      #post-tax-custom-container input,
-      #category-input-container input {
-        flex: 1;
-        min-width: 120px;
-      }
-      #tax-custom-container button,
-      #pre-tax-custom-container button,
-      #post-tax-custom-container button,
-      #category-input-container button {
-        width: auto;
-        flex-shrink: 0;
-      }
- .charts-grid {
-        grid-template-columns: 1fr; /* Single column on small screens */
+    /* Flex helper for old elements */
+    .flex {
+        display: flex;
+        gap: 1rem;
     }
-    /* 작은 화면에서도 차트 높이 유지 */
-    .charts-grid > div {
-        height: 280px; /* 모바일 등 작은 화면에서 차트 컨테이너 높이 조정 */
-    }
-    }
-    @media print {
-      body {
-        padding: 0;
-        background: white;
-      }
-      .card, .chart-container {
-        box-shadow: none;
-        border: 1px solid #ddd;
-        page-break-inside: avoid;
-      }
-      button, .utility-buttons, .category-input-container {
-        display: none;
-      }
-      input, select {
-        border: none;
-        padding: 0;
-      }
-      .expense-item-actions {
-        display: none;
-      }
-    canvas { /* Ensure charts are visible in print */
-      max-width: 100%;
-      height: auto !important;
-      display: block;
-      aspect-ratio: 1 / 1; /* 인쇄 시에도 비율 유지 */
-    }
-    }
-.app-header {
-    display: flex;
-    justify-content: space-between; /* 양쪽 끝 정렬 */
-    align-items: center; /* 수직 중앙 정렬 */
-    margin-bottom: 20px;
-    padding: 10px 0;
-    border-bottom: 1px solid #eee; /* 하단 구분선 */
-}
-
-.language-selector {
-    display: flex;
-    gap: 8px; /* 버튼 사이 간격 */
-}
-
-.lang-button {
-    background-color: #f0f0f0;
-    color: #333;
-    border: 1px solid #ddd;
-    padding: 8px 12px;
-    border-radius: 8px; /* 둥근 모서리 */
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 4px; /* 이모티콘과 텍스트 사이 간격 */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 약간의 그림자 */
-}
-
-.lang-button:hover {
-    background-color: #e0e0e0;
-    border-color: #ccc;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* 호버 시 그림자 강조 */
-    transform: translateY(-1px); /* 약간 위로 떠오르는 효과 */
-}
-
-.lang-button.active {
-    background-color: #007bff; /* 활성 버튼 색상 */
-    color: #fff;
-    border-color: #007bff;
-    box-shadow: 0 2px 5px rgba(0, 123, 255, 0.3);
-}
-/* ---- 앱 헤더 스타일 (기존과 동일) ---- */
-.app-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding: 15px 20px;
-    background-color: #f7f7f7;
-    border-bottom: 1px solid #e0e0e0;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    border-radius: 10px;
-}
-
-/* ---- 언어 선택 드롭다운 스타일 ---- */
-.language-selector-wrapper {
-    position: relative;
-    display: inline-block; /* 내용물에 따라 크기 조절 */
-    min-width: 120px; /* 최소 너비 설정 */
-}
-
-#language-select {
-    /* 기본 브라우저 스타일 제거 */
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-
-    background-color: #ffffff;
-    color: #333;
-    border: 1px solid #d0d0d0;
-    padding: 8px 15px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px; /* 적절한 폰트 크기 */
-    line-height: 1.5; /* 줄 간격 */
-    transition: all 0.2s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-
-    width: 100%; /* 부모 컨테이너에 꽉 차게 */
-    padding-right: 30px; /* 커스텀 화살표 공간 확보 */
-}
-
-#language-select:hover {
-    border-color: #b0b0b0;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-}
-
-#language-select:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
-}
-
-/* 커스텀 드롭다운 화살표 */
-.language-selector-wrapper::after {
-    content: '▼'; /* 화살표 문자 */
-    font-size: 12px;
-    color: #555;
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none; /* 클릭 이벤트가 select로 전달되도록 함 */
-}
-
-/* sr-only 클래스는 그대로 유지 */
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-}
-
-/* 추가적으로, 입력 필드들의 placeholder 스타일링이 필요하다면 여기에 추가할 수 있습니다. */
-input::placeholder, select::placeholder {
-    color: #a0a0a0;
-    opacity: 1; /* Firefox에서 기본 opacity가 낮으므로 */
-}
-/* ---- 앱 헤더 스타일 ---- */
-.app-header {
-    display: flex;
-    justify-content: space-between; /* 제목과 언어 선택 버튼을 양쪽 끝으로 정렬 */
-    align-items: center; /* 수직 중앙 정렬 */
-    margin-bottom: 20px;
-    padding: 15px 20px; /* 상하좌우 패딩 */
-    background-color: #f7f7f7; /* 은은한 배경색 */
-    border-bottom: 1px solid #e0e0e0; /* 하단 구분선 */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* 부드러운 그림자 */
-    border-radius: 10px; /* 둥근 모서리 */
-}
-
-/* ---- 언어 선택 드롭다운 스타일 ---- */
-.language-selector-wrapper {
-    position: relative;
-    display: inline-block; /* 내용물에 따라 크기 조절 */
-    min-width: 160px; /* 드롭다운이 너무 작아지지 않도록 최소 너비 설정 */
-    /* max-width: 200px; */ /* 데스크탑에서 너무 길어지는 것을 방지 (선택 사항) */
-}
-
-#language-select {
-    /* 기본 브라우저 스타일 제거 */
-    -webkit-appearance: none; /* WebKit (Chrome, Safari) */
-    -moz-appearance: none;    /* Mozilla (Firefox) */
-    appearance: none;         /* 표준 */
-    
-    background-color: #ffffff;
-    color: #333;
-    border: 1px solid #d0d0d0;
-    padding: 8px 15px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px; /* 적절한 폰트 크기 */
-    line-height: 1.5; /* 줄 간격 */
-    transition: all 0.2s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-
-    width: 100%; /* 부모 컨테이너에 꽉 차게 */
-    padding-right: 30px; /* 커스텀 화살표 공간 확보 */
-    box-sizing: border-box; /* 패딩과 테두리를 너비 계산에 포함 */
-    text-overflow: ellipsis; /* 텍스트가 넘칠 경우 ... 처리 */
-    white-space: nowrap; /* 텍스트 줄 바꿈 방지 */
-    overflow: hidden; /* 넘치는 텍스트 숨기기 */
-}
-
-#language-select option {
-    /* 옵션 텍스트도 일관되게 스타일링 */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-#language-select:hover {
-    border-color: #b0b0b0;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-}
-
-#language-select:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
-}
-
-/* 커스텀 드롭다운 화살표 */
-.language-selector-wrapper::after {
-    content: '▼'; /* 화살표 문자 */
-    font-size: 12px;
-    color: #555;
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none; /* 화살표 클릭 시 select로 이벤트 전달 */
-}
-
-/* sr-only 클래스는 그대로 유지 (스크린 리더 전용) */
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-}
-
-/* ---- 모바일 반응형 조정 ---- */
-@media (max-width: 768px) {
-    .app-header {
-        flex-direction: column; /* 헤더 아이템을 세로로 정렬 */
-        align-items: flex-start; /* 아이템을 왼쪽으로 정렬 */
-        padding: 10px 15px; /* 작은 화면에 맞게 패딩 조정 */
-    }
-
-    .language-selector-wrapper {
-        margin-top: 10px; /* 제목과 언어 선택기 사이에 공간 추가 */
-        width: 100%; /* 모바일에서 전체 너비 사용 */
-        min-width: unset; /* 모바일에서는 최소 너비 제약 해제 */
-        max-width: unset; /* 모바일에서는 최대 너비 제약 해제 */
-    }
-
-    #language-select {
-        width: 100%; /* 드롭다운도 부모 너비에 맞춰 전체 너비 사용 */
-    }
-}
-
-/* 추가적으로, 입력 필드들의 placeholder 스타일링이 필요하다면 여기에 추가할 수 있습니다. */
-input::placeholder, select::placeholder {
-    color: #a0a0a0;
-    opacity: 1; /* Firefox에서 기본 opacity가 낮으므로 */
-}
