@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="app-title-head">예산 관리 시스템 (USD)</title>
+    <title id="app-title-head">Kuatiañe'ẽ Rerekuaha Mba'ehetave rehegua (USD)</title>
 
-    <!-- Chart.js 핵심 라이브러리 (CDN) -->
+    <!-- Chart.js oĩva'ekue (CDN) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- chartjs-plugin-datalabels 플러그인 (CDN) -->
+    <!-- chartjs-plugin-datalabels tembipuru (CDN) -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
-    <!-- Inline CSS for styling -->
+    <!-- CSS oñemonguatia'ỹva ojeguerojerovia hag̃ua -->
     <style>
         :root {
             --primary-color: #4CAF50;
@@ -47,18 +47,18 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            flex-wrap: wrap; /* Tembipuru ojejapo hag̃ua pantalla michĩvévape */
         }
 
         .app-header h1 {
             margin: 0;
             color: var(--primary-color);
             font-size: 1.8rem;
-            flex-grow: 1; /* Allow title to take available space */
+            flex-grow: 1; /* Tembipuru réra oheja hag̃ua oñemoguyrukuere */
         }
 
         .language-selector-wrapper {
-            margin-left: 20px; /* Space from title */
+            margin-left: 20px; /* Tembipuru réra rendaha */
         }
 
         #language-select {
@@ -100,7 +100,7 @@
         .card label {
             font-weight: bold;
             margin-bottom: 5px;
-            display: block; /* Ensures label takes full width for input below */
+            display: block; /* Ojoaju hag̃ua oñemonguatia'ỹvape */
             color: var(--text-color);
         }
 
@@ -112,7 +112,7 @@
             border: 1px solid var(--border-color);
             border-radius: 8px;
             font-size: 1rem;
-            box-sizing: border-box; /* Include padding in width */
+            box-sizing: border-box; /* Oñemoĩve hag̃ua padding width-pe */
             color: var(--text-color);
             background-color: var(--light-bg);
         }
@@ -128,12 +128,12 @@
         .flex {
             display: flex;
             gap: 15px;
-            flex-wrap: wrap; /* Allow wrapping for responsiveness */
+            flex-wrap: wrap; /* Tembipuru ojejapo hag̃ua */
         }
 
         .flex > div {
-            flex: 1; /* Distribute space evenly */
-            min-width: 120px; /* Minimum width for flex items */
+            flex: 1; /* Oñemomýi hag̃ua hekopete */
+            min-width: 120px; /* Ancho mínimo para elementos flexibles */
         }
 
         .category-input-container {
@@ -146,11 +146,11 @@
         .category-input-container input[type="text"],
         .category-input-container input[type="number"] {
             flex: 1;
-            min-width: 100px; /* Ensure inputs don't become too small */
+            min-width: 100px; /* Oñemonguatia'ỹva nomichĩri hag̃ua hetave */
         }
 
         .category-input-container button {
-            flex-shrink: 0; /* Prevent buttons from shrinking */
+            flex-shrink: 0; /* Ñanduti nome'ẽi hag̃ua */
             width: auto;
             padding: 10px 15px;
             border: none;
@@ -173,30 +173,30 @@
             box-shadow: none;
         }
 
-        /* Specific button styles for add/update/cancel within sections */
+        /* Ñanduti apañuái vorekuérape g̃uarã */
         .add-item-btn,
         .update-item-btn,
         .cancel-item-btn {
             flex-grow: 1;
-            max-width: 120px; /* Limit button width within flex container */
+            max-width: 120px; /* Ñanduti anchura ypykuérape g̃uarã */
         }
 
         .update-item-btn {
-            background-color: var(--secondary-color) !important; /* Override general button style */
+            background-color: var(--secondary-color) !important; /* Ñanduti apañuái */
         }
         .update-item-btn:hover {
             background-color: #1976d2 !important;
         }
 
         .cancel-item-btn {
-            background-color: #6c757d !important; /* Specific neutral color */
+            background-color: #6c757d !important; /* Ñanduti apañuái */
         }
         .cancel-item-btn:hover {
             background-color: #5a6268 !important;
         }
 
         .hidden {
-            display: none !important; /* Force hide element */
+            display: none !important; /* Ñanduti oñembotapykueva'erã */
         }
 
         .item-list {
@@ -227,7 +227,7 @@
             color: var(--danger-color);
             font-weight: bold;
             font-size: 1.1rem;
-            white-space: nowrap; /* Prevent wrapping for amounts */
+            white-space: nowrap; /* Nomichĩri hag̃ua mba'ehetave */
         }
 
         .item-edit-btn,
@@ -255,7 +255,7 @@
             background-color: rgba(244, 67, 54, 0.1);
         }
 
-        /* Income Flow */
+        /* Mba'ehetave */
         .income-flow {
             display: flex;
             flex-direction: column;
@@ -273,16 +273,16 @@
         }
 
         .flow-item.highlighted {
-            background-color: #fce8d2; /* Light orange for deductions/taxes */
+            background-color: #fce8d2; /* Ñanduti jepy'apy */
         }
 
         .flow-item.info {
-            background-color: #e3f2fd; /* Light blue for info */
+            background-color: #e3f2fd; /* Ñanduti marandu */
             border-left: 4px solid var(--secondary-color);
         }
 
         .flow-item.result {
-            background-color: #d4edda; /* Light green for net income */
+            background-color: #d4edda; /* Ñanduti mba'ehetave */
             border-left: 4px solid var(--primary-color);
             font-size: 1.1em;
             font-weight: bold;
@@ -309,14 +309,14 @@
         }
 
         .highlighted-percentage {
-            color: var(--danger-color); /* For deductions */
+            color: var(--danger-color); /* Ñanduti jepy'apy */
         }
         .flow-item.result .highlighted-percentage {
-            color: var(--primary-color); /* For positive results */
+            color: var(--primary-color); /* Ñanduti mba'ehetave */
         }
 
 
-        /* Summary Cards */
+        /* Ñanduti vorekuéra */
         .summary-cards {
             display: flex;
             justify-content: space-around;
@@ -337,7 +337,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border-left: 5px solid var(--primary-color); /* Default border */
+            border-left: 5px solid var(--primary-color); /* Ñanduti */
         }
 
         .summary-card.accent {
@@ -374,21 +374,21 @@
             font-weight: bold;
         }
 
-        /* Charts */
+        /* Ta'anga */
         .chart-container {
-            padding-bottom: 40px; /* Extra padding for chart legends/labels */
+            padding-bottom: 40px; /* Ta'anga jeroviaha */
         }
 
         .charts-grid {
             display: grid;
-            grid-template-columns: 1fr; /* Single column on small screens */
+            grid-template-columns: 1fr; /* Ta'anga michĩva */
             gap: 30px;
             margin-top: 20px;
         }
 
         @media (min-width: 768px) {
             .charts-grid {
-                grid-template-columns: 1fr 1fr; /* Two columns on larger screens */
+                grid-template-columns: 1fr 1fr; /* Ta'anga tuicháva */
             }
         }
 
@@ -407,7 +407,7 @@
             font-size: 1.2rem;
         }
 
-        /* Utility Buttons */
+        /* Ñanduti rembiapo */
         .utility-buttons {
             display: flex;
             justify-content: center;
@@ -455,7 +455,7 @@
         }
 
 
-        /* Modal Styles */
+        /* Modal apañuái */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -550,7 +550,7 @@
             }
         }
 
-        /* Accessibility */
+        /* Accessibilidad */
         .sr-only {
             position: absolute;
             width: 1px;
@@ -563,7 +563,7 @@
             border-width: 0;
         }
 
-        /* Responsive adjustments */
+        /* Mba'ehetave rerekuaha */
         @media (max-width: 600px) {
             body {
                 padding: 10px;
@@ -609,151 +609,151 @@
 </head>
 <body>
     <header class="app-header">
-        <h1 id="app-title">� 예산 관리 시스템 (USD)</h1>
+        <h1 id="app-title">💰 Kuatiañe'ẽ Rerekuaha Mba'ehetave (USD)</h1>
         <div class="language-selector-wrapper">
-            <label for="language-select" class="sr-only" id="language-label">언어 선택</label>
+            <label for="language-select" class="sr-only" id="language-label">Ñe'ẽ Jeporu</label>
             <select id="language-select">
-                <option value="ko">🇰🇷 한국어</option>
-                <option value="en">🇺🇸 English</option>
-                <option value="zh">🇨🇳 简体中文</option>
+                <option value="ko">🇰🇷 Koreano</option>
+                <option value="en">🇺🇸 Inglés</option>
+                <option value="zh">🇨🇳 Chino Sencillo</option>
             </select>
         </div>
     </header>
 
     <main>
         <div class="card">
-            <h2 id="income-title">월급</h2>
-            <label for="income" id="income-label">세전 월급액 ($)</label>
+            <h2 id="income-title">Sueldo Jasykue</h2>
+            <label for="income" id="income-label">Sueldo Jasykue (USD)</label>
             <input type="number" id="income" placeholder="0">
         </div>
 
-        <!-- Taxes Section -->
+        <!-- Tembipuru Vore -->
         <div class="card" data-category="taxes">
-            <h2 id="tax-title">세금</h2>
-            <label for="taxes-type" id="tax-type-label">세금 종류</label>
+            <h2 id="tax-title">Impuesto</h2>
+            <label for="taxes-type" id="tax-type-label">Impuesto Renda</label>
             <select id="taxes-type" class="category-select">
-                <option value="" disabled selected id="tax-select-placeholder">세금 종류 선택</option>
+                <option value="" disabled selected id="tax-select-placeholder">Eiporavo Impuesto Renda</option>
                 <option value="federal_withholding">Federal Withholding</option>
-                <option value="state_tax_ca">State Tax (CA)</option>
-                <option value="oasdi_social_security">OASDI (Social Security)</option>
+                <option value="state_tax_ca">Estado Impuesto (CA)</option>
+                <option value="oasdi_social_security">OASDI (Seguridad Social)</option>
                 <option value="medicare">Medicare</option>
                 <option value="ca_sdi">CA SDI</option>
-                <option value="custom" id="tax-option-custom">직접 입력</option>
+                <option value="custom" id="tax-option-custom">Eiporavo Ñandejara</option>
             </select>
             <div class="category-input-container" style="display: none;">
-                <input type="text" class="custom-name-input" placeholder="세금 항목명 입력" style="display: none;">
-                <input type="number" class="amount-input" placeholder="금액 ($)">
-                <button class="add-item-btn" id="tax-add-button">추가</button>
+                <input type="text" class="custom-name-input" placeholder="Eiporavo Impuesto Renda" style="display: none;">
+                <input type="number" class="amount-input" placeholder="Mba'ehetave ($)">
+                <button class="add-item-btn" id="tax-add-button">Toañadí</button>
             </div>
             <div class="item-list" id="taxes-list"></div>
         </div>
 
-        <!-- Pre-Tax Deductions Section -->
+        <!-- Tembipuru Ñanduti Vore -->
         <div class="card" data-category="preTax">
-            <h2 id="pre-tax-title">세전 공제</h2>
-            <label for="preTax-type" id="pre-tax-type-label">공제 항목</label>
+            <h2 id="pre-tax-title">Impuesto Ñanduti</h2>
+            <label for="preTax-type" id="pre-tax-type-label">Tembipuru Ñanduti</label>
             <select id="preTax-type" class="category-select">
-                <option value="" disabled selected id="pre-tax-select-placeholder">공제 항목 선택</option>
-                <option value="four_01k_traditional">401k Traditional</option>
-                <option value="medical_premium">Medical Premium</option>
-                <option value="dental_premium">Dental Premium</option>
-                <option value="vision_premium">Vision Premium</option>
+                <option value="" disabled selected id="pre-tax-select-placeholder">Eiporavo Tembipuru Ñanduti</option>
+                <option value="four_01k_traditional">401k Tradicional</option>
+                <option value="medical_premium">Médico Seguro</option>
+                <option value="dental_premium">Dental Seguro</option>
+                <option value="vision_premium">Visión Seguro</option>
                 <option value="mseap">MSEAP</option>
-                <option value="custom" id="pre-tax-option-custom">직접 입력</option>
+                <option value="custom" id="pre-tax-option-custom">Eiporavo Ñandejara</option>
             </select>
             <div class="category-input-container" style="display: none;">
-                <input type="text" class="custom-name-input" placeholder="공제 항목명 입력" style="display: none;">
-                <input type="number" class="amount-input" placeholder="금액 ($)">
-                <button class="add-item-btn" id="pre-tax-add-button">추가</button>
+                <input type="text" class="custom-name-input" placeholder="Eiporavo Tembipuru Ñanduti" style="display: none;">
+                <input type="number" class="amount-input" placeholder="Mba'ehetave ($)">
+                <button class="add-item-btn" id="pre-tax-add-button">Toañadí</button>
             </div>
             <div class="item-list" id="preTax-list"></div>
         </div>
 
-        <!-- Post-Tax Deductions Section -->
+        <!-- Tembipuru Arakatupy Vore -->
         <div class="card" data-category="postTax">
-            <h2 id="post-tax-title">세후 공제</h2>
-            <label for="postTax-type" id="post-tax-type-label">공제 항목</label>
+            <h2 id="post-tax-title">Impuesto Arakatupy</h2>
+            <label for="postTax-type" id="post-tax-type-label">Tembipuru Arakatupy</label>
             <select id="postTax-type" class="category-select">
-                <option value="" disabled selected id="post-tax-select-placeholder">공제 항목 선택</option>
+                <option value="" disabled selected id="post-tax-select-placeholder">Eiporavo Tembipuru Arakatupy</option>
                 <option value="four_01k_roth">401k Roth</option>
-                <option value="legal_services">Legal Services</option>
+                <option value="legal_services">Servicios Legales</option>
                 <option value="ltd">LTD</option>
-                <option value="stock_purchase_plan">Stock Purchase Plan</option>
+                <option value="stock_purchase_plan">Plán Opa Ñemurã</option>
                 <option value="ad_and_d">AD&D</option>
-                <option value="critical_illness">Critical Illness</option>
-                <option value="accident_insurance">Accident Insurance</option>
-                <option value="custom" id="post-tax-option-custom">직접 입력</option>
+                <option value="critical_illness">Ñembyasy Tuichavéva</option>
+                <option value="accident_insurance">Aseguro Ñembyasy rehegua</option>
+                <option value="custom" id="post-tax-option-custom">Eiporavo Ñandejara</option>
             </select>
             <div class="category-input-container" style="display: none;">
-                <input type="text" class="custom-name-input" placeholder="공제 항목명 입력" style="display: none;">
-                <input type="number" class="amount-input" placeholder="금액 ($)">
-                <button class="add-item-btn" id="post-tax-add-button">추가</button>
+                <input type="text" class="custom-name-input" placeholder="Eiporavo Tembipuru Arakatupy" style="display: none;">
+                <input type="number" class="amount-input" placeholder="Mba'ehetave ($)">
+                <button class="add-item-btn" id="post-tax-add-button">Toañadí</button>
             </div>
             <div class="item-list" id="postTax-list"></div>
         </div>
 
-        <!-- Expense Management Section -->
+        <!-- Tembipuru Rerekuaha Vore -->
         <div class="card">
-            <h2 id="expense-management-title">지출 관리</h2>
+            <h2 id="expense-management-title">Mba'ehetave Rerekuaha</h2>
             <div class="flex">
                 <div style="flex: 1;">
-                    <label for="category" id="category-label">카테고리</label>
+                    <label for="category" id="category-label">Vore</label>
                     <select id="category"></select>
                 </div>
                 <div style="flex: 2;">
-                    <label for="expense-name" id="expense-name-label">항목명</label>
-                    <input type="text" id="expense-name" placeholder="예: 월세">
+                    <label for="expense-name" id="expense-name-label">Héra</label>
+                    <input type="text" id="expense-name" placeholder="Techapyrã: Alquiler">
                 </div>
                 <div style="flex: 1;">
-                    <label for="expense-amount" id="expense-amount-label">금액</label>
+                    <label for="expense-amount" id="expense-amount-label">Mba'ehetave</label>
                     <input type="number" id="expense-amount" placeholder="$">
                 </div>
             </div>
             <div class="category-input-container">
-                <label for="new-category" class="sr-only" id="new-category-label">새 카테고리명</label>
-                <input type="text" id="new-category" placeholder="새 카테고리명 입력" style="flex: 1;">
-                <button id="add-category-button" style="flex-shrink: 0; width: auto;">카테고리 추가</button>
+                <label for="new-category" class="sr-only" id="new-category-label">Vore Pyahu Héra</label>
+                <input type="text" id="new-category" placeholder="Eiporavo Vore Pyahu Héra" style="flex: 1;">
+                <button id="add-category-button" style="flex-shrink: 0; width: auto;">Toañadí Vore</button>
             </div>
-            <button id="add-expense-button" style="width: 100%; margin-top: 1rem;">지출 추가</button>
+            <button id="add-expense-button" style="width: 100%; margin-top: 1rem;">Toañadí Mba'ehetave</button>
             <div class="item-list" id="expenses-list"></div>
         </div>
 
-        <!-- Monthly Financial Status Section -->
+        <!-- Mba'ehetave Jasykue Vore -->
         <div class="card">
-            <h2 id="monthly-financial-status-title">📊 월별 재무 현황</h2>
+            <h2 id="monthly-financial-status-title">📊 Mba'ehetave Jasykue</h2>
             <div class="income-flow">
-                <!-- Flow items will be dynamically updated by JS -->
+                <!-- Mba'ehetave oñemonguatia'ỹva ojeguerojerovia hag̃ua JS rupi -->
             </div>
             <div class="summary-cards">
-                <!-- Summary cards will be dynamically updated by JS -->
+                <!-- Mba'ehetave oñemonguatia'ỹva ojeguerojerovia hag̃ua JS rupi -->
             </div>
         </div>
 
-        <!-- Financial Analysis Charts Section -->
+        <!-- Mba'ehetave Ñanduti Vore -->
         <div class="card chart-container">
-            <h2 id="financial-analysis-chart-title">📈 재무 분석 차트</h2>
+            <h2 id="financial-analysis-chart-title">📈 Mba'ehetave Ñanduti</h2>
             <div class="charts-grid">
                 <div>
-                    <h3 id="income-flow-chart-title">자금 흐름 배분 (총 수입 대비)</h3>
+                    <h3 id="income-flow-chart-title">Mba'ehetave Jasykue (Mba'ehetave Ñanduti)</h3>
                     <canvas id="incomeFlowChart"></canvas>
                 </div>
                 <div>
-                    <h3 id="expense-category-chart-title">지출 카테고리별 비중 (총 지출 대비)</h3>
+                    <h3 id="expense-category-chart-title">Mba'ehetave Vorekuéra (Mba'ehetave Ñanduti)</h3>
                     <canvas id="expenseCategoryChart"></canvas>
                 </div>
             </div>
         </div>
 
-        <!-- Utility Buttons Section -->
+        <!-- Ñanduti Rembiapo Vore -->
         <div class="utility-buttons">
-            <button class="utility-btn" id="save-button">💾 저장하기</button>
-            <button class="utility-btn" id="load-button">📂 불러오기</button>
-            <button class="utility-btn print" onclick="window.print()">🖨️ 인쇄하기</button>
-            <button class="utility-btn" id="reset-button" style="background-color: var(--danger-color);">🔄 초기화</button>
+            <button class="utility-btn" id="save-button">💾 Ñongatu</button>
+            <button class="utility-btn" id="load-button">📂 Karga</button>
+            <button class="utility-btn print" onclick="window.print()">🖨️ Ñongatu</button>
+            <button class="utility-btn" id="reset-button" style="background-color: var(--danger-color);">🔄 Ñembopyahu</button>
         </div>
     </main>
 
-    <!-- Custom Modal Structure -->
+    <!-- Modal Apapaha -->
     <div id="custom-modal-overlay" class="modal-overlay">
         <div class="modal-content">
             <div id="modal-message" class="modal-message"></div>
@@ -761,41 +761,41 @@
         </div>
     </div>
 
-    <!-- Inline JavaScript for functionality -->
+    <!-- JavaScript oñemonguatia'ỹva -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- IMPORTANT: Register Chart.js plugins ---
-            // This is crucial for datalabels to appear on charts.
-            // Ensure Chart.js and ChartDataLabels are loaded from HTML before this point.
+            // --- Ñanduti ñembopyahu ---
+            // Kóva oñemonguatia'ỹva ojeguerojerovia hag̃ua ñanduti.
+            // Chart.js ha ChartDataLabels oñemboguatava'erã HTML-gui.
             Chart.register(ChartDataLabels);
 
-            // --- STATE MANAGEMENT ---
+            // --- ESTADO REREKUAHARÃ ---
             let state = {
                 language: 'ko',
                 income: 0,
-                taxes: [], // { id, name, amount }
+                taxes: [], // { id, héra, mba'ehetave }
                 preTax: [],
                 postTax: [],
-                expenses: [], // { id, category, name, amount }
-                expenseCategories: ['주거', '교통', '식비', '생활', '오락', '기타'],
+                expenses: [], // { id, vore, héra, mba'ehetave }
+                expenseCategories: ['Óga', 'Tape', 'Tembi'u', 'Tekove', 'Vy'a', 'Ambue'],
             };
 
-            // --- TRANSLATIONS (i18n) ---
+            // --- Ñe'ẽ JEPORUPY (i18n) ---
             const translations = {
                 ko: {
-                    'app-title': '💰 예산 관리 시스템 (USD)', 'income-title': '월급', 'income-label': '세전 월급액 ($)', 
-                    'tax-title': '세금', 'tax-type-label': '세금 종류', 'tax-select-placeholder': '세금 종류 선택', 'tax-option-custom': '직접 입력', 'tax_custom_name_placeholder': '세금 항목명 입력', 'tax-amount-placeholder': '금액 ($)', 'tax-add-button': '추가', 'tax-update-button': '업데이트', 'tax-cancel-button': '취소', 
-                    'pre-tax-title': '세전 공제', 'pre-tax-type-label': '공제 항목', 'pre-tax-select-placeholder': '공제 항목 선택', 'pre-tax-option-custom': '직접 입력', 'pre_tax_custom_name_placeholder': '공제 항목명 입력', 'pre-tax-amount-placeholder': '금액 ($)', 'pre-tax-add-button': '추가', 'pre-tax-update-button': '업데이트', 'pre-tax-cancel-button': '취소', 
-                    'post-tax-title': '세후 공제', 'post-tax-type-label': '공제 항목', 'post-tax-select-placeholder': '공제 항목 선택', 'post-tax-option-custom': '직접 입력', 'post_tax_custom_name_placeholder': '공제 항목명 입력', 'post-tax-amount-placeholder': '금액 ($)', 'post-tax-add-button': '추가', 'post-tax-update-button': '업데이트', 'post-tax-cancel-button': '취소',
-                    'expense-management-title': '지출 관리', 'category-label': '카테고리', 'expense-name-label': '항목명', 'expense-name-placeholder': '예: 월세', 'expense-amount-label': '금액', 
-                    'new-category-placeholder': '새 카테고리명 입력', 'add-category-button': '카테고리 추가', 'add-expense-button': '지출 추가', 'update-expense-button': '지출 업데이트', 'cancel-expense-button': '취소',
-                    'monthly-financial-status-title': '📊 월별 재무 현황', 'financial-analysis-chart-title': '📈 재무 분석 차트', 'income-flow-chart-title': '자금 흐름 배분 (총 수입 대비)', 'expense-category-chart-title': '지출 카테고리별 비중 (총 지출 대비)', 
-                    'save-button': '💾 저장하기', 'load-button': '📂 불러오기', 'print-button': '🖨️ 인쇄하기', 'reset-button': '🔄 초기화',
-                    gross_income_label: "세전 월급 (총 수입)", pre_tax_deductions_label: "세전 공제", taxable_income_label: "과세 소득", tax_total_label: "세금", post_tax_deductions_label: "세후 공제", total_deductions_taxes_label: "총 공제 및 세금", net_income_label: "순수입 (실수령액)", 
-                    total_expenses_card_label: "총 지출", total_expenses_card_sub: "(순수입에서 사용)", remaining_balance_card_label: "남은 잔액", remaining_balance_card_sub: "(저축/투자 가능)", expenses_percentage_text: "총 수입의", remaining_percentage_text: "총 수입의",
-                    alert_valid_amount: "올바른 금액을 입력하세요.", alert_custom_name: "사용자 지정 항목의 이름을 입력하세요.", alert_item_exists: "' 이미 이 카테고리에 존재합니다.", alert_fill_all_fields: "모든 지출 필드를 올바른 데이터로 채우세요.", alert_category_exists: "카테고리가 이미 존재합니다.",
-                    confirm_reset: "모든 데이터를 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다.", alert_data_saved: "데이터가 성공적으로 저장되었습니다.", alert_save_failed: "데이터 저장에 실패했습니다.", alert_data_loaded: "데이터를 성공적으로 불러왔습니다.", alert_load_failed: "데이터 불러오기에 실패했습니다. 데이터가 손상되었을 수 있습니다.", alert_no_data: "저장된 데이터가 없습니다.", alert_data_reset: "데이터가 초기화되었습니다.",
-                    confirm_delete_item: "정말로 이 항목을 삭제하시겠습니까?" 
+                    'app-title': '💰 Kuatiañe\'ẽ Rerekuaha Mba\'ehetave (USD)', 'income-title': 'Sueldo Jasykue', 'income-label': 'Sueldo Jasykue (USD)', 
+                    'tax-title': 'Impuesto', 'tax-type-label': 'Impuesto Renda', 'tax-select-placeholder': 'Eiporavo Impuesto Renda', 'tax-option-custom': 'Eiporavo Ñandejara', 'tax_custom_name_placeholder': 'Eiporavo Impuesto Renda', 'tax-amount-placeholder': 'Mba\'ehetave ($)', 'tax-add-button': 'Toañadí', 'tax-update-button': 'Ñembopyahu', 'tax-cancel-button': 'Ñembopyahu', 
+                    'pre-tax-title': 'Impuesto Ñanduti', 'pre-tax-type-label': 'Tembipuru Ñanduti', 'pre-tax-select-placeholder': 'Eiporavo Tembipuru Ñanduti', 'pre-tax-option-custom': 'Eiporavo Ñandejara', 'pre_tax_custom_name_placeholder': 'Eiporavo Tembipuru Ñanduti', 'pre-tax-amount-placeholder': 'Mba\'ehetave ($)', 'pre-tax-add-button': 'Toañadí', 'pre-tax-update-button': 'Ñembopyahu', 'pre-tax-cancel-button': 'Ñembopyahu', 
+                    'post-tax-title': 'Impuesto Arakatupy', 'post-tax-type-label': 'Tembipuru Arakatupy', 'post-tax-select-placeholder': 'Eiporavo Tembipuru Arakatupy', 'post-tax-option-custom': 'Eiporavo Ñandejara', 'post_tax_custom_name_placeholder': 'Eiporavo Tembipuru Arakatupy', 'post-tax-amount-placeholder': 'Mba\'ehetave ($)', 'post-tax-add-button': 'Toañadí', 'post-tax-update-button': 'Ñembopyahu', 'post-tax-cancel-button': 'Ñembopyahu',
+                    'expense-management-title': 'Mba\'ehetave Rerekuaha', 'category-label': 'Vore', 'expense-name-label': 'Héra', 'expense-name-placeholder': 'Techapyrã: Alquiler', 'expense-amount-label': 'Mba\'ehetave', 
+                    'new-category-placeholder': 'Eiporavo Vore Pyahu Héra', 'add-category-button': 'Toañadí Vore', 'add-expense-button': 'Toañadí Mba\'ehetave', 'update-expense-button': 'Ñembopyahu Mba\'ehetave', 'cancel-expense-button': 'Ñembopyahu',
+                    'monthly-financial-status-title': '📊 Mba\'ehetave Jasykue', 'financial-analysis-chart-title': '📈 Mba\'ehetave Ñanduti', 'income-flow-chart-title': 'Mba\'ehetave Jasykue (Mba\'ehetave Ñanduti)', 'expense-category-chart-title': 'Mba\'ehetave Vorekuéra (Mba\'ehetave Ñanduti)', 
+                    'save-button': '💾 Ñongatu', 'load-button': '📂 Karga', 'print-button': '🖨️ Ñongatu', 'reset-button': '🔄 Ñembopyahu',
+                    gross_income_label: "Sueldo Ñanduti (Mba'ehetave Ñanduti)", pre_tax_deductions_label: "Ñanduti Tembipuru", taxable_income_label: "Mba'ehetave Ñanduti", tax_total_label: "Impuesto", post_tax_deductions_label: "Impuesto Arakatupy", total_deductions_taxes_label: "Mba'ehetave Ñanduti ha Impuesto", net_income_label: "Mba'ehetave Jasykue", 
+                    total_expenses_card_label: "Mba'ehetave Ñanduti", total_expenses_card_sub: "(Mba'ehetave Jasykue guive)", remaining_balance_card_label: "Mba'ehetave Opytava'erã", remaining_balance_card_sub: "(Ñongatu/Mba'ehetave Ñanduti)", expenses_percentage_text: "Mba'ehetave Ñanduti", remaining_percentage_text: "Mba'ehetave Ñanduti",
+                    alert_valid_amount: "Eiporavo mba'ehetave hekopete.", alert_custom_name: "Eiporavo mba'ehetave héra.", alert_item_exists: "' ko vorepe oĩma.", alert_fill_all_fields: "Emyanyhẽ opa mba'ehetave rendaha hekopete.", alert_category_exists: "Vore oĩma.",
+                    confirm_reset: "¿Nde rehenói mba'ehetave rembopyahu hag̃ua? Ko mba'e nombyai hag̃ua.", alert_data_saved: "Mba'ehetave oñongatu hekopete!", alert_save_failed: "Mba'ehetave oñongatu'ỹva.", alert_data_loaded: "Mba'ehetave okarga hekopete!", alert_load_failed: "Mba'ehetave okarga'ỹva. Ikatu oñembyai.", alert_no_data: "Mba'ehetave oñongatu'ỹva.", alert_data_reset: "Mba'ehetave oñembopyahu.",
+                    confirm_delete_item: "¿Nde rehenói mba'ehetave rembopyahu hag̃ua?" 
                 },
                 en: {
                     'app-title': '💰 Budget Management System (USD)', 'income-title': 'Salary', 'income-label': 'Gross Monthly Salary ($)', 
@@ -815,7 +815,7 @@
                 zh: {
                     'app-title': '💰 预算管理系统 (USD)', 'income-title': '薪水', 'income-label': '세전 월급액 ($)', 
                     'tax-title': '세금', 'tax-type-label': '세종', 'tax-select-placeholder': '선택 세종', 'tax-option-custom': '自定义', 'tax_custom_name_placeholder': '输入税项名称', 'tax-amount-placeholder': '金額 ($)', 'tax-add-button': '添加', 'tax-update-button': '更新', 'tax-cancel-button': '取消', 
-                    'pre-tax-title': '세전 공제', 'pre-tax-type-label': '공제 항목', 'pre-tax-select-placeholder': '선택 공제 항목', 'pre-tax-option-custom': '自定义', 'pre_tax_custom_name_placeholder': '输入扣除名称', 'pre-tax-amount-placeholder': '金額 ($)', 'pre-tax-add-button': '添加', 'pre-tax-update-button': '更新', 'pre-tax-cancel-button': '取消', 
+                    'pre-tax-title': '세전 공제', 'pre-tax-type-label': '공제 항목', 'pre-tax-select-placeholder': '선택 공제 항목', 'pre-tax-option-custom': '自定义', 'pre_tax_custom_name_placeholder': '输入扣除名称', 'pre-tax-amount-placeholder': '金額 ($)', 'pre-tax-add-button': '添加', 'pre-tax-update-button': '更新', 'tax-cancel-button': '取消', 
                     'post-tax-title': '세후 공제', 'post-tax-type-label': '공제 항목', 'post-tax-select-placeholder': '선택 공제 항목', 'post-tax-option-custom': '自定义', 'post_tax_custom_name_placeholder': '输入扣除名称', 'post-tax-amount-placeholder': '金額 ($)', 'post-tax-add-button': '添加', 'post-tax-update-button': '更新', 'post-tax-cancel-button': '取消',
                     'expense-management-title': '지출 관리', 'category-label': '类别', 'expense-name-label': '항목명', 'expense-name-placeholder': '예: 월세', 'expense-amount-label': '金額', 
                     'new-category-placeholder': '输入新类别名称', 'add-category-button': '添加类别', 'add-expense-button': '添加支出', 'update-expense-button': '更新支出', 'cancel-expense-button': '取消', 
@@ -829,7 +829,7 @@
                 },
             };
 
-            // --- DOM SELECTORS ---
+            // --- DOM REREKUAHARÃ ---
             const incomeInput = document.getElementById('income');
             const langSelect = document.getElementById('language-select');
             const categorySections = document.querySelectorAll('.card[data-category]');
@@ -839,17 +839,17 @@
             const expenseNameInput = document.getElementById('expense-name');
             const expenseAmountInput = document.getElementById('expense-amount');
             const expensesListContainer = document.getElementById('expenses-list');
-            const addExpenseBtn = document.getElementById('add-expense-button'); // Original "Add Expense" button
-            let updateExpenseBtn = null; // New "Update Expense" button
-            let cancelExpenseBtn = null; // New "Cancel Expense" button
+            const addExpenseBtn = document.getElementById('add-expense-button'); // Ñanduti ojejapova'ekue "Toañadí Mba'ehetave"
+            let updateExpenseBtn = null; // Pyahu "Ñembopyahu Mba'ehetave"
+            let cancelExpenseBtn = null; // Pyahu "Ñembopyahu Mba'ehetave"
 
-            // Modal elements
+            // Modal tembipuru
             const customModalOverlay = document.getElementById('custom-modal-overlay');
             const modalMessage = document.getElementById('modal-message');
             const modalButtons = document.getElementById('modal-buttons');
 
-            // --- CUSTOM MODAL FUNCTIONS ---
-            // Displays an alert-style modal with a message and an "OK" button.
+            // --- MODAL REMBIAPO ---
+            // Ohechauka apañuái modal-pe peteĩ marandu ha "OK" ñanduti.
             const showAlertDialog = (message) => {
                 return new Promise(resolve => {
                     modalMessage.textContent = message;
@@ -863,13 +863,13 @@
                 });
             };
 
-            // Displays a confirmation-style modal with a message and "Yes/No" buttons.
+            // Ohechauka ñembopyahu modal-pe peteĩ marandu ha "Sí/No" ñanduti.
             const showConfirmDialog = (message) => {
                 return new Promise(resolve => {
                     modalMessage.textContent = message;
                     modalButtons.innerHTML = `
-                        <button class="modal-button confirm-yes">Yes</button>
-                        <button class="modal-button confirm-no">No</button>
+                        <button class="modal-button confirm-yes">Héẽ</button>
+                        <button class="modal-button confirm-no">Nahániri</button>
                     `;
                     customModalOverlay.classList.add('active');
 
@@ -884,37 +884,37 @@
                 });
             };
 
-            // --- UTILITY FUNCTIONS ---
-            // Formats a number as currency with two decimal places and commas.
+            // --- REMBIAPO PORÃ ---
+            // Oñemboheko mba'ehetave ojeguerojerovia hag̃ua mokõi decimal ha coma-re.
             const formatCurrency = (amount) => (amount ? amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') : '0.00');
-            // Generates a unique ID for list items.
+            // Ojejapo ID pyahu tembipuru reraha hag̃ua.
             const generateId = () => `id_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-            // --- TRANSLATION FUNCTION ---
-            // Sets the application language and updates all translatable elements.
+            // --- ÑE'Ẽ JEPORUPY ---
+            // Oñemboheko ñe'ẽ ha oñemonguatia'ỹva ojeguerojerovia hag̃ua opa mba'e.
             const setLanguage = (lang) => {
                 state.language = lang;
-                localStorage.setItem('budgetAppLang', lang); // Save language preference
+                localStorage.setItem('budgetAppLang', lang); // Ñongatu ñe'ẽ oĩva'ekue
                 const t = translations[lang];
 
-                // Update text content and placeholders for elements with matching IDs
+                // Oñemonguatia'ỹva ojeguerojerovia hag̃ua opa mba'e oĩva'ekue ID-pe
                 document.querySelectorAll('[id]').forEach(el => {
-                    const keyWithSuffix = el.id.replace(/-/g, '_'); // Convert hyphen-case ID to snake_case for potential translation keys
-                    const key = el.id.replace(/-label|-title|-button|-placeholder|-text|-sub|-card/g, ''); // Extract base key
+                    const keyWithSuffix = el.id.replace(/-/g, '_'); // Ñe'ẽ JEPORUPY ID-pe
+                    const key = el.id.replace(/-label|-title|-button|-placeholder|-text|-sub|-card/g, ''); // Ñe'ẽ JEPORUPY ID-pe
 
                     if (t[keyWithSuffix]) {
                         el.innerHTML = t[keyWithSuffix];
                     } else if (t[key]) {
-                        // For placeholders, ensure it's an input/textarea
+                        // Ñanduti: oñemonguatia'ỹva, oñemonguatia'ỹva
                         if (el.placeholder !== undefined) el.placeholder = t[key];
                         else el.innerHTML = t[key];
                     }
                 });
                 
-                // Explicitly update placeholders for dynamic/complex elements that might not match simple ID patterns
+                // Oñemonguatia'ỹva ojeguerojerovia hag̃ua opa mba'e oĩva'ekue ID-pe
                 document.querySelector('[data-category="taxes"] .custom-name-input').placeholder = t.tax_custom_name_placeholder;
                 document.querySelector('[data-category="taxes"] .amount-input').placeholder = t['tax-amount-placeholder'];
-                // The add-item-btn text needs to be updated here for initial load
+                // Toañadí-mba'e-btn oñemonguatia'ỹva ojeguerojerovia hag̃ua
                 if (document.querySelector('[data-category="taxes"] .add-item-btn')) {
                     document.querySelector('[data-category="taxes"] .add-item-btn').textContent = t['tax-add-button'];
                 }
@@ -937,28 +937,28 @@
                 document.getElementById('new-category').placeholder = t['new-category-placeholder'];
                 document.getElementById('add-expense-button').textContent = t['add-expense-button']; 
 
-                // If update/cancel buttons exist, update their text
+                // Ñanduti: Ñembopyahu/Ñembopyahu
                 if (updateExpenseBtn) updateExpenseBtn.textContent = t['update-expense-button'];
                 if (cancelExpenseBtn) cancelExpenseBtn.textContent = t['cancel-expense-button'];
 
-                // Update button texts for section-specific update/cancel buttons
+                // Ñanduti ñembopyahu/ñembopyahu
                 categorySections.forEach(section => {
                     const category = section.dataset.category;
                     const updateBtn = section.querySelector('.update-item-btn');
                     const cancelBtn = section.querySelector('.cancel-item-btn');
-                    const addBtn = section.querySelector('.add-item-btn'); // Also update add button text
+                    const addBtn = section.querySelector('.add-item-btn'); // Toañadí mba'e
 
                     if (updateBtn) updateBtn.textContent = t[`${category}-update-button`];
                     if (cancelBtn) cancelBtn.textContent = t[`${category}-cancel-button`];
-                    if (addBtn) addBtn.textContent = t[`${category}-add-button`]; // Important: update 'Add' button text too
+                    if (addBtn) addBtn.textContent = t[`${category}-add-button`]; // Toañadí mba'e
                 });
 
-                document.documentElement.lang = lang.split('-')[0]; // Set the HTML lang attribute
-                fullUpdate(); // Re-render all components with new language
+                document.documentElement.lang = lang.split('-')[0]; // Ñanduti ñembopyahu
+                fullUpdate(); // Oñemonguatia'ỹva ojeguerojerovia hag̃ua
             };
             
-            // --- RENDER FUNCTIONS ---
-            // Renders the list of taxes, pre-tax, or post-tax items.
+            // --- ÑANDUTI REMBIAPO ---
+            // Oñemonguatia'ỹva ojeguerojerovia hag̃ua Impuesto renda, Impuesto Ñanduti, Impuesto Arakatupy.
             const renderCategorizedList = (category) => {
                 const listContainer = document.getElementById(`${category}-list`);
                 listContainer.innerHTML = '';
@@ -969,7 +969,7 @@
                         <span class="item-name">${item.name}</span>
                         <div class="flex items-center gap-2">
                             <span class="item-amount">-$${formatCurrency(item.amount)}</span>
-                            <button class="item-edit-btn" data-id="${item.id}" data-category="${category}">수정</button>
+                            <button class="item-edit-btn" data-id="${item.id}" data-category="${category}">Ñembopyahu</button>
                             <button class="item-delete-btn" data-id="${item.id}" data-category="${category}">X</button>
                         </div>
                     `;
@@ -977,7 +977,7 @@
                 });
             };
 
-            // Renders the expense category dropdown.
+            // Oñemonguatia'ỹva ojeguerojerovia hag̃ua Mba'ehetave vore.
             const renderExpenseCategories = () => {
                 expenseCategorySelect.innerHTML = '';
                 state.expenseCategories.forEach(cat => {
@@ -988,7 +988,7 @@
                 });
             };
 
-            // Renders the list of expenses.
+            // Oñemonguatia'ỹva ojeguerojerovia hag̃ua Mba'ehetave.
             const renderExpensesList = () => {
                 expensesListContainer.innerHTML = '';
                 state.expenses.forEach(exp => {
@@ -998,7 +998,7 @@
                         <span class="item-name">${exp.category}: ${exp.name}</span>
                         <div class="flex items-center gap-2">
                             <span class="item-amount">-$${formatCurrency(exp.amount)}</span>
-                            <button class="item-edit-btn" data-id="${exp.id}" data-category="expenses">수정</button>
+                            <button class="item-edit-btn" data-id="${exp.id}" data-category="expenses">Ñembopyahu</button>
                             <button class="item-delete-btn" data-id="${exp.id}" data-category="expenses">X</button>
                         </div>
                     `;
@@ -1006,8 +1006,8 @@
                 });
             };
 
-            // --- CALCULATE & UPDATE SUMMARY ---
-            // Calculates all financial summaries and updates the UI.
+            // --- Ñanduti ñembopyahu ---
+            // Oñemboheko opa mba'ehetave ñanduti ha oñemonguatia'ỹva.
             const calculateAndUpdateAll = () => {
                 const t = translations[state.language];
                 const income = state.income || 0;
@@ -1057,16 +1057,16 @@
                 updateCharts({ netIncome, taxTotal, preTaxDeductions, postTaxDeductions });
             };
 
-            // --- CHARTING ---
+            // --- TA'ANGA ÑANDUTI ---
             let incomeFlowChart, expenseCategoryChart;
-            // Updates the Chart.js charts with current financial data.
+            // Oñemonguatia'ỹva ojeguerojerovia hag̃ua ta'anga.
             const updateCharts = ({ netIncome, taxTotal, preTaxDeductions, postTaxDeductions }) => {
                 const incomeFlowCtx = document.getElementById('incomeFlowChart')?.getContext('2d');
                 const expenseCategoryCtx = document.getElementById('expenseCategoryChart')?.getContext('2d');
 
                 if (!incomeFlowCtx || !expenseCategoryCtx) return;
 
-                // Ensure charts are responsive and prevent infinite growth.
+                // Ta'anga oñemonguatia'ỹva ojeguerojerovia hag̃ua
                 incomeFlowCtx.canvas.parentNode.style.height = '350px';
                 incomeFlowCtx.canvas.parentNode.style.position = 'relative';
                 expenseCategoryCtx.canvas.parentNode.style.height = '350px';
@@ -1076,7 +1076,7 @@
                 incomeFlowChart = new Chart(incomeFlowCtx, {
                     type: 'doughnut',
                     data: {
-                        labels: ['Net Income', 'Taxes', 'Pre-Tax Deductions', 'Post-Tax Deductions'],
+                        labels: ['Mba\'ehetave Jasykue', 'Impuesto', 'Ñanduti Tembipuru', 'Impuesto Arakatupy'],
                         datasets: [{
                             data: [Math.max(0, netIncome), taxTotal, preTaxDeductions, postTaxDeductions],
                             backgroundColor: ['#7ed321', '#d0021b', '#f5a623', '#4a90e2'],
@@ -1125,7 +1125,7 @@
                 });
             };
             
-            // Performs a full UI update and recalculation.
+            // Oñemonguatia'ỹva ojeguerojerovia hag̃ua
             const fullUpdate = () => {
                 renderExpenseCategories();
                 renderExpensesList();
@@ -1135,14 +1135,14 @@
                 calculateAndUpdateAll();
             };
 
-            // --- EVENT HANDLERS ---
-            // Updates income when input changes.
+            // --- ÑANDUTI REMBIAPO ---
+            // Oñemonguatia'ỹva ojeguerojerovia hag̃ua
             incomeInput.addEventListener('input', (e) => {
                 state.income = parseFloat(e.target.value) || 0;
                 calculateAndUpdateAll();
             });
 
-            // Event listeners for tax, pre-tax, and post-tax sections.
+            // Ñanduti ñembopyahu/ñembopyahu
             categorySections.forEach(section => {
                 const category = section.dataset.category;
                 const select = section.querySelector('.category-select');
@@ -1151,46 +1151,46 @@
                 const amountInput = section.querySelector('.amount-input');
                 const addButton = section.querySelector('.add-item-btn');
                 
-                // Create or get the update and cancel buttons.
-                // Ensure they are hidden by default by adding the 'hidden' class.
+                // Pyahu ñanduti.
+                // Ñanduti oñembotapykueva'erã.
                 let updateButton = section.querySelector('.update-item-btn');
                 let cancelButton = section.querySelector('.cancel-item-btn');
 
                 if (!updateButton) {
                     updateButton = document.createElement('button');
-                    updateButton.className = 'update-item-btn hidden'; // Ensure hidden initially
+                    updateButton.className = 'update-item-btn hidden'; // Ñanduti oñembotapykueva'erã
                     inputContainer.appendChild(updateButton);
                 }
                 if (!cancelButton) {
                     cancelButton = document.createElement('button');
-                    cancelButton.className = 'cancel-item-btn hidden utility-btn'; // Ensure hidden initially
+                    cancelButton.className = 'cancel-item-btn hidden utility-btn'; // Ñanduti oñembotapykueva'erã
                     cancelButton.style.backgroundColor = '#6c757d'; 
                     inputContainer.appendChild(cancelButton);
                 }
 
-                // State to keep track of the item being edited for THIS specific section
+                // Estado oñemonguatia'ỹva
                 let editingItemId = null;
 
                 /**
-                 * Sets the edit mode for the current category section.
-                 * Controls visibility of add/update/cancel buttons and populates inputs.
-                 * @param {boolean} isEditing - True to enter edit mode, false to exit.
-                 * @param {object | null} item - The item object to edit (if entering edit mode).
+                 * Oñemboheko edit mode vorepe.
+                 * Oñemboheko ñanduti ha oñemonguatia'ỹva.
+                 * @param {boolean} isEditing - True oñemonguatia'ỹva, False oñemonguatia'ỹva.
+                 * @param {object | null} item - Tembipuru oñemonguatia'ỹva (oñemonguatia'ỹva).
                  */
                 const setSectionEditMode = (isEditing, item = null) => {
                     const t = translations[state.language]; 
                     if (isEditing) {
-                        // Hide 'Add' button, show 'Update' and 'Cancel'
+                        // Ñanduti oñembotapykueva'erã.
                         addButton.classList.add('hidden');
                         updateButton.classList.remove('hidden');
                         cancelButton.classList.remove('hidden');
-                        // Update button texts based on current language
+                        // Ñanduti oñemonguatia'ỹva
                         updateButton.textContent = t[`${category}-update-button`];
                         cancelButton.textContent = t[`${category}-cancel-button`];
 
                         if (item) {
                             editingItemId = item.id;
-                            // Check if the item.name exists as a standard option value
+                            // Ñanduti: item.héra oĩma.
                             const optionExists = Array.from(select.options).some(option => option.value === item.name);
                             if (optionExists && select.querySelector(`option[value="${item.name}"]`)) { 
                                 select.value = item.name;
@@ -1201,63 +1201,64 @@
                                 customNameInput.style.display = 'block';
                             }
                             amountInput.value = item.amount;
-                            inputContainer.style.display = 'flex'; // Ensure visible when editing
-                            amountInput.focus(); // Focus amount for editing
+                            inputContainer.style.display = 'flex'; // Ñanduti oñemonguatia'ỹva
+                            amountInput.focus(); // Ñanduti oñemonguatia'ỹva
                         }
                     } else {
-                        // Exit edit mode, return to add mode
+                        // Ñanduti ñembopyahu, oñemonguatia'ỹva.
                         addButton.classList.remove('hidden');
                         updateButton.classList.add('hidden');
                         cancelButton.classList.add('hidden');
-                        addButton.textContent = t[`${category}-add-button`]; // Revert add button text
-                        editingItemId = null; // Clear editing state
+                        addButton.textContent = t[`${category}-add-button`]; // Ñanduti oñemonguatia'ỹva
+                        editingItemId = null; // Estado oñemonguatia'ỹva
                         
-                        // Clear inputs, but do NOT touch select.value here
+                        // Ñanduti: select.value oñembopyahu'ỹva.
                         customNameInput.value = '';
                         amountInput.value = '';
-                        customNameInput.style.display = 'none'; // Hide custom input
+                        customNameInput.style.display = 'none'; // Ñanduti oñembotapykueva'erã
                         
-                        // If the current select.value is empty (placeholder), then hide inputContainer.
-                        // Otherwise, leave it visible (as it would be in normal add mode after selection).
-                        if (!select.value) { // This check is crucial
+                        // Ñanduti: inputContainer oñembotapykueva'erã.
+                        if (!select.value) { // Kóva oñemonguatia'ỹva
                             inputContainer.style.display = 'none'; 
                         }
                     }
                 };
 
-                // Assign the setSectionEditMode function to the section for external calls (e.g., from item-edit-btn click)
+                // Oñemonguatia'ỹva ojeguerojerovia hag̃ua
                 section.setEditMode = setSectionEditMode;
 
-                // Toggle visibility of input fields based on select choice.
+                // Ñanduti oñemonguatia'ỹva.
                 select.addEventListener('change', () => {
-                    // Always reset to 'add' mode whenever the select changes, to ensure button states are correct.
-                    // This also clears inputs and hides update/cancel buttons.
+                    // Ñanduti oñemonguatia'ỹva
+                    // Ñanduti oñemonguatia'ỹva
+                    // Ñanduti oñemonguatia'ỹva
+                    // Ñanduti oñemonguatia'ỹva
                     setSectionEditMode(false); 
 
-                    // Now, based on the NEW selection, adjust input visibility.
-                    if (select.value) { // If a valid option (not placeholder) is selected
-                        inputContainer.style.display = 'flex'; // Show the main input container
-                        amountInput.value = ''; // Always clear amount when changing selection
+                    // Ñanduti oñemonguatia'ỹva
+                    if (select.value) { // Ñanduti oñemonguatia'ỹva
+                        inputContainer.style.display = 'flex'; // Ñanduti oñemonguatia'ỹva
+                        amountInput.value = ''; // Ñanduti oñemonguatia'ỹva
                         
                         if (select.value === 'custom') {
                             customNameInput.style.display = 'block';
-                            customNameInput.value = ''; // Clear custom name for a new custom entry
+                            customNameInput.value = ''; // Ñanduti oñemonguatia'ỹva
                             customNameInput.focus();
                         } else {
                             customNameInput.style.display = 'none';
-                            customNameInput.value = ''; // Ensure custom input is cleared even if hidden
+                            customNameInput.value = ''; // Ñanduti oñemonguatia'ỹva
                             amountInput.focus();
                         }
                     } else {
-                        // If the placeholder is selected (value is empty), hide everything related to input.
+                        // Ñanduti oñemonguatia'ỹva
                         inputContainer.style.display = 'none';
                         customNameInput.style.display = 'none';
                         amountInput.value = '';
-                        customNameInput.value = ''; // Ensure custom name is also cleared
+                        customNameInput.value = ''; // Ñanduti oñemonguatia'ỹva
                     }
                 });
                 
-                // Add item handler (original 'Apply' button, now 'Add')
+                // Toañadí mba'e (ñanduti ojejapova'ekue "Apply" ñanduti)
                 addButton.addEventListener('click', async () => {
                     const t = translations[state.language];
                     const amount = parseFloat(amountInput.value);
@@ -1266,16 +1267,16 @@
                     let name = select.value === 'custom' ? customNameInput.value.trim() : select.options[select.selectedIndex].text;
                     if (select.value === 'custom' && !name) { await showAlertDialog(t.alert_custom_name); return; }
                     
-                    // Check for duplicate name, case-insensitive
+                    // Ñanduti oñemonguatia'ỹva
                     if(state[category].some(item => item.name.toLowerCase() === name.toLowerCase())) { await showAlertDialog(`'${name}'` + t.alert_item_exists); return; }
 
                     state[category].push({ id: generateId(), name, amount });
                     
-                    setSectionEditMode(false); // Reset inputs after adding
-                    fullUpdate(); // Re-render lists and charts
+                    setSectionEditMode(false); // Ñanduti oñemonguatia'ỹva
+                    fullUpdate(); // Ñanduti oñemonguatia'ỹva
                 });
 
-                // Update item handler
+                // Ñanduti ñembopyahu
                 updateButton.addEventListener('click', async () => {
                     const t = translations[state.language];
                     const amount = parseFloat(amountInput.value);
@@ -1284,7 +1285,7 @@
                     let name = select.value === 'custom' ? customNameInput.value.trim() : select.options[select.selectedIndex].text;
                     if (select.value === 'custom' && !name) { await showAlertDialog(t.alert_custom_name); return; }
 
-                    // Check for duplicate name, excluding the item currently being edited
+                    // Ñanduti oñemonguatia'ỹva
                     if(state[category].some(item => item.id !== editingItemId && item.name.toLowerCase() === name.toLowerCase())) {
                         await showAlertDialog(`'${name}'` + t.alert_item_exists); return;
                     }
@@ -1293,21 +1294,21 @@
                         item.id === editingItemId ? { ...item, name, amount } : item
                     );
                     
-                    setSectionEditMode(false); // Reset inputs after updating
-                    fullUpdate(); // Re-render lists and charts
+                    setSectionEditMode(false); // Ñanduti oñemonguatia'ỹva
+                    fullUpdate(); // Ñanduti oñemonguatia'ỹva
                 });
 
-                // Cancel update handler
+                // Ñanduti ñembopyahu
                 cancelButton.addEventListener('click', () => {
-                    setSectionEditMode(false); // Reset inputs
+                    setSectionEditMode(false); // Ñanduti oñemonguatia'ỹva
                 });
             });
             
-            // Handles deletion and editing of items from any list (taxes, preTax, postTax, expenses).
+            // Oñemonguatia'ỹva ojeguerojerovia hag̃ua
             document.body.addEventListener('click', async (e) => {
                 if (e.target.classList.contains('item-delete-btn')) {
                     const { id, category } = e.target.dataset;
-                    // Confirm deletion for any categorized item
+                    // Ñanduti oñemonguatia'ỹva
                     if (await showConfirmDialog(translations[state.language].confirm_delete_item)) {
                         state[category] = state[category].filter(item => item.id !== id);
                         fullUpdate();
@@ -1317,15 +1318,15 @@
                     const itemToEdit = state[category].find(item => item.id === id);
 
                     if (itemToEdit) {
-                        // Determine which section's inputs to populate
+                        // Ñanduti oñemonguatia'ỹva
                         if (category === 'expenses') {
-                            // For expenses, handle separately due to different input structure
+                            // Ñanduti oñemonguatia'ỹva
                             expenseCategorySelect.value = itemToEdit.category;
                             expenseNameInput.value = itemToEdit.name;
                             expenseAmountInput.value = itemToEdit.amount;
 
                             addExpenseBtn.classList.add('hidden');
-                            // Create update/cancel buttons if they don't exist
+                            // Ñanduti oñemonguatia'ỹva
                             if (!updateExpenseBtn) { 
                                 const expenseButtonContainer = addExpenseBtn.parentNode;
                                 updateExpenseBtn = document.createElement('button');
@@ -1344,7 +1345,7 @@
                                 cancelExpenseBtn.style.backgroundColor = '#6c757d';
                                 expenseButtonContainer.insertBefore(cancelExpenseBtn, addExpenseBtn);
 
-                                // Attach event listeners for expense update/cancel buttons
+                                // Ñanduti oñemonguatia'ỹva
                                 updateExpenseBtn.addEventListener('click', async () => {
                                     const t = translations[state.language];
                                     const categoryVal = expenseCategorySelect.value;
@@ -1366,22 +1367,22 @@
                             }
                             updateExpenseBtn.classList.remove('hidden');
                             cancelExpenseBtn.classList.remove('hidden');
-                            editingItemIdForExpenses = id; // Set editing ID for expenses
+                            editingItemIdForExpenses = id; // Ñanduti oñemonguatia'ỹva
                         } else {
-                            // For tax, preTax, postTax sections
+                            // Ñanduti oñemonguatia'ỹva
                             const section = document.querySelector(`.card[data-category="${category}"]`);
-                            // Call the setEditMode function attached to the specific section
+                            // Ñanduti oñemonguatia'ỹva
                             if (section && section.setEditMode) {
-                                section.setEditMode(true, itemToEdit); // Pass the item to populate inputs
+                                section.setEditMode(true, itemToEdit); // Ñanduti oñemonguatia'ỹva
                             }
                         }
                     }
                 }
             });
 
-            // Helper function to reset expense form and buttons
+            // Ñanduti oñemonguatia'ỹva
             const resetExpenseForm = () => {
-                expenseCategorySelect.value = state.expenseCategories[0]; // Reset to first category
+                expenseCategorySelect.value = state.expenseCategories[0]; // Ñanduti oñemonguatia'ỹva
                 expenseNameInput.value = '';
                 expenseAmountInput.value = '';
                 addExpenseBtn.classList.remove('hidden');
@@ -1389,9 +1390,9 @@
                 if (cancelExpenseBtn) cancelExpenseBtn.classList.add('hidden');
                 editingItemIdForExpenses = null;
             };
-            let editingItemIdForExpenses = null; // New state variable for expense editing
+            let editingItemIdForExpenses = null; // Ñanduti oñemonguatia'ỹva
 
-            // Adds a new expense category.
+            // Oñemonguatia'ỹva ojeguerojerovia hag̃ua
             addCategoryBtn.addEventListener('click', async () => {
                 const t = translations[state.language];
                 const newCategory = newCategoryInput.value.trim();
@@ -1404,7 +1405,7 @@
                 }
             });
             
-            // Adds a new expense item.
+            // Oñemonguatia'ỹva ojeguerojerovia hag̃ua
             addExpenseBtn.addEventListener('click', async () => {
                 const t = translations[state.language];
                 const category = expenseCategorySelect.value;
@@ -1414,46 +1415,45 @@
                 if (!category || !name || isNaN(amount) || amount <= 0) { await showAlertDialog(t.alert_fill_all_fields); return; }
                 
                 state.expenses.push({ id: generateId(), category, name, amount });
-                resetExpenseForm(); // Reset form after adding
+                resetExpenseForm(); // Ñanduti oñemonguatia'ỹva
                 fullUpdate();
             });
             
-            // Changes the application language.
+            // Ñe'ẽ jeporu.
             langSelect.addEventListener('change', (e) => setLanguage(e.target.value));
 
-            // Saves current state to local storage.
+            // Ñongatu ñanduti oĩva'ekue local storage-pe.
             document.getElementById('save-button').addEventListener('click', async () => {
                 const t = translations[state.language];
                 try {
                     localStorage.setItem('budgetAppData', JSON.stringify(state));
                     await showAlertDialog(t.alert_data_saved);
-                } <<<<<<< HEAD
                 } catch (error) {
-                    console.error('Failed to save data:', error);
+                    console.error('Mba\'ehetave oñongatu\'ỹva:', error);
                     await showAlertDialog(t.alert_save_failed);
                 }
             });
 
-            // Loads state from local storage.
+            // Karga ñanduti oĩva'ekue local storage-pe.
             document.getElementById('load-button').addEventListener('click', async () => {
                 const t = translations[state.language];
                 const savedData = localStorage.getItem('budgetAppData');
                 if (savedData) {
                     try {
                         const loadedState = JSON.parse(savedData);
-                        // Robustly initialize arrays if they are missing or null in loaded state
+                        // Mba'ehetave oñemonguatia'ỹva ojeguerojerovia hag̃ua
                         state.income = loadedState.income || 0;
                         state.taxes = Array.isArray(loadedState.taxes) ? loadedState.taxes : [];
                         state.preTax = Array.isArray(loadedState.preTax) ? loadedState.preTax : [];
                         state.postTax = Array.isArray(loadedState.postTax) ? loadedState.postTax : [];
                         state.expenses = Array.isArray(loadedState.expenses) ? loadedState.expenses : [];
-                        state.expenseCategories = Array.isArray(loadedState.expenseCategories) ? loadedState.expenseCategories : ['주거', '교통', '식비', '생활', '오락', '기타'];
+                        state.expenseCategories = Array.isArray(loadedState.expenseCategories) ? loadedState.expenseCategories : ['Óga', 'Tape', 'Tembi\'u', 'Tekove', 'Vy\'a', 'Ambue'];
                         
                         langSelect.value = loadedState.language || 'ko';
-                        setLanguage(langSelect.value); // Re-set language to update all UI elements
+                        setLanguage(langSelect.value); // Ñanduti ñembopyahu
                         await showAlertDialog(t.alert_data_loaded);
                     } catch(error) {
-                        console.error('Failed to parse saved data:', error);
+                        console.error('Mba\'ehetave okarga\'ỹva:', error);
                         await showAlertDialog(t.alert_load_failed);
                     }
                 } else {
@@ -1461,13 +1461,13 @@
                 }
             });
             
-            // Resets all data in the application.
+            // Oñembopyahu opa mba'ehetave.
             document.getElementById('reset-button').addEventListener('click', async () => {
                 const t = translations[state.language];
                 const confirmed = await showConfirmDialog(t.confirm_reset);
                 if (confirmed) {
                     localStorage.removeItem('budgetAppData');
-                    // Reset to initial state, ensuring all arrays are empty.
+                    // Mba'ehetave oñemonguatia'ỹva ojeguerojerovia hag̃ua
                     state = { 
                         language: state.language, 
                         income: 0, 
@@ -1475,19 +1475,19 @@
                         preTax: [], 
                         postTax: [], 
                         expenses: [], 
-                        expenseCategories: ['주거', '교통', '식비', '생활', '오락', '기타'], 
+                        expenseCategories: ['Óga', 'Tape', 'Tembi\'u', 'Tekove', 'Vy\'a', 'Ambue'], 
                     };
                     incomeInput.value = '';
-                    setLanguage(state.language); // Re-set language to update all UI elements
+                    setLanguage(state.language); // Ñanduti ñembopyahu
                     await showAlertDialog(t.alert_data_reset);
                 }
             });
             
-            // --- INITIALIZATION ---
-            // Loads saved language preference or defaults to Korean.
+            // --- ÑANDUTI REMBIAPO ---
+            // Oñemonguatia'ỹva ojeguerojerovia hag̃ua
             const savedLang = localStorage.getItem('budgetAppLang') || 'ko';
             langSelect.value = savedLang;
-            setLanguage(savedLang); // Initial UI setup with saved language
+            setLanguage(savedLang); // Ñanduti ñembopyahu
         });
     </script>
 </body>
