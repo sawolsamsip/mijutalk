@@ -348,7 +348,7 @@ function renderList(elementId, items, totalIncome) {
            </div>`
           :
           `<div class="expense-item-content">
-             <span>${item.name}: $${formatMoney(item.amount)}</span>
+             <span>${item.name}${item.amount === 0 ? '' : `: $${formatMoney(item.amount)}`}</span>
            </div>
            <div class="expense-item-actions">
              <button onclick="editItem('${type}', '${item.id}')" class="edit-btn">${translations.edit_button || 'Edit'}</button>
@@ -360,7 +360,7 @@ function renderList(elementId, items, totalIncome) {
     <div class="total-summary">
       <div class="summary-row">
         <span class="summary-label">${translations[`total_${type}_label`] || `Total ${getTypeName(type)}`}</span>
-        <span class="summary-value">$${formatMoney(total)} <span class="percentage">(${calculatePercentage(total, totalIncome)})</span></span>
+        <span class="summary-value">${total === 0 ? '' : `$${formatMoney(total)} <span class="percentage">(${calculatePercentage(total, totalIncome)})</span>`}</span>
       </div>
     </div>
   `;
@@ -394,7 +394,7 @@ function renderExpenses(totalIncome) {
                <span class="badge">${displayCategoryName}</span>
                <span>${item.name}</span>
              </div>
-             <span class="expense-item-amount">$${formatMoney(item.amount)}</span>
+             ${item.amount === 0 ? '' : `<span class="expense-item-amount">$${formatMoney(item.amount)}</span>`}
              <div class="expense-item-actions">
                <button onclick="editItem('expenses', '${item.id}')" class="edit-btn">${translations.edit_button || 'Edit'}</button>
                <button onclick="deleteItem('expenses', '${item.id}')" class="delete-btn">${translations.delete_button || 'Delete'}</button>
@@ -406,7 +406,7 @@ function renderExpenses(totalIncome) {
     <div class="total-summary">
       <div class="summary-row">
         <span class="summary-label">${translations.total_expenses_type}</span>
-        <span class="summary-value">$${formatMoney(total)} <span class="percentage">(${calculatePercentage(total, totalIncome)})</span></span>
+        <span class="summary-value">${total === 0 ? '' : `$${formatMoney(total)} <span class="percentage">(${calculatePercentage(total, totalIncome)})</span>`}</span>
       </div>
     </div>
   `;
