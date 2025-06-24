@@ -1013,7 +1013,7 @@ document.addEventListener('DOMContentLoaded', function() {
             let displayString = '';
             if (langCode === 'ko') displayString = '🇰🇷 한국어';
             else if (langCode === 'en') displayString = '🇺🇸 English';
-            else if (langCode === 'zh') displayString = '🇨🇳 简体中文';
+            else if (langCode === 'zh') displayString = '�🇳 简体中文';
             option.textContent = displayString;
         });
     };
