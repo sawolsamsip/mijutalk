@@ -165,29 +165,29 @@ function updateUILanguage() {
     document.getElementById('add-expense-button').textContent = translations.add_expense_button;
 
 
-    // 월별 재무 현황 섹션
+    // 월별 재무 현황 섹션 (ID 수정됨: _ -> -)
     document.getElementById('monthly-financial-status-title').textContent = translations.monthly_financial_status_title;
     document.getElementById('gross-income-label').textContent = translations.gross_income_label;
     document.getElementById('pre-tax-deductions-label').textContent = translations.pre_tax_deduction_label;
     document.getElementById('taxable-income-label').textContent = translations.taxable_income_label;
     document.getElementById('tax-total-label').textContent = translations.tax_total_label;
     document.getElementById('post-tax-deductions-label').textContent = translations.post_tax_deduction_label;
-    document.getElementById('total-deductions_taxes_label').textContent = translations.total_deductions_taxes_label;
-    document.getElementById('net-income_label').textContent = translations.net_income_label;
+    document.getElementById('total-deductions-taxes-label').textContent = translations.total_deductions_taxes_label; // ID 수정됨
+    document.getElementById('net-income-label').textContent = translations.net_income_label; // ID 수정됨
 
-    document.getElementById('total_expenses_card_label').textContent = translations.total_expenses_card_label;
-    document.getElementById('total_expenses_card_sub').textContent = translations.total_expenses_card_sub;
-    document.getElementById('remaining_balance_card_label').textContent = translations.remaining_balance_card_label;
-    document.getElementById('remaining_balance_card_sub').textContent = translations.remaining_balance_card_sub;
+    document.getElementById('total-expenses-card-label').textContent = translations.total_expenses_card_label; // ID 수정됨
+    document.getElementById('total-expenses-card-sub').textContent = translations.total_expenses_card_sub;
+    document.getElementById('remaining-balance-card-label').textContent = translations.remaining_balance_card_label; // ID 수정됨
+    document.getElementById('remaining-balance-card-sub').textContent = translations.remaining_balance_card_sub;
     // 이 부분은 총 수입의 X% 와 같이 동적으로 문장이 구성되므로, translations.of 키를 사용합니다.
     document.getElementById('expenses-percentage-text').innerHTML = `${translations.gross_income_label.split('(')[0].trim()} ${translations.of} <span id="expenses-percentage-card" class="highlighted-percentage">${document.getElementById('expenses-percentage-card').textContent}</span>`;
     document.getElementById('remaining-percentage-text').innerHTML = `${translations.gross_income_label.split('(')[0].trim()} ${translations.of} <span id="remaining-percentage-card" class="highlighted-percentage">${document.getElementById('remaining-percentage-card').textContent}</span>`;
 
 
-    // 재무 분석 차트 섹션
-    document.getElementById('financial-analysis-chart_title').textContent = translations.financial_analysis_chart_title;
-    document.getElementById('income-flow-chart_title').textContent = translations.income_flow_chart_title;
-    document.getElementById('expense-category-chart_title').textContent = translations.expense_category_chart_title;
+    // 재무 분석 차트 섹션 (ID 수정됨: _ -> -)
+    document.getElementById('financial-analysis-chart-title').textContent = translations.financial_analysis_chart_title; // ID 수정됨
+    document.getElementById('income-flow-chart-title').textContent = translations.income_flow_chart_title; // ID 수정됨
+    document.getElementById('expense-category-chart-title').textContent = translations.expense_category_chart_title; // ID 수정됨
 
     // 유틸리티 버튼
     document.getElementById('save-button').textContent = translations.save_button;
@@ -261,7 +261,7 @@ function generateColors(num) {
       '#7E57C2', '#BDBDBD', '#FFEE58', '#8D6E63', '#9CCC65', '#29B6F6', '#FFAB91', '#AFB42B'
     ];
     // Cycle through or pick distinct colors if more are needed
-    return Array.from({ length: num }, (_, i) => colors[i % num]); // 변경: colors.length 대신 num 사용
+    return Array.from({ length: num }, (_, i) => colors[i % num]);
 }
 
 function updateUI() {
@@ -950,8 +950,6 @@ function resetData() {
 // 7. 초기화 및 이벤트 리스너 설정
 document.addEventListener('DOMContentLoaded', function() {
   // ChartDataLabels 플러그인 등록
-  // 차트 내부 퍼센티지를 표시하지 않을 것이므로 이 플러그인은 사실상 필요 없어집니다.
-  // 그래도 혹시 모를 경우를 대비하여 등록 코드는 남겨두지만, datalabels: false로 비활성화됩니다.
   if (typeof ChartDataLabels !== 'undefined') {
       Chart.register(ChartDataLabels);
   } else {
