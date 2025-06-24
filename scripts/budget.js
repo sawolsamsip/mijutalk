@@ -223,7 +223,7 @@ function initDefaultData() {
   // 카테고리도 초기화 시 언어 파일에서 이름을 가져올 수 있도록 id와 name 그대로 유지 (이름은 번역되지 않은 기본값)
   budgetData.categories = [
     { id: 'housing', name: '🏠 주거' },
-    { id: 'food', name: '🍔 식비' },
+    { id: 'food', name: '� 식비' },
     { id: 'transportation', name: '🚗 교통' },
     { id: 'health', name: '🏥 건강' },
     { id: 'family', name: '👪 가족' },
@@ -887,13 +887,13 @@ function loadData() {
         throw new Error(translations.invalid_data_format);
       }
 
-      Object.assign(budgetData, {
-        income: loadedData.income !== undefined ? loadedData.income : 0,
-        taxes: loadedData.taxes,
-        preTax: loadedData.preTax,
-        postTax: loadedData.postTax,
-        expenses: loadedData.expenses
-      });
+      // 로드된 데이터에서 name 속성이 undefined/null일 경우 빈 문자열로 대체
+      budgetData.income = loadedData.income !== undefined ? loadedData.income : 0;
+      budgetData.taxes = loadedData.taxes ? loadedData.taxes.map(item => ({...item, name: item.name || ''})) : [];
+      budgetData.preTax = loadedData.preTax ? loadedData.preTax.map(item => ({...item, name: item.name || ''})) : [];
+      budgetData.postTax = loadedData.postTax ? loadedData.postTax.map(item => ({...item, name: item.name || ''})) : [];
+      budgetData.expenses = loadedData.expenses ? loadedData.expenses.map(item => ({...item, name: item.name || ''})) : [];
+
 
       if (Array.isArray(loadedData.categories)) {
         const currentCategoryIds = new Set(budgetData.categories.map(c => c.id));
@@ -970,10 +970,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Deep copy to ensure original objects are not mutated
     budgetData.income = savedData.income || 0;
     // 기존 항목 이름이 번역 키와 일치하지 않을 수 있으므로, 기본 항목을 로드할 때도 번역 키 기준으로 처리
-    budgetData.taxes = savedData.taxes ? savedData.taxes.map(item => ({...item})) : [];
-    budgetData.preTax = savedData.preTax ? savedData.preTax.map(item => ({...item})) : [];
-    budgetData.postTax = savedData.postTax ? savedData.postTax.map(item => ({...item})) : [];
-    budgetData.expenses = savedData.expenses ? savedData.expenses.map(item => ({...item})) : [];
+    // savedData에서 불러올 때 name이 undefined/null일 경우 빈 문자열로 대체
+    budgetData.taxes = savedData.taxes ? savedData.taxes.map(item => ({...item, name: item.name || ''})) : [];
+    budgetData.preTax = savedData.preTax ? savedData.preTax.map(item => ({...item, name: item.name || ''})) : [];
+    budgetData.postTax = savedData.postTax ? savedData.postTax.map(item => ({...item, name: item.name || ''})) : [];
+    budgetData.expenses = savedData.expenses ? savedData.expenses.map(item => ({...item, name: item.name || ''})) : [];
     // 카테고리 로딩 시 언어에 맞는 이름으로 설정되지 않도록 id와 원래 이름만 저장하고 표시될때 번역하도록
     budgetData.categories = savedData.categories ? savedData.categories.map(item => ({id: item.id, name: item.name})) : [
       { id: 'housing', name: '🏠 주거' }, { id: 'food', name: '🍔 식비' },
@@ -1013,7 +1014,7 @@ document.addEventListener('DOMContentLoaded', function() {
             let displayString = '';
             if (langCode === 'ko') displayString = '🇰🇷 한국어';
             else if (langCode === 'en') displayString = '🇺🇸 English';
-            else if (langCode === 'zh') displayString = '�🇳 简体中文';
+            else if (langCode === 'zh') displayString = '🇨🇳 简体中文';
             option.textContent = displayString;
         });
     };
