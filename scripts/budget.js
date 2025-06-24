@@ -21,7 +21,7 @@ const DEFAULT_DEDUCTIONS = {
     { name: "Stock Purchase Plan", amount: 0 },
     { name: "AD&D", amount: 0 },
     { name: "Critical Illness", amount: 0 },
-    { name: "Accident Insurance", amount: 0 }
+    { name: "Accident Insurance",心态: 0 }
   ]
 };
 
@@ -332,10 +332,19 @@ let editingItem = null;
 function renderList(elementId, items, totalIncome) {
   const container = document.getElementById(elementId);
   const type = elementId.replace('-list', '');
-  const total = items.reduce((sum, item) => sum + item.amount, 0);
+
+  // 금액이 0이 아닌 항목들만 필터링
+  const nonZeroItems = items.filter(item => item.amount !== 0);
+  const total = nonZeroItems.reduce((sum, item) => sum + item.amount, 0);
+
+  // 유효한 항목이 없으면 전체 섹션을 숨김
+  if (nonZeroItems.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
 
   container.innerHTML = `
-    ${items.map(item => `
+    ${nonZeroItems.map(item => `
       <div class="expense-item" data-id="${item.id}" data-type="${type}">
         ${editingItem && editingItem.id === item.id ?
           `<div class="expense-item-content">
@@ -348,7 +357,7 @@ function renderList(elementId, items, totalIncome) {
            </div>`
           :
           `<div class="expense-item-content">
-             <span>${item.name}${item.amount === 0 ? '' : `: $${formatMoney(item.amount)}`}</span>
+             <span>${item.name}: $${formatMoney(item.amount)}</span>
            </div>
            <div class="expense-item-actions">
              <button onclick="editItem('${type}', '${item.id}')" class="edit-btn">${translations.edit_button || 'Edit'}</button>
@@ -360,7 +369,7 @@ function renderList(elementId, items, totalIncome) {
     <div class="total-summary">
       <div class="summary-row">
         <span class="summary-label">${translations[`total_${type}_label`] || `Total ${getTypeName(type)}`}</span>
-        <span class="summary-value">${total === 0 ? '' : `$${formatMoney(total)} <span class="percentage">(${calculatePercentage(total, totalIncome)})</span>`}</span>
+        <span class="summary-value">$${formatMoney(total)} <span class="percentage">(${calculatePercentage(total, totalIncome)})</span></span>
       </div>
     </div>
   `;
@@ -368,10 +377,19 @@ function renderList(elementId, items, totalIncome) {
 
 function renderExpenses(totalIncome) {
   const container = document.getElementById('expenses-list');
-  const total = budgetData.expenses.reduce((sum, item) => sum + item.amount, 0);
+  
+  // 금액이 0이 아닌 지출 항목들만 필터링
+  const nonZeroExpenses = budgetData.expenses.filter(item => item.amount !== 0);
+  const total = nonZeroExpenses.reduce((sum, item) => sum + item.amount, 0);
+
+  // 유효한 지출 항목이 없으면 전체 섹션을 숨김
+  if (nonZeroExpenses.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
 
   container.innerHTML = `
-    ${budgetData.expenses.map(item => {
+    ${nonZeroExpenses.map(item => {
       const category = budgetData.categories.find(cat => cat.id === item.category);
       // 카테고리 이름도 번역본에서 가져오기
       const displayCategoryName = translations[`category_${item.category}`] || category?.name || translations.other_category;
@@ -394,7 +412,7 @@ function renderExpenses(totalIncome) {
                <span class="badge">${displayCategoryName}</span>
                <span>${item.name}</span>
              </div>
-             ${item.amount === 0 ? '' : `<span class="expense-item-amount">$${formatMoney(item.amount)}</span>`}
+             <span class="expense-item-amount">$${formatMoney(item.amount)}</span>
              <div class="expense-item-actions">
                <button onclick="editItem('expenses', '${item.id}')" class="edit-btn">${translations.edit_button || 'Edit'}</button>
                <button onclick="deleteItem('expenses', '${item.id}')" class="delete-btn">${translations.delete_button || 'Delete'}</button>
@@ -406,7 +424,7 @@ function renderExpenses(totalIncome) {
     <div class="total-summary">
       <div class="summary-row">
         <span class="summary-label">${translations.total_expenses_type}</span>
-        <span class="summary-value">${total === 0 ? '' : `$${formatMoney(total)} <span class="percentage">(${calculatePercentage(total, totalIncome)})</span>`}</span>
+        <span class="summary-value">$${formatMoney(total)} <span class="percentage">(${calculatePercentage(total, totalIncome)})</span></span>
       </div>
     </div>
   `;
