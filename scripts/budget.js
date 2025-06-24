@@ -205,11 +205,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- CHARTING ---
   let incomeFlowChart, expenseCategoryChart;
   const updateCharts = ({ netIncome, taxTotal, preTaxDeductions, postTaxDeductions }) => {
-    const income = state.income || 0;
     const incomeFlowCtx = document.getElementById('incomeFlowChart')?.getContext('2d');
     const expenseCategoryCtx = document.getElementById('expenseCategoryChart')?.getContext('2d');
 
     if (!incomeFlowCtx || !expenseCategoryCtx) return;
+
+    // --- FIX: Prevent infinite chart growth by setting a fixed height on the parent container ---
+    incomeFlowCtx.canvas.parentNode.style.height = '350px';
+    incomeFlowCtx.canvas.parentNode.style.position = 'relative';
+    expenseCategoryCtx.canvas.parentNode.style.height = '350px';
+    expenseCategoryCtx.canvas.parentNode.style.position = 'relative';
+    // --- End of Fix ---
 
     if (incomeFlowChart) incomeFlowChart.destroy();
     incomeFlowChart = new Chart(incomeFlowCtx, {
