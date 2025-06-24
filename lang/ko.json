@@ -90,8 +90,12 @@
   "total_expenses_type": "총 지출",
   "remaining_balance_type": "남은 잔액",
 
-  "category_housing": "� 주거",
-  "category_food": "🍔 식비",
+  "total_taxes_label": "총 세금",
+  "total_preTax_label": "총 세전 공제",
+  "total_postTax_label": "총 세후 공제",
+
+  "category_housing": "🏠 주거",
+  "category_food": "� 식비",
   "category_transportation": "🚗 교통",
   "category_health": "🏥 건강",
   "category_family": "👪 가족",
