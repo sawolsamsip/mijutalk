@@ -272,7 +272,7 @@ function updateUI() {
   const grossIncome = budgetData.income;
   const preTaxTotal = budgetData.preTax.reduce((sum, item) => sum + item.amount, 0);
   const taxTotal = budgetData.taxes.reduce((sum, item) => sum + item.amount, 0);
-  const postTaxTotal = budgetData.postTax.reduce((sum, item => sum + item.amount, 0);
+  const postTaxTotal = budgetData.postTax.reduce((sum, item) => sum + item.amount, 0); // 수정: 'item => sum + item.amount' 뒤에 ')' 추가됨
   const totalDeductionsAndTaxes = preTaxTotal + taxTotal + postTaxTotal; // New calculation
   const taxableIncome = grossIncome - preTaxTotal;
   const netIncome = taxableIncome - taxTotal - postTaxTotal;
