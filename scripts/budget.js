@@ -1,4 +1,3 @@
-  <script>
     // 1. 기본 공제 항목 정의
     const DEFAULT_DEDUCTIONS = {
       taxes: [
@@ -808,4 +807,3 @@
       // Initial UI update and chart rendering after DOM is loaded
       updateUI();
     });
-  </script>
