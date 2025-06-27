@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Budget Management System (USD)</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-light: #4895ef;
+      --danger: #f72585;
+      --success: #4cc9f0;
+      --warning: #f8961e;
+      --info: #7209b7;
+      --text-color: #2b2d42;
+      --light-gray: #f8f9fa;
+      --medium-gray: #adb5bd;
+      --dark-gray: #495057;
+      --white: #ffffff;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --border-radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      background-color: var(--light-gray);
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background-color: var(--white);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+    }
+
+    h1 {
+      color: var(--primary);
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      color: var(--primary);
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--primary-light);
+    }
+
+    .card {
+      background: var(--white);
+      padding: 25px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 25px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--dark-gray);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--medium-gray);
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+    }
+
+    button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    button:hover {
+      background-color: var(--primary-light);
+      transform: translateY(-2px);
+    }
+
+    .btn-danger {
+      background-color: var(--danger);
+    }
+
+    .btn-danger:hover {
+      background-color: #d6336c;
+    }
+
+    .btn-warning {
+      background-color: var(--warning);
+    }
+
+    .btn-warning:hover {
+      background-color: #e67700;
+    }
+
+    .btn-success {
+      background-color: var(--success);
+    }
+
+    .btn-success:hover {
+      background-color: #339af0;
+    }
+
+    .btn-info {
+      background-color: var(--info);
+    }
+
+    .btn-info:hover {
+      background-color: #5f3dc4;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background-color: var(--primary-light);
+      color: white;
+    }
+
+    .item-list {
+      margin-top: 20px;
+    }
+
+    .list-item {
+      background: var(--white);
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: var(--border-radius);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s;
+    }
+
+    .list-item:hover {
+      transform: translateX(5px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .list-item-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .list-item-amount {
+      font-weight: 600;
+      min-width: 100px;
+      text-align: right;
+    }
+
+    .list-item-actions {
+      display: flex;
+      gap: 5px;
+    }
+
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 25px;
+    }
+
+    .summary-card {
+      background: var(--white);
+      padding: 20px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      text-align: center;
+      border-top: 4px solid var(--primary);
+    }
+
+    .card-label {
+      font-size: 1rem;
+      color: var(--medium-gray);
+      margin-bottom: 5px;
+    }
+
+    .card-amount {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 10px 0;
+    }
+
+    .positive {
+      color: var(--success);
+    }
+
+    .negative {
+      color: var(--danger);
+    }
+
+    .flow-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px;
+      margin: 8px 0;
+      background: var(--white);
+      border-radius: var(--border-radius);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .flow-item.highlighted {
+      border-left: 4px solid var(--danger);
+    }
+
+    .flow-item.result {
+      border-left: 4px solid var(--success);
+      font-weight: bold;
+    }
+
+    .flow-item.info {
+      border-left: 4px solid var(--warning);
+      font-weight: bold;
+    }
+
+    .flow-arrow {
+      text-align: center;
+      color: var(--medium-gray);
+      margin: 5px 0;
+      font-size: 1.2rem;
+    }
+
+    .chart-container {
+      background: var(--white);
+      padding: 20px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 25px;
+    }
+
+    .chart-title {
+      text-align: center;
+      margin-bottom: 20px;
+      color: var(--primary);
+    }
+
+    .utility-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 30px 0;
+      flex-wrap: wrap;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .flex {
+      display: flex;
+      gap: 15px;
+      align-items: flex-end;
+    }
+
+    .flex > div {
+      flex: 1;
+    }
+
+    @media (max-width: 768px) {
+      .flex {
+        flex-direction: column;
+      }
+      
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .utility-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      button {
+        width: 100%;
+      }
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        background: white;
+      }
+      
+      button, .utility-buttons {
+        display: none;
+      }
+      
+      .card, .chart-container {
+        box-shadow: none;
+        border: 1px solid #ddd;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>💰 Advanced Budget Management System (USD)</h1>
+      <p>Track your income, taxes, deductions, and expenses in one place</p>
+    </header>
+
+    <!-- Earnings Section -->
+    <div class="card">
+      <h2>1. Earnings</h2>
+      <div class="form-group">
+        <label for="income">Gross Monthly Income ($)</label>
+        <input type="number" id="income" placeholder="Enter your gross income">
+      </div>
+    </div>
+
+    <!-- Employee Taxes Section -->
+    <div class="card">
+      <h2>2. Employee Taxes</h2>
+      <div class="form-group">
+        <label for="tax-type">Tax Type</label>
+        <select id="tax-type">
+          <option value="" disabled selected>Select tax type</option>
+          <option value="Federal Withholding">Federal Withholding</option>
+          <option value="State Tax (CA)">State Tax (CA)</option>
+          <option value="OASDI (Social Security)">OASDI (Social Security)</option>
+          <option value="Medicare">Medicare</option>
+          <option value="CA SDI">CA SDI</option>
+          <option value="custom">Custom Tax</option>
+        </select>
+      </div>
+      <div id="tax-custom-container" class="form-group hidden">
+        <div class="flex">
+          <div>
+            <label for="tax-custom-name">Tax Name</label>
+            <input type="text" id="tax-custom-name" placeholder="Enter tax name">
+          </div>
+          <div>
+            <label for="tax-amount">Amount ($)</label>
+            <input type="number" id="tax-amount" placeholder="Enter amount">
+          </div>
+          <div>
+            <button onclick="updateCategorizedItem('taxes')" class="btn-success">Add Tax</button>
+          </div>
+        </div>
+      </div>
+      <div class="item-list" id="tax-list"></div>
+    </div>
+
+    <!-- Pre-Tax Deductions Section -->
+    <div class="card">
+      <h2>3. Pre-Tax Deductions</h2>
+      <div class="form-group">
+        <label for="pre-tax-type">Deduction Type</label>
+        <select id="pre-tax-type">
+          <option value="" disabled selected>Select deduction type</option>
+          <option value="401k Traditional">401k Traditional</option>
+          <option value="Medical Premium">Medical Premium</option>
+          <option value="Dental Premium">Dental Premium</option>
+          <option value="Vision Premium">Vision Premium</option>
+          <option value="MSEAP">MSEAP</option>
+          <option value="custom">Custom Deduction</option>
+        </select>
+      </div>
+      <div id="pre-tax-custom-container" class="form-group hidden">
+        <div class="flex">
+          <div>
+            <label for="pre-tax-custom-name">Deduction Name</label>
+            <input type="text" id="pre-tax-custom-name" placeholder="Enter deduction name">
+          </div>
+          <div>
+            <label for="pre-tax-amount">Amount ($)</label>
+            <input type="number" id="pre-tax-amount" placeholder="Enter amount">
+          </div>
+          <div>
+            <button onclick="updateCategorizedItem('preTax')" class="btn-success">Add Deduction</button>
+          </div>
+        </div>
+      </div>
+      <div class="item-list" id="pre-tax-list"></div>
+    </div>
+
+    <!-- Post-Tax Deductions Section -->
+    <div class="card">
+      <h2>4. Post-Tax Deductions</h2>
+      <div class="form-group">
+        <label for="post-tax-type">Deduction Type</label>
+        <select id="post-tax-type">
+          <option value="" disabled selected>Select deduction type</option>
+          <option value="401k Roth">401k Roth</option>
+          <option value="Stock Purchase Plan">Stock Purchase Plan</option>
+          <option value="Legal Services">Legal Services</option>
+          <option value="LTD">LTD</option>
+          <option value="AD&D">AD&D</option>
+          <option value="Accident Insurance">Accident Insurance</option>
+          <option value="Critical Illness">Critical Illness</option>
+          <option value="custom">Custom Deduction</option>
+        </select>
+      </div>
+      <div id="post-tax-custom-container" class="form-group hidden">
+        <div class="flex">
+          <div>
+            <label for="post-tax-custom-name">Deduction Name</label>
+            <input type="text" id="post-tax-custom-name" placeholder="Enter deduction name">
+          </div>
+          <div>
+            <label for="post-tax-amount">Amount ($)</label>
+            <input type="number" id="post-tax-amount" placeholder="Enter amount">
+          </div>
+          <div>
+            <button onclick="updateCategorizedItem('postTax')" class="btn-success">Add Deduction</button>
+          </div>
+        </div>
+      </div>
+      <div class="item-list" id="post-tax-list"></div>
+    </div>
+
+    <!-- Expense Management Section -->
+    <div class="card">
+      <h2>5. Expense Management</h2>
+      <div class="grid">
+        <div class="form-group">
+          <label for="category">Category</label>
+          <select id="category"></select>
+        </div>
+        <div class="form-group">
+          <label for="expense-name">Expense Name</label>
+          <input type="text" id="expense-name" placeholder="e.g. Rent">
+        </div>
+        <div class="form-group">
+          <label for="expense-amount">Amount ($)</label>
+          <input type="number" id="expense-amount" placeholder="Enter amount">
+        </div>
+      </div>
+      <div id="category-input-container" class="form-group hidden">
+        <div class="flex">
+          <div>
+            <label for="new-category">New Category Name</label>
+            <input type="text" id="new-category" placeholder="Enter new category">
+          </div>
+          <div>
+            <button onclick="addCategory()" class="btn-info">Add Category</button>
+          </div>
+        </div>
+      </div>
+      <button onclick="addExpense()" class="btn-success" style="width: 100%; margin-top: 10px;">Add Expense</button>
+      <div class="item-list" id="expenses-list"></div>
+    </div>
+
+    <!-- Monthly Financial Status -->
+    <div class="card">
+      <h2>6. Monthly Financial Status</h2>
+      <div class="income-flow">
+        <div class="flow-item">
+          <span>Gross Monthly Income (Total Earnings)</span>
+          <span>$<span id="gross-income">0.00</span> <em>(100.0%)</em></span>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-item highlighted">
+          <span>Pre-Tax Deductions</span>
+          <span>-$<span id="pre-tax-deductions">0.00</span> <em></em></span>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-item">
+          <span><strong>Taxable Income</strong></span>
+          <span>$<span id="taxable-income">0.00</span> <em></em></span>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-item highlighted">
+          <span>Taxes</span>
+          <span>-$<span id="tax-total">0.00</span> <em></em></span>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-item highlighted">
+          <span>Post-Tax Deductions</span>
+          <span>-$<span id="post-tax-deductions">0.00</span> <em></em></span>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-item info">
+          <span><strong>Total Deductions & Taxes</strong></span>
+          <span>-$<span id="total-deductions-taxes">0.00</span> <em></em></span>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-item result">
+          <span><strong>Net Income (Take-Home Pay)</strong></span>
+          <span>$<span id="net-income">0.00</span> <em></em></span>
+        </div>
+      </div>
+
+      <div class="summary-cards">
+        <div class="summary-card">
+          <div class="card-label">Total Expenses</div>
+          <div class="card-amount negative">$<span id="expenses-total-card">0.00</span></div>
+          <div class="card-label">(Amount used from net income)</div>
+          <div class="card-label"><span id="expenses-percentage-card">0.0%</span> of gross income</div>
+        </div>
+        <div class="summary-card">
+          <div class="card-label">Remaining Balance</div>
+          <div class="card-amount positive">$<span id="remaining-balance">0.00</span></div>
+          <div class="card-label">(Net Income - Expenses = Savings)</div>
+          <div class="card-label"><span id="remaining-percentage-card">0.0%</span> of gross income</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Financial Analysis Charts -->
+    <div class="chart-container">
+      <h2>7. Financial Analysis Charts</h2>
+      <div class="grid">
+        <div>
+          <div class="chart-title">Income Distribution (Percentage of Gross Income)</div>
+          <canvas id="incomeFlowChart"></canvas>
+        </div>
+        <div>
+          <div class="chart-title">Expense Categories (Percentage of Total Expenses)</div>
+          <canvas id="expenseCategoryChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Utility Buttons -->
+    <div class="utility-buttons">
+      <button onclick="saveData()" class="btn-info">💾 Save Data</button>
+      <button onclick="loadData()" class="btn-info">📂 Load Data</button>
+      <button onclick="window.print()" class="btn-warning">🖨️ Print Report</button>
+      <button onclick="resetData()" class="btn-danger">🔄 Reset Data</button>
+    </div>
+  </div>
+
+  <script>
+    // 1. Default deduction items
+    const DEFAULT_DEDUCTIONS = {
+      taxes: [
+        { name: "Federal Withholding", amount: 0 },
+        { name: "State Tax (CA)", amount: 0 },
+        { name: "OASDI (Social Security)", amount: 0 },
+        { name: "Medicare", amount: 0 },
+        { name: "CA SDI", amount: 0 }
+      ],
+      preTax: [
+        { name: "401k Traditional", amount: 0 },
+        { name: "Medical Premium", amount: 0 },
+        { name: "Dental Premium", amount: 0 },
+        { name: "Vision Premium", amount: 0 },
+        { name: "MSEAP", amount: 0 }
+      ],
+      postTax: [
+        { name: "401k Roth", amount: 0 },
+        { name: "Stock Purchase Plan", amount: 0 },
+        { name: "Legal Services", amount: 0 },
+        { name: "LTD", amount: 0 },
+        { name: "AD&D", amount: 0 },
+        { name: "Accident Insurance", amount: 0 },
+        { name: "Critical Illness", amount: 0 }
+      ]
+    };
+
+    // 2. Initial data structure
+    const budgetData = {
+      income: 0,
+      taxes: [],
+      preTax: [],
+      postTax: [],
+      expenses: [],
+      categories: [
+        { id: 'housing', name: '🏠 Housing' },
+        { id: 'food', name: '🍔 Food' },
+        { id: 'transportation', name: '🚗 Transportation' },
+        { id: 'health', name: '🏥 Health' },
+        { id: 'family', name: '👪 Family' },
+        { id: 'shopping', name: '🛍️ Shopping' },
+        { id: 'finance', name: '💳 Finance' },
+        { id: 'travel', name: '✈️ Travel' },
+        { id: 'saving', name: '💰 Saving' },
+        { id: 'business', name: '💼 Business' }
+      ]
+    };
+
+    // Chart instances
+    let incomeFlowChartInstance = null;
+    let expenseCategoryChartInstance = null;
+    let editingItem = null;
+
+    // Helper functions
+    function generateUniqueId() {
+      return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
+    }
+
+    function formatMoney(amount) {
+      if (isNaN(amount) || amount === null) return "0.00";
+      return parseFloat(amount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function calculatePercentage(value, total) {
+      if (total === 0) return "0.0%";
+      return ((value / total) * 100).toFixed(1) + '%';
+    }
+
+    // Initialize default data
+    function initDefaultData() {
+      budgetData.taxes = DEFAULT_DEDUCTIONS.taxes.map(item => ({
+        ...item,
+        id: generateUniqueId(),
+        type: 'taxes'
+      }));
+
+      budgetData.preTax = DEFAULT_DEDUCTIONS.preTax.map(item => ({
+        ...item,
+        id: generateUniqueId(),
+        type: 'preTax'
+      }));
+
+      budgetData.postTax = DEFAULT_DEDUCTIONS.postTax.map(item => ({
+        ...item,
+        id: generateUniqueId(),
+        type: 'postTax'
+      }));
+
+      budgetData.income = 0;
+      budgetData.expenses = [];
+      
+      localStorage.setItem('budgetData', JSON.stringify(budgetData));
+    }
+
+    // Update UI
+    function updateUI() {
+      localStorage.setItem('budgetData', JSON.stringify(budgetData));
+
+      // Calculations
+      const grossIncome = budgetData.income;
+      const preTaxTotal = budgetData.preTax.reduce((sum, item) => sum + item.amount, 0);
+      const taxTotal = budgetData.taxes.reduce((sum, item) => sum + item.amount, 0);
+      const postTaxTotal = budgetData.postTax.reduce((sum, item) => sum + item.amount, 0);
+      const totalDeductionsAndTaxes = preTaxTotal + taxTotal + postTaxTotal;
+      const taxableIncome = grossIncome - preTaxTotal;
+      const netIncome = taxableIncome - taxTotal - postTaxTotal;
+      const expensesTotal = budgetData.expenses.reduce((sum, item) => sum + item.amount, 0);
+      const remaining = netIncome - expensesTotal;
+
+      // Update income input
+      document.getElementById('income').value = grossIncome;
+
+      // Update flow section
+      document.getElementById('gross-income').textContent = formatMoney(grossIncome);
+      document.getElementById('pre-tax-deductions').textContent = formatMoney(preTaxTotal);
+      document.getElementById('taxable-income').textContent = formatMoney(taxableIncome);
+      document.getElementById('tax-total').textContent = formatMoney(taxTotal);
+      document.getElementById('post-tax-deductions').textContent = formatMoney(postTaxTotal);
+      document.getElementById('total-deductions-taxes').textContent = formatMoney(totalDeductionsAndTaxes);
+      document.getElementById('net-income').textContent = formatMoney(netIncome);
+
+      // Update summary cards
+      document.getElementById('expenses-total-card').textContent = formatMoney(expensesTotal);
+      document.getElementById('remaining-balance').textContent = formatMoney(remaining);
+      
+      const remainingElement = document.getElementById('remaining-balance');
+      remainingElement.className = `card-amount ${remaining >= 0 ? 'positive' : 'negative'}`;
+
+      // Update percentages
+      document.getElementById('expenses-percentage-card').textContent = calculatePercentage(expensesTotal, grossIncome);
+      document.getElementById('remaining-percentage-card').textContent = calculatePercentage(remaining, grossIncome);
+
+      // Render lists
+      renderList('tax-list', budgetData.taxes, grossIncome);
+      renderList('pre-tax-list', budgetData.preTax, grossIncome);
+      renderList('post-tax-list', budgetData.postTax, grossIncome);
+      renderExpenses(grossIncome);
+      populateCategorySelect();
+      
+      // Update charts
+      updateCharts(grossIncome, preTaxTotal, taxTotal, postTaxTotal, expensesTotal, remaining);
+    }
+
+    function renderList(elementId, items, totalIncome) {
+      const container = document.getElementById(elementId);
+      const type = elementId.replace('-list', '');
+      const total = items.reduce((sum, item) => sum + item.amount, 0);
+
+      container.innerHTML = `
+        ${items.map(item => `
+          <div class="list-item" data-id="${item.id}" data-type="${type}">
+            ${editingItem && editingItem.id === item.id ?
+              `<div class="list-item-content">
+                 <input type="text" value="${item.name}" id="edit-name-${item.id}" placeholder="Item name">
+                 <input type="number" value="${item.amount}" id="edit-amount-${item.id}" placeholder="Amount">
+               </div>
+               <div class="list-item-actions">
+                 <button onclick="saveEdit('${type}', '${item.id}')" class="btn-success">Save</button>
+                 <button onclick="cancelEdit()" class="btn-warning">Cancel</button>
+               </div>`
+              :
+              `<div class="list-item-content">
+                 <span>${item.name}: $${formatMoney(item.amount)}</span>
+               </div>
+               <div class="list-item-actions">
+                 <button onclick="editItem('${type}', '${item.id}')" class="btn-info">Edit</button>
+                 <button onclick="deleteItem('${type}', '${item.id}')" class="btn-danger">Delete</button>
+               </div>`
+            }
+          </div>
+        `).join('')}
+      `;
+    }
+
+    function renderExpenses(totalIncome) {
+      const container = document.getElementById('expenses-list');
+      const total = budgetData.expenses.reduce((sum, item) => sum + item.amount, 0);
+
+      container.innerHTML = `
+        ${budgetData.expenses.map(item => {
+          const category = budgetData.categories.find(cat => cat.id === item.category);
+          return `
+            <div class="list-item" data-id="${item.id}" data-type="expenses">
+              ${editingItem && editingItem.id === item.id ?
+                `<div class="list-item-content">
+                   <select id="edit-category-${item.id}" style="margin-right: 10px;">
+                     ${budgetData.categories.map(cat => `<option value="${cat.id}" ${cat.id === item.category ? 'selected' : ''}>${cat.name}</option>`).join('')}
+                   </select>
+                   <input type="text" value="${item.name}" id="edit-name-${item.id}" placeholder="Item name">
+                   <input type="number" value="${item.amount}" id="edit-amount-${item.id}" placeholder="Amount">
+                 </div>
+                 <div class="list-item-actions">
+                   <button onclick="saveEdit('expenses', '${item.id}')" class="btn-success">Save</button>
+                   <button onclick="cancelEdit()" class="btn-warning">Cancel</button>
+                 </div>`
+                :
+                `<div class="list-item-content">
+                   <span class="badge">${category ? category.name : '📌 Other'}</span>
+                   <span>${item.name}</span>
+                 </div>
+                 <span class="list-item-amount">$${formatMoney(item.amount)}</span>
+                 <div class="list-item-actions">
+                   <button onclick="editItem('expenses', '${item.id}')" class="btn-info">Edit</button>
+                   <button onclick="deleteItem('expenses', '${item.id}')" class="btn-danger">Delete</button>
+                 </div>`
+              }
+            </div>
+          `;
+        }).join('')}
+      `;
+    }
+
+    function populateCategorySelect() {
+      const select = document.getElementById('category');
+      select.innerHTML = '';
+
+      budgetData.categories.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat.id;
+        option.textContent = cat.name;
+        select.appendChild(option);
+      });
+
+      const customOption = document.createElement('option');
+      customOption.value = 'custom';
+      customOption.textContent = '✏️ Custom Category';
+      select.appendChild(customOption);
+    }
+
+    // CRUD operations
+    function deleteItem(type, id) {
+      if (confirm('Are you sure you want to delete this item?')) {
+        budgetData[type] = budgetData[type].filter(item => item.id !== id);
+        updateUI();
+      }
+    }
+
+    function editItem(type, id) {
+      cancelEdit();
+      const item = budgetData[type].find(item => item.id === id);
+      if (item) {
+        editingItem = { ...item, type: type };
+        updateUI();
+      }
+    }
+
+    function saveEdit(type, id) {
+      const itemIndex = budgetData[type].findIndex(item => item.id === id);
+      if (itemIndex === -1) return;
+
+      const newName = document.getElementById(`edit-name-${id}`).value.trim();
+      const newAmount = parseFloat(document.getElementById(`edit-amount-${id}`).value);
+
+      if (!newName) {
+        alert('Item name cannot be empty.');
+        return;
+      }
+      if (isNaN(newAmount)) {
+        alert('Please enter a valid amount.');
+        return;
+      }
+
+      budgetData[type][itemIndex].name = newName;
+      budgetData[type][itemIndex].amount = newAmount;
+
+      if (type === 'expenses') {
+        const newCategory = document.getElementById(`edit-category-${id}`).value;
+        budgetData[type][itemIndex].category = newCategory;
+      }
+
+      editingItem = null;
+      updateUI();
+    }
+
+    function cancelEdit() {
+      if (editingItem) {
+        editingItem = null;
+        updateUI();
+      }
+    }
+
+    function updateCategorizedItem(type) {
+      const prefix = type === 'taxes' ? 'tax' : (type === 'preTax' ? 'pre-tax' : 'post-tax');
+      const selectElement = document.getElementById(`${prefix}-type`);
+      const inputAmountElement = document.getElementById(`${prefix}-amount`);
+      const customNameElement = document.getElementById(`${prefix}-custom-name`);
+
+      let name = selectElement.value;
+      const amount = parseFloat(inputAmountElement.value);
+
+      if (name === 'custom') {
+        name = customNameElement.value.trim();
+        if (!name) {
+          alert('Please enter a custom name!');
+          return;
+        }
+      }
+
+      if (!name || isNaN(amount)) {
+        alert('Please enter both item name and amount!');
+        return;
+      }
+
+      let item = budgetData[type].find(item => item.name === name);
+
+      if (item) {
+        item.amount = amount;
+      } else {
+        budgetData[type].push({
+          id: generateUniqueId(),
+          type: type,
+          name,
+          amount
+        });
+      }
+
+      updateUI();
+      inputAmountElement.value = '';
+      customNameElement.value = '';
+      selectElement.value = '';
+      document.getElementById(`${prefix}-custom-container`).classList.add('hidden');
+    }
+
+    function addExpense() {
+      const category = document.getElementById('category').value;
+      const name = document.getElementById('expense-name').value.trim();
+      const amount = parseFloat(document.getElementById('expense-amount').value);
+
+      if (!name || isNaN(amount)) {
+        alert('Please enter both expense name and amount!');
+        return;
+      }
+
+      budgetData.expenses.push({
+        id: generateUniqueId(),
+        type: 'expenses',
+        category,
+        name,
+        amount
+      });
+
+      updateUI();
+      document.getElementById('expense-name').value = '';
+      document.getElementById('expense-amount').value = '';
+    }
+
+    function addCategory() {
+      const newCategoryName = document.getElementById('new-category').value.trim();
+      if (!newCategoryName) {
+        alert('Please enter a category name!');
+        return;
+      }
+
+      const emoji = prompt('Enter an emoji for this category (e.g. 🎮)', '📌');
+      const id = newCategoryName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
+      if (budgetData.categories.some(cat => cat.id === id)) {
+        alert('A category with this name already exists. Please use a different name.');
+        return;
+      }
+
+      budgetData.categories.push({
+        id: id,
+        name: `${emoji || '📌'} ${newCategoryName}`
+      });
+
+      populateCategorySelect();
+      document.getElementById('category').value = id;
+
+      document.getElementById('new-category').value = '';
+      document.getElementById('category-input-container').classList.add('hidden');
+      updateUI();
+    }
+
+    // Chart functions
+    function updateCharts(grossIncome, preTaxTotal, taxTotal, postTaxTotal, expensesTotal, remaining) {
+      // Income Flow Chart
+      const incomeFlowCtx = document.getElementById('incomeFlowChart').getContext('2d');
+      const incomeFlowLabels = [];
+      const incomeFlowData = [];
+      const incomeFlowColors = ['#4361ee', '#3a0ca3', '#f72585', '#4cc9f0', '#4895ef', '#7209b7'];
+
+      if (grossIncome > 0) {
+        if (preTaxTotal > 0) {
+          incomeFlowLabels.push('Pre-Tax Deductions');
+          incomeFlowData.push(preTaxTotal);
+        }
+        if (taxTotal > 0) {
+          incomeFlowLabels.push('Taxes');
+          incomeFlowData.push(taxTotal);
+        }
+        if (postTaxTotal > 0) {
+          incomeFlowLabels.push('Post-Tax Deductions');
+          incomeFlowData.push(postTaxTotal);
+        }
+        if (expensesTotal > 0) {
+          incomeFlowLabels.push('Expenses');
+          incomeFlowData.push(expensesTotal);
+        }
+        if (remaining > 0) {
+          incomeFlowLabels.push('Remaining');
+          incomeFlowData.push(remaining);
+        }
+      } else {
+        incomeFlowLabels.push('No Income');
+        incomeFlowData.push(1);
+      }
+
+      if (incomeFlowChartInstance) {
+        incomeFlowChartInstance.destroy();
+      }
+
+      incomeFlowChartInstance = new Chart(incomeFlowCtx, {
+        type: 'doughnut',
+        data: {
+          labels: incomeFlowLabels,
+          datasets: [{
+            data: incomeFlowData,
+            backgroundColor: incomeFlowColors,
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'right',
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const label = context.label || '';
+                  const value = context.raw;
+                  const sum = context.dataset.data.reduce((a, b) => a + b, 0);
+                  const percentage = sum === 0 ? '0.0' : (value / sum * 100).toFixed(1);
+                  return `${label}: $${formatMoney(value)} (${percentage}%)`;
+                }
+              }
+            }
+          }
+        }
+      });
+
+      // Expense Category Chart
+      const expenseCategoryMap = new Map();
+      budgetData.expenses.forEach(expense => {
+        const categoryName = budgetData.categories.find(cat => cat.id === expense.category)?.name || 'Other';
+        expenseCategoryMap.set(categoryName, (expenseCategoryMap.get(categoryName) || 0) + expense.amount);
+      });
+
+      const expenseCategoryCtx = document.getElementById('expenseCategoryChart').getContext('2d');
+      const expenseCategoryLabels = Array.from(expenseCategoryMap.keys());
+      const expenseCategoryData = Array.from(expenseCategoryMap.values());
+      const expenseCategoryColors = ['#4361ee', '#3a0ca3', '#f72585', '#4cc9f0', '#4895ef', '#7209b7', '#b5179e'];
+
+      if (expenseCategoryChartInstance) {
+        expenseCategoryChartInstance.destroy();
+      }
+
+      expenseCategoryChartInstance = new Chart(expenseCategoryCtx, {
+        type: 'pie',
+        data: {
+          labels: expenseCategoryLabels,
+          datasets: [{
+            data: expenseCategoryData,
+            backgroundColor: expenseCategoryColors,
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'right',
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const label = context.label || '';
+                  const value = context.raw;
+                  const sum = context.dataset.data.reduce((a, b) => a + b, 0);
+                  const percentage = sum === 0 ? '0.0' : (value / sum * 100).toFixed(1);
+                  return `${label}: $${formatMoney(value)} (${percentage}%)`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Utility functions
+    function saveData() {
+      try {
+        updateUI();
+        const dataStr = JSON.stringify(budgetData, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `budget_data_${new Date().toISOString().slice(0, 10)}.json`;
+        document.body.appendChild(a);
+        a.click();
+
+        setTimeout(() => {
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          alert('Data saved successfully!');
+        }, 100);
+      } catch (error) {
+        console.error('Save error:', error);
+        alert('Error saving data: ' + error.message);
+      }
+    }
+
+    function loadData() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+
+      input.onchange = async e => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        try {
+          const fileContent = await readFileAsText(file);
+          const loadedData = JSON.parse(fileContent);
+
+          if (!loadedData || !Array.isArray(loadedData.taxes) || !Array.isArray(loadedData.preTax) || 
+              !Array.isArray(loadedData.postTax) || !Array.isArray(loadedData.expenses)) {
+            throw new Error('Invalid data format. The file may be corrupted.');
+          }
+
+          Object.assign(budgetData, {
+            income: loadedData.income || 0,
+            taxes: loadedData.taxes,
+            preTax: loadedData.preTax,
+            postTax: loadedData.postTax,
+            expenses: loadedData.expenses
+          });
+
+          if (Array.isArray(loadedData.categories)) {
+            const currentCategoryIds = new Set(budgetData.categories.map(c => c.id));
+            loadedData.categories.forEach(newCat => {
+              if (!currentCategoryIds.has(newCat.id)) {
+                budgetData.categories.push(newCat);
+              }
+            });
+          }
+
+          // Ensure default items are present
+          DEFAULT_DEDUCTIONS.taxes.forEach(defaultItem => {
+            if (!budgetData.taxes.some(item => item.name === defaultItem.name)) {
+              budgetData.taxes.push({ ...defaultItem, id: generateUniqueId(), type: 'taxes' });
+            }
+          });
+          DEFAULT_DEDUCTIONS.preTax.forEach(defaultItem => {
+            if (!budgetData.preTax.some(item => item.name === defaultItem.name)) {
+              budgetData.preTax.push({ ...defaultItem, id: generateUniqueId(), type: 'preTax' });
+            }
+          });
+          DEFAULT_DEDUCTIONS.postTax.forEach(defaultItem => {
+            if (!budgetData.postTax.some(item => item.name === defaultItem.name)) {
+              budgetData.postTax.push({ ...defaultItem, id: generateUniqueId(), type: 'postTax' });
+            }
+          });
+
+          updateUI();
+          alert('Data loaded successfully!');
+        } catch (error) {
+          console.error('Load error:', error);
+          alert('Error loading file:\n' + error.message);
+        }
+      };
+
+      input.click();
+    }
+
+    function readFileAsText(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = event => resolve(event.target.result);
+        reader.onerror = error => reject(error);
+        reader.readAsText(file);
+      });
+    }
+
+    function resetData() {
+      if (confirm('Are you sure you want to reset all data? This cannot be undone.')) {
+        localStorage.removeItem('budgetData');
+        initDefaultData();
+        updateUI();
+        alert('All data has been reset.');
+      }
+    }
+
+    // Initialize the app
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load saved data or initialize default data
+      if (!localStorage.getItem('budgetData')) {
+        initDefaultData();
+      } else {
+        const savedData = JSON.parse(localStorage.getItem('budgetData'));
+        Object.assign(budgetData, {
+          income: savedData.income || 0,
+          taxes: savedData.taxes || [],
+          preTax: savedData.preTax || [],
+          postTax: savedData.postTax || [],
+          expenses: savedData.expenses || [],
+          categories: savedData.categories || [
+            { id: 'housing', name: '🏠 Housing' },
+            { id: 'food', name: '🍔 Food' },
+            { id: 'transportation', name: '🚗 Transportation' },
+            { id: 'health', name: '🏥 Health' },
+            { id: 'family', name: '👪 Family' },
+            { id: 'shopping', name: '🛍️ Shopping' },
+            { id: 'finance', name: '💳 Finance' },
+            { id: 'travel', name: '✈️ Travel' },
+            { id: 'saving', name: '💰 Saving' },
+            { id: 'business', name: '💼 Business' }
+          ]
+        });
+
+        // Ensure default items are present
+        DEFAULT_DEDUCTIONS.taxes.forEach(defaultItem => {
+          if (!budgetData.taxes.some(item => item.name === defaultItem.name)) {
+            budgetData.taxes.push({ ...defaultItem, id: generateUniqueId(), type: 'taxes' });
+          }
+        });
+        DEFAULT_DEDUCTIONS.preTax.forEach(defaultItem => {
+          if (!budgetData.preTax.some(item => item.name === defaultItem.name)) {
+            budgetData.preTax.push({ ...defaultItem, id: generateUniqueId(), type: 'preTax' });
+          }
+        });
+        DEFAULT_DEDUCTIONS.postTax.forEach(defaultItem => {
+          if (!budgetData.postTax.some(item => item.name === defaultItem.name)) {
+            budgetData.postTax.push({ ...defaultItem, id: generateUniqueId(), type: 'postTax' });
+          }
+        });
+      }
+
+      populateCategorySelect();
+
+      // Event listeners for select boxes to show/hide custom input
+      document.querySelectorAll('select[id$="-type"]').forEach(select => {
+        select.addEventListener('change', function() {
+          const type = this.id.replace('-type', '');
+          const container = document.getElementById(`${type}-custom-container`);
+          const customNameInput = document.getElementById(`${type}-custom-name`);
+          const amountInput = document.getElementById(`${type}-amount`);
+
+          if (this.value === 'custom') {
+            container.classList.remove('hidden');
+            customNameInput.focus();
+          } else {
+            container.classList.add('hidden');
+            const existingItem = budgetData[type].find(item => item.name === this.value);
+            amountInput.value = existingItem ? existingItem.amount : '';
+            amountInput.focus();
+          }
+        });
+      });
+
+      document.getElementById('category').addEventListener('change', function() {
+        const container = document.getElementById('category-input-container');
+        if (this.value === 'custom') {
+          container.classList.remove('hidden');
+          document.getElementById('new-category').focus();
+        } else {
+          container.classList.add('hidden');
+        }
+      });
+
+      document.getElementById('income').addEventListener('input', function() {
+        budgetData.income = parseFloat(this.value) || 0;
+        updateUI();
+      });
+
+      // Event listeners for 'Enter' key
+      document.getElementById('tax-amount').addEventListener('keypress', function(e) { 
+        if (e.key === 'Enter') updateCategorizedItem('taxes'); 
+      });
+      document.getElementById('pre-tax-amount').addEventListener('keypress', function(e) { 
+        if (e.key === 'Enter') updateCategorizedItem('preTax'); 
+      });
+      document.getElementById('post-tax-amount').addEventListener('keypress', function(e) { 
+        if (e.key === 'Enter') updateCategorizedItem('postTax'); 
+      });
+      document.getElementById('expense-amount').addEventListener('keypress', function(e) { 
+        if (e.key === 'Enter') addExpense(); 
+      });
+      document.getElementById('tax-custom-name').addEventListener('keypress', function(e) { 
+        if (e.key === 'Enter') updateCategorizedItem('taxes'); 
+      });
+      document.getElementById('pre-tax-custom-name').addEventListener('keypress', function(e) { 
+        if (e.key === 'Enter') updateCategorizedItem('preTax'); 
+      });
+      document.getElementById('post-tax-custom-name').addEventListener('keypress', function(e) { 
+        if (e.key === 'Enter') updateCategorizedItem('postTax'); 
+      });
+      document.getElementById('new-category').addEventListener('keypress', function(e) { 
+        if (e.key === 'Enter') addCategory(); 
+      });
+
+      // Initial UI update
+      updateUI();
+    });
+  </script>
+</body>
+</html>
