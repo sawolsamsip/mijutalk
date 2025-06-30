@@ -473,7 +473,9 @@ function initDefaultData() {
 function addDeductionItem(type) {
     const selectElement = document.getElementById(`${type}-type-select`);
     const amountInput = document.getElementById(`${type}-amount-input`);
-    const customNameInput = document.getElementById(`${type}-custom-name-input`);
+    const customNameInput = type === 'taxes' ? document.getElementById('tax-custom-name-input') : 
+                          type === 'preTax' ? document.getElementById('pre-tax-custom-name-input') :
+                          document.getElementById('post-tax-custom-name-input');
     
     let name = selectElement.value;
     let amount = parseFloat(amountInput.value);
@@ -609,10 +611,15 @@ function setupEventListeners() {
     });
 
     // 세금/공제 항목 추가 핸들러
-    document.getElementById('add-tax-btn').addEventListener('click', () => addDeductionItem('taxes'));
-    document.getElementById('add-pre-tax-btn').addEventListener('click', () => addDeductionItem('preTax'));
-    document.getElementById('add-post-tax-btn').addEventListener('click', () => addDeductionItem('postTax'));
-
+    document.getElementById('add-tax-btn').addEventListener('click', function() {
+        addDeductionItem('taxes');
+    });
+    document.getElementById('add-pre-tax-btn').addEventListener('click', function() {
+        addDeductionItem('preTax');
+    });
+    document.getElementById('add-post-tax-btn').addEventListener('click', function() {
+        addDeductionItem('postTax');
+    });
     // 지출 추가 관련 이벤트
     document.getElementById('category-select').addEventListener('change', function() {
         const container = document.getElementById('category-input-container');
