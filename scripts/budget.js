@@ -1,6 +1,8 @@
 // budget.js
 
 // 설정값: 이제 모든 기본 항목에 고유 ID를 부여합니다.
+// 이 값들은 드롭다운에서 선택할 수 있는 "템플릿" 역할을 하며,
+// budgetData에는 사용자가 선택하거나 사용자 정의한 항목만 추가됩니다.
 const DEFAULT_DEDUCTIONS = {
     taxes: [
         { id: 'tax-federal', name: "Federal Withholding", amount: 0 },
@@ -27,11 +29,13 @@ const DEFAULT_DEDUCTIONS = {
     ]
 };
 
+// budgetData는 실제 사용자의 데이터를 저장하는 객체입니다.
+// 초기에는 세금 및 공제 배열이 비어 있습니다.
 const budgetData = {
     income: 0,
-    taxes: [],
-    preTax: [],
-    postTax: [],
+    taxes: [], // 초기에는 빈 배열로 시작
+    preTax: [], // 초기에는 빈 배열로 시작
+    postTax: [], // 초기에는 빈 배열로 시작
     expenses: [],
     categories: [], // loadData에서 초기화될 예정
     currentLanguage: 'ko'
@@ -82,6 +86,7 @@ function switchLanguage(lang) {
     document.getElementById('lang-en').classList.toggle('active', lang === 'en');
 
     populateCategorySelect(); // 카테고리 셀렉트박스 언어에 맞게 업데이트
+    populateCategorizedSelects(); // 세금/공제 드롭다운 언어에 맞게 업데이트
     updateUI(); // UI 전체 업데이트
 }
 
@@ -106,14 +111,49 @@ function populateCategorySelect() {
     if (budgetData.categories.some(cat => cat.id === prev) || prev === 'custom') {
         select.value = prev;
     } else {
-        // 카테고리가 없는 경우를 대비한 처리
         select.value = budgetData.categories[0] ? budgetData.categories[0].id : '';
     }
 }
 
+// --- 세금/공제 드롭다운 채우기 ---
+function populateCategorizedSelects() {
+    ['taxes', 'preTax', 'postTax'].forEach(type => {
+        const selectElement = document.getElementById(`${type}-type-select`);
+        const prev = selectElement.value;
+        selectElement.innerHTML = '';
+
+        // "선택" 옵션 추가
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = budgetData.currentLanguage === 'ko' ? '--- 항목 선택 ---' : '--- Select Item ---';
+        selectElement.appendChild(defaultOption);
+
+        // DEFAULT_DEDUCTIONS에서 항목 추가
+        DEFAULT_DEDUCTIONS[type].forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.name; // 이름으로 value 설정
+            option.textContent = item.name;
+            selectElement.appendChild(option);
+        });
+
+        // "사용자 정의" 옵션 추가
+        const customOption = document.createElement('option');
+        customOption.value = 'custom';
+        customOption.textContent = budgetData.currentLanguage === 'ko' ? '✏️ 직접 입력' : '✏️ Custom Input';
+        selectElement.appendChild(customOption);
+
+        // 이전에 선택된 값이 있다면 유지
+        if (Array.from(selectElement.options).some(opt => opt.value === prev)) {
+            selectElement.value = prev;
+        } else {
+            selectElement.value = ''; // 유효하지 않으면 "선택"으로 초기화
+        }
+    });
+}
+
+
 // --- 차트 업데이트 ---
 function updateCharts(grossIncome, preTaxTotal, taxTotal, postTaxTotal, expensesTotal, remaining) {
-    // Chart is not defined 오류를 피하기 위해 Chart 객체 존재 여부 확인
     if (typeof Chart === 'undefined') {
         console.warn("Chart.js library not loaded. Skipping chart updates.");
         return;
@@ -242,6 +282,7 @@ function updateUI() {
     renderExpenses();
 
     populateCategorySelect();
+    // populateCategorizedSelects(); // 이 함수는 언어 전환 시 또는 초기 로드 시만 호출하면 됩니다.
     updateCharts(gross, pretax, tax, posttax, expenses, remain);
 }
 
@@ -250,7 +291,9 @@ function renderList(elementId, items) {
     const container = document.getElementById(elementId);
     const type = elementId.replace('-list', ''); // 'tax-list' -> 'tax', 'pre-tax-list' -> 'pre-tax'
 
-    // 항목이 하나라도 있으면 리스트를 보이게 하고, 없으면 숨깁니다.
+    // 수정된 부분: 항목이 하나라도 있으면 리스트를 보이게 하고, 없으면 숨깁니다.
+    // 기존에는 금액이 0인 경우에도 목록에 추가되어 보이게 했습니다.
+    // 이제는 items 배열 자체가 비어있을 때만 숨깁니다.
     if (items.length > 0) {
         container.classList.remove('hidden');
     } else {
@@ -425,6 +468,7 @@ function loadData() {
         if (Array.isArray(parsed.categories) && parsed.categories.length > 0) {
             budgetData.categories = parsed.categories;
         } else {
+            // 카테고리가 없으면 기본값으로 설정
             budgetData.categories = [
                 { id: 'housing', name: '🏠 주거', nameEn: '🏠 Housing' },
                 { id: 'food', name: '🍔 식비', nameEn: '🍔 Food' },
@@ -441,27 +485,27 @@ function loadData() {
 
         budgetData.currentLanguage = parsed.currentLanguage || 'ko';
 
-        // DEFAULT_DEDUCTIONS 항목들을 budgetData에 통합 (기존 값 덮어쓰기 또는 추가)
+        // 중요한 변경: DEFAULT_DEDUCTIONS 항목들을 budgetData에 자동으로 통합하는 로직을 제거
+        // 이 부분은 주석 처리되거나 삭제되어야 합니다.
+        /*
         ['taxes', 'preTax', 'postTax'].forEach(type => {
             DEFAULT_DEDUCTIONS[type].forEach(defaultItem => {
                 const existingItemIndex = budgetData[type].findIndex(item => item.id === defaultItem.id);
-                if (existingItemIndex > -1) {
-                    // 이미 존재하는 기본 항목이면, 이름만 덮어쓰고 금액은 로컬 스토리지 값을 유지합니다.
-                    // 금액을 0으로 초기화하려면 다음 줄의 주석을 해제하세요.
-                    // budgetData[type][existingItemIndex].name = defaultItem.name;
-                    // budgetData[type][existingItemIndex].amount = 0; // 초기화 시 0으로 설정
-                } else {
-                    // 존재하지 않는 기본 항목이면 새로 추가 (초기 로드 시)
-                    budgetData[type].push({ ...defaultItem, id: defaultItem.id || generateUniqueId() });
+                if (existingItemIndex === -1) {
+                    // 존재하지 않는 기본 항목이면 새로 추가 (초기 로드 시 금액 0으로)
+                    // 이 로직을 제거하여 초기 로드 시 기본 항목이 자동으로 표시되지 않도록 합니다.
+                    // budgetData[type].push({ ...defaultItem, id: defaultItem.id || generateUniqueId(), amount: 0 });
                 }
             });
         });
+        */
 
     } else {
         console.log("No budgetData found in localStorage, initializing default data.");
         initDefaultData(); // 로컬 스토리지에 데이터가 없으면 기본 데이터로 초기화
     }
     updateUI(); // loadData 후 반드시 UI 업데이트
+    populateCategorizedSelects(); // 세금/공제 드롭다운 옵션 채우기
     switchLanguage(budgetData.currentLanguage); // 언어 설정도 로드 후 적용
 }
 
@@ -476,10 +520,11 @@ function resetData() {
 // 앱이 처음 로드되거나 '데이터 초기화' 시 호출
 function initDefaultData() {
     budgetData.income = 0;
-    // 기본 공제/세금 항목에 고유 ID를 부여하여 초기화
-    budgetData.taxes = DEFAULT_DEDUCTIONS.taxes.map(item => ({ ...item, id: item.id || generateUniqueId(), type: 'taxes' }));
-    budgetData.preTax = DEFAULT_DEDUCTIONS.preTax.map(item => ({ ...item, id: item.id || generateUniqueId(), type: 'preTax' }));
-    budgetData.postTax = DEFAULT_DEDUCTIONS.postTax.map(item => ({ ...item, id: item.id || generateUniqueId(), type: 'postTax' }));
+    // 중요한 변경: 기본 공제/세금 항목 배열을 빈 배열로 초기화합니다.
+    // 사용자가 드롭다운에서 선택할 때만 해당 항목이 budgetData에 추가됩니다.
+    budgetData.taxes = [];
+    budgetData.preTax = [];
+    budgetData.postTax = [];
     budgetData.expenses = [];
     budgetData.categories = [
         { id: 'housing', name: '🏠 주거', nameEn: '🏠 Housing' },
@@ -503,7 +548,7 @@ document.getElementById('lang-en').onclick = () => switchLanguage('en');
 
 window.onload = function() {
     loadData();
-    // loadData 함수 내에서 switchLanguage를 호출하므로 여기서 다시 호출할 필요 없음
+    // loadData 함수 내에서 switchLanguage와 populateCategorizedSelects를 호출하므로 여기서 다시 호출할 필요 없음
 };
 
 document.getElementById('income-input').addEventListener('input', function(e) {
@@ -607,11 +652,10 @@ function addCategorizedItem(type, isCustom = false) {
     let name = '';
     let amount = parseFloat(amountInput.value);
 
-    // 금액이 유효한지 먼저 확인 (0보다 크거나 같은 경우 허용)
-    // 미리 정의된 항목의 경우, 금액이 0이더라도 추가될 수 있도록 허용 (처음부터 0으로 설정되어 있으므로)
+    // 금액 유효성 검사: NaN이거나 0 미만인 경우
     if (isNaN(amount) || amount < 0) {
-        // '사용자 정의'가 아니면서 금액 입력이 필수적인 경우에만 알림
-        if (!isCustom && selectedValue !== 'custom' && selectedValue !== '') {
+        // '사용자 정의'가 아니면서 "항목 선택"도 아닌 경우에만 경고
+        if (!isCustom && selectedValue !== '') {
             alert(budgetData.currentLanguage === 'ko' ? '유효한 금액을 입력해야 항목이 추가/업데이트됩니다.' : 'A valid amount must be entered for the item to be added/updated.');
         }
         return; // 유효하지 않은 금액이면 함수 종료
@@ -646,10 +690,8 @@ function addCategorizedItem(type, isCustom = false) {
         }
 
         name = defaultItem.name; // 미리 정의된 이름 사용
-        // 금액은 사용자가 입력한 값 (amountInput.value)을 우선 사용
-        // 이미 위에서 금액 유효성 검사를 했으므로 그대로 사용
 
-        // budgetData에 이미 해당 이름의 기본 항목이 있는지 확인 (ID 기반으로 확인)
+        // budgetData에 이미 해당 ID의 기본 항목이 있는지 확인
         const existingInBudgetData = budgetData[type].find(item => item.id === defaultItem.id);
 
         if (existingInBudgetData) {
@@ -688,7 +730,8 @@ document.getElementById('tax-type-select').addEventListener('change', function (
         document.getElementById('tax-custom-name-input').value = ''; // 이름 초기화
     } else { // 미리 정의된 항목 선택 시
         customContainer.classList.add('hidden');
-        addCategorizedItem('taxes'); // 금액 유효성 검사는 addCategorizedItem 내부에서 진행
+        // 'addCategorizedItem' 호출 시 'isCustom'을 false로 명시적으로 전달
+        addCategorizedItem('taxes', false);
     }
 });
 document.getElementById('pre-tax-type-select').addEventListener('change', function () {
@@ -699,7 +742,7 @@ document.getElementById('pre-tax-type-select').addEventListener('change', functi
         document.getElementById('pre-tax-custom-name-input').value = '';
     } else {
         customContainer.classList.add('hidden');
-        addCategorizedItem('preTax');
+        addCategorizedItem('preTax', false);
     }
 });
 document.getElementById('post-tax-type-select').addEventListener('change', function () {
@@ -710,6 +753,6 @@ document.getElementById('post-tax-type-select').addEventListener('change', funct
         document.getElementById('post-tax-custom-name-input').value = '';
     } else {
         customContainer.classList.add('hidden');
-        addCategorizedItem('postTax');
+        addCategorizedItem('postTax', false);
     }
 });
