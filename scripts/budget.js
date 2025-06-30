@@ -1,7 +1,6 @@
 // budget.js
 
-// 설정값: 이제 모든 기본 항목에 고유 ID를 부여합니다.
-// 이 값들은 드롭다운에서 선택할 수 있는 "템플릿" 역할을 하며,
+// 설정값: 이 값들은 드롭다운에서 선택할 수 있는 "템플릿" 역할을 합니다.
 // budgetData에는 사용자가 선택하거나 사용자 정의한 항목만 추가됩니다.
 const DEFAULT_DEDUCTIONS = {
     taxes: [
@@ -37,7 +36,7 @@ const budgetData = {
     preTax: [], // 초기에는 빈 배열로 시작
     postTax: [], // 초기에는 빈 배열로 시작
     expenses: [],
-    categories: [], // loadData에서 초기화될 예정
+    categories: [], // loadData 또는 initDefaultData에서 초기화될 예정
     currentLanguage: 'ko'
 };
 
@@ -93,6 +92,10 @@ function switchLanguage(lang) {
 // --- 카테고리 셀렉트박스 채우기 ---
 function populateCategorySelect() {
     const select = document.getElementById('category-select');
+    if (!select) {
+        console.error("Element with ID 'category-select' not found.");
+        return;
+    }
     const prev = select.value;
     select.innerHTML = '';
 
@@ -119,7 +122,12 @@ function populateCategorySelect() {
 function populateCategorizedSelects() {
     ['taxes', 'preTax', 'postTax'].forEach(type => {
         const selectElement = document.getElementById(`${type}-type-select`);
-        const prev = selectElement.value;
+        if (!selectElement) {
+            console.error(`Element with ID '${type}-type-select' not found.`);
+            return; // 요소가 없으면 건너뛰기
+        }
+
+        const prev = selectElement.value; // 현재 선택된 값 저장
         selectElement.innerHTML = '';
 
         // "선택" 옵션 추가
@@ -131,8 +139,8 @@ function populateCategorizedSelects() {
         // DEFAULT_DEDUCTIONS에서 항목 추가
         DEFAULT_DEDUCTIONS[type].forEach(item => {
             const option = document.createElement('option');
-            option.value = item.name; // 이름으로 value 설정
-            option.textContent = item.name;
+            option.value = item.id; // value를 id로 설정하여 고유하게 식별
+            option.textContent = item.name; // 이름은 DEFAULT_DEDUCTIONS에서 가져옴
             selectElement.appendChild(option);
         });
 
@@ -154,6 +162,7 @@ function populateCategorizedSelects() {
 
 // --- 차트 업데이트 ---
 function updateCharts(grossIncome, preTaxTotal, taxTotal, postTaxTotal, expensesTotal, remaining) {
+    // Chart is not defined 오류를 피하기 위해 Chart 객체 존재 여부 확인
     if (typeof Chart === 'undefined') {
         console.warn("Chart.js library not loaded. Skipping chart updates.");
         return;
@@ -163,82 +172,91 @@ function updateCharts(grossIncome, preTaxTotal, taxTotal, postTaxTotal, expenses
     if (expenseCategoryChartInstance) expenseCategoryChartInstance.destroy();
 
     // 수입 분배 차트
-    const ctx1 = document.getElementById('incomeFlowChart').getContext('2d');
-    incomeFlowChartInstance = new Chart(ctx1, {
-        type: 'doughnut',
-        data: {
-            labels: [
-                budgetData.currentLanguage === 'ko' ? '세전 공제' : 'Pre-Tax Deductions',
-                budgetData.currentLanguage === 'ko' ? '세금' : 'Taxes',
-                budgetData.currentLanguage === 'ko' ? '세후 공제' : 'Post-Tax Deductions',
-                budgetData.currentLanguage === 'ko' ? '총 지출' : 'Total Expenses',
-                budgetData.currentLanguage === 'ko' ? '남은 잔액' : 'Remaining Balance'
-            ],
-            datasets: [{
-                data: [preTaxTotal, taxTotal, postTaxTotal, expensesTotal, Math.max(0, remaining)],
-                backgroundColor: ['#4895ef', '#f72585', '#4cc9f0', '#f8961e', '#43aa8b']
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'bottom', labels: { font: { size: 13 } } },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const label = context.label || '';
-                            const value = context.parsed;
-                            const total = context.dataset.data.reduce((sum, current) => sum + current, 0);
-                            const percentage = total === 0 ? '0.0%' : ((value / total) * 100).toFixed(1) + '%';
-                            return `${label}: $${formatMoney(value)} (${percentage})`;
+    const ctx1 = document.getElementById('incomeFlowChart');
+    if (ctx1) {
+        incomeFlowChartInstance = new Chart(ctx1.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: [
+                    budgetData.currentLanguage === 'ko' ? '세전 공제' : 'Pre-Tax Deductions',
+                    budgetData.currentLanguage === 'ko' ? '세금' : 'Taxes',
+                    budgetData.currentLanguage === 'ko' ? '세후 공제' : 'Post-Tax Deductions',
+                    budgetData.currentLanguage === 'ko' ? '총 지출' : 'Total Expenses',
+                    budgetData.currentLanguage === 'ko' ? '남은 잔액' : 'Remaining Balance'
+                ],
+                datasets: [{
+                    data: [preTaxTotal, taxTotal, postTaxTotal, expensesTotal, Math.max(0, remaining)],
+                    backgroundColor: ['#4895ef', '#f72585', '#4cc9f0', '#f8961e', '#43aa8b']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { font: { size: 13 } } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed;
+                                const total = context.dataset.data.reduce((sum, current) => sum + current, 0);
+                                const percentage = total === 0 ? '0.0%' : ((value / total) * 100).toFixed(1) + '%';
+                                return `${label}: $${formatMoney(value)} (${percentage})`;
+                            }
                         }
                     }
                 }
             }
-        }
-    });
+        });
+    } else {
+        console.warn("Element with ID 'incomeFlowChart' not found. Skipping income flow chart.");
+    }
+
 
     // 지출 카테고리 차트
-    const ctx2 = document.getElementById('expenseCategoryChart').getContext('2d');
-    const categoryTotals = {};
-    budgetData.expenses.forEach(item => {
-        const cat = budgetData.categories.find(c => c.id === item.category);
-        const label = budgetData.currentLanguage === 'ko' ? (cat?.name || '기타') : (cat?.nameEn || cat?.name || 'Other');
-        if (!categoryTotals[label]) {
-            categoryTotals[label] = 0;
-        }
-        categoryTotals[label] += item.amount;
-    });
+    const ctx2 = document.getElementById('expenseCategoryChart');
+    if (ctx2) {
+        const categoryTotals = {};
+        budgetData.expenses.forEach(item => {
+            const cat = budgetData.categories.find(c => c.id === item.category);
+            const label = budgetData.currentLanguage === 'ko' ? (cat?.name || '기타') : (cat?.nameEn || cat?.name || 'Other');
+            if (!categoryTotals[label]) {
+                categoryTotals[label] = 0;
+            }
+            categoryTotals[label] += item.amount;
+        });
 
-    expenseCategoryChartInstance = new Chart(ctx2, {
-        type: 'pie',
-        data: {
-            labels: Object.keys(categoryTotals),
-            datasets: [{
-                data: Object.values(categoryTotals),
-                backgroundColor: ['#4895ef', '#f72585', '#4cc9f0', '#f8961e', '#7209b7', '#b5179e', '#43aa8b', '#ffd60a', '#b5ead7', '#ffdac1']
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'bottom', labels: { font: { size: 13 } } },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const label = context.label || '';
-                            const value = context.parsed;
-                            const total = context.dataset.data.reduce((sum, current) => sum + current, 0);
-                            const percentage = total === 0 ? '0.0%' : ((value / total) * 100).toFixed(1) + '%';
-                            return `${label}: $${formatMoney(value)} (${percentage})`;
+        expenseCategoryChartInstance = new Chart(ctx2.getContext('2d'), {
+            type: 'pie',
+            data: {
+                labels: Object.keys(categoryTotals),
+                datasets: [{
+                    data: Object.values(categoryTotals),
+                    backgroundColor: ['#4895ef', '#f72585', '#4cc9f0', '#f8961e', '#7209b7', '#b5179e', '#43aa8b', '#ffd60a', '#b5ead7', '#ffdac1']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { font: { size: 13 } } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed;
+                                const total = context.dataset.data.reduce((sum, current) => sum + current, 0);
+                                const percentage = total === 0 ? '0.0%' : ((value / total) * 100).toFixed(1) + '%';
+                                return `${label}: $${formatMoney(value)} (${percentage})`;
+                            }
                         }
                     }
                 }
             }
-        }
-    });
+        });
+    } else {
+        console.warn("Element with ID 'expenseCategoryChart' not found. Skipping expense category chart.");
+    }
 }
 
 // --- UI 전체 업데이트 ---
@@ -256,7 +274,14 @@ function updateUI() {
     const expenses = budgetData.expenses.reduce((s, i) => s + i.amount, 0);
     const remain = net - expenses;
 
-    document.getElementById('income-input').value = gross;
+    // income-input 요소가 존재하는지 확인
+    const incomeInput = document.getElementById('income-input');
+    if (incomeInput) {
+        incomeInput.value = gross;
+    } else {
+        console.warn("Element with ID 'income-input' not found.");
+    }
+
 
     document.getElementById('gross-income').textContent = formatMoney(gross);
     document.getElementById('pre-tax-deductions').textContent = formatMoney(pretax);
@@ -282,18 +307,19 @@ function updateUI() {
     renderExpenses();
 
     populateCategorySelect();
-    // populateCategorizedSelects(); // 이 함수는 언어 전환 시 또는 초기 로드 시만 호출하면 됩니다.
     updateCharts(gross, pretax, tax, posttax, expenses, remain);
 }
 
 // --- 목록 렌더링 함수 (세금, 세전/세후 공제) ---
 function renderList(elementId, items) {
     const container = document.getElementById(elementId);
-    const type = elementId.replace('-list', ''); // 'tax-list' -> 'tax', 'pre-tax-list' -> 'pre-tax'
+    if (!container) {
+        console.error(`Element with ID '${elementId}' not found.`);
+        return;
+    }
+    const type = elementId.replace('-list', '');
 
-    // 수정된 부분: 항목이 하나라도 있으면 리스트를 보이게 하고, 없으면 숨깁니다.
-    // 기존에는 금액이 0인 경우에도 목록에 추가되어 보이게 했습니다.
-    // 이제는 items 배열 자체가 비어있을 때만 숨깁니다.
+    // 항목이 하나라도 있으면 리스트를 보이게 하고, 없으면 숨깁니다.
     if (items.length > 0) {
         container.classList.remove('hidden');
     } else {
@@ -327,6 +353,10 @@ function renderList(elementId, items) {
 // --- 지출 목록 렌더링 함수 ---
 function renderExpenses() {
     const container = document.getElementById('expenses-list');
+    if (!container) {
+        console.error("Element with ID 'expenses-list' not found.");
+        return;
+    }
 
     // 항목이 하나라도 있으면 리스트를 보이게 하고, 없으면 숨깁니다.
     if (budgetData.expenses.length > 0) {
@@ -375,6 +405,7 @@ function renderExpenses() {
 // --- CRUD 함수 ---
 function deleteItem(type, id) {
     if (confirm(budgetData.currentLanguage === 'ko' ? '정말로 삭제하시겠습니까?' : 'Are you sure you want to delete this item?')) {
+        // `budgetData[type]`이 배열인지 다시 한번 안전하게 확인합니다.
         if (Array.isArray(budgetData[type])) {
             budgetData[type] = budgetData[type].filter(item => item.id !== id);
             updateUI();
@@ -457,8 +488,8 @@ function loadData() {
     if (d) {
         const parsed = JSON.parse(d);
 
+        // 중요: 각 배열 속성을 로드할 때, 항상 Array.isArray로 유효성을 확인합니다.
         budgetData.income = parsed.income || 0;
-        // 각 배열 속성이 유효한 배열인지 확인하고, 아니면 빈 배열로 초기화
         budgetData.taxes = Array.isArray(parsed.taxes) ? parsed.taxes : [];
         budgetData.preTax = Array.isArray(parsed.preTax) ? parsed.preTax : [];
         budgetData.postTax = Array.isArray(parsed.postTax) ? parsed.postTax : [];
@@ -466,6 +497,7 @@ function loadData() {
 
         // 카테고리 로드 또는 기본값 설정
         if (Array.isArray(parsed.categories) && parsed.categories.length > 0) {
+            // 기존 카테고리에 DEFAULT_CATEGORIES 항목 중 없는 것 추가 (선택 사항, 필요시)
             budgetData.categories = parsed.categories;
         } else {
             // 카테고리가 없으면 기본값으로 설정
@@ -485,34 +517,21 @@ function loadData() {
 
         budgetData.currentLanguage = parsed.currentLanguage || 'ko';
 
-        // 중요한 변경: DEFAULT_DEDUCTIONS 항목들을 budgetData에 자동으로 통합하는 로직을 제거
-        // 이 부분은 주석 처리되거나 삭제되어야 합니다.
-        /*
-        ['taxes', 'preTax', 'postTax'].forEach(type => {
-            DEFAULT_DEDUCTIONS[type].forEach(defaultItem => {
-                const existingItemIndex = budgetData[type].findIndex(item => item.id === defaultItem.id);
-                if (existingItemIndex === -1) {
-                    // 존재하지 않는 기본 항목이면 새로 추가 (초기 로드 시 금액 0으로)
-                    // 이 로직을 제거하여 초기 로드 시 기본 항목이 자동으로 표시되지 않도록 합니다.
-                    // budgetData[type].push({ ...defaultItem, id: defaultItem.id || generateUniqueId(), amount: 0 });
-                }
-            });
-        });
-        */
-
     } else {
         console.log("No budgetData found in localStorage, initializing default data.");
         initDefaultData(); // 로컬 스토리지에 데이터가 없으면 기본 데이터로 초기화
     }
-    updateUI(); // loadData 후 반드시 UI 업데이트
-    populateCategorizedSelects(); // 세금/공제 드롭다운 옵션 채우기
+    // 데이터 로드 후 UI 업데이트 및 드롭다운 초기화
+    populateCategorizedSelects(); // 세금/공제 드롭다운 옵션 채우기 (새롭게 추가된 부분)
     switchLanguage(budgetData.currentLanguage); // 언어 설정도 로드 후 적용
+    updateUI(); // loadData 후 반드시 UI 업데이트
 }
 
 function resetData() {
     if (confirm(budgetData.currentLanguage === 'ko' ? '모든 데이터를 초기화할까요? 이 작업은 되돌릴 수 없습니다.' : 'Reset all data? This action cannot be undone.')) {
         localStorage.removeItem('budgetData');
         initDefaultData(); // 로컬 스토리지 삭제 후 기본 데이터로 초기화
+        populateCategorizedSelects(); // 드롭다운도 초기화
         updateUI();
     }
 }
@@ -520,7 +539,7 @@ function resetData() {
 // 앱이 처음 로드되거나 '데이터 초기화' 시 호출
 function initDefaultData() {
     budgetData.income = 0;
-    // 중요한 변경: 기본 공제/세금 항목 배열을 빈 배열로 초기화합니다.
+    // 중요: 기본 공제/세금 항목 배열을 빈 배열로 초기화합니다.
     // 사용자가 드롭다운에서 선택할 때만 해당 항목이 budgetData에 추가됩니다.
     budgetData.taxes = [];
     budgetData.preTax = [];
@@ -543,24 +562,83 @@ function initDefaultData() {
 }
 
 // --- 이벤트 리스너 ---
-document.getElementById('lang-ko').onclick = () => switchLanguage('ko');
-document.getElementById('lang-en').onclick = () => switchLanguage('en');
 
-window.onload = function() {
+// DOMContentLoaded 이벤트 리스너 추가: 모든 HTML이 로드된 후 스크립트 실행
+document.addEventListener('DOMContentLoaded', function() {
     loadData();
-    // loadData 함수 내에서 switchLanguage와 populateCategorizedSelects를 호출하므로 여기서 다시 호출할 필요 없음
-};
 
-document.getElementById('income-input').addEventListener('input', function(e) {
-    budgetData.income = parseFloat(e.target.value) || 0;
-    updateUI();
+    // 초기 로드 시 관련 요소들이 모두 존재하면 이벤트 리스너를 추가
+    const langKoBtn = document.getElementById('lang-ko');
+    const langEnBtn = document.getElementById('lang-en');
+    const incomeInput = document.getElementById('income-input');
+    const categorySelect = document.getElementById('category-select');
+
+    if (langKoBtn) langKoBtn.onclick = () => switchLanguage('ko');
+    if (langEnBtn) langEnBtn.onclick = () => switchLanguage('en');
+
+    if (incomeInput) {
+        incomeInput.addEventListener('input', function(e) {
+            budgetData.income = parseFloat(e.target.value) || 0;
+            updateUI();
+        });
+    }
+
+    if (categorySelect) {
+        categorySelect.addEventListener('change', function () {
+            const container = document.getElementById('category-input-container');
+            if (container) { // 컨테이너 존재 여부 확인
+                if (this.value === 'custom') {
+                    container.classList.remove('hidden');
+                } else {
+                    container.classList.add('hidden');
+                }
+            } else {
+                console.warn("Element with ID 'category-input-container' not found.");
+            }
+        });
+    }
+
+    // 세금/공제 드롭다운 선택 시 동작 (사용자 정의 필드 표시/숨기기 및 자동 추가/업데이트)
+    // 드롭다운의 change 이벤트는 사용자가 값을 변경할 때마다 발생합니다.
+    // 'custom'을 선택하면 입력 필드를 보여주고, 다른 미리 정의된 항목을 선택하면 자동으로 추가/업데이트합니다.
+    ['taxes', 'preTax', 'postTax'].forEach(type => {
+        const selectElement = document.getElementById(`${type}-type-select`);
+        const customContainer = document.getElementById(`${type}-custom-container`);
+        const amountInput = document.getElementById(`${type}-amount-input`);
+        const nameInput = document.getElementById(`${type}-custom-name-input`);
+
+        if (selectElement) { // selectElement가 존재하는지 확인
+            selectElement.addEventListener('change', function () {
+                if (this.value === 'custom') {
+                    if (customContainer) customContainer.classList.remove('hidden');
+                    if (amountInput) amountInput.value = ''; // 금액 초기화
+                    if (nameInput) nameInput.value = ''; // 이름 초기화
+                } else {
+                    if (customContainer) customContainer.classList.add('hidden');
+                    // 'addCategorizedItem' 호출 시 'isCustom'을 false로 명시적으로 전달
+                    // 금액 입력 필드에 값이 있을 때만 자동으로 추가/업데이트되도록 변경
+                    if (this.value !== '' && amountInput && !isNaN(parseFloat(amountInput.value)) && parseFloat(amountInput.value) >= 0) {
+                        addCategorizedItem(type, false);
+                    } else if (this.value !== '') { // 선택은 했지만 금액이 유효하지 않은 경우
+                        // 경고 메시지는 addCategorizedItem 내부에서 처리되므로 여기서는 추가하지 않습니다.
+                    }
+                }
+            });
+        }
+    });
 });
 
-// 지출 추가 함수
+
+// 지출 추가 함수 (이전과 동일)
 function addExpense() {
     const categorySelect = document.getElementById('category-select');
     const nameInput = document.getElementById('expense-name-input');
     const amountInput = document.getElementById('expense-amount-input-main');
+
+    if (!categorySelect || !nameInput || !amountInput) {
+        console.error("One or more expense input elements not found.");
+        return;
+    }
 
     const category = categorySelect.value;
     const name = nameInput.value.trim();
@@ -593,9 +671,13 @@ function addExpense() {
     updateUI();
 }
 
-// 카테고리 추가 함수
+// 카테고리 추가 함수 (이전과 동일)
 function addCategory() {
     const newCategoryInput = document.getElementById('new-category-input');
+    if (!newCategoryInput) {
+        console.error("Element with ID 'new-category-input' not found.");
+        return;
+    }
     const name = newCategoryInput.value.trim();
     if (!name) {
         alert(budgetData.currentLanguage === 'ko' ? '카테고리 이름을 입력하세요.' : 'Enter category name.');
@@ -615,8 +697,10 @@ function addCategory() {
     budgetData.categories.push(catObj);
     newCategoryInput.value = '';
     populateCategorySelect();
-    document.getElementById('category-input-container').classList.add('hidden');
-    document.getElementById('category-select').value = id; // 새로 추가된 카테고리 자동 선택
+    const categoryInputContainer = document.getElementById('category-input-container');
+    if (categoryInputContainer) categoryInputContainer.classList.add('hidden');
+    const categorySelect = document.getElementById('category-select');
+    if (categorySelect) categorySelect.value = id; // 새로 추가된 카테고리 자동 선택
     updateUI();
 }
 
@@ -648,11 +732,18 @@ function addCategorizedItem(type, isCustom = false) {
         return;
     }
 
-    const selectedValue = selectElement.value;
+    // 요소들이 모두 존재하는지 먼저 확인
+    if (!selectElement || !amountInput || (isCustom && !nameInput)) {
+        console.error(`One or more input elements for type '${type}' not found.`);
+        return;
+    }
+
+    const selectedValue = selectElement.value; // 이제 value는 id입니다.
     let name = '';
     let amount = parseFloat(amountInput.value);
 
     // 금액 유효성 검사: NaN이거나 0 미만인 경우
+    // 미리 정의된 항목의 경우, 금액이 0이더라도 추가될 수 있도록 허용 (처음부터 0으로 설정되어 있으므로)
     if (isNaN(amount) || amount < 0) {
         // '사용자 정의'가 아니면서 "항목 선택"도 아닌 경우에만 경고
         if (!isCustom && selectedValue !== '') {
@@ -662,36 +753,36 @@ function addCategorizedItem(type, isCustom = false) {
     }
 
 
-    if (isCustom) { // '사용자 정의' 버튼을 눌렀을 때
+    if (isCustom || selectedValue === 'custom') { // '사용자 정의' 버튼을 눌렀거나, 드롭다운에서 'custom'을 선택했을 때
         name = nameInput.value.trim();
         if (!name) {
             alert(budgetData.currentLanguage === 'ko' ? '이름을 입력하세요.' : 'Enter a name.');
             return;
         }
 
-        // 사용자 정의 항목은 이름 중복 검사
+        // 사용자 정의 항목은 이름 중복 검사 (대소문자 무시)
         const existingItem = budgetData[type].find(item => item.name.toLowerCase() === name.toLowerCase());
         if (existingItem) {
-            alert(budgetData.currentLanguage === 'ko' ? '이미 존재하는 항목입니다. 수정하려면 목록에서 선택하세요.' : 'This item already exists. To modify, select it from the list.');
+            alert(budgetData.currentLanguage === 'ko' ? '이미 존재하는 항목입니다. 수정하려면 목록에서 선택하거나 이름을 변경하세요.' : 'This item already exists. To modify, select it from the list or change the name.');
             return;
         }
-        budgetData[type].push({ id: generateUniqueId(), name, amount, type });
+        budgetData[type].push({ id: generateUniqueId(), name, amount, type }); // 사용자 정의 항목은 새로운 고유 ID 부여
 
     } else { // 드롭다운에서 미리 정의된 항목을 선택했을 때 (selectedValue가 'custom'이 아님)
-        if (selectedValue === '' || selectedValue === 'custom') { // "선택" 또는 "사용자 정의" 선택 시에는 직접 추가 로직 아님
+        if (selectedValue === '') { // "선택" 옵션을 그대로 둔 경우
             return;
         }
 
-        // 선택된 기본 항목 찾기 (이름으로 찾습니다)
-        const defaultItem = defaultItemsList.find(item => item.name === selectedValue);
+        // 선택된 기본 항목 찾기 (이제 value가 id이므로 id로 찾습니다)
+        const defaultItem = defaultItemsList.find(item => item.id === selectedValue);
         if (!defaultItem) {
-            console.error("Default item not found:", selectedValue);
+            console.error("Default item not found with ID:", selectedValue);
             return;
         }
 
         name = defaultItem.name; // 미리 정의된 이름 사용
 
-        // budgetData에 이미 해당 ID의 기본 항목이 있는지 확인
+        // budgetData에 이미 해당 ID의 기본 항목이 있는지 확인 (중복 추가 방지)
         const existingInBudgetData = budgetData[type].find(item => item.id === defaultItem.id);
 
         if (existingInBudgetData) {
@@ -703,56 +794,11 @@ function addCategorizedItem(type, isCustom = false) {
         }
     }
 
-    nameInput.value = ''; // 이름 입력 필드 초기화
-    amountInput.value = ''; // 금액 입력 필드 초기화
-    selectElement.value = ''; // 드롭다운 선택 초기화
-    document.getElementById(`${type}-custom-container`).classList.add('hidden'); // 사용자 정의 입력 필드 숨김
+    if (nameInput) nameInput.value = ''; // 이름 입력 필드 초기화
+    if (amountInput) amountInput.value = ''; // 금액 입력 필드 초기화
+    if (selectElement) selectElement.value = ''; // 드롭다운 선택 초기화 (선택을 '--- 항목 선택 ---'으로 돌려놓기)
+    const customContainer = document.getElementById(`${type}-custom-container`);
+    if (customContainer) customContainer.classList.add('hidden'); // 사용자 정의 입력 필드 숨김
 
     updateUI();
 }
-
-
-document.getElementById('category-select').addEventListener('change', function () {
-    const container = document.getElementById('category-input-container');
-    if (this.value === 'custom') {
-        container.classList.remove('hidden');
-    } else {
-        container.classList.add('hidden');
-    }
-});
-
-// 세금/공제 드롭다운 선택 시 동작 (사용자 정의 필드 표시/숨기기 및 자동 추가/업데이트)
-document.getElementById('tax-type-select').addEventListener('change', function () {
-    const customContainer = document.getElementById('tax-custom-container');
-    if (this.value === 'custom') {
-        customContainer.classList.remove('hidden');
-        document.getElementById('tax-amount-input').value = ''; // 금액 초기화
-        document.getElementById('tax-custom-name-input').value = ''; // 이름 초기화
-    } else { // 미리 정의된 항목 선택 시
-        customContainer.classList.add('hidden');
-        // 'addCategorizedItem' 호출 시 'isCustom'을 false로 명시적으로 전달
-        addCategorizedItem('taxes', false);
-    }
-});
-document.getElementById('pre-tax-type-select').addEventListener('change', function () {
-    const customContainer = document.getElementById('pre-tax-custom-container');
-    if (this.value === 'custom') {
-        customContainer.classList.remove('hidden');
-        document.getElementById('pre-tax-amount-input').value = '';
-        document.getElementById('pre-tax-custom-name-input').value = '';
-    } else {
-        customContainer.classList.add('hidden');
-        addCategorizedItem('preTax', false);
-    }
-});
-document.getElementById('post-tax-type-select').addEventListener('change', function () {
-    const customContainer = document.getElementById('post-tax-custom-container');
-    if (this.value === 'custom') {
-        customContainer.classList.remove('hidden');
-        document.getElementById('post-tax-amount-input').value = '';
-        document.getElementById('post-tax-custom-name-input').value = '';
-    } else {
-        customContainer.classList.add('hidden');
-        addCategorizedItem('postTax', false);
-    }
-});
