@@ -124,10 +124,12 @@ function populateCategorySelect() {
 
 // --- 세금/공제 드롭다운 채우기 ---
 function populateCategorizedSelects() {
-    ['taxes', 'preTax', 'postTax'].forEach(type => {
-        const selectElement = document.getElementById(`${type}-type-select`);
+    // "tax-type-select", "pre-tax-type-select", "post-tax-type-select"로 ID 변경
+    ['tax', 'pre-tax', 'post-tax'].forEach(prefix => {
+        const type = prefix.replace('-', ''); // 'tax', 'preTax', 'postTax' 형태로 변환
+        const selectElement = document.getElementById(`${prefix}-type-select`);
         if (!selectElement) {
-            console.error(`Element with ID '${type}-type-select' not found.`);
+            console.error(`Element with ID '${prefix}-type-select' not found.`);
             return; // 요소가 없으면 건너뛰기
         }
 
@@ -141,7 +143,9 @@ function populateCategorizedSelects() {
         selectElement.appendChild(defaultOption);
 
         // DEFAULT_DEDUCTIONS에서 항목 추가
-        DEFAULT_DEDUCTIONS[type].forEach(item => {
+        // DEFAULT_DEDUCTIONS 객체의 키는 'taxes', 'preTax', 'postTax' 이므로 이를 사용
+        const deductionTypeKey = type === 'tax' ? 'taxes' : (type === 'preTax' ? 'preTax' : 'postTax');
+        DEFAULT_DEDUCTIONS[deductionTypeKey].forEach(item => {
             const option = document.createElement('option');
             option.value = item.id; // value를 id로 설정하여 고유하게 식별
             option.textContent = item.name; // 이름은 DEFAULT_DEDUCTIONS에서 가져옴
@@ -619,11 +623,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // 세금/공제 드롭다운 선택 시 동작 (사용자 정의 필드 표시/숨기기 및 자동 추가/업데이트)
     // 드롭다운의 change 이벤트는 사용자가 값을 변경할 때마다 발생합니다.
     // 'custom'을 선택하면 입력 필드를 보여주고, 다른 미리 정의된 항목을 선택하면 자동으로 추가/업데이트합니다.
-    ['taxes', 'preTax', 'postTax'].forEach(type => {
-        const selectElement = document.getElementById(`${type}-type-select`);
-        const customContainer = document.getElementById(`${type}-custom-container`);
-        const amountInput = document.getElementById(`${type}-amount-input`);
-        const nameInput = document.getElementById(`${type}-custom-name-input`);
+    ['tax', 'pre-tax', 'post-tax'].forEach(prefix => {
+        const typeKey = prefix.replace('-', ''); // 'taxes', 'preTax', 'postTax' 형태로 변환
+        const selectElement = document.getElementById(`${prefix}-type-select`);
+        const customContainer = document.getElementById(`${prefix}-custom-container`);
+        const amountInput = document.getElementById(`${prefix}-amount-input`);
+        const nameInput = document.getElementById(`${prefix}-custom-name-input`);
 
         if (selectElement) { // selectElement가 존재하는지 확인
             selectElement.addEventListener('change', function () {
@@ -636,7 +641,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // 'addCategorizedItem' 호출 시 'isCustom'을 false로 명시적으로 전달
                     // 금액 입력 필드에 값이 있을 때만 자동으로 추가/업데이트되도록 변경
                     if (this.value !== '' && amountInput && !isNaN(parseFloat(amountInput.value)) && parseFloat(amountInput.value) >= 0) {
-                        addCategorizedItem(type, false);
+                        addCategorizedItem(typeKey, false); // typeKey를 사용 (예: 'taxes')
                     } else if (this.value !== '') { // 선택은 했지만 금액이 유효하지 않은 경우
                         // 경고 메시지는 addCategorizedItem 내부에서 처리되므로 여기서는 추가하지 않습니다.
                     }
@@ -647,7 +652,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-// 지출 추가 함수 (이전과 동일)
+// 지출 추가 함수
 function addExpense() {
     const categorySelect = document.getElementById('category-select');
     const nameInput = document.getElementById('expense-name-input');
@@ -689,7 +694,7 @@ function addExpense() {
     updateUI();
 }
 
-// 카테고리 추가 함수 (이전과 동일)
+// 카테고리 추가 함수
 function addCategory() {
     const newCategoryInput = document.getElementById('new-category-input');
     if (!newCategoryInput) {
@@ -730,25 +735,25 @@ function addCategory() {
 function addCategorizedItem(type, isCustom = false) {
     let nameInput, amountInput, selectElement, defaultItemsList;
 
+    // HTML ID prefix와 budgetData의 type 키를 매핑
+    let prefix;
     if (type === 'taxes') {
-        selectElement = document.getElementById('tax-type-select');
-        nameInput = document.getElementById('tax-custom-name-input');
-        amountInput = document.getElementById('tax-amount-input');
+        prefix = 'tax';
         defaultItemsList = DEFAULT_DEDUCTIONS.taxes;
     } else if (type === 'preTax') {
-        selectElement = document.getElementById('pre-tax-type-select');
-        nameInput = document.getElementById('pre-tax-custom-name-input');
-        amountInput = document.getElementById('pre-tax-amount-input');
+        prefix = 'pre-tax';
         defaultItemsList = DEFAULT_DEDUCTIONS.preTax;
     } else if (type === 'postTax') {
-        selectElement = document.getElementById('post-tax-type-select');
-        nameInput = document.getElementById('post-tax-custom-name-input');
-        amountInput = document.getElementById('post-tax-amount-input');
+        prefix = 'post-tax';
         defaultItemsList = DEFAULT_DEDUCTIONS.postTax;
     } else {
         console.error("Invalid type for addCategorizedItem:", type);
         return;
     }
+
+    selectElement = document.getElementById(`${prefix}-type-select`);
+    nameInput = document.getElementById(`${prefix}-custom-name-input`);
+    amountInput = document.getElementById(`${prefix}-amount-input`);
 
     // 요소들이 모두 존재하는지 먼저 확인
     if (!selectElement || !amountInput || (isCustom && !nameInput)) {
@@ -815,7 +820,7 @@ function addCategorizedItem(type, isCustom = false) {
     if (nameInput) nameInput.value = ''; // 이름 입력 필드 초기화
     if (amountInput) amountInput.value = ''; // 금액 입력 필드 초기화
     if (selectElement) selectElement.value = ''; // 드롭다운 선택 초기화 (선택을 '--- 항목 선택 ---'으로 돌려놓기)
-    const customContainer = document.getElementById(`${type}-custom-container`);
+    const customContainer = document.getElementById(`${prefix}-custom-container`);
     if (customContainer) customContainer.classList.add('hidden'); // 사용자 정의 입력 필드 숨김
 
     updateUI();
