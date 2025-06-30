@@ -811,29 +811,48 @@
     function cancelEdit(){editingItem=null;updateUI();}
 
     // 데이터 저장/불러오기
-    function saveData(){localStorage.setItem('budgetData',JSON.stringify(budgetData));alert(budgetData.currentLanguage==='ko'?'데이터가 저장되었습니다.':'Data saved!');}
-    function loadData(){
-      const d=localStorage.getItem('budgetData');
-      if(d){
-        const parsed=JSON.parse(d);
-        Object.assign(budgetData,parsed);
-        if(!budgetData.categories)budgetData.categories=[
-          { id: 'housing', name: '🏠 주거', nameEn: '🏠 Housing' },
-          { id: 'food', name: '🍔 식비', nameEn: '🍔 Food' },
-          { id: 'transportation', name: '🚗 교통', nameEn: '🚗 Transportation' },
-          { id: 'health', name: '🏥 건강', nameEn: '🏥 Health' },
-          { id: 'family', name: '👪 가족', nameEn: '👪 Family' },
-          { id: 'shopping', name: '🛍️ 쇼핑', nameEn: '🛍️ Shopping' },
-          { id: 'finance', name: '💳 금융', nameEn: '💳 Finance' },
-          { id: 'travel', name: '✈️ 여행', nameEn: '✈️ Travel' },
-          { id: 'saving', name: '💰 저축', nameEn: '💰 Saving' },
-          { id: 'business', name: '💼 업무', nameEn: '💼 Business' }
-        ];
-      } else {
-        initDefaultData();
-      }
-      updateUI();
+// 데이터 저장/불러오기
+function saveData(){localStorage.setItem('budgetData',JSON.stringify(budgetData));alert(budgetData.currentLanguage==='ko'?'데이터가 저장되었습니다.':'Data saved!');}
+function loadData(){
+  const d=localStorage.getItem('budgetData');
+  if(d){
+    const parsed=JSON.parse(d);
+
+    // parsed 데이터의 각 배열 속성이 유효한지 확인하고, 없으면 빈 배열로 초기화합니다.
+    // 기존 parsed 객체의 속성이 없거나 null/undefined인 경우에만 기본값을 할당합니다.
+    budgetData.income = parsed.income || 0;
+    budgetData.taxes = Array.isArray(parsed.taxes) ? parsed.taxes : [];
+    budgetData.preTax = Array.isArray(parsed.preTax) ? parsed.preTax : [];
+    budgetData.postTax = Array.isArray(parsed.postTax) ? parsed.postTax : [];
+    budgetData.expenses = Array.isArray(parsed.expenses) ? parsed.expenses : [];
+    budgetData.categories = Array.isArray(parsed.categories) ? parsed.categories : [
+      { id: 'housing', name: '🏠 주거', nameEn: '🏠 Housing' },
+      { id: 'food', name: '🍔 식비', nameEn: '🍔 Food' },
+      { id: 'transportation', name: '🚗 교통', nameEn: '🚗 Transportation' },
+      { id: 'health', name: '🏥 건강', nameEn: '🏥 Health' },
+      { id: 'family', name: '👪 가족', nameEn: '👪 Family' },
+      { id: 'shopping', name: '🛍️ 쇼핑', nameEn: '🛍️ Shopping' },
+      { id: 'finance', name: '💳 금융', nameEn: '💳 Finance' },
+      { id: 'travel', name: '✈️ 여행', nameEn: '✈️ Travel' },
+      { id: 'saving', name: '💰 저축', nameEn: '💰 Saving' },
+      { id: 'business', name: '💼 업무', nameEn: '💼 Business' }
+    ];
+    budgetData.currentLanguage = parsed.currentLanguage || 'ko';
+
+    // 기존 Object.assign 방식은 모든 속성을 덮어쓰므로, 위처럼 특정 속성만 안전하게 할당하는 것이 더 좋습니다.
+    // Object.assign(budgetData,parsed); // 이 라인은 위 코드처럼 명시적으로 처리하는 것으로 대체하는 것이 좋습니다.
+
+    // 만약 categories가 로드되지 않았다면 initDefaultData에서 초기화된 DEFAULT_DEDUCTIONS를 사용하여 초기화
+    if (budgetData.taxes.length === 0 && DEFAULT_DEDUCTIONS.taxes.length > 0) {
+        initDefaultData(); // 모든 기본 데이터를 다시 초기화
     }
+
+
+  } else {
+    initDefaultData();
+  }
+  updateUI();
+}
     function resetData(){
       if(confirm(budgetData.currentLanguage==='ko'?'모든 데이터를 초기화할까요?':'Reset all data?')){
         localStorage.removeItem('budgetData');
