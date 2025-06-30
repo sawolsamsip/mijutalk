@@ -1,4 +1,3 @@
-<script>
     // 설정값
     const DEFAULT_DEDUCTIONS = {
         taxes: [
@@ -593,4 +592,3 @@
 
     // 페이지 로드 시 초기화
     window.onload = initialize;
-</script>
