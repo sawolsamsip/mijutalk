@@ -247,16 +247,24 @@
             </div>
         </main>
 
-        <footer>
-            <button onclick="saveData()" class="btn-success">
-                <span data-lang="ko">데이터 저장</span>
-                <span data-lang="en" class="hidden">Save Data</span>
-            </button>
-            <button onclick="resetData()" class="btn-danger">
-                <span data-lang="ko">데이터 초기화</span>
-                <span data-lang="en" class="hidden">Reset Data</span>
-            </button>
-        </footer>
+<footer>
+    <button id="load-data-btn" class="btn-info">
+        <span data-lang="ko">데이터 불러오기</span>
+        <span data-lang="en" class="hidden">Load Data</span>
+    </button>
+    <button onclick="saveData()" class="btn-success">
+        <span data-lang="ko">데이터 저장</span>
+        <span data-lang="en" class="hidden">Save Data</span>
+    </button>
+    <button onclick="window.print()" class="btn-secondary">
+        <span data-lang="ko">인쇄하기</span>
+        <span data-lang="en" class="hidden">Print</span>
+    </button>
+    <button onclick="resetData()" class="btn-danger">
+        <span data-lang="ko">데이터 초기화</span>
+        <span data-lang="en" class="hidden">Reset Data</span>
+    </button>
+</footer>
     </div>
 
     <script src="../scripts/budget.js"></script>
