@@ -978,9 +978,10 @@
                     DEFAULT_DEDUCTIONS[type].forEach(defaultItem => {
                         const existingItemIndex = budgetData[type].findIndex(item => item.id === defaultItem.id);
                         if (existingItemIndex > -1) {
-                            // 이미 존재하는 기본 항목이면, 기본값으로 덮어씁니다 (혹시 로컬 스토리지에 값이 변경되었을 경우).
-                            budgetData[type][existingItemIndex].name = defaultItem.name;
-                            budgetData[type][existingItemIndex].amount = defaultItem.amount; // 금액도 기본값으로 초기화
+                            // 이미 존재하는 기본 항목이면, 이름만 덮어쓰고 금액은 로컬 스토리지 값을 유지합니다.
+                            // 금액을 0으로 초기화하려면 다음 줄의 주석을 해제하세요.
+                            // budgetData[type][existingItemIndex].name = defaultItem.name;
+                            // budgetData[type][existingItemIndex].amount = 0; // 초기화 시 0으로 설정
                         } else {
                             // 존재하지 않는 기본 항목이면 새로 추가 (초기 로드 시)
                             budgetData[type].push({ ...defaultItem, id: defaultItem.id || generateUniqueId() });
@@ -1060,7 +1061,7 @@
                 alert(budgetData.currentLanguage === 'ko' ? '지출 항목 이름을 입력하세요.' : 'Enter expense name.');
                 return;
             }
-            if (isNaN(amount) || amount <= 0) {
+            if (isNaN(amount) || amount <= 0) { // 금액이 유효한 숫자인지 및 0보다 큰지 확인
                 alert(budgetData.currentLanguage === 'ko' ? '유효한 금액을 입력하세요.' : 'Enter a valid amount.');
                 return;
             }
@@ -1138,7 +1139,8 @@
             let name = '';
             let amount = parseFloat(amountInput.value);
 
-            // 금액이 유효한지 먼저 확인
+            // 금액이 유효한지 먼저 확인 (0보다 크거나 같은 경우 허용)
+            // 미리 정의된 항목의 경우, 금액이 0이더라도 추가될 수 있도록 허용 (처음부터 0으로 설정되어 있으므로)
             if (isNaN(amount) || amount < 0) {
                 // '사용자 정의'가 아니면서 금액 입력이 필수적인 경우에만 알림
                 if (!isCustom && selectedValue !== 'custom' && selectedValue !== '') {
