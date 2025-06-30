@@ -1,216 +1,1215 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>고급 예산 관리 시스템</title>
-
-    <link rel="stylesheet" href="../scripts/budget.css">
-
-    <meta http-equiv="Content-Security-Policy"
-          content="default-src 'self';
-                   script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline';
-                   style-src 'self' 'unsafe-inline';
-                   img-src 'self' data:;
-                   connect-src 'self';">
-
-    <script src="../scripts/chart.js"></script>
-
-    <script src="../scripts/budget.js" defer></script>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';">
+    <title>다국어 예산 관리 시스템</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* 기존 CSS는 매우 잘 되어 있으므로 큰 수정 없이 유지합니다. */
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --danger: #f72585;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --info: #7209b7;
+            --text-color: #2b2d42;
+            --light-gray: #f8f9fa;
+            --medium-gray: #adb5bd;
+            --dark-gray: #495057;
+            --white: #ffffff;
+            --shadow: 0 4px 16px rgba(67,97,238,0.08);
+            --border-radius: 12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
+            color: var(--text-color);
+            background: var(--light-gray);
+            padding: 0;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 40px auto 40px auto;
+            padding: 24px 18px 36px 18px;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            box-sizing: border-box;
+        }
+        .language-switcher {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 10;
+        }
+        .language-btn {
+            background: #fff;
+            color: var(--primary);
+            border: 1.5px solid var(--primary);
+            border-radius: 18px;
+            padding: 8px 22px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(67,97,238,0.06);
+        }
+        .language-btn.active {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(67,97,238,0.14);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        h1 { color: var(--primary); font-size: 2.2rem; margin-bottom: 12px; }
+        h2 { color: var(--primary); font-size: 1.3rem; margin-bottom: 14px; }
+        .card {
+            background: var(--white);
+            padding: 22px 18px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 18px;
+        }
+        .form-group { margin-bottom: 16px; }
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        input, select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid var(--medium-gray);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: border-color 0.2s;
+            background: #f7faff;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.12);
+        }
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 11px 18px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.18s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(67,97,238,0.07);
+        }
+        button:hover { background-color: var(--primary-light); }
+        .btn-danger { background-color: var(--danger); }
+        .btn-danger:hover { background-color: #d6336c; }
+        .btn-warning { background-color: var(--warning); }
+        .btn-warning:hover { background-color: #e67700; }
+        .btn-success { background-color: var(--success); color: var(--text-color);}
+        .btn-success:hover { background-color: #339af0; color: #fff;}
+        .btn-info { background-color: var(--info);}
+        .btn-info:hover { background-color: #5f3dc4;}
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            background-color: var(--primary-light);
+            color: white;
+            margin-right: 4px;
+        }
+        .item-list { margin-top: 12px; }
+        .list-item {
+            background: var(--white);
+            padding: 13px 10px;
+            margin-bottom: 8px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+        .list-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+        .list-item-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+        .list-item-amount { font-weight: 600; min-width: 82px; text-align: right; }
+        .list-item-actions { display: flex; gap: 5px; }
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 23px;
+        }
+        .summary-card {
+            background: var(--white);
+            padding: 18px 0 16px 0;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            border-top: 4px solid var(--primary);
+        }
+        .card-label { font-size: 0.96rem; color: var(--medium-gray); margin-bottom: 2px; }
+        .card-amount { font-size: 1.7rem; font-weight: 700; margin: 9px 0; }
+        .positive { color: var(--success);}
+        .negative { color: var(--danger);}
+        .flow-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 13px 10px;
+            margin: 7px 0;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.07);
+            font-size: 1.05rem;
+        }
+        .flow-item.highlighted { border-left: 4px solid var(--danger);}
+        .flow-item.result { border-left: 4px solid var(--success); font-weight: bold;}
+        .flow-item.info { border-left: 4px solid var(--warning); font-weight: bold;}
+        .flow-arrow {
+            text-align: center;
+            color: var(--medium-gray);
+            margin: 5px 0;
+            font-size: 1.18rem;
+        }
+        .chart-container {
+            background: var(--white);
+            padding: 18px 12px 24px 12px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            margin-top: 5px;
+            height: 420px;
+            position: relative;
+        }
+        .chart-wrapper {
+            width: 100%;
+            height: 340px;
+            position: relative;
+        }
+        .chart-title {
+            text-align: center;
+            margin-bottom: 12px;
+            color: var(--primary);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .utility-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            margin: 28px 0 8px 0;
+            flex-wrap: wrap;
+        }
+        .hidden { display: none;}
+        .flex { display: flex; gap: 12px; align-items: flex-end;}
+        .flex > div { flex: 1;}
+        @media (max-width: 900px) {
+            .container { margin: 18px 3px;}
+            .chart-container { height: 320px;}
+            .chart-wrapper { height: 220px;}
+        }
+        @media (max-width: 600px) {
+            .container { padding: 8px 2px;}
+            .summary-cards { grid-template-columns: 1fr;}
+            .chart-container { height: 260px;}
+            .chart-wrapper { height: 140px;}
+            .language-switcher { justify-content: center;}
+        }
+        @media print {
+            body { padding: 0; background: white;}
+            button, .utility-buttons, .language-switcher { display: none;}
+            .card, .chart-container { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid;}
+            .chart-container { height: auto;}
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>
-            <span data-lang="ko" class="hidden">💰 고급 예산 관리 시스템</span>
-            <span data-lang="en" class="hidden">💰 Advanced Budget Management System</span>
-        </h1>
-        <div class="lang-switcher">
-            <button id="lang-ko" class="active">한국어</button>
-            <button id="lang-en">English</button>
+        <div class="language-switcher">
+            <button id="lang-ko" class="language-btn active">한국어</button>
+            <button id="lang-en" class="language-btn">English</button>
         </div>
-        <p class="description">
-            <span data-lang="ko" class="hidden">수입, 세금, 공제 및 지출을 입력하여 재정 상태를 파악하세요.</span>
-            <span data-lang="en" class="hidden">Enter your income, taxes, deductions, and expenses to understand your financial health.</span>
-        </p>
+        <header>
+            <h1 data-lang="ko">💰 고급 예산 관리 시스템</h1>
+            <h1 data-lang="en" class="hidden">💰 Advanced Budget Management System</h1>
+            <p data-lang="ko">한 곳에서 수입, 세금, 공제 및 지출을 관리하세요</p>
+            <p data-lang="en" class="hidden">Manage your income, taxes, deductions, and expenses in one place</p>
+        </header>
 
-        <div class="dashboard">
-            <div class="card">
-                <h3 data-lang="ko" class="hidden">총 수입</h3>
-                <h3 data-lang="en" class="hidden">Gross Income</h3>
-                <p class="card-amount">$<span id="gross-income">0.00</span></p>
-            </div>
-            <div class="card">
-                <h3 data-lang="ko" class="hidden">세전 공제</h3>
-                <h3 data-lang="en" class="hidden">Pre-Tax Deductions</h3>
-                <p class="card-amount">$<span id="pre-tax-deductions">0.00</span></p>
-            </div>
-            <div class="card">
-                <h3 data-lang="ko" class="hidden">과세 소득</h3>
-                <h3 data-lang="en" class="hidden">Taxable Income</h3>
-                <p class="card-amount">$<span id="taxable-income">0.00</span></p>
-            </div>
-            <div class="card">
-                <h3 data-lang="ko" class="hidden">총 세금</h3>
-                <h3 data-lang="en" class="hidden">Total Taxes</h3>
-                <p class="card-amount">$<span id="tax-total">0.00</span></p>
-            </div>
-            <div class="card">
-                <h3 data-lang="ko" class="hidden">세후 공제</h3>
-                <h3 data-lang="en" class="hidden">Post-Tax Deductions</h3>
-                <p class="card-amount">$<span id="post-tax-deductions">0.00</span></p>
-            </div>
-            <div class="card">
-                <h3 data-lang="ko" class="hidden">총 공제 및 세금</h3>
-                <h3 data-lang="en" class="hidden">Total Deductions & Taxes</h3>
-                <p class="card-amount">$<span id="total-deductions-taxes">0.00</span></p>
-            </div>
-            <div class="card income-net">
-                <h3 data-lang="ko" class="hidden">순수입 (Net Income)</h3>
-                <h3 data-lang="en" class="hidden">Net Income</h3>
-                <p class="card-amount">$<span id="net-income">0.00</span></p>
-            </div>
-            <div class="card expense-total">
-                <h3 data-lang="ko" class="hidden">총 지출</h3>
-                <h3 data-lang="en" class="hidden">Total Expenses</h3>
-                <p class="card-amount">$<span id="expenses-total-card">0.00</span></p>
-                <span class="percentage" id="expenses-percentage-card">0.0%</span>
-            </div>
-            <div class="card remaining-balance">
-                <h3 data-lang="ko" class="hidden">남은 잔액</h3>
-                <h3 data-lang="en" class="hidden">Remaining Balance</h3>
-                <p class="card-amount" id="remaining-balance">$0.00</p>
-                <span class="percentage" id="remaining-percentage-card">0.0%</span>
+        <div class="card">
+            <h2 data-lang="ko">1. 수입</h2>
+            <h2 data-lang="en" class="hidden">1. Earnings</h2>
+            <div class="form-group">
+                <label for="income-input" data-lang="ko">월 총 수입 ($)</label>
+                <label for="income-input" data-lang="en" class="hidden">Gross Monthly Income ($)</label>
+                <input type="number" id="income-input" data-lang-ko-placeholder="월 총 수입을 입력하세요" data-lang-en-placeholder="Enter your gross income" placeholder="0">
             </div>
         </div>
 
-        <div class="chart-section">
-            <div class="chart-card">
-                <h3 data-lang="ko" class="hidden">수입 흐름</h3>
-                <h3 data-lang="en" class="hidden">Income Flow</h3>
-                <canvas id="incomeFlowChart"></canvas>
-            </div>
-            <div class="chart-card">
-                <h3 data-lang="ko" class="hidden">지출 카테고리</h3>
-                <h3 data-lang="en" class="hidden">Expense Categories</h3>
-                <canvas id="expenseCategoryChart"></canvas>
-            </div>
-        </div>
-
-        <div class="input-sections">
-            <div class="input-card">
-                <h2 data-lang="ko" class="hidden">1. 수입</h2>
-                <h2 data-lang="en" class="hidden">1. Income</h2>
-                <label for="income-input">
-                    <span data-lang="ko" class="hidden">월 수입 ($):</span>
-                    <span data-lang="en" class="hidden">Monthly Income ($):</span>
-                </label>
-                <input type="number" id="income-input" value="0" min="0" placeholder="0">
-            </div>
-
-            <div class="input-card">
-                <h2 data-lang="ko" class="hidden">2. 직원 세금</h2>
-                <h2 data-lang="en" class="hidden">2. Employee Taxes</h2>
-                <label for="tax-type-select">
-                    <span data-lang="ko" class="hidden">세금 유형:</span>
-                    <span data-lang="en" class="hidden">Select tax type:</span>
-                </label>
+        <div class="card">
+            <h2 data-lang="ko">2. 직원 세금</h2>
+            <h2 data-lang="en" class="hidden">2. Employee Taxes</h2>
+            <div class="form-group">
+                <label for="tax-type-select" data-lang="ko">세금 유형</label>
+                <label for="tax-type-select" data-lang="en" class="hidden">Tax Type</label>
                 <select id="tax-type-select">
-                    </select>
-                <div id="tax-custom-container" class="hidden custom-input-group">
-                    <input type="text" id="tax-custom-name-input" data-lang-ko-placeholder="직접 입력 (예: 지방세)" data-lang-en-placeholder="Custom name (e.g. Local Tax)" placeholder="Custom name">
-                </div>
-                <input type="number" id="tax-amount-input" min="0" data-lang-ko-placeholder="금액" data-lang-en-placeholder="Amount" placeholder="Amount">
-                <button onclick="addCategorizedItem('taxes', document.getElementById('tax-type-select').value === 'custom')" class="btn-add">
-                    <span data-lang="ko" class="hidden">세금 추가</span>
-                    <span data-lang="en" class="hidden">Add Tax</span>
-                </button>
-
-                <div id="tax-list" class="item-list hidden">
-                    </div>
+                    <option value="" disabled selected data-lang="ko">세금 유형 선택</option>
+                    <option value="" disabled selected data-lang="en" class="hidden">Select tax type</option>
+                    <option value="Federal Withholding">Federal Withholding</option>
+                    <option value="State Tax (CA)">State Tax (CA)</option>
+                    <option value="OASDI (Social Security)">OASDI (Social Security)</option>
+                    <option value="Medicare">Medicare</option>
+                    <option value="CA SDI">CA SDI</option>
+                    <option value="custom" data-lang="ko">사용자 정의 세금</option>
+                    <option value="custom" data-lang="en" class="hidden">Custom Tax</option>
+                </select>
             </div>
+            <div id="tax-custom-container" class="form-group hidden">
+                <div class="flex">
+                    <div>
+                        <label for="tax-custom-name-input" data-lang="ko">세금 이름</label>
+                        <label for="tax-custom-name-input" data-lang="en" class="hidden">Tax Name</label>
+                        <input type="text" id="tax-custom-name-input" data-lang-ko-placeholder="세금 이름 입력" data-lang-en-placeholder="Enter tax name">
+                    </div>
+                    <div>
+                        <label for="tax-amount-input" data-lang="ko">금액 ($)</label>
+                        <label for="tax-amount-input" data-lang="en" class="hidden">Amount ($)</label>
+                        <input type="number" id="tax-amount-input" placeholder="금액 입력">
+                    </div>
+                    <div>
+                        <button onclick="addCategorizedItem('taxes')" class="btn-success" data-lang="ko">세금 추가</button>
+                        <button onclick="addCategorizedItem('taxes')" class="btn-success hidden" data-lang="en">Add Tax</button>
+                    </div>
+                </div>
+            </div>
+            <div class="item-list" id="tax-list"></div>
+        </div>
 
-            <div class="input-card">
-                <h2 data-lang="ko" class="hidden">3. 세전 공제</h2>
-                <h2 data-lang="en" class="hidden">3. Pre-Tax Deductions</h2>
-                <label for="pre-tax-type-select">
-                    <span data-lang="ko" class="hidden">공제 유형:</span>
-                    <span data-lang="en" class="hidden">Select deduction type:</span>
-                </label>
+        <div class="card">
+            <h2 data-lang="ko">3. 세전 공제</h2>
+            <h2 data-lang="en" class="hidden">3. Pre-Tax Deductions</h2>
+            <div class="form-group">
+                <label for="pre-tax-type-select" data-lang="ko">공제 유형</label>
+                <label for="pre-tax-type-select" data-lang="en" class="hidden">Deduction Type</label>
                 <select id="pre-tax-type-select">
-                    </select>
-                <div id="pre-tax-custom-container" class="hidden custom-input-group">
-                    <input type="text" id="pre-tax-custom-name-input" data-lang-ko-placeholder="직접 입력 (예: HSA)" data-lang-en-placeholder="Custom name (e.g. HSA)" placeholder="Custom name">
-                </div>
-                <input type="number" id="pre-tax-amount-input" min="0" data-lang-ko-placeholder="금액" data-lang-en-placeholder="Amount" placeholder="Amount">
-                <button onclick="addCategorizedItem('preTax', document.getElementById('pre-tax-type-select').value === 'custom')" class="btn-add">
-                    <span data-lang="ko" class="hidden">세전 공제 추가</span>
-                    <span data-lang="en" class="hidden">Add Pre-Tax Deduction</span>
-                </button>
-
-                <div id="pre-tax-list" class="item-list hidden">
-                    </div>
+                    <option value="" disabled selected data-lang="ko">공제 유형 선택</option>
+                    <option value="" disabled selected data-lang="en" class="hidden">Select deduction type</option>
+                    <option value="401k Traditional">401k Traditional</option>
+                    <option value="Medical Premium">Medical Premium</option>
+                    <option value="Dental Premium">Dental Premium</option>
+                    <option value="Vision Premium">Vision Premium</option>
+                    <option value="MSEAP">MSEAP</option>
+                    <option value="custom" data-lang="ko">사용자 정의 공제</option>
+                    <option value="custom" data-lang="en" class="hidden">Custom Deduction</option>
+                </select>
             </div>
+            <div id="pre-tax-custom-container" class="form-group hidden">
+                <div class="flex">
+                    <div>
+                        <label for="pre-tax-custom-name-input" data-lang="ko">공제 이름</label>
+                        <label for="pre-tax-custom-name-input" data-lang="en" class="hidden">Deduction Name</label>
+                        <input type="text" id="pre-tax-custom-name-input" data-lang-ko-placeholder="공제 이름 입력" data-lang-en-placeholder="Enter deduction name">
+                    </div>
+                    <div>
+                        <label for="pre-tax-amount-input" data-lang="ko">금액 ($)</label>
+                        <label for="pre-tax-amount-input" data-lang="en" class="hidden">Amount ($)</label>
+                        <input type="number" id="pre-tax-amount-input" placeholder="금액 입력">
+                    </div>
+                    <div>
+                        <button onclick="addCategorizedItem('preTax')" class="btn-success" data-lang="ko">공제 추가</button>
+                        <button onclick="addCategorizedItem('preTax')" class="btn-success hidden" data-lang="en">Add Deduction</button>
+                    </div>
+                </div>
+            </div>
+            <div class="item-list" id="pre-tax-list"></div>
+        </div>
 
-            <div class="input-card">
-                <h2 data-lang="ko" class="hidden">4. 세후 공제</h2>
-                <h2 data-lang="en" class="hidden">4. Post-Tax Deductions</h2>
-                <label for="post-tax-type-select">
-                    <span data-lang="ko" class="hidden">공제 유형:</span>
-                    <span data-lang="en" class="hidden">Select deduction type:</span>
-                </label>
+        <div class="card">
+            <h2 data-lang="ko">4. 세후 공제</h2>
+            <h2 data-lang="en" class="hidden">4. Post-Tax Deductions</h2>
+            <div class="form-group">
+                <label for="post-tax-type-select" data-lang="ko">공제 유형</label>
+                <label for="post-tax-type-select" data-lang="en" class="hidden">Deduction Type</label>
                 <select id="post-tax-type-select">
-                    </select>
-                <div id="post-tax-custom-container" class="hidden custom-input-group">
-                    <input type="text" id="post-tax-custom-name-input" data-lang-ko-placeholder="직접 입력 (예: 주택 담보 대출)" data-lang-en-placeholder="Custom name (e.g. Mortgage)" placeholder="Custom name">
-                </div>
-                <input type="number" id="post-tax-amount-input" min="0" data-lang-ko-placeholder="금액" data-lang-en-placeholder="Amount" placeholder="Amount">
-                <button onclick="addCategorizedItem('postTax', document.getElementById('post-tax-type-select').value === 'custom')" class="btn-add">
-                    <span data-lang="ko" class="hidden">세후 공제 추가</span>
-                    <span data-lang="en" class="hidden">Add Post-Tax Deduction</span>
-                </button>
-
-                <div id="post-tax-list" class="item-list hidden">
+                    <option value="" disabled selected data-lang="ko">공제 유형 선택</option>
+                    <option value="" disabled selected data-lang="en" class="hidden">Select deduction type</option>
+                    <option value="401k Roth">401k Roth</option>
+                    <option value="Stock Purchase Plan">Stock Purchase Plan</option>
+                    <option value="Legal Services">Legal Services</option>
+                    <option value="LTD">LTD</option>
+                    <option value="AD&D">AD&D</option>
+                    <option value="Accident Insurance">Accident Insurance</option>
+                    <option value="Critical Illness">Critical Illness</option>
+                    <option value="custom" data-lang="ko">사용자 정의 공제</option>
+                    <option value="custom" data-lang="en" class="hidden">Custom Deduction</option>
+                </select>
+            </div>
+            <div id="post-tax-custom-container" class="form-group hidden">
+                <div class="flex">
+                    <div>
+                        <label for="post-tax-custom-name-input" data-lang="ko">공제 이름</label>
+                        <label for="post-tax-custom-name-input" data-lang="en" class="hidden">Deduction Name</label>
+                        <input type="text" id="post-tax-custom-name-input" data-lang-ko-placeholder="공제 이름 입력" data-lang-en-placeholder="Enter deduction name">
                     </div>
+                    <div>
+                        <label for="post-tax-amount-input" data-lang="ko">금액 ($)</label>
+                        <label for="post-tax-amount-input" data-lang="en" class="hidden">Amount ($)</label>
+                        <input type="number" id="post-tax-amount-input" placeholder="금액 입력">
+                    </div>
+                    <div>
+                        <button onclick="addCategorizedItem('postTax')" class="btn-success" data-lang="ko">공제 추가</button>
+                        <button onclick="addCategorizedItem('postTax')" class="btn-success hidden" data-lang="en">Add Deduction</button>
+                    </div>
+                </div>
+            </div>
+            <div class="item-list" id="post-tax-list"></div>
+        </div>
+
+        <div class="card">
+            <h2 data-lang="ko">5. 지출 관리</h2>
+            <h2 data-lang="en" class="hidden">5. Expense Management</h2>
+            <div class="grid">
+                <div class="form-group">
+                    <label for="category-select" data-lang="ko">카테고리</label>
+                    <label for="category-select" data-lang="en" class="hidden">Category</label>
+                    <select id="category-select"></select>
+                </div>
+                <div class="form-group">
+                    <label for="expense-name-input" data-lang="ko">지출 항목</label>
+                    <label for="expense-name-input" data-lang="en" class="hidden">Expense Name</label>
+                    <input type="text" id="expense-name-input" data-lang-ko-placeholder="예: 월세" data-lang-en-placeholder="e.g. Rent">
+                </div>
+                <div class="form-group">
+                    <label for="expense-amount-input-main" data-lang="ko">금액 ($)</label>
+                    <label for="expense-amount-input-main" data-lang="en" class="hidden">Amount ($)</label>
+                    <input type="number" id="expense-amount-input-main" placeholder="금액 입력">
+                </div>
+            </div>
+            <div id="category-input-container" class="form-group hidden">
+                <div class="flex">
+                    <div>
+                        <label for="new-category-input" data-lang="ko">새 카테고리 이름</label>
+                        <label for="new-category-input" data-lang="en" class="hidden">New Category Name</label>
+                        <input type="text" id="new-category-input" data-lang-ko-placeholder="새 카테고리 입력" data-lang-en-placeholder="Enter new category">
+                    </div>
+                    <div>
+                        <button onclick="addCategory()" class="btn-info" data-lang="ko">카테고리 추가</button>
+                        <button onclick="addCategory()" class="btn-info hidden" data-lang="en">Add Category</button>
+                    </div>
+                </div>
+            </div>
+            <button onclick="addExpense()" class="btn-success" style="width: 100%; margin-top: 10px;" data-lang="ko">지출 추가</button>
+            <button onclick="addExpense()" class="btn-success hidden" style="width: 100%; margin-top: 10px;" data-lang="en">Add Expense</button>
+            <div class="item-list" id="expenses-list"></div>
+        </div>
+
+        <div class="card">
+            <h2 data-lang="ko">6. 월별 재무 현황</h2>
+            <h2 data-lang="en" class="hidden">6. Monthly Financial Status</h2>
+            <div class="income-flow">
+                <div class="flow-item">
+                    <span data-lang="ko">월 총 수입 (총 수익)</span>
+                    <span data-lang="en" class="hidden">Gross Monthly Income (Total Earnings)</span>
+                    <span>$<span id="gross-income">0.00</span> <em data-lang="ko">(100.0%)</em><em data-lang="en" class="hidden">(100.0%)</em></span>
+                </div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-item highlighted">
+                    <span data-lang="ko">세전 공제</span>
+                    <span data-lang="en" class="hidden">Pre-Tax Deductions</span>
+                    <span>-$<span id="pre-tax-deductions">0.00</span> <em></em></span>
+                </div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-item">
+                    <span data-lang="ko"><strong>과세 소득</strong></span>
+                    <span data-lang="en" class="hidden"><strong>Taxable Income</strong></span>
+                    <span>$<span id="taxable-income">0.00</span> <em></em></span>
+                </div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-item highlighted">
+                    <span data-lang="ko">세금</span>
+                    <span data-lang="en" class="hidden">Taxes</span>
+                    <span>-$<span id="tax-total">0.00</span> <em></em></span>
+                </div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-item highlighted">
+                    <span data-lang="ko">세후 공제</span>
+                    <span data-lang="en" class="hidden">Post-Tax Deductions</span>
+                    <span>-$<span id="post-tax-deductions">0.00</span> <em></em></span>
+                </div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-item info">
+                    <span data-lang="ko"><strong>총 공제 및 세금 합계</strong></span>
+                    <span data-lang="en" class="hidden"><strong>Total Deductions & Taxes</strong></span>
+                    <span>-$<span id="total-deductions-taxes">0.00</span> <em></em></span>
+                </div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-item result">
+                    <span data-lang="ko"><strong>순수입 (실수령액)</strong></span>
+                    <span data-lang="en" class="hidden"><strong>Net Income (Take-Home Pay)</strong></span>
+                    <span>$<span id="net-income">0.00</span> <em></em></span>
+                </div>
             </div>
 
-            <div class="input-card">
-                <h2 data-lang="ko" class="hidden">5. 지출</h2>
-                <h2 data-lang="en" class="hidden">5. Expenses</h2>
-                <label for="category-select">
-                    <span data-lang="ko" class="hidden">카테고리:</span>
-                    <span data-lang="en" class="hidden">Category:</span>
-                </label>
-                <select id="category-select">
-                    </select>
-                <div id="category-input-container" class="hidden custom-input-group">
-                    <input type="text" id="new-category-input" data-lang-ko-placeholder="새 카테고리 이름" data-lang-en-placeholder="New category name" placeholder="New category name">
-                    <button onclick="addCategory()" class="btn-add-inline">
-                        <span data-lang="ko" class="hidden">추가</span>
-                        <span data-lang="en" class="hidden">Add</span>
-                    </button>
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="card-label" data-lang="ko">총 지출</div>
+                    <div class="card-label hidden" data-lang="en">Total Expenses</div>
+                    <div class="card-amount negative">$<span id="expenses-total-card">0.00</span></div>
+                    <div class="card-label" data-lang="ko">(순수입에서 사용된 금액)</div>
+                    <div class="card-label hidden" data-lang="en">(Amount used from net income)</div>
+                    <div class="card-label"><span id="expenses-percentage-card">0.0%</span> <span data-lang="ko">of 총 수입</span><span data-lang="en" class="hidden">of gross income</span></div>
                 </div>
-                <input type="text" id="expense-name-input" data-lang-ko-placeholder="지출 항목명" data-lang-en-placeholder="Expense name" placeholder="Expense name">
-                <input type="number" id="expense-amount-input-main" min="0" data-lang-ko-placeholder="금액" data-lang-en-placeholder="Amount" placeholder="Amount">
-                <button onclick="addExpense()" class="btn-add">
-                    <span data-lang="ko" class="hidden">지출 추가</span>
-                    <span data-lang="en" class="hidden">Add Expense</span>
-                </button>
-
-                <div id="expenses-list" class="item-list hidden">
-                    </div>
+                <div class="summary-card">
+                    <div class="card-label" data-lang="ko">남은 잔액</div>
+                    <div class="card-label hidden" data-lang="en">Remaining Balance</div>
+                    <div class="card-amount positive">$<span id="remaining-balance">0.00</span></div>
+                    <div class="card-label" data-lang="ko">(순수입 - 총 지출 = 저축)</div>
+                    <div class="card-label hidden" data-lang="en">(Net Income - Expenses = Savings)</div>
+                    <div class="card-label"><span id="remaining-percentage-card">0.0%</span> <span data-lang="ko">of 총 수입</span><span data-lang="en" class="hidden">of gross income</span></div>
+                </div>
             </div>
         </div>
 
-        <div class="action-buttons">
-            <button onclick="saveData()" class="btn-action btn-save">
-                <span data-lang="ko" class="hidden">데이터 저장</span>
-                <span data-lang="en" class="hidden">Save Data</span>
-            </button>
-            <button onclick="resetData()" class="btn-action btn-reset">
-                <span data-lang="ko" class="hidden">모든 데이터 초기화</span>
-                <span data-lang="en" class="hidden">Reset All Data</span>
-            </button>
+        <div class="chart-container">
+            <h2 data-lang="ko">7. 재무 분석 차트</h2>
+            <h2 data-lang="en" class="hidden">7. Financial Analysis Charts</h2>
+            <div class="grid">
+                <div>
+                    <div class="chart-title" data-lang="ko">수입 분배 (총 수입 대비 비율)</div>
+                    <div class="chart-title hidden" data-lang="en">Income Distribution (Percentage of Gross Income)</div>
+                    <div class="chart-wrapper">
+                        <canvas id="incomeFlowChart"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <div class="chart-title" data-lang="ko">지출 카테고리 (총 지출 대비 비율)</div>
+                    <div class="chart-title hidden" data-lang="en">Expense Categories (Percentage of Total Expenses)</div>
+                    <div class="chart-wrapper">
+                        <canvas id="expenseCategoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="utility-buttons">
+            <button onclick="saveData()" class="btn-info" data-lang="ko">💾 데이터 저장</button>
+            <button onclick="saveData()" class="btn-info hidden" data-lang="en">💾 Save Data</button>
+            <button onclick="loadData()" class="btn-info" data-lang="ko">📂 데이터 불러오기</button>
+            <button onclick="loadData()" class="btn-info hidden" data-lang="en">📂 Load Data</button>
+            <button onclick="window.print()" class="btn-warning" data-lang="ko">🖨️ 리포트 인쇄</button>
+            <button onclick="window.print()" class="btn-warning hidden" data-lang="en">🖨️ Print Report</button>
+            <button onclick="resetData()" class="btn-danger" data-lang="ko">🔄 데이터 초기화</button>
+            <button onclick="resetData()" class="btn-danger hidden" data-lang="en">🔄 Reset Data</button>
         </div>
     </div>
+
+    <script>
+        // 설정값
+        const DEFAULT_DEDUCTIONS = {
+            taxes: [
+                { name: "Federal Withholding", amount: 0 },
+                { name: "State Tax (CA)", amount: 0 },
+                { name: "OASDI (Social Security)", amount: 0 },
+                { name: "Medicare", amount: 0 },
+                { name: "CA SDI", amount: 0 }
+            ],
+            preTax: [
+                { name: "401k Traditional", amount: 0 },
+                { name: "Medical Premium", amount: 0 },
+                { name: "Dental Premium", amount: 0 },
+                { name: "Vision Premium", amount: 0 },
+                { name: "MSEAP", amount: 0 }
+            ],
+            postTax: [
+                { name: "401k Roth", amount: 0 },
+                { name: "Stock Purchase Plan", amount: 0 },
+                { name: "Legal Services", amount: 0 },
+                { name: "LTD", amount: 0 },
+                { name: "AD&D", amount: 0 },
+                { name: "Accident Insurance", amount: 0 },
+                { name: "Critical Illness", amount: 0 }
+            ]
+        };
+
+        const budgetData = {
+            income: 0,
+            taxes: [],
+            preTax: [],
+            postTax: [],
+            expenses: [],
+            categories: [
+                { id: 'housing', name: '🏠 주거', nameEn: '🏠 Housing' },
+                { id: 'food', name: '🍔 식비', nameEn: '🍔 Food' },
+                { id: 'transportation', name: '🚗 교통', nameEn: '🚗 Transportation' },
+                { id: 'health', name: '🏥 건강', nameEn: '🏥 Health' },
+                { id: 'family', name: '👪 가족', nameEn: '👪 Family' },
+                { id: 'shopping', name: '🛍️ 쇼핑', nameEn: '🛍️ Shopping' },
+                { id: 'finance', name: '💳 금융', nameEn: '💳 Finance' },
+                { id: 'travel', name: '✈️ 여행', nameEn: '✈️ Travel' },
+                { id: 'saving', name: '💰 저축', nameEn: '💰 Saving' },
+                { id: 'business', name: '💼 업무', nameEn: '💼 Business' }
+            ],
+            currentLanguage: 'ko'
+        };
+
+        let incomeFlowChartInstance = null;
+        let expenseCategoryChartInstance = null;
+        let editingItem = null;
+
+        // --- 유틸리티 함수 ---
+        function generateUniqueId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
+        }
+
+        function formatMoney(amount) {
+            // isNaN(amount) 대신 Number.isNaN을 사용하여 더 정확한 NaN 체크
+            if (Number.isNaN(amount) || amount === null) {
+                return "0.00";
+            }
+            return parseFloat(amount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function calculatePercentage(value, total) {
+            if (total === 0) {
+                return "0.0%";
+            }
+            return ((value / total) * 100).toFixed(1) + '%';
+        }
+
+        // --- 언어 전환 ---
+        function switchLanguage(lang) {
+            budgetData.currentLanguage = lang;
+            document.querySelectorAll('[data-lang]').forEach(e => {
+                if (e.getAttribute('data-lang') === lang) {
+                    e.classList.remove('hidden');
+                } else {
+                    e.classList.add('hidden');
+                }
+            });
+
+            // 플레이스홀더 텍스트 업데이트
+            document.querySelectorAll('[data-lang-ko-placeholder]').forEach(el => {
+                const koPlaceholder = el.getAttribute('data-lang-ko-placeholder');
+                const enPlaceholder = el.getAttribute('data-lang-en-placeholder');
+                el.placeholder = (lang === 'ko') ? koPlaceholder : enPlaceholder;
+            });
+
+            document.getElementById('lang-ko').classList.toggle('active', lang === 'ko');
+            document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+
+            populateCategorySelect(); // 카테고리 셀렉트박스 언어에 맞게 업데이트
+            updateUI(); // UI 전체 업데이트
+        }
+
+        // --- 카테고리 셀렉트박스 채우기 ---
+        function populateCategorySelect() {
+            const select = document.getElementById('category-select'); // id 변경
+            const prev = select.value;
+            select.innerHTML = ''; // 기존 옵션 초기화
+
+            budgetData.categories.forEach(cat => {
+                const o = document.createElement('option');
+                o.value = cat.id;
+                o.textContent = budgetData.currentLanguage === 'ko' ? cat.name : cat.nameEn || cat.name;
+                select.appendChild(o);
+            });
+
+            const c = document.createElement('option');
+            c.value = 'custom';
+            c.textContent = budgetData.currentLanguage === 'ko' ? '✏️ 직접 입력' : '✏️ Custom Category';
+            select.appendChild(c);
+
+            // 이전에 선택된 값이 있다면 유지
+            if (budgetData.categories.some(cat => cat.id === prev) || prev === 'custom') {
+                select.value = prev;
+            } else {
+                // 이전에 선택된 값이 없거나 유효하지 않으면 첫 번째 카테고리 또는 빈 값
+                select.value = budgetData.categories[0] ? budgetData.categories[0].id : '';
+            }
+        }
+
+        // --- 차트 업데이트 ---
+        function updateCharts(grossIncome, preTaxTotal, taxTotal, postTaxTotal, expensesTotal, remaining) {
+            if (incomeFlowChartInstance) incomeFlowChartInstance.destroy();
+            if (expenseCategoryChartInstance) expenseCategoryChartInstance.destroy();
+
+            // 수입 분배 차트
+            const ctx1 = document.getElementById('incomeFlowChart').getContext('2d');
+            incomeFlowChartInstance = new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: [
+                        budgetData.currentLanguage === 'ko' ? '세전 공제' : 'Pre-Tax Deductions',
+                        budgetData.currentLanguage === 'ko' ? '세금' : 'Taxes',
+                        budgetData.currentLanguage === 'ko' ? '세후 공제' : 'Post-Tax Deductions',
+                        budgetData.currentLanguage === 'ko' ? '총 지출' : 'Total Expenses',
+                        budgetData.currentLanguage === 'ko' ? '남은 잔액' : 'Remaining Balance'
+                    ],
+                    datasets: [{
+                        data: [preTaxTotal, taxTotal, postTaxTotal, expensesTotal, Math.max(0, remaining)], // 남은 잔액이 음수일 경우 0으로 표시
+                        backgroundColor: ['#4895ef', '#f72585', '#4cc9f0', '#f8961e', '#43aa8b']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { size: 13 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed;
+                                    const total = context.dataset.data.reduce((sum, current) => sum + current, 0);
+                                    const percentage = total === 0 ? '0.0%' : ((value / total) * 100).toFixed(1) + '%';
+                                    return `${label}: $${formatMoney(value)} (${percentage})`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 지출 카테고리 차트
+            const ctx2 = document.getElementById('expenseCategoryChart').getContext('2d');
+            const categoryTotals = {};
+            budgetData.expenses.forEach(item => {
+                const cat = budgetData.categories.find(c => c.id === item.category);
+                const label = budgetData.currentLanguage === 'ko' ? (cat?.name || '기타') : (cat?.nameEn || cat?.name || 'Other');
+                if (!categoryTotals[label]) {
+                    categoryTotals[label] = 0;
+                }
+                categoryTotals[label] += item.amount;
+            });
+
+            expenseCategoryChartInstance = new Chart(ctx2, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(categoryTotals),
+                    datasets: [{
+                        data: Object.values(categoryTotals),
+                        backgroundColor: ['#4895ef', '#f72585', '#4cc9f0', '#f8961e', '#7209b7', '#b5179e', '#43aa8b', '#ffd60a', '#b5ead7', '#ffdac1']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { size: 13 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed;
+                                    const total = context.dataset.data.reduce((sum, current) => sum + current, 0);
+                                    const percentage = total === 0 ? '0.0%' : ((value / total) * 100).toFixed(1) + '%';
+                                    return `${label}: $${formatMoney(value)} (${percentage})`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- UI 전체 업데이트 ---
+        function updateUI() {
+            // Local Storage에 데이터 저장 (매번 업데이트마다)
+            localStorage.setItem('budgetData', JSON.stringify(budgetData));
+
+            const gross = budgetData.income;
+            const pretax = budgetData.preTax.reduce((s, i) => s + i.amount, 0);
+            const tax = budgetData.taxes.reduce((s, i) => s + i.amount, 0);
+            const posttax = budgetData.postTax.reduce((s, i) => s + i.amount, 0);
+
+            const totalDeduct = pretax + tax + posttax;
+            const taxable = gross - pretax;
+            const net = taxable - tax - posttax;
+            const expenses = budgetData.expenses.reduce((s, i) => s + i.amount, 0);
+            const remain = net - expenses;
+
+            // 수입 입력 필드 업데이트
+            document.getElementById('income-input').value = gross; // id 변경
+
+            // 재무 현황판 업데이트
+            document.getElementById('gross-income').textContent = formatMoney(gross);
+            document.getElementById('pre-tax-deductions').textContent = formatMoney(pretax);
+            document.getElementById('taxable-income').textContent = formatMoney(taxable);
+            document.getElementById('tax-total').textContent = formatMoney(tax);
+            document.getElementById('post-tax-deductions').textContent = formatMoney(posttax);
+            document.getElementById('total-deductions-taxes').textContent = formatMoney(totalDeduct);
+            document.getElementById('net-income').textContent = formatMoney(net);
+
+            document.getElementById('expenses-total-card').textContent = formatMoney(expenses);
+            document.getElementById('remaining-balance').textContent = formatMoney(remain);
+
+            const remainingBalanceElement = document.getElementById('remaining-balance');
+            remainingBalanceElement.className = `card-amount ${remain >= 0 ? 'positive' : 'negative'}`;
+
+            document.getElementById('expenses-percentage-card').textContent = calculatePercentage(expenses, gross);
+            document.getElementById('remaining-percentage-card').textContent = calculatePercentage(remain, gross);
+
+            // 각 목록 렌더링
+            renderList('tax-list', budgetData.taxes, gross);
+            renderList('pre-tax-list', budgetData.preTax, gross);
+            renderList('post-tax-list', budgetData.postTax, gross);
+            renderExpenses(gross);
+
+            populateCategorySelect(); // 카테고리 셀렉트박스도 업데이트
+            updateCharts(gross, pretax, tax, posttax, expenses, remain); // 차트 업데이트
+        }
+
+        // --- 목록 렌더링 함수 (세금, 세전/세후 공제) ---
+        function renderList(elementId, items) { // totalIncome 인자 제거, renderExpenses에서만 사용
+            const container = document.getElementById(elementId);
+            const type = elementId.replace('-list', ''); // 'tax', 'preTax', 'postTax'
+
+            container.innerHTML = items.map(item => `
+                <div class="list-item" data-id="${item.id}" data-type="${type}">
+                    ${editingItem && editingItem.id === item.id ?
+                        // 수정 모드
+                        `<div class="list-item-content">
+                            <input type="text" value="${item.name}" id="edit-name-${item.id}" placeholder="${budgetData.currentLanguage === 'ko' ? '항목명' : 'Item name'}">
+                            <input type="number" value="${item.amount}" id="edit-amount-${item.id}" placeholder="${budgetData.currentLanguage === 'ko' ? '금액' : 'Amount'}">
+                        </div>
+                        <div class="list-item-actions">
+                            <button onclick="saveEdit('${type}','${item.id}')" class="btn-success">${budgetData.currentLanguage === 'ko' ? '저장' : 'Save'}</button>
+                            <button onclick="cancelEdit()" class="btn-warning">${budgetData.currentLanguage === 'ko' ? '취소' : 'Cancel'}</button>
+                        </div>`
+                        :
+                        // 일반 모드
+                        `<div class="list-item-content">
+                            <span>${item.name}: $${formatMoney(item.amount)}</span>
+                        </div>
+                        <div class="list-item-actions">
+                            <button onclick="editItem('${type}','${item.id}')" class="btn-info">${budgetData.currentLanguage === 'ko' ? '수정' : 'Edit'}</button>
+                            <button onclick="deleteItem('${type}','${item.id}')" class="btn-danger">${budgetData.currentLanguage === 'ko' ? '삭제' : 'Delete'}</button>
+                        </div>`
+                    }
+                </div>
+            `).join('');
+        }
+
+        // --- 지출 목록 렌더링 함수 ---
+        function renderExpenses() { // totalIncome 인자 제거
+            const container = document.getElementById('expenses-list');
+            container.innerHTML = budgetData.expenses.map(item => {
+                const category = budgetData.categories.find(cat => cat.id === item.category);
+                const categoryName = budgetData.currentLanguage === 'ko' ? category?.name : category?.nameEn || category?.name || 'Other';
+                return `
+                    <div class="list-item" data-id="${item.id}" data-type="expenses">
+                        ${editingItem && editingItem.id === item.id ?
+                            // 수정 모드
+                            `<div class="list-item-content">
+                                <select id="edit-category-${item.id}" style="margin-right:7px;">
+                                    ${budgetData.categories.map(cat => `
+                                        <option value="${cat.id}" ${cat.id === item.category ? 'selected' : ''}>
+                                            ${budgetData.currentLanguage === 'ko' ? cat.name : cat.nameEn || cat.name}
+                                        </option>
+                                    `).join('')}
+                                </select>
+                                <input type="text" value="${item.name}" id="edit-name-${item.id}" placeholder="${budgetData.currentLanguage === 'ko' ? '항목명' : 'Item name'}">
+                                <input type="number" value="${item.amount}" id="edit-amount-${item.id}" placeholder="${budgetData.currentLanguage === 'ko' ? '금액' : 'Amount'}">
+                            </div>
+                            <div class="list-item-actions">
+                                <button onclick="saveEdit('expenses','${item.id}')" class="btn-success">${budgetData.currentLanguage === 'ko' ? '저장' : 'Save'}</button>
+                                <button onclick="cancelEdit()" class="btn-warning">${budgetData.currentLanguage === 'ko' ? '취소' : 'Cancel'}</button>
+                            </div>`
+                            :
+                            // 일반 모드
+                            `<div class="list-item-content">
+                                <span class="badge">${categoryName || '📌 ' + (budgetData.currentLanguage === 'ko' ? '기타' : 'Other')}</span>
+                                <span>${item.name}</span>
+                            </div>
+                            <span class="list-item-amount">$${formatMoney(item.amount)}</span>
+                            <div class="list-item-actions">
+                                <button onclick="editItem('expenses','${item.id}')" class="btn-info">${budgetData.currentLanguage === 'ko' ? '수정' : 'Edit'}</button>
+                                <button onclick="deleteItem('expenses','${item.id}')" class="btn-danger">${budgetData.currentLanguage === 'ko' ? '삭제' : 'Delete'}</button>
+                            </div>`
+                        }
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // --- CRUD 함수 ---
+        function deleteItem(type, id) {
+            if (confirm(budgetData.currentLanguage === 'ko' ? '정말로 삭제하시겠습니까?' : 'Are you sure you want to delete this item?')) {
+                // filter를 사용하기 전에 budgetData[type]이 유효한 배열인지 다시 한번 확인 (loadData에서 이미 처리)
+                if (Array.isArray(budgetData[type])) {
+                    budgetData[type] = budgetData[type].filter(item => item.id !== id);
+                    updateUI();
+                } else {
+                    console.error(`Error: budgetData.${type} is not an array. Cannot delete item.`);
+                }
+            }
+        }
+
+        function editItem(type, id) {
+            cancelEdit(); // 다른 편집 중인 항목이 있다면 취소
+            const item = budgetData[type].find(item => item.id === id);
+            if (item) {
+                editingItem = { ...item, type: type }; // type 정보도 함께 저장
+                updateUI();
+            }
+        }
+
+        function saveEdit(type, id) {
+            const idx = budgetData[type].findIndex(item => item.id === id);
+            if (idx === -1) return;
+
+            const newNameInput = document.getElementById(`edit-name-${id}`);
+            const newAmountInput = document.getElementById(`edit-amount-${id}`);
+
+            const newName = newNameInput ? newNameInput.value.trim() : '';
+            const newAmount = parseFloat(newAmountInput ? newAmountInput.value : '');
+
+            if (!newName) {
+                alert(budgetData.currentLanguage === 'ko' ? '항목명은 비워둘 수 없습니다.' : 'Item name cannot be empty.');
+                return;
+            }
+            if (isNaN(newAmount)) {
+                alert(budgetData.currentLanguage === 'ko' ? '유효한 금액을 입력해주세요.' : 'Please enter a valid amount.');
+                return;
+            }
+
+            budgetData[type][idx].name = newName;
+            budgetData[type][idx].amount = newAmount;
+
+            if (type === 'expenses') {
+                const newCategorySelect = document.getElementById(`edit-category-${id}`);
+                const newCategory = newCategorySelect ? newCategorySelect.value : '';
+                budgetData[type][idx].category = newCategory;
+            }
+            editingItem = null; // 편집 완료 상태로 변경
+            updateUI();
+        }
+
+        function cancelEdit() {
+            editingItem = null;
+            updateUI();
+        }
+
+        // --- 데이터 저장/불러오기/초기화 ---
+        function saveData() {
+            localStorage.setItem('budgetData', JSON.stringify(budgetData));
+            alert(budgetData.currentLanguage === 'ko' ? '데이터가 저장되었습니다!' : 'Data saved!');
+        }
+
+        function loadData() {
+            const d = localStorage.getItem('budgetData');
+            if (d) {
+                const parsed = JSON.parse(d);
+
+                // 안전하게 데이터 로드 및 초기화
+                budgetData.income = parsed.income || 0;
+                budgetData.taxes = Array.isArray(parsed.taxes) ? parsed.taxes : [];
+                budgetData.preTax = Array.isArray(parsed.preTax) ? parsed.preTax : [];
+                budgetData.postTax = Array.isArray(parsed.postTax) ? parsed.postTax : [];
+                budgetData.expenses = Array.isArray(parsed.expenses) ? parsed.expenses : [];
+
+                // categories도 마찬가지로 안전하게 초기화하며, 기본 카테고리가 없으면 추가
+                if (Array.isArray(parsed.categories) && parsed.categories.length > 0) {
+                    budgetData.categories = parsed.categories;
+                } else {
+                    budgetData.categories = [
+                        { id: 'housing', name: '🏠 주거', nameEn: '🏠 Housing' },
+                        { id: 'food', name: '🍔 식비', nameEn: '🍔 Food' },
+                        { id: 'transportation', name: '🚗 교통', nameEn: '🚗 Transportation' },
+                        { id: 'health', name: '🏥 건강', nameEn: '🏥 Health' },
+                        { id: 'family', name: '👪 가족', nameEn: '👪 Family' },
+                        { id: 'shopping', name: '🛍️ 쇼핑', nameEn: '🛍️ Shopping' },
+                        { id: 'finance', name: '💳 금융', nameEn: '💳 Finance' },
+                        { id: 'travel', name: '✈️ 여행', nameEn: '✈️ Travel' },
+                        { id: 'saving', name: '💰 저축', nameEn: '💰 Saving' },
+                        { id: 'business', name: '💼 업무', nameEn: '💼 Business' }
+                    ];
+                }
+
+                budgetData.currentLanguage = parsed.currentLanguage || 'ko';
+
+                // 기존 데이터에 필수 배열이 비어있으면 DEFAULT_DEDUCTIONS로 초기화
+                // 단, 이 경우 기존에 입력한 custom 항목들도 reset되므로 주의 필요
+                if (budgetData.taxes.length === 0 && DEFAULT_DEDUCTIONS.taxes.length > 0) {
+                    console.warn("Taxes data missing or empty in localStorage, initializing default taxes.");
+                    budgetData.taxes = DEFAULT_DEDUCTIONS.taxes.map(item => ({...item, id: generateUniqueId(), type: 'taxes'}));
+                }
+                if (budgetData.preTax.length === 0 && DEFAULT_DEDUCTIONS.preTax.length > 0) {
+                    console.warn("Pre-Tax data missing or empty in localStorage, initializing default pre-tax deductions.");
+                    budgetData.preTax = DEFAULT_DEDUCTIONS.preTax.map(item => ({...item, id: generateUniqueId(), type: 'preTax'}));
+                }
+                if (budgetData.postTax.length === 0 && DEFAULT_DEDUCTIONS.postTax.length > 0) {
+                    console.warn("Post-Tax data missing or empty in localStorage, initializing default post-tax deductions.");
+                    budgetData.postTax = DEFAULT_DEDUCTIONS.postTax.map(item => ({...item, id: generateUniqueId(), type: 'postTax'}));
+                }
+
+            } else {
+                // localStorage에 데이터가 전혀 없을 때만 모든 기본 데이터 초기화
+                console.log("No budgetData found in localStorage, initializing default data.");
+                initDefaultData();
+            }
+            // loadData 후 반드시 UI 업데이트를 호출해야 함
+            updateUI();
+        }
+
+        function resetData() {
+            if (confirm(budgetData.currentLanguage === 'ko' ? '모든 데이터를 초기화할까요? 이 작업은 되돌릴 수 없습니다.' : 'Reset all data? This action cannot be undone.')) {
+                localStorage.removeItem('budgetData');
+                initDefaultData(); // budgetData 객체를 기본값으로 재설정
+                updateUI(); // UI 업데이트
+            }
+        }
+
+        function initDefaultData() {
+            // budgetData 객체를 기본 상태로 완전히 초기화
+            budgetData.income = 0;
+            budgetData.taxes = DEFAULT_DEDUCTIONS.taxes.map(item => ({ ...item, id: generateUniqueId(), type: 'taxes' }));
+            budgetData.preTax = DEFAULT_DEDUCTIONS.preTax.map(item => ({ ...item, id: generateUniqueId(), type: 'preTax' }));
+            budgetData.postTax = DEFAULT_DEDUCTIONS.postTax.map(item => ({ ...item, id: generateUniqueId(), type: 'postTax' }));
+            budgetData.expenses = [];
+            // 기본 카테고리 설정 (새로운 initDefaultData 호출 시에도 기본 카테고리는 유지)
+            budgetData.categories = [
+                { id: 'housing', name: '🏠 주거', nameEn: '🏠 Housing' },
+                { id: 'food', name: '🍔 식비', nameEn: '🍔 Food' },
+                { id: 'transportation', name: '🚗 교통', nameEn: '🚗 Transportation' },
+                { id: 'health', name: '🏥 건강', nameEn: '🏥 Health' },
+                { id: 'family', name: '👪 가족', nameEn: '👪 Family' },
+                { id: 'shopping', name: '🛍️ 쇼핑', nameEn: '🛍️ Shopping' },
+                { id: 'finance', name: '💳 금융', nameEn: '💳 Finance' },
+                { id: 'travel', name: '✈️ 여행', nameEn: '✈️ Travel' },
+                { id: 'saving', name: '💰 저축', nameEn: '💰 Saving' },
+                { id: 'business', name: '💼 업무', nameEn: '💼 Business' }
+            ];
+            budgetData.currentLanguage = 'ko'; // 초기 언어도 ko로 설정
+            localStorage.setItem('budgetData', JSON.stringify(budgetData)); // 로컬 스토리지에 저장
+        }
+
+        // --- 이벤트 리스너 ---
+        document.getElementById('lang-ko').onclick = () => switchLanguage('ko');
+        document.getElementById('lang-en').onclick = () => switchLanguage('en');
+
+        // 초기 로드 시 데이터 불러오기 및 UI 업데이트, 언어 설정
+        window.onload = function() {
+            loadData(); // budgetData 로드 (currentLanguage 포함)
+            switchLanguage(budgetData.currentLanguage); // 로드된 언어로 UI 전환
+            // updateUI는 loadData 내에서 호출되므로 여기서 별도로 호출할 필요 없음
+        };
+
+        // 수입 입력 필드 이벤트 (id 변경됨: income -> income-input)
+        document.getElementById('income-input').addEventListener('input', function(e) {
+            budgetData.income = parseFloat(e.target.value) || 0;
+            updateUI();
+        });
+
+        // 지출 추가 함수
+        function addExpense() {
+            const categorySelect = document.getElementById('category-select'); // id 변경
+            const nameInput = document.getElementById('expense-name-input'); // id 변경
+            const amountInput = document.getElementById('expense-amount-input-main'); // id 변경
+
+            const category = categorySelect.value;
+            const name = nameInput.value.trim();
+            const amount = parseFloat(amountInput.value);
+
+            if (category === 'custom') { // "직접 입력" 선택 시 새 카테고리 추가로 유도
+                alert(budgetData.currentLanguage === 'ko' ? '먼저 새 카테고리를 추가하거나 기존 카테고리를 선택하세요.' : 'Please add a new category or select an existing one first.');
+                return;
+            }
+            if (!name) {
+                alert(budgetData.currentLanguage === 'ko' ? '지출 항목 이름을 입력하세요.' : 'Enter expense name.');
+                return;
+            }
+            if (isNaN(amount) || amount <= 0) {
+                alert(budgetData.currentLanguage === 'ko' ? '유효한 금액을 입력하세요.' : 'Enter a valid amount.');
+                return;
+            }
+
+            budgetData.expenses.push({
+                id: generateUniqueId(),
+                name,
+                amount,
+                category // 카테고리 ID 저장
+            });
+
+            // 입력값 초기화
+            nameInput.value = '';
+            amountInput.value = '';
+            categorySelect.value = budgetData.categories[0]?.id || ''; // 첫 번째 카테고리로 기본 선택
+
+            updateUI();
+        }
+
+        // 카테고리 추가 함수
+        function addCategory() {
+            const newCategoryInput = document.getElementById('new-category-input'); // id 변경
+            const name = newCategoryInput.value.trim();
+            if (!name) {
+                alert(budgetData.currentLanguage === 'ko' ? '카테고리 이름을 입력하세요.' : 'Enter category name.');
+                return;
+            }
+
+            // 중복 카테고리 방지
+            const existingCategory = budgetData.categories.find(
+                cat => cat.name.toLowerCase() === name.toLowerCase() || cat.nameEn?.toLowerCase() === name.toLowerCase()
+            );
+            if (existingCategory) {
+                alert(budgetData.currentLanguage === 'ko' ? '이미 존재하는 카테고리입니다.' : 'Category already exists.');
+                return;
+            }
+
+            const id = generateUniqueId();
+            // 현재 언어에 따라 name과 nameEn을 동일하게 설정 (나중에 번역 필요시 수정 가능)
+            const catObj = { id, name: name, nameEn: name };
+            budgetData.categories.push(catObj);
+            newCategoryInput.value = ''; // 입력 필드 초기화
+            populateCategorySelect(); // 셀렉트 박스 업데이트
+            document.getElementById('category-input-container').classList.add('hidden'); // 입력창 숨기기
+            document.getElementById('category-select').value = id; // 새로 추가된 카테고리 자동 선택
+            updateUI();
+        }
+
+        // 세금/공제 항목 추가 함수 (taxes, preTax, postTax)
+        function addCategorizedItem(type) { // 함수명 변경: updateCategorizedItem -> addCategorizedItem (새 항목 추가 기능이므로)
+            let nameInput, amountInput, selectElement;
+
+            if (type === 'taxes') {
+                selectElement = document.getElementById('tax-type-select'); // id 변경
+                nameInput = document.getElementById('tax-custom-name-input'); // id 변경
+                amountInput = document.getElementById('tax-amount-input'); // id 변경
+            } else if (type === 'preTax') {
+                selectElement = document.getElementById('pre-tax-type-select'); // id 변경
+                nameInput = document.getElementById('pre-tax-custom-name-input'); // id 변경
+                amountInput = document.getElementById('pre-tax-amount-input'); // id 변경
+            } else if (type === 'postTax') {
+                selectElement = document.getElementById('post-tax-type-select'); // id 변경
+                nameInput = document.getElementById('post-tax-custom-name-input'); // id 변경
+                amountInput = document.getElementById('post-tax-amount-input'); // id 변경
+            } else {
+                console.error("Invalid type for addCategorizedItem:", type);
+                return;
+            }
+
+            const name = nameInput.value.trim();
+            const amount = parseFloat(amountInput.value);
+
+            if (!name) {
+                alert(budgetData.currentLanguage === 'ko' ? '이름을 입력하세요.' : 'Enter name.');
+                return;
+            }
+            if (isNaN(amount) || amount < 0) {
+                alert(budgetData.currentLanguage === 'ko' ? '유효한 금액을 입력하세요.' : 'Enter a valid amount.');
+                return;
+            }
+
+            // 중복 항목 방지
+            const existingItem = budgetData[type].find(item => item.name.toLowerCase() === name.toLowerCase());
+            if (existingItem) {
+                alert(budgetData.currentLanguage === 'ko' ? '이미 존재하는 항목입니다. 수정하려면 목록에서 선택하세요.' : 'This item already exists. To modify, select it from the list.');
+                return;
+            }
+
+            budgetData[type].push({
+                id: generateUniqueId(),
+                name,
+                amount,
+                type // 이 type 속성은 실제 데이터에 필요 없을 수 있으나, 기존 코드 흐름 유지를 위해 유지
+            });
+
+            // 입력값 초기화 및 셀렉트 박스 초기 상태로 복구
+            nameInput.value = '';
+            amountInput.value = '';
+            selectElement.value = ''; // select를 첫 번째 '선택' 옵션으로 되돌림
+            document.getElementById(`${type}-custom-container`).classList.add('hidden'); // 사용자 정의 입력창 숨김
+
+            updateUI();
+        }
+
+        // 카테고리 선택시 "직접 입력"을 선택하면 입력창 표시 (id 변경됨: category -> category-select)
+        document.getElementById('category-select').addEventListener('change', function () {
+            const container = document.getElementById('category-input-container');
+            if (this.value === 'custom') {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
+        });
+
+        // 세금/공제 select에서 "custom" 선택 시 입력창 표시 (id 변경됨)
+        document.getElementById('tax-type-select').addEventListener('change', function () {
+            document.getElementById('tax-custom-container').classList.toggle('hidden', this.value !== 'custom');
+        });
+        document.getElementById('pre-tax-type-select').addEventListener('change', function () {
+            document.getElementById('pre-tax-custom-container').classList.toggle('hidden', this.value !== 'custom');
+        });
+        document.getElementById('post-tax-type-select').addEventListener('change', function () {
+            document.getElementById('post-tax-custom-container').classList.toggle('hidden', this.value !== 'custom');
+        });
+
+        // select에서 기본 항목 선택 시 해당 항목 추가 (amount는 0으로)
+        document.getElementById('tax-type-select').addEventListener('change', function () {
+            const value = this.value;
+            if (value && value !== 'custom') {
+                const exist = budgetData.taxes.find(i => i.name === value);
+                if (!exist) {
+                    budgetData.taxes.push({ id: generateUniqueId(), name: value, amount: 0, type: 'taxes' });
+                    updateUI();
+                }
+                this.selectedIndex = 0; // 선택 초기화
+                document.getElementById('tax-custom-container').classList.add('hidden'); // 사용자 정의 입력창 숨김
+            }
+        });
+        document.getElementById('pre-tax-type-select').addEventListener('change', function () {
+            const value = this.value;
+            if (value && value !== 'custom') {
+                const exist = budgetData.preTax.find(i => i.name === value);
+                if (!exist) {
+                    budgetData.preTax.push({ id: generateUniqueId(), name: value, amount: 0, type: 'preTax' });
+                    updateUI();
+                }
+                this.selectedIndex = 0; // 선택 초기화
+                document.getElementById('pre-tax-custom-container').classList.add('hidden'); // 사용자 정의 입력창 숨김
+            }
+        });
+        document.getElementById('post-tax-type-select').addEventListener('change', function () {
+            const value = this.value;
+            if (value && value !== 'custom') {
+                const exist = budgetData.postTax.find(i => i.name === value);
+                if (!exist) {
+                    budgetData.postTax.push({ id: generateUniqueId(), name: value, amount: 0, type: 'postTax' });
+                    updateUI();
+                }
+                this.selectedIndex = 0; // 선택 초기화
+                document.getElementById('post-tax-custom-container').classList.add('hidden'); // 사용자 정의 입력창 숨김
+            }
+        });
+    </script>
 </body>
 </html>
