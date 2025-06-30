@@ -273,3 +273,22 @@ footer {
     gap: 10px;
     margin-top: 30px;
 }
+/* 버튼 스타일 추가 */
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* 초기 숨김 처리 */
+.deduction-section, .expenses-section, .summary-section, .charts-section {
+    display: none;
+}
+
+/* 활성화 시 표시 */
+.section-active {
+    display: block;
+}
