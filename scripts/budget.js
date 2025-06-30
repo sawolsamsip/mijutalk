@@ -559,28 +559,84 @@
             updateUI();
         });
 
-        document.getElementById('tax-type-select').addEventListener('change', () => handleTaxTypeSelect('taxes'));
-        document.getElementById('pre-tax-type-select').addEventListener('change', () => handleTaxTypeSelect('preTax'));
-        document.getElementById('post-tax-type-select').addEventListener('change', () => handleTaxTypeSelect('postTax'));
-        
-        document.querySelector('[onclick="addCategorizedItem(\'taxes\')"]').onclick = () => addCategorizedItem('taxes');
-        document.querySelector('[onclick="addCategorizedItem(\'preTax\')"]').onclick = () => addCategorizedItem('preTax');
-        document.querySelector('[onclick="addCategorizedItem(\'postTax\')"]').onclick = () => addCategorizedItem('postTax');
-        
+        // 세금/공제 항목 추가 토글 버튼
+        document.getElementById('toggle-tax-add').addEventListener('click', function() {
+            document.getElementById('tax-add-section').classList.toggle('hidden');
+        });
+        document.getElementById('toggle-pre-tax-add').addEventListener('click', function() {
+            document.getElementById('pre-tax-add-section').classList.toggle('hidden');
+        });
+        document.getElementById('toggle-post-tax-add').addEventListener('click', function() {
+            document.getElementById('post-tax-add-section').classList.toggle('hidden');
+        });
+
+        // 세금/공제 항목 추가 핸들러
+        document.getElementById('add-tax-btn').addEventListener('click', () => addDeductionItem('taxes'));
+        document.getElementById('add-pre-tax-btn').addEventListener('click', () => addDeductionItem('preTax'));
+        document.getElementById('add-post-tax-btn').addEventListener('click', () => addDeductionItem('postTax'));
+
+        // 지출 추가 관련 이벤트
         document.getElementById('category-select').addEventListener('change', function() {
             const container = document.getElementById('category-input-container');
             container.classList.toggle('hidden', this.value !== 'custom');
         });
 
-        document.getElementById('tax-type-select').addEventListener('change', function() {
-            document.getElementById('tax-custom-container').classList.toggle('hidden', this.value !== 'custom');
+        document.getElementById('add-expense-btn').addEventListener('click', addExpense);
+        document.getElementById('add-category-btn').addEventListener('click', addCategory);
+    }
+
+    // --- 세금/공제 항목 추가 함수 ---
+    function addDeductionItem(type) {
+        const selectElement = document.getElementById(`${type}-type-select`);
+        const amountInput = document.getElementById(`${type}-amount-input`);
+        const customNameInput = document.getElementById(`${type}-custom-name-input`);
+        
+        let name = selectElement.value;
+        let amount = parseFloat(amountInput.value);
+
+        // 사용자 정의 항목 처리
+        if (name === 'custom') {
+            name = customNameInput.value.trim();
+            if (!name) {
+                alert(budgetData.currentLanguage === 'ko' ? '항목 이름을 입력하세요.' : 'Please enter item name.');
+                return;
+            }
+        }
+
+        // 유효성 검사
+        if (!name || name === 'default') {
+            alert(budgetData.currentLanguage === 'ko' ? '항목을 선택하세요.' : 'Please select an item.');
+            return;
+        }
+        if (isNaN(amount) || amount <= 0) {
+            alert(budgetData.currentLanguage === 'ko' ? '유효한 금액을 입력하세요.' : 'Please enter a valid amount.');
+            return;
+        }
+
+        // 중복 확인
+        const existingItem = budgetData[type].find(item => item.name.toLowerCase() === name.toLowerCase());
+        if (existingItem) {
+            alert(budgetData.currentLanguage === 'ko' 
+                ? '이미 존재하는 항목입니다. 수정하려면 목록에서 선택하세요.' 
+                : 'This item already exists. To modify, select it from the list.');
+            return;
+        }
+
+        // 새 항목 추가
+        budgetData[type].push({
+            id: generateUniqueId(),
+            name: name,
+            amount: amount,
+            type: type
         });
-        document.getElementById('pre-tax-type-select').addEventListener('change', function() {
-            document.getElementById('pre-tax-custom-container').classList.toggle('hidden', this.value !== 'custom');
-        });
-        document.getElementById('post-tax-type-select').addEventListener('change', function() {
-            document.getElementById('post-tax-custom-container').classList.toggle('hidden', this.value !== 'custom');
-        });
+
+        // 입력 필드 초기화
+        selectElement.value = 'default';
+        amountInput.value = '';
+        if (customNameInput) customNameInput.value = '';
+        document.getElementById(`${type}-add-section`).classList.add('hidden');
+
+        updateUI();
     }
 
     // --- 초기화 ---
@@ -588,7 +644,12 @@
         setupEventListeners();
         loadData();
         switchLanguage(budgetData.currentLanguage);
+        
+        // 초기 상태에서 추가 섹션 숨김
+        document.getElementById('tax-add-section').classList.add('hidden');
+        document.getElementById('pre-tax-add-section').classList.add('hidden');
+        document.getElementById('post-tax-add-section').classList.add('hidden');
+        document.getElementById('category-input-container').classList.add('hidden');
     }
 
-    // 페이지 로드 시 초기화
     window.onload = initialize;
