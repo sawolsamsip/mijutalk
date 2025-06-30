@@ -457,7 +457,7 @@ function editItem(type, id) {
 function saveEdit(type, id) {
     if (!Array.isArray(budgetData[type])) {
         console.error(`Error: budgetData.${type} is not an array. Cannot save item.`);
-        alert(budgetData.currentLanguage === 'ko' ? `오류: '${type}' 데이터가 손상되었습니다. 항목을 저장할 수 없습니다.` : `Error: Data for '${type}' is corrupted. Cannot save item.`);
+        alert(budgetData.currentLanguage === 'ko' ? `오류: '${type}' 데이터가 손상되었습니다. 항목을 저장할 수 없습니다.` : `Error: Data for '${type}' is corrupted. 항목을 저장할 수 없습니다.`);
         return;
     }
 
