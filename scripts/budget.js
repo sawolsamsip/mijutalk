@@ -81,8 +81,12 @@ function switchLanguage(lang) {
         el.placeholder = (lang === 'ko') ? koPlaceholder : enPlaceholder;
     });
 
-    document.getElementById('lang-ko').classList.toggle('active', lang === 'ko');
-    document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+    // 버튼 활성/비활성 클래스 토글
+    const langKoBtn = document.getElementById('lang-ko');
+    const langEnBtn = document.getElementById('lang-en');
+    if (langKoBtn) langKoBtn.classList.toggle('active', lang === 'ko');
+    if (langEnBtn) langEnBtn.classList.toggle('active', lang === 'en');
+
 
     populateCategorySelect(); // 카테고리 셀렉트박스 언어에 맞게 업데이트
     populateCategorizedSelects(); // 세금/공제 드롭다운 언어에 맞게 업데이트
@@ -283,22 +287,36 @@ function updateUI() {
     }
 
 
-    document.getElementById('gross-income').textContent = formatMoney(gross);
-    document.getElementById('pre-tax-deductions').textContent = formatMoney(pretax);
-    document.getElementById('taxable-income').textContent = formatMoney(taxable);
-    document.getElementById('tax-total').textContent = formatMoney(tax);
-    document.getElementById('post-tax-deductions').textContent = formatMoney(posttax);
-    document.getElementById('total-deductions-taxes').textContent = formatMoney(totalDeduct);
-    document.getElementById('net-income').textContent = formatMoney(net);
+    // 각 요소가 존재하는지 확인 후 textContent 업데이트
+    const elementsToUpdate = {
+        'gross-income': formatMoney(gross),
+        'pre-tax-deductions': formatMoney(pretax),
+        'taxable-income': formatMoney(taxable),
+        'tax-total': formatMoney(tax),
+        'post-tax-deductions': formatMoney(posttax),
+        'total-deductions-taxes': formatMoney(totalDeduct),
+        'net-income': formatMoney(net),
+        'expenses-total-card': formatMoney(expenses),
+        'remaining-balance': formatMoney(remain),
+        'expenses-percentage-card': calculatePercentage(expenses, gross),
+        'remaining-percentage-card': calculatePercentage(remain, gross)
+    };
 
-    document.getElementById('expenses-total-card').textContent = formatMoney(expenses);
-    document.getElementById('remaining-balance').textContent = formatMoney(remain);
+    for (const id in elementsToUpdate) {
+        const el = document.getElementById(id);
+        if (el) {
+            el.textContent = elementsToUpdate[id];
+        } else {
+            console.warn(`Element with ID '${id}' not found. Cannot update text content.`);
+        }
+    }
+
 
     const remainingBalanceElement = document.getElementById('remaining-balance');
-    remainingBalanceElement.className = `card-amount ${remain >= 0 ? 'positive' : 'negative'}`;
+    if (remainingBalanceElement) {
+        remainingBalanceElement.className = `card-amount ${remain >= 0 ? 'positive' : 'negative'}`;
+    }
 
-    document.getElementById('expenses-percentage-card').textContent = calculatePercentage(expenses, gross);
-    document.getElementById('remaining-percentage-card').textContent = calculatePercentage(remain, gross);
 
     // 각 리스트를 렌더링하고, 항목이 있으면 보이게, 없으면 숨기게 처리
     renderList('tax-list', budgetData.taxes);
@@ -488,7 +506,7 @@ function loadData() {
     if (d) {
         const parsed = JSON.parse(d);
 
-        // 중요: 각 배열 속성을 로드할 때, 항상 Array.isArray로 유효성을 확인합니다.
+        // 중요: 각 배열 속성을 로드할 때, 항상 Array.isArray로 유효성을 확인하고, 없으면 빈 배열로 초기화합니다.
         budgetData.income = parsed.income || 0;
         budgetData.taxes = Array.isArray(parsed.taxes) ? parsed.taxes : [];
         budgetData.preTax = Array.isArray(parsed.preTax) ? parsed.preTax : [];
@@ -497,7 +515,6 @@ function loadData() {
 
         // 카테고리 로드 또는 기본값 설정
         if (Array.isArray(parsed.categories) && parsed.categories.length > 0) {
-            // 기존 카테고리에 DEFAULT_CATEGORIES 항목 중 없는 것 추가 (선택 사항, 필요시)
             budgetData.categories = parsed.categories;
         } else {
             // 카테고리가 없으면 기본값으로 설정
@@ -521,10 +538,7 @@ function loadData() {
         console.log("No budgetData found in localStorage, initializing default data.");
         initDefaultData(); // 로컬 스토리지에 데이터가 없으면 기본 데이터로 초기화
     }
-    // 데이터 로드 후 UI 업데이트 및 드롭다운 초기화
-    populateCategorizedSelects(); // 세금/공제 드롭다운 옵션 채우기 (새롭게 추가된 부분)
-    switchLanguage(budgetData.currentLanguage); // 언어 설정도 로드 후 적용
-    updateUI(); // loadData 후 반드시 UI 업데이트
+    // 데이터 로드 후 UI 업데이트 및 드롭다운 초기화 (DOMContentLoaded에서 호출)
 }
 
 function resetData() {
@@ -564,8 +578,12 @@ function initDefaultData() {
 // --- 이벤트 리스너 ---
 
 // DOMContentLoaded 이벤트 리스너 추가: 모든 HTML이 로드된 후 스크립트 실행
+// 이 부분이 가장 중요합니다. HTML 요소들이 완전히 로드된 후에 JavaScript가 실행되어야 합니다.
 document.addEventListener('DOMContentLoaded', function() {
-    loadData();
+    loadData(); // 데이터 로드
+    populateCategorizedSelects(); // 드롭다운 채우기
+    switchLanguage(budgetData.currentLanguage); // 언어 설정
+    updateUI(); // UI 업데이트
 
     // 초기 로드 시 관련 요소들이 모두 존재하면 이벤트 리스너를 추가
     const langKoBtn = document.getElementById('lang-ko');
