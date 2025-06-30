@@ -3,535 +3,262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';">
-    <title>다국어 예산 관리 시스템</title>
+    <title>예산 관리 시스템</title>
+    <link rel="stylesheet" href="../scripts/budget.css">
     <script src="../scripts/chart.js"></script>
-    <style>
-        /* 기존 CSS 유지 */
-        :root {
-            --primary: #4361ee;
-            --primary-light: #4895ef;
-            --danger: #f72585;
-            --success: #4cc9f0;
-            --warning: #f8961e;
-            --info: #7209b7;
-            --text-color: #2b2d42;
-            --light-gray: #f8f9fa;
-            --medium-gray: #adb5bd;
-            --dark-gray: #495057;
-            --white: #ffffff;
-            --shadow: 0 4px 16px rgba(67,97,238,0.08);
-            --border-radius: 12px;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
-            color: var(--text-color);
-            background: var(--light-gray);
-            padding: 0;
-            min-height: 100vh;
-        }
-        .container {
-            max-width: 1100px;
-            margin: 40px auto 40px auto;
-            padding: 24px 18px 36px 18px;
-            background: var(--white);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            box-sizing: border-box;
-        }
-        .language-switcher {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-bottom: 10px;
-            position: relative;
-            z-index: 10;
-        }
-        .language-btn {
-            background: #fff;
-            color: var(--primary);
-            border: 1.5px solid var(--primary);
-            border-radius: 18px;
-            padding: 8px 22px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-            box-shadow: 0 2px 8px rgba(67,97,238,0.06);
-        }
-        .language-btn.active {
-            background: var(--primary);
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(67,97,238,0.14);
-        }
-        header {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-        h1 { color: var(--primary); font-size: 2.2rem; margin-bottom: 12px; }
-        h2 { color: var(--primary); font-size: 1.3rem; margin-bottom: 14px; }
-        .card {
-            background: var(--white);
-            padding: 22px 18px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            margin-bottom: 24px;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 18px;
-        }
-        .form-group { margin-bottom: 16px; }
-        label {
-            display: block;
-            margin-bottom: 7px;
-            font-weight: 600;
-            color: var(--dark-gray);
-        }
-        input, select {
-            width: 100%;
-            padding: 11px;
-            border: 1px solid var(--medium-gray);
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            transition: border-color 0.2s;
-            background: #f7faff;
-        }
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.12);
-        }
-        button {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 11px 18px;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.18s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 6px rgba(67,97,238,0.07);
-        }
-        button:hover { background-color: var(--primary-light); }
-        .btn-danger { background-color: var(--danger); }
-        .btn-danger:hover { background-color: #d6336c; }
-        .btn-warning { background-color: var(--warning); }
-        .btn-warning:hover { background-color: #e67700; }
-        .btn-success { background-color: var(--success); color: var(--text-color);}
-        .btn-success:hover { background-color: #339af0; color: #fff;}
-        .btn-info { background-color: var(--info);}
-        .btn-info:hover { background-color: #5f3dc4;}
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 16px;
-            font-size: 0.92rem;
-            font-weight: 600;
-            background-color: var(--primary-light);
-            color: white;
-            margin-right: 4px;
-        }
-        .item-list { margin-top: 12px; }
-        .list-item {
-            background: var(--white);
-            padding: 13px 10px;
-            margin-bottom: 8px;
-            border-radius: var(--border-radius);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.07);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.2s;
-        }
-        .list-item:hover {
-            transform: translateX(4px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-        }
-        .list-item-content {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            gap: 7px;
-        }
-        .list-item-amount { font-weight: 600; min-width: 82px; text-align: right; }
-        .list-item-actions { display: flex; gap: 5px; }
-        .summary-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 23px;
-        }
-        .summary-card {
-            background: var(--white);
-            padding: 18px 0 16px 0;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            text-align: center;
-            border-top: 4px solid var(--primary);
-        }
-        .card-label { font-size: 0.96rem; color: var(--medium-gray); margin-bottom: 2px; }
-        .card-amount { font-size: 1.7rem; font-weight: 700; margin: 9px 0; }
-        .positive { color: var(--success);}
-        .negative { color: var(--danger);}
-        .flow-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 13px 10px;
-            margin: 7px 0;
-            background: var(--white);
-            border-radius: var(--border-radius);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.07);
-            font-size: 1.05rem;
-        }
-        .flow-item.highlighted { border-left: 4px solid var(--danger);}
-        .flow-item.result { border-left: 4px solid var(--success); font-weight: bold;}
-        .flow-item.info { border-left: 4px solid var(--warning); font-weight: bold;}
-        .flow-arrow {
-            text-align: center;
-            color: var(--medium-gray);
-            margin: 5px 0;
-            font-size: 1.18rem;
-        }
-        .chart-container {
-            background: var(--white);
-            padding: 18px 12px 24px 12px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            margin-bottom: 20px;
-            margin-top: 5px;
-            height: 420px;
-            position: relative;
-        }
-        .chart-wrapper {
-            width: 100%;
-            height: 340px;
-            position: relative;
-        }
-        .chart-title {
-            text-align: center;
-            margin-bottom: 12px;
-            color: var(--primary);
-            font-size: 1.1rem;
-            font-weight: 700;
-        }
-        .utility-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 14px;
-            margin: 28px 0 8px 0;
-            flex-wrap: wrap;
-        }
-        .hidden { display: none;}
-        .flex { display: flex; gap: 12px; align-items: flex-end;}
-        .flex > div { flex: 1;}
-        @media (max-width: 900px) {
-            .container { margin: 18px 3px;}
-            .chart-container { height: 320px;}
-            .chart-wrapper { height: 220px;}
-        }
-        @media (max-width: 600px) {
-            .container { padding: 8px 2px;}
-            .summary-cards { grid-template-columns: 1fr;}
-            .chart-container { height: 260px;}
-            .chart-wrapper { height: 140px;}
-            .language-switcher { justify-content: center;}
-        }
-        @media print {
-            body { padding: 0; background: white;}
-            button, .utility-buttons, .language-switcher { display: none;}
-            .card, .chart-container { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid;}
-            .chart-container { height: auto;}
-        }
-    </style>
 </head>
 <body>
     <div class="container">
-        <div class="language-switcher">
-            <button id="lang-ko" class="language-btn active">한국어</button>
-            <button id="lang-en" class="language-btn">English</button>
-        </div>
         <header>
-            <h1 data-lang="ko">💰 고급 예산 관리 시스템</h1>
-            <h1 data-lang="en" class="hidden">💰 Advanced Budget Management System</h1>
-            <p data-lang="ko">한 곳에서 수입, 세금, 공제 및 지출을 관리하세요</p>
-            <p data-lang="en" class="hidden">Manage your income, taxes, deductions, and expenses in one place</p>
+            <h1 data-lang="ko">예산 관리 시스템</h1>
+            <h1 data-lang="en" class="hidden">Budget Management System</h1>
+            <div class="language-switcher">
+                <button id="lang-ko" class="active">한국어</button>
+                <button id="lang-en">English</button>
+            </div>
         </header>
 
-        <div class="card">
-            <h2 data-lang="ko">1. 수입</h2>
-            <h2 data-lang="en" class="hidden">1. Earnings</h2>
-            <div class="form-group">
-                <label for="income-input" data-lang="ko">월 총 수입 ($)</label>
-                <label for="income-input" data-lang="en" class="hidden">Gross Monthly Income ($)</label>
-                <input type="number" id="income-input" data-lang-ko-placeholder="월 총 수입을 입력하세요" data-lang-en-placeholder="Enter your gross income" placeholder="0">
-            </div>
-        </div>
+        <main>
+            <section class="income-section">
+                <h2 data-lang="ko">수입</h2>
+                <h2 data-lang="en" class="hidden">Income</h2>
+                <div class="input-group">
+                    <input type="number" id="income-input" 
+                           data-lang-ko-placeholder="월 수입 입력" 
+                           data-lang-en-placeholder="Enter monthly income">
+                </div>
+            </section>
 
-        <div class="card">
-            <h2 data-lang="ko">2. 직원 세금</h2>
-            <h2 data-lang="en" class="hidden">2. Employee Taxes</h2>
-            <div class="form-group">
-                <label for="tax-type-select" data-lang="ko">세금 유형</label>
-                <label for="tax-type-select" data-lang="en" class="hidden">Tax Type</label>
-                <select id="tax-type-select">
-                    <option value="" disabled selected data-lang="ko">세금 유형 선택</option>
-                    <option value="" disabled selected data-lang="en" class="hidden">Select tax type</option>
-                    <option value="Federal Withholding">Federal Withholding</option>
-                    <option value="State Tax (CA)">State Tax (CA)</option>
-                    <option value="OASDI (Social Security)">OASDI (Social Security)</option>
-                    <option value="Medicare">Medicare</option>
-                    <option value="CA SDI">CA SDI</option>
-                    <option value="custom" data-lang="ko">사용자 정의 세금</option>
-                    <option value="custom" data-lang="en" class="hidden">Custom Tax</option>
-                </select>
-            </div>
-            <div id="tax-custom-container" class="form-group hidden">
-                <div class="flex">
-                    <div>
-                        <label for="tax-custom-name-input" data-lang="ko">세금 이름</label>
-                        <label for="tax-custom-name-input" data-lang="en" class="hidden">Tax Name</label>
-                        <input type="text" id="tax-custom-name-input" data-lang-ko-placeholder="세금 이름 입력" data-lang-en-placeholder="Enter tax name">
+            <div class="grid-container">
+                <section class="deductions-section">
+                    <div class="card">
+                        <h3 data-lang="ko">세금</h3>
+                        <h3 data-lang="en" class="hidden">Taxes</h3>
+                        <button id="toggle-tax-add" class="toggle-add-btn">
+                            <span data-lang="ko">+ 세금 항목 추가</span>
+                            <span data-lang="en" class="hidden">+ Add Tax Item</span>
+                        </button>
+                        <div id="tax-add-section" class="add-section hidden">
+                            <div class="add-item-row">
+                                <select id="tax-type-select">
+                                    <option value="default" data-lang="ko">-- 항목 선택 --</option>
+                                    <option value="custom" data-lang="ko">✏️ 직접 입력</option>
+                                    <option value="Federal Withholding">Federal Withholding</option>
+                                    <option value="State Tax (CA)">State Tax (CA)</option>
+                                    <option value="OASDI (Social Security)">OASDI (Social Security)</option>
+                                    <option value="Medicare">Medicare</option>
+                                    <option value="CA SDI">CA SDI</option>
+                                </select>
+                                <input type="number" id="tax-amount-input" placeholder="Amount">
+                            </div>
+                            <div id="tax-custom-container" class="add-item-row hidden">
+                                <input type="text" id="tax-custom-name-input" 
+                                       data-lang-ko-placeholder="세금 항목 이름" 
+                                       data-lang-en-placeholder="Tax item name">
+                            </div>
+                            <button id="add-tax-btn" class="add-btn">
+                                <span data-lang="ko">추가</span>
+                                <span data-lang="en" class="hidden">Add</span>
+                            </button>
+                        </div>
+                        <div id="tax-list"></div>
                     </div>
-                    <div>
-                        <label for="tax-amount-input" data-lang="ko">금액 ($)</label>
-                        <label for="tax-amount-input" data-lang="en" class="hidden">Amount ($)</label>
-                        <input type="number" id="tax-amount-input" placeholder="금액 입력">
-                    </div>
-                    <div>
-                        <button onclick="addCategorizedItem('taxes')" class="btn-success" data-lang="ko">세금 추가</button>
-                        <button onclick="addCategorizedItem('taxes')" class="btn-success hidden" data-lang="en">Add Tax</button>
-                    </div>
-                </div>
-            </div>
-            <div class="item-list" id="tax-list"></div>
-        </div>
 
-        <div class="card">
-            <h2 data-lang="ko">3. 세전 공제</h2>
-            <h2 data-lang="en" class="hidden">3. Pre-Tax Deductions</h2>
-            <div class="form-group">
-                <label for="pre-tax-type-select" data-lang="ko">공제 유형</label>
-                <label for="pre-tax-type-select" data-lang="en" class="hidden">Deduction Type</label>
-                <select id="pre-tax-type-select">
-                    <option value="" disabled selected data-lang="ko">공제 유형 선택</option>
-                    <option value="" disabled selected data-lang="en" class="hidden">Select deduction type</option>
-                    <option value="401k Traditional">401k Traditional</option>
-                    <option value="Medical Premium">Medical Premium</option>
-                    <option value="Dental Premium">Dental Premium</option>
-                    <option value="Vision Premium">Vision Premium</option>
-                    <option value="MSEAP">MSEAP</option>
-                    <option value="custom" data-lang="ko">사용자 정의 공제</option>
-                    <option value="custom" data-lang="en" class="hidden">Custom Deduction</option>
-                </select>
-            </div>
-            <div id="pre-tax-custom-container" class="form-group hidden">
-                <div class="flex">
-                    <div>
-                        <label for="pre-tax-custom-name-input" data-lang="ko">공제 이름</label>
-                        <label for="pre-tax-custom-name-input" data-lang="en" class="hidden">Deduction Name</label>
-                        <input type="text" id="pre-tax-custom-name-input" data-lang-ko-placeholder="공제 이름 입력" data-lang-en-placeholder="Enter deduction name">
+                    <div class="card">
+                        <h3 data-lang="ko">세전 공제</h3>
+                        <h3 data-lang="en" class="hidden">Pre-Tax Deductions</h3>
+                        <button id="toggle-pre-tax-add" class="toggle-add-btn">
+                            <span data-lang="ko">+ 세전 공제 추가</span>
+                            <span data-lang="en" class="hidden">+ Add Pre-Tax Deduction</span>
+                        </button>
+                        <div id="pre-tax-add-section" class="add-section hidden">
+                            <div class="add-item-row">
+                                <select id="pre-tax-type-select">
+                                    <option value="default" data-lang="ko">-- 항목 선택 --</option>
+                                    <option value="custom" data-lang="ko">✏️ 직접 입력</option>
+                                    <option value="401k Traditional">401k Traditional</option>
+                                    <option value="Medical Premium">Medical Premium</option>
+                                    <option value="Dental Premium">Dental Premium</option>
+                                    <option value="Vision Premium">Vision Premium</option>
+                                    <option value="MSEAP">MSEAP</option>
+                                </select>
+                                <input type="number" id="pre-tax-amount-input" placeholder="Amount">
+                            </div>
+                            <div id="pre-tax-custom-container" class="add-item-row hidden">
+                                <input type="text" id="pre-tax-custom-name-input" 
+                                       data-lang-ko-placeholder="세전 공제 이름" 
+                                       data-lang-en-placeholder="Pre-tax deduction name">
+                            </div>
+                            <button id="add-pre-tax-btn" class="add-btn">
+                                <span data-lang="ko">추가</span>
+                                <span data-lang="en" class="hidden">Add</span>
+                            </button>
+                        </div>
+                        <div id="pre-tax-list"></div>
                     </div>
-                    <div>
-                        <label for="pre-tax-amount-input" data-lang="ko">금액 ($)</label>
-                        <label for="pre-tax-amount-input" data-lang="en" class="hidden">Amount ($)</label>
-                        <input type="number" id="pre-tax-amount-input" placeholder="금액 입력">
-                    </div>
-                    <div>
-                        <button onclick="addCategorizedItem('preTax')" class="btn-success" data-lang="ko">공제 추가</button>
-                        <button onclick="addCategorizedItem('preTax')" class="btn-success hidden" data-lang="en">Add Deduction</button>
-                    </div>
-                </div>
-            </div>
-            <div class="item-list" id="pre-tax-list"></div>
-        </div>
 
-        <div class="card">
-            <h2 data-lang="ko">4. 세후 공제</h2>
-            <h2 data-lang="en" class="hidden">4. Post-Tax Deductions</h2>
-            <div class="form-group">
-                <label for="post-tax-type-select" data-lang="ko">공제 유형</label>
-                <label for="post-tax-type-select" data-lang="en" class="hidden">Deduction Type</label>
-                <select id="post-tax-type-select">
-                    <option value="" disabled selected data-lang="ko">공제 유형 선택</option>
-                    <option value="" disabled selected data-lang="en" class="hidden">Select deduction type</option>
-                    <option value="401k Roth">401k Roth</option>
-                    <option value="Stock Purchase Plan">Stock Purchase Plan</option>
-                    <option value="Legal Services">Legal Services</option>
-                    <option value="LTD">LTD</option>
-                    <option value="AD&D">AD&D</option>
-                    <option value="Accident Insurance">Accident Insurance</option>
-                    <option value="Critical Illness">Critical Illness</option>
-                    <option value="custom" data-lang="ko">사용자 정의 공제</option>
-                    <option value="custom" data-lang="en" class="hidden">Custom Deduction</option>
-                </select>
-            </div>
-            <div id="post-tax-custom-container" class="form-group hidden">
-                <div class="flex">
-                    <div>
-                        <label for="post-tax-custom-name-input" data-lang="ko">공제 이름</label>
-                        <label for="post-tax-custom-name-input" data-lang="en" class="hidden">Deduction Name</label>
-                        <input type="text" id="post-tax-custom-name-input" data-lang-ko-placeholder="공제 이름 입력" data-lang-en-placeholder="Enter deduction name">
+                    <div class="card">
+                        <h3 data-lang="ko">세후 공제</h3>
+                        <h3 data-lang="en" class="hidden">Post-Tax Deductions</h3>
+                        <button id="toggle-post-tax-add" class="toggle-add-btn">
+                            <span data-lang="ko">+ 세후 공제 추가</span>
+                            <span data-lang="en" class="hidden">+ Add Post-Tax Deduction</span>
+                        </button>
+                        <div id="post-tax-add-section" class="add-section hidden">
+                            <div class="add-item-row">
+                                <select id="post-tax-type-select">
+                                    <option value="default" data-lang="ko">-- 항목 선택 --</option>
+                                    <option value="custom" data-lang="ko">✏️ 직접 입력</option>
+                                    <option value="401k Roth">401k Roth</option>
+                                    <option value="Stock Purchase Plan">Stock Purchase Plan</option>
+                                    <option value="Legal Services">Legal Services</option>
+                                    <option value="LTD">LTD</option>
+                                    <option value="AD&D">AD&D</option>
+                                    <option value="Accident Insurance">Accident Insurance</option>
+                                    <option value="Critical Illness">Critical Illness</option>
+                                </select>
+                                <input type="number" id="post-tax-amount-input" placeholder="Amount">
+                            </div>
+                            <div id="post-tax-custom-container" class="add-item-row hidden">
+                                <input type="text" id="post-tax-custom-name-input" 
+                                       data-lang-ko-placeholder="세후 공제 이름" 
+                                       data-lang-en-placeholder="Post-tax deduction name">
+                            </div>
+                            <button id="add-post-tax-btn" class="add-btn">
+                                <span data-lang="ko">추가</span>
+                                <span data-lang="en" class="hidden">Add</span>
+                            </button>
+                        </div>
+                        <div id="post-tax-list"></div>
                     </div>
-                    <div>
-                        <label for="post-tax-amount-input" data-lang="ko">금액 ($)</label>
-                        <label for="post-tax-amount-input" data-lang="en" class="hidden">Amount ($)</label>
-                        <input type="number" id="post-tax-amount-input" placeholder="금액 입력">
-                    </div>
-                    <div>
-                        <button onclick="addCategorizedItem('postTax')" class="btn-success" data-lang="ko">공제 추가</button>
-                        <button onclick="addCategorizedItem('postTax')" class="btn-success hidden" data-lang="en">Add Deduction</button>
-                    </div>
-                </div>
-            </div>
-            <div class="item-list" id="post-tax-list"></div>
-        </div>
+                </section>
 
-        <div class="card">
-            <h2 data-lang="ko">5. 지출 관리</h2>
-            <h2 data-lang="en" class="hidden">5. Expense Management</h2>
-            <div class="grid">
-                <div class="form-group">
-                    <label for="category-select" data-lang="ko">카테고리</label>
-                    <label for="category-select" data-lang="en" class="hidden">Category</label>
-                    <select id="category-select"></select>
-                </div>
-                <div class="form-group">
-                    <label for="expense-name-input" data-lang="ko">지출 항목</label>
-                    <label for="expense-name-input" data-lang="en" class="hidden">Expense Name</label>
-                    <input type="text" id="expense-name-input" data-lang-ko-placeholder="예: 월세" data-lang-en-placeholder="e.g. Rent">
-                </div>
-                <div class="form-group">
-                    <label for="expense-amount-input-main" data-lang="ko">금액 ($)</label>
-                    <label for="expense-amount-input-main" data-lang="en" class="hidden">Amount ($)</label>
-                    <input type="number" id="expense-amount-input-main" placeholder="금액 입력">
-                </div>
-            </div>
-            <div id="category-input-container" class="form-group hidden">
-                <div class="flex">
-                    <div>
-                        <label for="new-category-input" data-lang="ko">새 카테고리 이름</label>
-                        <label for="new-category-input" data-lang="en" class="hidden">New Category Name</label>
-                        <input type="text" id="new-category-input" data-lang-ko-placeholder="새 카테고리 입력" data-lang-en-placeholder="Enter new category">
+                <section class="expenses-section">
+                    <div class="card">
+                        <h3 data-lang="ko">지출</h3>
+                        <h3 data-lang="en" class="hidden">Expenses</h3>
+                        <div class="add-item-row">
+                            <select id="category-select">
+                                <!-- JavaScript에서 동적으로 채워짐 -->
+                            </select>
+                            <input type="text" id="expense-name-input" 
+                                   data-lang-ko-placeholder="지출 항목" 
+                                   data-lang-en-placeholder="Expense item">
+                            <input type="number" id="expense-amount-input-main" 
+                                   data-lang-ko-placeholder="금액" 
+                                   data-lang-en-placeholder="Amount">
+                            <button id="add-expense-btn" class="add-btn">
+                                <span data-lang="ko">추가</span>
+                                <span data-lang="en" class="hidden">Add</span>
+                            </button>
+                        </div>
+                        <div id="category-input-container" class="add-item-row hidden">
+                            <input type="text" id="new-category-input" 
+                                   data-lang-ko-placeholder="새 카테고리 이름" 
+                                   data-lang-en-placeholder="New category name">
+                            <button id="add-category-btn" class="add-btn">
+                                <span data-lang="ko">카테고리 추가</span>
+                                <span data-lang="en" class="hidden">Add Category</span>
+                            </button>
+                        </div>
+                        <div id="expenses-list"></div>
                     </div>
-                    <div>
-                        <button onclick="addCategory()" class="btn-info" data-lang="ko">카테고리 추가</button>
-                        <button onclick="addCategory()" class="btn-info hidden" data-lang="en">Add Category</button>
+                </section>
+
+                <section class="summary-section">
+                    <div class="card">
+                        <h3 data-lang="ko">요약</h3>
+                        <h3 data-lang="en" class="hidden">Summary</h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span data-lang="ko">총 수입:</span>
+                                <span data-lang="en" class="hidden">Gross Income:</span>
+                                <span id="gross-income" class="card-amount">$0.00</span>
+                            </div>
+                            <div class="summary-item">
+                                <span data-lang="ko">세전 공제:</span>
+                                <span data-lang="en" class="hidden">Pre-Tax Deductions:</span>
+                                <span id="pre-tax-deductions" class="card-amount">$0.00</span>
+                            </div>
+                            <div class="summary-item">
+                                <span data-lang="ko">과세 소득:</span>
+                                <span data-lang="en" class="hidden">Taxable Income:</span>
+                                <span id="taxable-income" class="card-amount">$0.00</span>
+                            </div>
+                            <div class="summary-item">
+                                <span data-lang="ko">세금 총액:</span>
+                                <span data-lang="en" class="hidden">Total Taxes:</span>
+                                <span id="tax-total" class="card-amount">$0.00</span>
+                            </div>
+                            <div class="summary-item">
+                                <span data-lang="ko">세후 공제:</span>
+                                <span data-lang="en" class="hidden">Post-Tax Deductions:</span>
+                                <span id="post-tax-deductions" class="card-amount">$0.00</span>
+                            </div>
+                            <div class="summary-item">
+                                <span data-lang="ko">공제/세금 총액:</span>
+                                <span data-lang="en" class="hidden">Total Deductions/Taxes:</span>
+                                <span id="total-deductions-taxes" class="card-amount">$0.00</span>
+                            </div>
+                            <div class="summary-item highlight">
+                                <span data-lang="ko">순 수입:</span>
+                                <span data-lang="en" class="hidden">Net Income:</span>
+                                <span id="net-income" class="card-amount">$0.00</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <button onclick="addExpense()" class="btn-success" style="width: 100%; margin-top: 10px;" data-lang="ko">지출 추가</button>
-            <button onclick="addExpense()" class="btn-success hidden" style="width: 100%; margin-top: 10px;" data-lang="en">Add Expense</button>
-            <div class="item-list" id="expenses-list"></div>
-        </div>
 
-        <div class="card">
-            <h2 data-lang="ko">6. 월별 재무 현황</h2>
-            <h2 data-lang="en" class="hidden">6. Monthly Financial Status</h2>
-            <div class="income-flow">
-                <div class="flow-item">
-                    <span data-lang="ko">월 총 수입 (총 수익)</span>
-                    <span data-lang="en" class="hidden">Gross Monthly Income (Total Earnings)</span>
-                    <span>$<span id="gross-income">0.00</span> <em data-lang="ko">(100.0%)</em><em data-lang="en" class="hidden">(100.0%)</em></span>
-                </div>
-                <div class="flow-arrow">↓</div>
-                <div class="flow-item highlighted">
-                    <span data-lang="ko">세전 공제</span>
-                    <span data-lang="en" class="hidden">Pre-Tax Deductions</span>
-                    <span>-$<span id="pre-tax-deductions">0.00</span> <em></em></span>
-                </div>
-                <div class="flow-arrow">↓</div>
-                <div class="flow-item">
-                    <span data-lang="ko"><strong>과세 소득</strong></span>
-                    <span data-lang="en" class="hidden"><strong>Taxable Income</strong></span>
-                    <span>$<span id="taxable-income">0.00</span> <em></em></span>
-                </div>
-                <div class="flow-arrow">↓</div>
-                <div class="flow-item highlighted">
-                    <span data-lang="ko">세금</span>
-                    <span data-lang="en" class="hidden">Taxes</span>
-                    <span>-$<span id="tax-total">0.00</span> <em></em></span>
-                </div>
-                <div class="flow-arrow">↓</div>
-                <div class="flow-item highlighted">
-                    <span data-lang="ko">세후 공제</span>
-                    <span data-lang="en" class="hidden">Post-Tax Deductions</span>
-                    <span>-$<span id="post-tax-deductions">0.00</span> <em></em></span>
-                </div>
-                <div class="flow-arrow">↓</div>
-                <div class="flow-item info">
-                    <span data-lang="ko"><strong>총 공제 및 세금 합계</strong></span>
-                    <span data-lang="en" class="hidden"><strong>Total Deductions & Taxes</strong></span>
-                    <span>-$<span id="total-deductions-taxes">0.00</span> <em></em></span>
-                </div>
-                <div class="flow-arrow">↓</div>
-                <div class="flow-item result">
-                    <span data-lang="ko"><strong>순수입 (실수령액)</strong></span>
-                    <span data-lang="en" class="hidden"><strong>Net Income (Take-Home Pay)</strong></span>
-                    <span>$<span id="net-income">0.00</span> <em></em></span>
-                </div>
-            </div>
-
-            <div class="summary-cards">
-                <div class="summary-card">
-                    <div class="card-label" data-lang="ko">총 지출</div>
-                    <div class="card-label hidden" data-lang="en">Total Expenses</div>
-                    <div class="card-amount negative">$<span id="expenses-total-card">0.00</span></div>
-                    <div class="card-label" data-lang="ko">(순수입에서 사용된 금액)</div>
-                    <div class="card-label hidden" data-lang="en">(Amount used from net income)</div>
-                    <div class="card-label"><span id="expenses-percentage-card">0.0%</span> <span data-lang="ko">of 총 수입</span><span data-lang="en" class="hidden">of gross income</span></div>
-                </div>
-                <div class="summary-card">
-                    <div class="card-label" data-lang="ko">남은 잔액</div>
-                    <div class="card-label hidden" data-lang="en">Remaining Balance</div>
-                    <div class="card-amount positive">$<span id="remaining-balance">0.00</span></div>
-                    <div class="card-label" data-lang="ko">(순수입 - 총 지출 = 저축)</div>
-                    <div class="card-label hidden" data-lang="en">(Net Income - Expenses = Savings)</div>
-                    <div class="card-label"><span id="remaining-percentage-card">0.0%</span> <span data-lang="ko">of 총 수입</span><span data-lang="en" class="hidden">of gross income</span></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="chart-container">
-            <h2 data-lang="ko">7. 재무 분석 차트</h2>
-            <h2 data-lang="en" class="hidden">7. Financial Analysis Charts</h2>
-            <div class="grid">
-                <div>
-                    <div class="chart-title" data-lang="ko">수입 분배 (총 수입 대비 비율)</div>
-                    <div class="chart-title hidden" data-lang="en">Income Distribution (Percentage of Gross Income)</div>
-                    <div class="chart-wrapper">
-                        <canvas id="incomeFlowChart"></canvas>
+                    <div class="card">
+                        <h3 data-lang="ko">지출 요약</h3>
+                        <h3 data-lang="en" class="hidden">Expenses Summary</h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span data-lang="ko">총 지출:</span>
+                                <span data-lang="en" class="hidden">Total Expenses:</span>
+                                <span id="expenses-total-card" class="card-amount">$0.00</span>
+                                <span id="expenses-percentage-card" class="card-percentage">0%</span>
+                            </div>
+                            <div class="summary-item highlight">
+                                <span data-lang="ko">남은 잔액:</span>
+                                <span data-lang="en" class="hidden">Remaining Balance:</span>
+                                <span id="remaining-balance" class="card-amount positive">$0.00</span>
+                                <span id="remaining-percentage-card" class="card-percentage">0%</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <div class="chart-title" data-lang="ko">지출 카테고리 (총 지출 대비 비율)</div>
-                    <div class="chart-title hidden" data-lang="en">Expense Categories (Percentage of Total Expenses)</div>
-                    <div class="chart-wrapper">
-                        <canvas id="expenseCategoryChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
+                </section>
 
-        <div class="utility-buttons">
-            <button onclick="saveData()" class="btn-info" data-lang="ko">💾 데이터 저장</button>
-            <button onclick="saveData()" class="btn-info hidden" data-lang="en">💾 Save Data</button>
-            <button onclick="loadData()" class="btn-info" data-lang="ko">📂 데이터 불러오기</button>
-            <button onclick="loadData()" class="btn-info hidden" data-lang="en">📂 Load Data</button>
-            <button onclick="window.print()" class="btn-warning" data-lang="ko">🖨️ 리포트 인쇄</button>
-            <button onclick="window.print()" class="btn-warning hidden" data-lang="en">🖨️ Print Report</button>
-            <button onclick="resetData()" class="btn-danger" data-lang="ko">🔄 데이터 초기화</button>
-            <button onclick="resetData()" class="btn-danger hidden" data-lang="en">🔄 Reset Data</button>
-        </div>
+                <section class="charts-section">
+                    <div class="card chart-card">
+                        <h3 data-lang="ko">수입 흐름</h3>
+                        <h3 data-lang="en" class="hidden">Income Flow</h3>
+                        <div class="chart-container">
+                            <canvas id="incomeFlowChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card chart-card">
+                        <h3 data-lang="ko">지출 카테고리</h3>
+                        <h3 data-lang="en" class="hidden">Expense Categories</h3>
+                        <div class="chart-container">
+                            <canvas id="expenseCategoryChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer>
+            <button onclick="saveData()" class="btn-success">
+                <span data-lang="ko">데이터 저장</span>
+                <span data-lang="en" class="hidden">Save Data</span>
+            </button>
+            <button onclick="resetData()" class="btn-danger">
+                <span data-lang="ko">데이터 초기화</span>
+                <span data-lang="en" class="hidden">Reset Data</span>
+            </button>
+        </footer>
     </div>
-    
-    <script src="../scripts/budget.js"></script>
 
+    <script src="../scripts/budget.js"></script>
 </body>
 </html>
