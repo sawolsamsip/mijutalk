@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';">
     <title>다국어 예산 관리 시스템</title>
-    <script src="../scripts/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* 기존 CSS는 매우 잘 되어 있으므로 큰 수정 없이 유지합니다. */
         :root {
@@ -305,12 +305,12 @@
                         <input type="number" id="tax-amount-input" placeholder="금액 입력">
                     </div>
                     <div>
-                        <button onclick="addCategorizedItem('taxes')" class="btn-success" data-lang="ko">세금 추가</button>
-                        <button onclick="addCategorizedItem('taxes')" class="btn-success hidden" data-lang="en">Add Tax</button>
+                        <button onclick="addCategorizedItem('taxes', true)" class="btn-success" data-lang="ko">세금 추가</button>
+                        <button onclick="addCategorizedItem('taxes', true)" class="btn-success hidden" data-lang="en">Add Tax</button>
                     </div>
                 </div>
             </div>
-            <div class="item-list" id="tax-list"></div>
+            <div class="item-list hidden" id="tax-list"></div>
         </div>
 
         <div class="card">
@@ -344,12 +344,12 @@
                         <input type="number" id="pre-tax-amount-input" placeholder="금액 입력">
                     </div>
                     <div>
-                        <button onclick="addCategorizedItem('preTax')" class="btn-success" data-lang="ko">공제 추가</button>
-                        <button onclick="addCategorizedItem('preTax')" class="btn-success hidden" data-lang="en">Add Deduction</button>
+                        <button onclick="addCategorizedItem('preTax', true)" class="btn-success" data-lang="ko">공제 추가</button>
+                        <button onclick="addCategorizedItem('preTax', true)" class="btn-success hidden" data-lang="en">Add Deduction</button>
                     </div>
                 </div>
             </div>
-            <div class="item-list" id="pre-tax-list"></div>
+            <div class="item-list hidden" id="pre-tax-list"></div>
         </div>
 
         <div class="card">
@@ -385,12 +385,12 @@
                         <input type="number" id="post-tax-amount-input" placeholder="금액 입력">
                     </div>
                     <div>
-                        <button onclick="addCategorizedItem('postTax')" class="btn-success" data-lang="ko">공제 추가</button>
-                        <button onclick="addCategorizedItem('postTax')" class="btn-success hidden" data-lang="en">Add Deduction</button>
+                        <button onclick="addCategorizedItem('postTax', true)" class="btn-success" data-lang="ko">공제 추가</button>
+                        <button onclick="addCategorizedItem('postTax', true)" class="btn-success hidden" data-lang="en">Add Deduction</button>
                     </div>
                 </div>
             </div>
-            <div class="item-list" id="post-tax-list"></div>
+            <div class="item-list hidden" id="post-tax-list"></div>
         </div>
 
         <div class="card">
@@ -428,7 +428,7 @@
             </div>
             <button onclick="addExpense()" class="btn-success" style="width: 100%; margin-top: 10px;" data-lang="ko">지출 추가</button>
             <button onclick="addExpense()" class="btn-success hidden" style="width: 100%; margin-top: 10px;" data-lang="en">Add Expense</button>
-            <div class="item-list" id="expenses-list"></div>
+            <div class="item-list hidden" id="expenses-list"></div>
         </div>
 
         <div class="card">
@@ -532,30 +532,30 @@
     </div>
 
     <script>
-        // 설정값
+        // 설정값: 이제 모든 기본 항목에 고유 ID를 부여합니다.
         const DEFAULT_DEDUCTIONS = {
             taxes: [
-                { name: "Federal Withholding", amount: 0 },
-                { name: "State Tax (CA)", amount: 0 },
-                { name: "OASDI (Social Security)", amount: 0 },
-                { name: "Medicare", amount: 0 },
-                { name: "CA SDI", amount: 0 }
+                { id: 'tax-federal', name: "Federal Withholding", amount: 0 },
+                { id: 'tax-stateca', name: "State Tax (CA)", amount: 0 },
+                { id: 'tax-oasdi', name: "OASDI (Social Security)", amount: 0 },
+                { id: 'tax-medicare', name: "Medicare", amount: 0 },
+                { id: 'tax-casdi', name: "CA SDI", amount: 0 }
             ],
             preTax: [
-                { name: "401k Traditional", amount: 0 },
-                { name: "Medical Premium", amount: 0 },
-                { name: "Dental Premium", amount: 0 },
-                { name: "Vision Premium", amount: 0 },
-                { name: "MSEAP", amount: 0 }
+                { id: 'pre-401k', name: "401k Traditional", amount: 0 },
+                { id: 'pre-medical', name: "Medical Premium", amount: 0 },
+                { id: 'pre-dental', name: "Dental Premium", amount: 0 },
+                { id: 'pre-vision', name: "Vision Premium", amount: 0 },
+                { id: 'pre-mseap', name: "MSEAP", amount: 0 }
             ],
             postTax: [
-                { name: "401k Roth", amount: 0 },
-                { name: "Stock Purchase Plan", amount: 0 },
-                { name: "Legal Services", amount: 0 },
-                { name: "LTD", amount: 0 },
-                { name: "AD&D", amount: 0 },
-                { name: "Accident Insurance", amount: 0 },
-                { name: "Critical Illness", amount: 0 }
+                { id: 'post-roth', name: "401k Roth", amount: 0 },
+                { id: 'post-spp', name: "Stock Purchase Plan", amount: 0 },
+                { id: 'post-legal', name: "Legal Services", amount: 0 },
+                { id: 'post-ltd', name: "LTD", amount: 0 },
+                { id: 'post-add', name: "AD&D", amount: 0 },
+                { id: 'post-accident', name: "Accident Insurance", amount: 0 },
+                { id: 'post-critical', name: "Critical Illness", amount: 0 }
             ]
         };
 
@@ -565,18 +565,7 @@
             preTax: [],
             postTax: [],
             expenses: [],
-            categories: [
-                { id: 'housing', name: '🏠 주거', nameEn: '🏠 Housing' },
-                { id: 'food', name: '🍔 식비', nameEn: '🍔 Food' },
-                { id: 'transportation', name: '🚗 교통', nameEn: '🚗 Transportation' },
-                { id: 'health', name: '🏥 건강', nameEn: '🏥 Health' },
-                { id: 'family', name: '👪 가족', nameEn: '👪 Family' },
-                { id: 'shopping', name: '🛍️ 쇼핑', nameEn: '🛍️ Shopping' },
-                { id: 'finance', name: '💳 금융', nameEn: '💳 Finance' },
-                { id: 'travel', name: '✈️ 여행', nameEn: '✈️ Travel' },
-                { id: 'saving', name: '💰 저축', nameEn: '💰 Saving' },
-                { id: 'business', name: '💼 업무', nameEn: '💼 Business' }
-            ],
+            categories: [], // loadData에서 초기화될 예정
             currentLanguage: 'ko'
         };
 
@@ -590,7 +579,7 @@
         }
 
         function formatMoney(amount) {
-            if (Number.isNaN(amount) || amount === null) {
+            if (Number.isNaN(amount) || amount === null || amount === undefined) {
                 return "0.00";
             }
             return parseFloat(amount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -649,6 +638,7 @@
             if (budgetData.categories.some(cat => cat.id === prev) || prev === 'custom') {
                 select.value = prev;
             } else {
+                // 카테고리가 없는 경우를 대비한 처리
                 select.value = budgetData.categories[0] ? budgetData.categories[0].id : '';
             }
         }
@@ -777,6 +767,7 @@
             document.getElementById('expenses-percentage-card').textContent = calculatePercentage(expenses, gross);
             document.getElementById('remaining-percentage-card').textContent = calculatePercentage(remain, gross);
 
+            // 각 리스트를 렌더링하고, 항목이 있으면 보이게, 없으면 숨기게 처리
             renderList('tax-list', budgetData.taxes);
             renderList('pre-tax-list', budgetData.preTax);
             renderList('post-tax-list', budgetData.postTax);
@@ -790,6 +781,13 @@
         function renderList(elementId, items) {
             const container = document.getElementById(elementId);
             const type = elementId.replace('-list', ''); // 'tax-list' -> 'tax', 'pre-tax-list' -> 'pre-tax'
+
+            // 항목이 하나라도 있으면 리스트를 보이게 하고, 없으면 숨깁니다.
+            if (items.length > 0) {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
 
             container.innerHTML = items.map(item => `
                 <div class="list-item" data-id="${item.id}" data-type="${type}">
@@ -818,6 +816,14 @@
         // --- 지출 목록 렌더링 함수 ---
         function renderExpenses() {
             const container = document.getElementById('expenses-list');
+
+            // 항목이 하나라도 있으면 리스트를 보이게 하고, 없으면 숨깁니다.
+            if (budgetData.expenses.length > 0) {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
+
             container.innerHTML = budgetData.expenses.map(item => {
                 const category = budgetData.categories.find(cat => cat.id === item.category);
                 const categoryName = budgetData.currentLanguage === 'ko' ? category?.name : category?.nameEn || category?.name || 'Other';
@@ -858,43 +864,44 @@
         // --- CRUD 함수 ---
         function deleteItem(type, id) {
             if (confirm(budgetData.currentLanguage === 'ko' ? '정말로 삭제하시겠습니까?' : 'Are you sure you want to delete this item?')) {
-                // budgetData[type]이 유효한 배열인지 다시 한번 확인
                 if (Array.isArray(budgetData[type])) {
                     budgetData[type] = budgetData[type].filter(item => item.id !== id);
                     updateUI();
                 } else {
-                    // 이 메시지가 나타난다면, 'type' 인자가 올바르지 않거나 budgetData[type]이 손상된 것
                     console.error(`Error: budgetData.${type} is not an array. Cannot delete item.`);
-                    alert(`Error: Cannot delete item. Data for '${type}' is corrupted.`);
+                    alert(budgetData.currentLanguage === 'ko' ? `오류: '${type}' 데이터가 손상되었습니다. 항목을 삭제할 수 없습니다.` : `Error: Data for '${type}' is corrupted. Cannot delete item.`);
                 }
             }
         }
 
         function editItem(type, id) {
-            cancelEdit();
-            // budgetData[type]이 유효한 배열인지 다시 한번 확인
+            cancelEdit(); // 다른 편집 중인 항목이 있다면 취소
             if (Array.isArray(budgetData[type])) {
                 const item = budgetData[type].find(item => item.id === id);
                 if (item) {
-                    editingItem = { ...item, type: type };
+                    editingItem = { ...item, type: type }; // 현재 편집 중인 항목 정보 저장
                     updateUI();
+                } else {
+                    console.error(`Item with ID ${id} not found in budgetData.${type}`);
                 }
             } else {
                 console.error(`Error: budgetData.${type} is not an array. Cannot edit item.`);
-                alert(`Error: Cannot edit item. Data for '${type}' is corrupted.`);
+                alert(budgetData.currentLanguage === 'ko' ? `오류: '${type}' 데이터가 손상되었습니다. 항목을 수정할 수 없습니다.` : `Error: Data for '${type}' is corrupted. Cannot edit item.`);
             }
         }
 
         function saveEdit(type, id) {
-            // budgetData[type]이 유효한 배열인지 다시 한번 확인
             if (!Array.isArray(budgetData[type])) {
                 console.error(`Error: budgetData.${type} is not an array. Cannot save item.`);
-                alert(`Error: Cannot save item. Data for '${type}' is corrupted.`);
+                alert(budgetData.currentLanguage === 'ko' ? `오류: '${type}' 데이터가 손상되었습니다. 항목을 저장할 수 없습니다.` : `Error: Data for '${type}' is corrupted. Cannot save item.`);
                 return;
             }
 
             const idx = budgetData[type].findIndex(item => item.id === id);
-            if (idx === -1) return;
+            if (idx === -1) {
+                console.error(`Item with ID ${id} not found for saving.`);
+                return;
+            }
 
             const newNameInput = document.getElementById(`edit-name-${id}`);
             const newAmountInput = document.getElementById(`edit-amount-${id}`);
@@ -919,12 +926,12 @@
                 const newCategory = newCategorySelect ? newCategorySelect.value : '';
                 budgetData[type][idx].category = newCategory;
             }
-            editingItem = null;
+            editingItem = null; // 편집 완료 상태 초기화
             updateUI();
         }
 
         function cancelEdit() {
-            editingItem = null;
+            editingItem = null; // 편집 취소 상태 초기화
             updateUI();
         }
 
@@ -946,10 +953,10 @@
                 budgetData.postTax = Array.isArray(parsed.postTax) ? parsed.postTax : [];
                 budgetData.expenses = Array.isArray(parsed.expenses) ? parsed.expenses : [];
 
+                // 카테고리 로드 또는 기본값 설정
                 if (Array.isArray(parsed.categories) && parsed.categories.length > 0) {
                     budgetData.categories = parsed.categories;
                 } else {
-                    // 기본 카테고리 로드
                     budgetData.categories = [
                         { id: 'housing', name: '🏠 주거', nameEn: '🏠 Housing' },
                         { id: 'food', name: '🍔 식비', nameEn: '🍔 Food' },
@@ -966,29 +973,27 @@
 
                 budgetData.currentLanguage = parsed.currentLanguage || 'ko';
 
-                // localStorage에 데이터가 있지만, 기본 세금/공제 항목이 없는 경우 DEFAULT_DEDUCTIONS로 초기화
-                // (이것은 사용자가 일부 데이터를 지웠을 때를 대비한 안전 장치)
-                // 기존에 추가된 항목과의 중복 방지
-                DEFAULT_DEDUCTIONS.taxes.forEach(defaultItem => {
-                    if (!budgetData.taxes.some(item => item.name === defaultItem.name)) {
-                        budgetData.taxes.push({ ...defaultItem, id: generateUniqueId(), type: 'taxes' });
-                    }
+                // DEFAULT_DEDUCTIONS 항목들을 budgetData에 통합 (업데이트 또는 추가)
+                ['taxes', 'preTax', 'postTax'].forEach(type => {
+                    DEFAULT_DEDUCTIONS[type].forEach(defaultItem => {
+                        const existingItem = budgetData[type].find(item => item.id === defaultItem.id);
+                        if (existingItem) {
+                            // 이미 존재하는 기본 항목이면, 이름은 유지하고 금액은 로컬 스토리지에 저장된 값을 유지
+                            // 다만, 만약 사용자가 실수로 ID를 가진 항목을 삭제했다가 다시 로드하는 경우를 대비
+                            // 여기서는 기존 로컬스토리지 값을 우선시합니다.
+                            // 만약 기본값으로 덮어쓰려면 existingItem.amount = defaultItem.amount; 로 변경.
+                            // 현재는 이름만 동기화 (사용자가 이름 변경할 리는 없으므로)
+                            existingItem.name = defaultItem.name;
+                        } else {
+                            // 존재하지 않는 기본 항목이면 새로 추가 (초기 로드 시)
+                            budgetData[type].push({ ...defaultItem, id: defaultItem.id || generateUniqueId() });
+                        }
+                    });
                 });
-                DEFAULT_DEDUCTIONS.preTax.forEach(defaultItem => {
-                    if (!budgetData.preTax.some(item => item.name === defaultItem.name)) {
-                        budgetData.preTax.push({ ...defaultItem, id: generateUniqueId(), type: 'preTax' });
-                    }
-                });
-                DEFAULT_DEDUCTIONS.postTax.forEach(defaultItem => {
-                    if (!budgetData.postTax.some(item => item.name === defaultItem.name)) {
-                        budgetData.postTax.push({ ...defaultItem, id: generateUniqueId(), type: 'postTax' });
-                    }
-                });
-
 
             } else {
                 console.log("No budgetData found in localStorage, initializing default data.");
-                initDefaultData();
+                initDefaultData(); // 로컬 스토리지에 데이터가 없으면 기본 데이터로 초기화
             }
             updateUI(); // loadData 후 반드시 UI 업데이트
             switchLanguage(budgetData.currentLanguage); // 언어 설정도 로드 후 적용
@@ -1002,12 +1007,13 @@
             }
         }
 
+        // 앱이 처음 로드되거나 '데이터 초기화' 시 호출
         function initDefaultData() {
             budgetData.income = 0;
             // 기본 공제/세금 항목에 고유 ID를 부여하여 초기화
-            budgetData.taxes = DEFAULT_DEDUCTIONS.taxes.map(item => ({ ...item, id: generateUniqueId(), type: 'taxes' }));
-            budgetData.preTax = DEFAULT_DEDUCTIONS.preTax.map(item => ({ ...item, id: generateUniqueId(), type: 'preTax' }));
-            budgetData.postTax = DEFAULT_DEDUCTIONS.postTax.map(item => ({ ...item, id: generateUniqueId(), type: 'postTax' }));
+            budgetData.taxes = DEFAULT_DEDUCTIONS.taxes.map(item => ({ ...item, id: item.id || generateUniqueId(), type: 'taxes' }));
+            budgetData.preTax = DEFAULT_DEDUCTIONS.preTax.map(item => ({ ...item, id: item.id || generateUniqueId(), type: 'preTax' }));
+            budgetData.postTax = DEFAULT_DEDUCTIONS.postTax.map(item => ({ ...item, id: item.id || generateUniqueId(), type: 'postTax' }));
             budgetData.expenses = [];
             budgetData.categories = [
                 { id: 'housing', name: '🏠 주거', nameEn: '🏠 Housing' },
@@ -1071,7 +1077,7 @@
 
             nameInput.value = '';
             amountInput.value = '';
-            categorySelect.value = budgetData.categories[0]?.id || '';
+            categorySelect.value = budgetData.categories[0]?.id || ''; // 첫 번째 카테고리로 초기화
 
             updateUI();
         }
@@ -1099,68 +1105,99 @@
             newCategoryInput.value = '';
             populateCategorySelect();
             document.getElementById('category-input-container').classList.add('hidden');
-            document.getElementById('category-select').value = id;
+            document.getElementById('category-select').value = id; // 새로 추가된 카테고리 자동 선택
             updateUI();
         }
 
-        // 세금/공제 항목 추가 함수 (taxes, preTax, postTax)
-        function addCategorizedItem(type) {
-            let nameInput, amountInput, selectElement;
-            let defaultName = ''; // 미리 정의된 드롭다운에서 선택된 항목의 이름을 저장할 변수
+        /**
+         * 세금/공제 항목 추가 함수 (taxes, preTax, postTax)
+         * @param {string} type - 'taxes', 'preTax', 'postTax' 중 하나
+         * @param {boolean} isCustom - '사용자 정의' 버튼을 통해 호출되었는지 여부
+         */
+        function addCategorizedItem(type, isCustom = false) {
+            let nameInput, amountInput, selectElement, defaultItemsList;
 
             if (type === 'taxes') {
                 selectElement = document.getElementById('tax-type-select');
                 nameInput = document.getElementById('tax-custom-name-input');
                 amountInput = document.getElementById('tax-amount-input');
-                if (selectElement.value !== 'custom') defaultName = selectElement.value;
+                defaultItemsList = DEFAULT_DEDUCTIONS.taxes;
             } else if (type === 'preTax') {
                 selectElement = document.getElementById('pre-tax-type-select');
                 nameInput = document.getElementById('pre-tax-custom-name-input');
                 amountInput = document.getElementById('pre-tax-amount-input');
-                if (selectElement.value !== 'custom') defaultName = selectElement.value;
+                defaultItemsList = DEFAULT_DEDUCTIONS.preTax;
             } else if (type === 'postTax') {
                 selectElement = document.getElementById('post-tax-type-select');
                 nameInput = document.getElementById('post-tax-custom-name-input');
                 amountInput = document.getElementById('post-tax-amount-input');
-                if (selectElement.value !== 'custom') defaultName = selectElement.value;
+                defaultItemsList = DEFAULT_DEDUCTIONS.postTax;
             } else {
                 console.error("Invalid type for addCategorizedItem:", type);
                 return;
             }
 
-            const name = defaultName || nameInput.value.trim(); // 미리 정의된 항목이 있으면 그것을 사용
-            const amount = parseFloat(amountInput.value);
+            const selectedValue = selectElement.value;
+            let name = '';
+            let amount = parseFloat(amountInput.value);
 
-            if (!name) {
-                alert(budgetData.currentLanguage === 'ko' ? '이름을 입력하거나 선택하세요.' : 'Enter or select a name.');
-                return;
+            if (isCustom) { // '사용자 정의' 버튼을 눌렀을 때
+                name = nameInput.value.trim();
+                if (!name) {
+                    alert(budgetData.currentLanguage === 'ko' ? '이름을 입력하세요.' : 'Enter a name.');
+                    return;
+                }
+                if (isNaN(amount) || amount < 0) {
+                    alert(budgetData.currentLanguage === 'ko' ? '유효한 금액을 입력하세요.' : 'Enter a valid amount.');
+                    return;
+                }
+
+                // 사용자 정의 항목은 이름 중복 검사
+                const existingItem = budgetData[type].find(item => item.name.toLowerCase() === name.toLowerCase());
+                if (existingItem) {
+                    alert(budgetData.currentLanguage === 'ko' ? '이미 존재하는 항목입니다. 수정하려면 목록에서 선택하세요.' : 'This item already exists. To modify, select it from the list.');
+                    return;
+                }
+                budgetData[type].push({ id: generateUniqueId(), name, amount, type });
+
+            } else { // 드롭다운에서 미리 정의된 항목을 선택했을 때 (selectedValue가 'custom'이 아님)
+                if (selectedValue === '' || selectedValue === 'custom') { // "선택" 또는 "사용자 정의" 선택 시에는 직접 추가 로직 아님
+                    return;
+                }
+
+                // 선택된 기본 항목 찾기 (이름으로 찾습니다)
+                const defaultItem = defaultItemsList.find(item => item.name === selectedValue);
+                if (!defaultItem) {
+                    console.error("Default item not found:", selectedValue);
+                    return;
+                }
+
+                name = defaultItem.name; // 미리 정의된 이름 사용
+                // 금액은 사용자가 입력한 값 (amountInput.value)을 우선 사용
+                // 만약 입력된 값이 없거나 유효하지 않으면 기본값 0 사용
+                amount = isNaN(parseFloat(amountInput.value)) ? 0 : parseFloat(amountInput.value);
+
+
+                // budgetData에 이미 해당 이름의 기본 항목이 있는지 확인 (ID 기반으로 확인)
+                const existingInBudgetData = budgetData[type].find(item => item.id === defaultItem.id);
+
+                if (existingInBudgetData) {
+                    // 이미 존재하는 기본 항목이면 금액만 업데이트
+                    existingInBudgetData.amount = amount;
+                } else {
+                    // 존재하지 않으면 새로 추가 (id는 DEFAULT_DEDUCTIONS에서 가져온 id 사용)
+                    budgetData[type].push({ id: defaultItem.id, name, amount, type });
+                }
             }
-            if (isNaN(amount) || amount < 0) {
-                alert(budgetData.currentLanguage === 'ko' ? '유효한 금액을 입력하세요.' : 'Enter a valid amount.');
-                return;
-            }
 
-            // 기존 항목과 이름이 중복되는지 확인
-            const existingItem = budgetData[type].find(item => item.name.toLowerCase() === name.toLowerCase());
-            if (existingItem) {
-                alert(budgetData.currentLanguage === 'ko' ? '이미 존재하는 항목입니다. 수정하려면 목록에서 선택하세요.' : 'This item already exists. To modify, select it from the list.');
-                return;
-            }
-
-            budgetData[type].push({
-                id: generateUniqueId(),
-                name,
-                amount,
-                type // 이 속성은 디버깅이나 타입 식별에 유용하지만 필수 아님
-            });
-
-            nameInput.value = '';
-            amountInput.value = '';
-            selectElement.value = ''; // 선택 초기화
+            nameInput.value = ''; // 이름 입력 필드 초기화
+            amountInput.value = ''; // 금액 입력 필드 초기화
+            selectElement.value = ''; // 드롭다운 선택 초기화
             document.getElementById(`${type}-custom-container`).classList.add('hidden'); // 사용자 정의 입력 필드 숨김
 
             updateUI();
         }
+
 
         document.getElementById('category-select').addEventListener('change', function () {
             const container = document.getElementById('category-input-container');
@@ -1171,7 +1208,7 @@
             }
         });
 
-        // 세금/공제 드롭다운 선택 시 동작 (사용자 정의 필드 표시/숨기기)
+        // 세금/공제 드롭다운 선택 시 동작 (사용자 정의 필드 표시/숨기기 및 자동 추가/업데이트)
         document.getElementById('tax-type-select').addEventListener('change', function () {
             const customContainer = document.getElementById('tax-custom-container');
             if (this.value === 'custom') {
@@ -1180,13 +1217,8 @@
                 document.getElementById('tax-custom-name-input').value = ''; // 이름 초기화
             } else if (this.value !== "") { // 미리 정의된 항목 선택 시
                 customContainer.classList.add('hidden');
-                const selectedDefaultItem = DEFAULT_DEDUCTIONS.taxes.find(item => item.name === this.value);
-                if (selectedDefaultItem) {
-                    // 선택된 미리 정의된 항목의 이름과 금액으로 필드를 자동 채우고 바로 추가
-                    document.getElementById('tax-custom-name-input').value = selectedDefaultItem.name;
-                    document.getElementById('tax-amount-input').value = selectedDefaultItem.amount;
-                    addCategorizedItem('taxes'); // 자동 추가
-                }
+                // 드롭다운에서 선택된 항목을 addCategorizedItem으로 전달 (isCustom은 false)
+                addCategorizedItem('taxes');
             } else { // "세금 유형 선택"으로 돌아갈 때
                 customContainer.classList.add('hidden');
                 document.getElementById('tax-amount-input').value = '';
@@ -1201,12 +1233,7 @@
                 document.getElementById('pre-tax-custom-name-input').value = '';
             } else if (this.value !== "") {
                 customContainer.classList.add('hidden');
-                const selectedDefaultItem = DEFAULT_DEDUCTIONS.preTax.find(item => item.name === this.value);
-                if (selectedDefaultItem) {
-                    document.getElementById('pre-tax-custom-name-input').value = selectedDefaultItem.name;
-                    document.getElementById('pre-tax-amount-input').value = selectedDefaultItem.amount;
-                    addCategorizedItem('preTax');
-                }
+                addCategorizedItem('preTax');
             } else {
                 customContainer.classList.add('hidden');
                 document.getElementById('pre-tax-amount-input').value = '';
@@ -1221,12 +1248,7 @@
                 document.getElementById('post-tax-custom-name-input').value = '';
             } else if (this.value !== "") {
                 customContainer.classList.add('hidden');
-                const selectedDefaultItem = DEFAULT_DEDUCTIONS.postTax.find(item => item.name === this.value);
-                if (selectedDefaultItem) {
-                    document.getElementById('post-tax-custom-name-input').value = selectedDefaultItem.name;
-                    document.getElementById('post-tax-amount-input').value = selectedDefaultItem.amount;
-                    addCategorizedItem('postTax');
-                }
+                addCategorizedItem('postTax');
             } else {
                 customContainer.classList.add('hidden');
                 document.getElementById('post-tax-amount-input').value = '';
