@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';">
     <title>다국어 예산 관리 시스템</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* 기존 CSS는 매우 잘 되어 있으므로 큰 수정 없이 유지합니다. */
         :root {
@@ -531,6 +530,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // 설정값: 이제 모든 기본 항목에 고유 ID를 부여합니다.
         const DEFAULT_DEDUCTIONS = {
@@ -973,17 +973,14 @@
 
                 budgetData.currentLanguage = parsed.currentLanguage || 'ko';
 
-                // DEFAULT_DEDUCTIONS 항목들을 budgetData에 통합 (업데이트 또는 추가)
+                // DEFAULT_DEDUCTIONS 항목들을 budgetData에 통합 (기존 값 덮어쓰기 또는 추가)
                 ['taxes', 'preTax', 'postTax'].forEach(type => {
                     DEFAULT_DEDUCTIONS[type].forEach(defaultItem => {
-                        const existingItem = budgetData[type].find(item => item.id === defaultItem.id);
-                        if (existingItem) {
-                            // 이미 존재하는 기본 항목이면, 이름은 유지하고 금액은 로컬 스토리지에 저장된 값을 유지
-                            // 다만, 만약 사용자가 실수로 ID를 가진 항목을 삭제했다가 다시 로드하는 경우를 대비
-                            // 여기서는 기존 로컬스토리지 값을 우선시합니다.
-                            // 만약 기본값으로 덮어쓰려면 existingItem.amount = defaultItem.amount; 로 변경.
-                            // 현재는 이름만 동기화 (사용자가 이름 변경할 리는 없으므로)
-                            existingItem.name = defaultItem.name;
+                        const existingItemIndex = budgetData[type].findIndex(item => item.id === defaultItem.id);
+                        if (existingItemIndex > -1) {
+                            // 이미 존재하는 기본 항목이면, 기본값으로 덮어씁니다 (혹시 로컬 스토리지에 값이 변경되었을 경우).
+                            budgetData[type][existingItemIndex].name = defaultItem.name;
+                            budgetData[type][existingItemIndex].amount = defaultItem.amount; // 금액도 기본값으로 초기화
                         } else {
                             // 존재하지 않는 기본 항목이면 새로 추가 (초기 로드 시)
                             budgetData[type].push({ ...defaultItem, id: defaultItem.id || generateUniqueId() });
@@ -1141,14 +1138,20 @@
             let name = '';
             let amount = parseFloat(amountInput.value);
 
+            // 금액이 유효한지 먼저 확인
+            if (isNaN(amount) || amount < 0) {
+                // '사용자 정의'가 아니면서 금액 입력이 필수적인 경우에만 알림
+                if (!isCustom && selectedValue !== 'custom' && selectedValue !== '') {
+                    alert(budgetData.currentLanguage === 'ko' ? '유효한 금액을 입력해야 항목이 추가/업데이트됩니다.' : 'A valid amount must be entered for the item to be added/updated.');
+                }
+                return; // 유효하지 않은 금액이면 함수 종료
+            }
+
+
             if (isCustom) { // '사용자 정의' 버튼을 눌렀을 때
                 name = nameInput.value.trim();
                 if (!name) {
                     alert(budgetData.currentLanguage === 'ko' ? '이름을 입력하세요.' : 'Enter a name.');
-                    return;
-                }
-                if (isNaN(amount) || amount < 0) {
-                    alert(budgetData.currentLanguage === 'ko' ? '유효한 금액을 입력하세요.' : 'Enter a valid amount.');
                     return;
                 }
 
@@ -1174,9 +1177,7 @@
 
                 name = defaultItem.name; // 미리 정의된 이름 사용
                 // 금액은 사용자가 입력한 값 (amountInput.value)을 우선 사용
-                // 만약 입력된 값이 없거나 유효하지 않으면 기본값 0 사용
-                amount = isNaN(parseFloat(amountInput.value)) ? 0 : parseFloat(amountInput.value);
-
+                // 이미 위에서 금액 유효성 검사를 했으므로 그대로 사용
 
                 // budgetData에 이미 해당 이름의 기본 항목이 있는지 확인 (ID 기반으로 확인)
                 const existingInBudgetData = budgetData[type].find(item => item.id === defaultItem.id);
@@ -1215,14 +1216,9 @@
                 customContainer.classList.remove('hidden');
                 document.getElementById('tax-amount-input').value = ''; // 금액 초기화
                 document.getElementById('tax-custom-name-input').value = ''; // 이름 초기화
-            } else if (this.value !== "") { // 미리 정의된 항목 선택 시
+            } else { // 미리 정의된 항목 선택 시
                 customContainer.classList.add('hidden');
-                // 드롭다운에서 선택된 항목을 addCategorizedItem으로 전달 (isCustom은 false)
-                addCategorizedItem('taxes');
-            } else { // "세금 유형 선택"으로 돌아갈 때
-                customContainer.classList.add('hidden');
-                document.getElementById('tax-amount-input').value = '';
-                document.getElementById('tax-custom-name-input').value = '';
+                addCategorizedItem('taxes'); // 금액 유효성 검사는 addCategorizedItem 내부에서 진행
             }
         });
         document.getElementById('pre-tax-type-select').addEventListener('change', function () {
@@ -1231,13 +1227,9 @@
                 customContainer.classList.remove('hidden');
                 document.getElementById('pre-tax-amount-input').value = '';
                 document.getElementById('pre-tax-custom-name-input').value = '';
-            } else if (this.value !== "") {
-                customContainer.classList.add('hidden');
-                addCategorizedItem('preTax');
             } else {
                 customContainer.classList.add('hidden');
-                document.getElementById('pre-tax-amount-input').value = '';
-                document.getElementById('pre-tax-custom-name-input').value = '';
+                addCategorizedItem('preTax');
             }
         });
         document.getElementById('post-tax-type-select').addEventListener('change', function () {
@@ -1246,13 +1238,9 @@
                 customContainer.classList.remove('hidden');
                 document.getElementById('post-tax-amount-input').value = '';
                 document.getElementById('post-tax-custom-name-input').value = '';
-            } else if (this.value !== "") {
-                customContainer.classList.add('hidden');
-                addCategorizedItem('postTax');
             } else {
                 customContainer.classList.add('hidden');
-                document.getElementById('post-tax-amount-input').value = '';
-                document.getElementById('post-tax-custom-name-input').value = '';
+                addCategorizedItem('postTax');
             }
         });
     </script>
