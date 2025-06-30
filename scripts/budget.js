@@ -43,12 +43,62 @@ const budgetData = {
         { id: 'saving', name: '💰 저축', nameEn: '💰 Saving' },
         { id: 'business', name: '💼 업무', nameEn: '💼 Business' }
     ],
-    currentLanguage: 'ko'
+    currentLanguage: 'ko',
+    uiState: {
+        showDeductions: false,
+        showExpenses: false,
+        showSummary: false,
+        showCharts: false
+    }
 };
 
 let incomeFlowChartInstance = null;
 let expenseCategoryChartInstance = null;
 let editingItem = null;
+
+// UI 상태 토글 함수 추가
+function toggleUISection(section) {
+    budgetData.uiState[`show${section}`] = !budgetData.uiState[`show${section}`];
+    const element = document.querySelector(`.${section.toLowerCase()}-section`);
+    if (budgetData.uiState[`show${section}`]) {
+        element.classList.add('section-active');
+    } else {
+        element.classList.remove('section-active');
+    }
+}
+
+// 데이터 불러오기 함수 추가
+function loadDataFromFile() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    
+    input.onchange = e => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = event => {
+            try {
+                const data = JSON.parse(event.target.result);
+                Object.assign(budgetData, data);
+                updateUI();
+                alert(budgetData.currentLanguage === 'ko' 
+                    ? '데이터 불러오기 성공!' 
+                    : 'Data loaded successfully!');
+            } catch (error) {
+                alert(budgetData.currentLanguage === 'ko' 
+                    ? '파일 형식이 올바르지 않습니다.' 
+                    : 'Invalid file format.');
+            }
+        };
+        
+        reader.readAsText(file);
+    };
+    
+    input.click();
+}
+
+
 
 // --- 유틸리티 함수 ---
 function generateUniqueId() {
@@ -582,19 +632,56 @@ function setupEventListeners() {
     document.getElementById('post-tax-type-select').addEventListener('change', function() {
         document.getElementById('post-tax-custom-container').classList.toggle('hidden', this.value !== 'custom');
     });
+
+        // 데이터 불러오기 버튼
+    document.getElementById('load-data-btn').addEventListener('click', loadDataFromFile);
+
+    // 섹션 토글 버튼 추가
+    document.querySelectorAll('.section-toggle').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const section = this.getAttribute('data-section');
+            toggleUISection(section);
+        });
+    });
+
+    // 버튼 이벤트 위임 처리 (동적으로 생성된 요소 대응)
+    document.body.addEventListener('click', function(e) {
+        // 삭제 버튼 처리
+        if (e.target.matches('.delete-btn, .delete-btn *')) {
+            const btn = e.target.closest('.delete-btn');
+            const [type, id] = btn.getAttribute('onclick').match(/'([^']+)'/g).map(s => s.replace(/'/g, ''));
+            deleteItem(type, id);
+        }
+        
+        // 수정 버튼 처리
+        if (e.target.matches('.edit-btn, .edit-btn *')) {
+            const btn = e.target.closest('.edit-btn');
+            const [type, id] = btn.getAttribute('onclick').match(/'([^']+)'/g).map(s => s.replace(/'/g, ''));
+            editItem(type, id);
+        }
+        
+        // 저장 버튼 처리
+        if (e.target.matches('.save-btn, .save-btn *')) {
+            const btn = e.target.closest('.save-btn');
+            const [type, id] = btn.getAttribute('onclick').match(/'([^']+)'/g).map(s => s.replace(/'/g, ''));
+            saveEdit(type, id);
+        }
+    });
 }
 
-// --- 초기화 ---
+
+// 초기화 함수 수정
 function initialize() {
     setupEventListeners();
     loadData();
     switchLanguage(budgetData.currentLanguage);
     
-    // 초기 상태에서 추가 섹션 숨김
-    document.getElementById('tax-add-section').classList.add('hidden');
-    document.getElementById('pre-tax-add-section').classList.add('hidden');
-    document.getElementById('post-tax-add-section').classList.add('hidden');
-    document.getElementById('category-input-container').classList.add('hidden');
+    // 모든 섹션 초기 상태 숨김
+    Object.keys(budgetData.uiState).forEach(key => {
+        budgetData.uiState[key] = false;
+    });
+    
+    updateUI();
 }
 
 // 페이지 로드 시 초기화
