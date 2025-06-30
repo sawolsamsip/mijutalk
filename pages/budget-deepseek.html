@@ -905,14 +905,15 @@ function addCategory() {
     alert(budgetData.currentLanguage === 'ko' ? '카테고리 이름을 입력하세요.' : 'Enter category name.');
     return;
   }
-  // id는 영문/숫자 조합으로 유니크하게 생성
   const id = generateUniqueId();
-  const catObj = budgetData.currentLanguage === 'ko'
-    ? { id, name, nameEn: name }
-    : { id, name: name, nameEn: name };
+  // 한글 모드일 때는 name/nameEn 모두 채움, 영어 모드일 때도 마찬가지
+  let catObj;
+  if (budgetData.currentLanguage === 'ko') {
+    catObj = { id, name, nameEn: name };
+  } else {
+    catObj = { id, name: name, nameEn: name };
+  }
   budgetData.categories.push(catObj);
-
-  // 입력값 초기화
   if (newCategoryInput) newCategoryInput.value = '';
   populateCategorySelect();
   updateUI();
