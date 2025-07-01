@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ---------------------------------- //
     // 1. I18N Language Management        //
     // ---------------------------------- //
+// 1. I18N Language Management
     const locales = {
         en: {
             app_title: "Deep Chic Budget",
@@ -16,6 +17,19 @@ document.addEventListener('DOMContentLoaded', () => {
             placeholder_item_name: "Item Name",
             placeholder_amount: "Amount",
             btn_delete: "Delete",
+            // ▼▼▼ ADD THESE NEW LINES ▼▼▼
+            section_expenses_title: "Expense Management",
+            label_rent_mortgage: "Rent/Mortgage",
+            label_utilities: "Utilities",
+            label_internet: "Internet",
+            label_phone: "Phone Bill",
+            label_groceries: "Groceries",
+            label_dining_out: "Dining Out",
+            label_transportation: "Transportation",
+            label_shopping: "Shopping",
+            label_health_wellness: "Health/Wellness",
+            label_entertainment: "Entertainment",
+            // ▲▲▲ END OF NEW LINES ▲▲▲
             section_data_title: "Data Management",
             btn_export: "Export JSON",
             btn_import: "Import JSON",
@@ -35,6 +49,19 @@ document.addEventListener('DOMContentLoaded', () => {
             placeholder_item_name: "항목명",
             placeholder_amount: "금액",
             btn_delete: "삭제",
+            // ▼▼▼ ADD THESE NEW LINES ▼▼▼
+            section_expenses_title: "지출 관리",
+            label_rent_mortgage: "주거비 (월세/이자)",
+            label_utilities: "공과금 (전기/수도 등)",
+            label_internet: "인터넷",
+            label_phone: "통신비",
+            label_groceries: "식료품",
+            label_dining_out: "외식/배달",
+            label_transportation: "교통비",
+            label_shopping: "쇼핑",
+            label_health_wellness: "건강/웰빙",
+            label_entertainment: "문화/여가",
+            // ▲▲▲ END OF NEW LINES ▲▲▲
             section_data_title: "데이터 백업/복원",
             btn_export: "내보내기 (JSON)",
             btn_import: "가져오기 (JSON)",
