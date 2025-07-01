@@ -88,6 +88,75 @@
                     <i class="ri-add-line"></i> <span data-i18n-key="btn_add_item">Add Item</span>
                 </button>
             </section>
+
+            <section class="card">
+                <h2 data-i18n-key="section_post_tax_title">Post-Tax Deductions</h2>
+                 <div class="form-grid">
+                    <div class="input-group-vertical"><label for="deduct-spp">Stock Purchase Plan</label><input type="number" id="deduct-spp" min="0"></div>
+                    <div class="input-group-vertical"><label for="deduct-adnd">AD&D</label><input type="number" id="deduct-adnd" min="0"></div>
+                    <div class="input-group-vertical"><label for="deduct-401k-roth">401k Roth</label><input type="number" id="deduct-401k-roth" min="0"></div>
+                    <div class="input-group-vertical"><label for="deduct-ltd">LTD</label><input type="number" id="deduct-ltd" min="0"></div>
+                </div>
+                <div id="post-tax-custom-list" class="custom-list"></div>
+                 <button type="button" class="btn btn-secondary add-custom-btn" data-type="post-tax">
+                    <i class="ri-add-line"></i> <span data-i18n-key="btn_add_item">Add Item</span>
+                </button>
+            </section>
+            
+            <section class="card">
+                <h2 data-i18n-key="section_expenses_title">Expense Management</h2>
+                <div class="form-grid">
+                    <div class="input-group-vertical">
+                        <label for="exp-rent" data-i18n-key="label_rent_mortgage">Rent/Mortgage</label>
+                        <input type="number" id="exp-rent" min="0">
+                    </div>
+                    <div class="input-group-vertical">
+                        <label for="exp-utilities" data-i18n-key="label_utilities">Utilities</label>
+                        <input type="number" id="exp-utilities" min="0">
+                    </div>
+                    <div class="input-group-vertical">
+                        <label for="exp-internet" data-i18n-key="label_internet">Internet</label>
+                        <input type="number" id="exp-internet" min="0">
+                    </div>
+                     <div class="input-group-vertical">
+                        <label for="exp-phone" data-i18n-key="label_phone">Phone Bill</label>
+                        <input type="number" id="exp-phone" min="0">
+                    </div>
+                    <div class="input-group-vertical">
+                        <label for="exp-groceries" data-i18n-key="label_groceries">Groceries</label>
+                        <input type="number" id="exp-groceries" min="0">
+                    </div>
+                    <div class="input-group-vertical">
+                        <label for="exp-dining" data-i18n-key="label_dining_out">Dining Out</label>
+                        <input type="number" id="exp-dining" min="0">
+                    </div>
+                    <div class="input-group-vertical">
+                        <label for="exp-transport" data-i18n-key="label_transportation">Transportation</label>
+                        <input type="number" id="exp-transport" min="0">
+                    </div>
+                    <div class="input-group-vertical">
+                        <label for="exp-shopping" data-i18n-key="label_shopping">Shopping</label>
+                        <input type="number" id="exp-shopping" min="0">
+                    </div>
+                    <div class="input-group-vertical">
+                        <label for="exp-health" data-i18n-key="label_health_wellness">Health/Wellness</label>
+                        <input type="number" id="exp-health" min="0">
+                    </div>
+                    <div class="input-group-vertical">
+                        <label for="exp-entertainment" data-i18n-key="label_entertainment">Entertainment</label>
+                        <input type="number" id="exp-entertainment" min="0">
+                    </div>
+                </div>
+            </section>
+            <section class="card">
+                <h2 data-i18n-key="section_data_title">Data Management</h2>
+                <div class="button-group">
+                    <button id="export-json-btn" class="btn btn-secondary"><i class="ri-download-2-line"></i> <span data-i18n-key="btn_export">Export JSON</span></button>
+                    <button id="import-json-btn" class="btn btn-secondary"><i class="ri-upload-2-line"></i> <span data-i18n-key="btn_import">Import JSON</span></button>
+                    <input type="file" id="import-json-input" hidden accept="application/json">
+                </div>
+            </section>
+
             
             <section class="card">
                 <h2 data-i18n-key="section_data_title">Data Management</h2>
