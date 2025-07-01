@@ -417,6 +417,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Chart.js Integration ---
     function initializeCharts() {
+        // --- ADDED: Destroy existing chart instances before creating new ones ---
+        if (taxChart) {
+            taxChart.destroy();
+            console.log('Destroyed existing taxChart.'); // For debugging
+        }
+        if (expensesChart) {
+            expensesChart.destroy();
+            console.log('Destroyed existing expensesChart.'); // For debugging
+        }
+        if (budgetDistributionChart) {
+            budgetDistributionChart.destroy();
+            console.log('Destroyed existing budgetDistributionChart.'); // For debugging
+        }
+        // --- END ADDED ---
+
         const chartOptions = {
             responsive: true,
             maintainAspectRatio: false,
@@ -487,6 +502,9 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             options: chartOptions
         });
+
+        // --- Debugging line: confirm initialization ---
+        console.log('Charts initialized successfully.');
     }
 
     function updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, totalPreTaxDeductions, totalPostTaxDeductions) {
@@ -573,17 +591,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const chartGridColor = getComputedStyle(document.body).getPropertyValue('--chart-grid-color');
 
         [taxChart, expensesChart, budgetDistributionChart].forEach(chart => {
-            chart.options.plugins.legend.labels.color = chartTextColor;
-            // Update scales only if they exist for the chart type
-            if (chart.options.scales && chart.options.scales.x) {
+            // Check if chart and its options/scales exist before trying to update properties
+            if (chart && chart.options && chart.options.plugins && chart.options.plugins.legend && chart.options.plugins.legend.labels) {
+                chart.options.plugins.legend.labels.color = chartTextColor;
+            }
+            if (chart && chart.options && chart.options.scales && chart.options.scales.x) {
                 chart.options.scales.x.ticks.color = chartTextColor;
                 chart.options.scales.x.grid.color = chartGridColor;
             }
-            if (chart.options.scales && chart.options.scales.y) {
+            if (chart && chart.options && chart.options.scales && chart.options.scales.y) {
                 chart.options.scales.y.ticks.color = chartTextColor;
                 chart.options.scales.y.grid.color = chartGridColor;
             }
-            chart.update(); // Re-render with new colors
+            if (chart) { // Only update if chart instance exists
+                chart.update(); // Re-render with new colors
+            }
         });
     }
 
@@ -695,11 +717,12 @@ document.addEventListener('DOMContentLoaded', () => {
             darkmodeToggleBtn.innerHTML = '<i class="ri-moon-line"></i>'; // Moon icon for dark mode
         }
         // Update charts to reflect new theme colors
+        // Ensure chart instances exist before attempting to update them
         if (taxChart && expensesChart && budgetDistributionChart) {
             updateCharts(
                 getTotal(taxInputs, customTaxes),
                 getTotal(expenseInputs, customExpenses),
-                grossSalary - getTotal(preTaxDeductInputs, customPreTaxDeductions) - getTotal(postTaxDeductInputs, customPostTaxDeductions), // Net salary part
+                grossSalary - getTotal(preTaxDeductions, customPreTaxDeductions) - getTotal(postTaxDeductions, customPostTaxDeductions), // Net salary part
                 (grossSalary - getTotal(preTaxDeductInputs, customPreTaxDeductions) - getTotal(taxInputs, customTaxes) - getTotal(postTaxDeductInputs, customPostTaxDeductions)) - getTotal(expenseInputs, customExpenses), // Remaining budget part
                 getTotal(preTaxDeductInputs, customPreTaxDeductions),
                 getTotal(postTaxDeductInputs, customPostTaxDeductions)
@@ -907,6 +930,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Initialization ---
-    initializeCharts();
+    initializeCharts(); // Call once on DOMContentLoaded
     loadData(); // Load data and update display on page load
 });
