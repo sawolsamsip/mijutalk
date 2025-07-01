@@ -67,7 +67,103 @@ document.getElementById('currency-select').onchange = function() {
 };
 renderFX();
 
-// ----------------------- 예산/지출 저장 -----------------------
+// ----------------------- 세전 월급/세금/공제 실수령액 계산 -----------------------
+function getCustomListSum(type) {
+  // type: 'tax', 'pre-tax', 'post-tax'
+  const names = Array.from(document.querySelectorAll(`.${type}-custom-name`));
+  const amounts = Array.from(document.querySelectorAll(`.${type}-custom-amount`));
+  let sum = 0;
+  for(let i=0;i<amounts.length;i++) {
+    const name = names[i].value.trim();
+    const val = Number(amounts[i].value||0);
+    if(name && val) sum += val;
+  }
+  return sum;
+}
+function getTotalTax() {
+  let sum = 0;
+  sum += Number(document.getElementById('tax-federal')?.value||0);
+  sum += Number(document.getElementById('tax-state')?.value||0);
+  sum += Number(document.getElementById('tax-oasdi')?.value||0);
+  sum += Number(document.getElementById('tax-medicare')?.value||0);
+  sum += Number(document.getElementById('tax-casdi')?.value||0);
+  sum += getCustomListSum('tax');
+  return sum;
+}
+function getTotalPreTaxDeduction() {
+  let sum = 0;
+  sum += Number(document.getElementById('deduct-medical')?.value||0);
+  sum += Number(document.getElementById('deduct-dental')?.value||0);
+  sum += Number(document.getElementById('deduct-vision')?.value||0);
+  sum += Number(document.getElementById('deduct-mseap')?.value||0);
+  sum += Number(document.getElementById('deduct-401k-trad')?.value||0);
+  sum += getCustomListSum('pre-tax');
+  return sum;
+}
+function getTotalPostTaxDeduction() {
+  let sum = 0;
+  sum += Number(document.getElementById('deduct-spp')?.value||0);
+  sum += Number(document.getElementById('deduct-adnd')?.value||0);
+  sum += Number(document.getElementById('deduct-critical')?.value||0);
+  sum += Number(document.getElementById('deduct-accident')?.value||0);
+  sum += Number(document.getElementById('deduct-401k-roth')?.value||0);
+  sum += Number(document.getElementById('deduct-legal')?.value||0);
+  sum += Number(document.getElementById('deduct-ltd')?.value||0);
+  sum += getCustomListSum('post-tax');
+  return sum;
+}
+function calcNetSalary() {
+  const gross = Number(document.getElementById('salary-gross')?.value||0);
+  const preTax = getTotalPreTaxDeduction();
+  const tax = getTotalTax();
+  const postTax = getTotalPostTaxDeduction();
+  const taxableIncome = gross - preTax;
+  const net = taxableIncome - tax - postTax;
+  return {
+    gross, preTax, tax, postTax, taxableIncome, net
+  };
+}
+function renderSalarySummary() {
+  const {gross, preTax, tax, postTax, taxableIncome, net} = calcNetSalary();
+  document.getElementById('salary-summary').innerHTML = `
+    <b>세전 월급:</b> ${gross.toLocaleString()}<br>
+    <b>세전 공제 총합:</b> ${preTax.toLocaleString()}<br>
+    <b>과세소득(세전-공제):</b> ${taxableIncome.toLocaleString()}<br>
+    <b>세금 총합:</b> ${tax.toLocaleString()}<br>
+    <b>세후 공제 총합:</b> ${postTax.toLocaleString()}<br>
+    <b>실수령액:</b> <span style="color:#1976d2;font-size:1.18em;">${net.toLocaleString()}</span>
+  `;
+}
+document.getElementById('salary-form').onsubmit = function(e) {
+  e.preventDefault();
+  renderSalarySummary();
+};
+['tax-form','pre-tax-deduction-form','post-tax-deduction-form'].forEach(formId => {
+  document.getElementById(formId).oninput = renderSalarySummary;
+});
+document.addEventListener('input',function(e){
+  if(
+    e.target.classList.contains('tax-custom-name') ||
+    e.target.classList.contains('tax-custom-amount') ||
+    e.target.classList.contains('pre-tax-custom-name') ||
+    e.target.classList.contains('pre-tax-custom-amount') ||
+    e.target.classList.contains('post-tax-custom-name') ||
+    e.target.classList.contains('post-tax-custom-amount')
+  ){
+    renderSalarySummary();
+  }
+});
+window.addEventListener('DOMContentLoaded',renderSalarySummary);
+
+// ----------------------- 예산/지출 저장/표시 등 기존 가계부 코드 -----------------------
+// 금액, 통화 변환
+function formatCurrency(val) {
+  if(!val && val!==0) return '';
+  let v = val;
+  if(currentCurrency !== 'KRW') v = Math.round(val / fxRates['KRW'] * fxRates[currentCurrency]);
+  return v.toLocaleString() + ' ' + currentCurrency;
+}
+
 document.getElementById('expense-form').onsubmit = function(e) {
   e.preventDefault();
   const catId = document.getElementById('expense-category').value;
@@ -93,18 +189,10 @@ document.getElementById('expense-form').onsubmit = function(e) {
 function addExpense(e) {
   expenses.push(e);
   localStorage.setItem('budget.expenses', JSON.stringify(expenses));
-  if(sharedKey) saveSharedData();
   renderExpenses();
   rerenderAllCurrency();
   renderGoalProgress();
   checkBudgetAlerts();
-}
-// 금액, 통화 변환
-function formatCurrency(val) {
-  if(!val && val!==0) return '';
-  let v = val;
-  if(currentCurrency !== 'KRW') v = Math.round(val / fxRates['KRW'] * fxRates[currentCurrency]);
-  return v.toLocaleString() + ' ' + currentCurrency;
 }
 
 // ----------------------- 지출 내역 리스트 -----------------------
@@ -201,9 +289,8 @@ window.closeAlert = function(idx) {
   alertQueue.splice(idx,1);
   renderAlerts();
 };
-// 주요 이벤트 감지 (예: renderExpenses/renderCategoryLimits 등에서 호출)
 function checkBudgetAlerts() {
-  alertQueue = []; // 기존 알림 지움(원하면 누적도 가능)
+  alertQueue = [];
   // 한도 경고
   CATEGORIES.forEach(cat => {
     const limit = categoryLimits[cat.id];
@@ -343,126 +430,6 @@ window.addEventListener('DOMContentLoaded', ()=>{
   updateDetailReport();
 });
 
-// ----------------------- 가족/팀 예산 공유 -----------------------
-function makeInviteCode() {
-  return 'FAMILY-' + Math.random().toString(36).slice(2,8).toUpperCase() + '-' + Date.now().toString().slice(-5);
-}
-document.getElementById('share-link-btn').onclick = function() {
-  if(!sharedKey) {
-    sharedKey = makeInviteCode();
-    localStorage.setItem('budget.sharedKey', sharedKey);
-    sharedUsers = [localStorage.getItem('budget.myName')||'나'];
-    localStorage.setItem('budget.sharedUsers', JSON.stringify(sharedUsers));
-  }
-  const url = location.origin + location.pathname + '?shared=' + sharedKey;
-  navigator.clipboard.writeText(url);
-  document.getElementById('share-link-msg').textContent = "공유 링크가 복사되었습니다!";
-  renderSharedUsers();
-};
-document.getElementById('join-invite-btn').onclick = function() {
-  const code = document.getElementById('invite-code-input').value.trim();
-  if(!code) return;
-  sharedKey = code;
-  localStorage.setItem('budget.sharedKey', sharedKey);
-  let users = JSON.parse(localStorage.getItem('budget.sharedUsers')||'[]');
-  const my = localStorage.getItem('budget.myName')||'나';
-  if(!users.includes(my)) users.push(my);
-  localStorage.setItem('budget.sharedUsers', JSON.stringify(users));
-  document.getElementById('invite-msg').textContent = "공유 예산에 참여했습니다!";
-  renderSharedUsers();
-  loadSharedData();
-};
-function renderSharedUsers() {
-  const users = JSON.parse(localStorage.getItem('budget.sharedUsers')||'[]');
-  document.getElementById('shared-users-list').innerHTML =
-    '<b>참여자:</b> ' + users.map(u=>`<span style="margin-right:7px;">👤${u}</span>`).join('');
-}
-function saveSharedData() {
-  if(!sharedKey) return;
-  localStorage.setItem('budget.shared_'+sharedKey, JSON.stringify(expenses));
-  localStorage.setItem('budget.sharedUsers', JSON.stringify(sharedUsers));
-}
-function loadSharedData() {
-  if(!sharedKey) return;
-  const data = localStorage.getItem('budget.shared_'+sharedKey);
-  if(data) expenses = JSON.parse(data);
-  renderExpenses();
-  rerenderAllCurrency();
-  renderSharedUsers();
-}
-window.addEventListener('DOMContentLoaded', ()=>{
-  const params = new URLSearchParams(location.search);
-  if(params.has('shared')) {
-    sharedKey = params.get('shared');
-    localStorage.setItem('budget.sharedKey', sharedKey);
-  }
-  loadSharedData();
-});
-
-// ----------------------- 데이터 백업/복원 -----------------------
-document.getElementById('export-json-btn').onclick = function() {
-  const data = {
-    expenses,
-    incomes: window.incomes||[],
-    categoryLimits,
-    CATEGORIES,
-    currency: currentCurrency,
-    sharedKey,
-    sharedUsers,
-    backupDate: new Date().toISOString()
-  };
-  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'budget-backup_'+(new Date().toISOString().slice(0,10))+'.json';
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(()=>{URL.revokeObjectURL(url); a.remove();}, 600);
-  document.getElementById('backup-msg').textContent = "내보내기 완료!";
-};
-document.getElementById('import-json-btn').onclick = function() {
-  document.getElementById('import-json-input').click();
-};
-document.getElementById('import-json-input').onchange = function(e) {
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = function(event) {
-    try {
-      const data = JSON.parse(event.target.result);
-      if(confirm('기존 데이터를 덮어쓸까요? (확인=덮어쓰기, 취소=병합)')) {
-        // 덮어쓰기
-        expenses = data.expenses||[];
-        window.incomes = data.incomes||[];
-        Object.assign(categoryLimits, data.categoryLimits||{});
-        currentCurrency = data.currency||'KRW';
-        sharedKey = data.sharedKey||null;
-        sharedUsers = data.sharedUsers||[];
-      } else {
-        // 병합: 기존+새 데이터 합치기(중복 검증 필요)
-        expenses = [...expenses, ...(data.expenses||[])];
-        window.incomes = [...(window.incomes||[]), ...(data.incomes||[])];
-      }
-      rerenderAllCurrency();
-      document.getElementById('backup-msg').textContent = "복원/병합 완료!";
-    } catch(e) {
-      document.getElementById('backup-msg').textContent = "가져오기 실패: 올바른 JSON이 아닙니다.";
-    }
-  };
-  reader.readAsText(file);
-};
-function autoBackup() {
-  const last = localStorage.getItem('budget.lastBackup');
-  const today = (new Date()).toISOString().slice(0,10);
-  if(last === today) return;
-  document.getElementById('export-json-btn').click();
-  localStorage.setItem('budget.lastBackup', today);
-}
-window.addEventListener('DOMContentLoaded', ()=>{
-  setTimeout(autoBackup, 1500);
-});
-
 // ----------------------- 목표 예산/저축 관리 -----------------------
 function saveBudgetGoal() {
   localStorage.setItem('budget.goal', JSON.stringify(budgetGoal));
@@ -546,52 +513,6 @@ function renderAIReport() {
   document.getElementById('ai-report-box').innerHTML = report;
 }
 
-// ----------------------- 가족/팀 채팅 -----------------------
-let chatKey = sharedKey || 'solo';
-function getChatList() {
-  return JSON.parse(localStorage.getItem('budget.chat_' + chatKey) || '[]');
-}
-function saveChatList(list) {
-  localStorage.setItem('budget.chat_' + chatKey, JSON.stringify(list));
-}
-function renderChatBox() {
-  const chatList = getChatList();
-  const myName = localStorage.getItem('budget.myName') || '나';
-  let html = '';
-  chatList.forEach(msg => {
-    const mine = msg.name === myName;
-    html += `<div style="margin-bottom:7px;text-align:${mine ? 'right':'left'}">
-      <span style="display:inline-block;max-width:80%;background:${mine?'#d1e7dd':'#fff'};padding:6px 10px;border-radius:8px;">
-        <b>${msg.name}</b> <span style="font-size:0.92em;color:#888;">${msg.time.slice(5,16)}</span><br>
-        ${msg.text}
-      </span>
-    </div>`;
-  });
-  document.getElementById('chat-box').innerHTML = html;
-  document.getElementById('chat-box').scrollTop = 99999;
-}
-document.getElementById('chat-form').onsubmit = function(e) {
-  e.preventDefault();
-  const text = document.getElementById('chat-input').value.trim();
-  if(!text) return;
-  const myName = localStorage.getItem('budget.myName') || '나';
-  const chatList = getChatList();
-  chatList.push({
-    name: myName,
-    text,
-    time: new Date().toISOString().replace('T',' ').slice(0,16)
-  });
-  saveChatList(chatList);
-  document.getElementById('chat-input').value = '';
-  renderChatBox();
-};
-setInterval(()=>{
-  renderChatBox();
-}, 1000);
-window.addEventListener('DOMContentLoaded', ()=>{
-  renderChatBox();
-});
-
 // ----------------------- 도움말/튜토리얼 팝업 -----------------------
 document.getElementById('help-btn').onclick = function() {
   document.getElementById('help-modal').style.display = 'block';
@@ -602,7 +523,7 @@ document.getElementById('help-btn').onclick = function() {
       <ul>
         <li>예산/지출 입력, 카테고리, 태그, 메모, 사진 첨부 등 다양한 기능 이용</li>
         <li>다크모드/라이트모드 즉시 전환 지원</li>
-        <li>내보내기/가져오기, 가족공유, AI 리포트, 목표 설정 등 다양한 고급기능</li>
+        <li>내보내기/가져오기, 목표 설정, AI 리포트 등 다양한 고급기능</li>
         <li>(상세 가이드와 FAQ는 <a href="https://github.com/sawolsamsip/mijutalk/wiki" target="_blank">프로젝트 위키</a> 참고)</li>
       </ul>
     </div>
