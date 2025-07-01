@@ -722,7 +722,9 @@ document.addEventListener('DOMContentLoaded', () => {
             updateCharts(
                 getTotal(taxInputs, customTaxes),
                 getTotal(expenseInputs, customExpenses),
-                grossSalary - getTotal(preTaxDeductions, customPreTaxDeductions) - getTotal(postTaxDeductions, customPostTaxDeductions), // Net salary part
+                // 이곳을 수정합니다: 'pretaxDeductions' -> 'preTaxDeductInputs'
+                grossSalary - getTotal(preTaxDeductInputs, customPreTaxDeductions) - getTotal(postTaxDeductInputs, customPostTaxDeductions), // Net salary part
+                // 이곳을 수정합니다: 'preTaxDeductions' -> 'preTaxDeductInputs'
                 (grossSalary - getTotal(preTaxDeductInputs, customPreTaxDeductions) - getTotal(taxInputs, customTaxes) - getTotal(postTaxDeductInputs, customPostTaxDeductions)) - getTotal(expenseInputs, customExpenses), // Remaining budget part
                 getTotal(preTaxDeductInputs, customPreTaxDeductions),
                 getTotal(postTaxDeductInputs, customPostTaxDeductions)
