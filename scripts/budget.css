@@ -246,6 +246,7 @@ body {
 
 .custom-item {
     display: flex;
+    flex-wrap: wrap; /* Allow wrapping on small screens */
     align-items: center;
     gap: 10px;
     margin-bottom: 10px;
@@ -255,21 +256,25 @@ body {
     border: 1px solid var(--border-color);
 }
 
-.custom-item input[type="text"] {
-    flex: 2;
-    padding: 8px;
-    border: 1px solid var(--input-border);
-    border-radius: 4px;
-    background-color: var(--input-bg);
-    color: var(--text-color);
-}
+/* IMPORTANT: Styles for dynamically added custom item inputs */
+.custom-item input[type="text"],
 .custom-item input[type="number"] {
-    flex: 1;
+    flex: 1; /* Allow inputs to grow and shrink */
+    min-width: 100px; /* Minimum width for inputs */
     padding: 8px;
     border: 1px solid var(--input-border);
     border-radius: 4px;
     background-color: var(--input-bg);
     color: var(--text-color);
+    font-size: 0.95em;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.custom-item input[type="text"]:focus,
+.custom-item input[type="number"]:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--focus-ring-color);
+    outline: none;
 }
 
 .custom-item .delete-custom-btn {
@@ -281,6 +286,8 @@ body {
     cursor: pointer;
     font-size: 0.85em;
     transition: background-color 0.2s;
+    /* Ensure button has fixed size and doesn't get squished */
+    flex-shrink: 0;
 }
 
 .custom-item .delete-custom-btn:hover {
