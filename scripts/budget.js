@@ -95,6 +95,8 @@ document.addEventListener('DOMContentLoaded', () => {
             label_medicare: "Medicare",
             label_ca_sdi: "CA SDI",
             btn_add_item: "Add Item",
+            label_item_name: "Item Name", // Added for custom item prompt
+            label_item_amount: "Amount", // Added for custom item prompt
             section_pre_tax_title: "Pre-Tax Deductions",
             label_medical_premium: "Medical Premium",
             label_dental_premium: "Dental Premium",
@@ -123,6 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
             label_total_post_tax: "Total Post-Tax Deductions:",
             label_total_expenses: "Total Expenses:",
             label_remaining_budget: "Remaining Budget:",
+            label_deficit: "Deficit", // Added for chart when budget is negative
             section_data_title: "Data Management",
             btn_export: "Export JSON",
             btn_import: "Import JSON",
@@ -134,6 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
             alert_name_amount_needed: 'Please enter a name and a positive amount for the item.',
             alert_import_success: 'Data imported successfully!',
             alert_import_failure: 'Failed to import data. Please check the file format.',
+            alert_prompt_name: 'Enter item name:', // Added prompt text
+            alert_prompt_amount: 'Enter amount:', // Added prompt text
             confirm_clear_data: 'Are you sure you want to clear all budget data? This action cannot be undone.',
             ai_report_intro: 'Here is your personalized AI spending report:\n\n',
             ai_report_positive_budget: 'Great job! You have a remaining budget of ${remainingBudget}. This indicates strong financial health and good planning. Consider allocating some of this surplus to savings, investments, or discretionary spending.',
@@ -159,6 +164,8 @@ document.addEventListener('DOMContentLoaded', () => {
             label_medicare: "메디케어",
             label_ca_sdi: "CA SDI",
             btn_add_item: "항목 추가",
+            label_item_name: "항목 이름",
+            label_item_amount: "금액",
             section_pre_tax_title: "세전 공제",
             label_medical_premium: "의료 보험료",
             label_dental_premium: "치과 보험료",
@@ -187,6 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
             label_total_post_tax: "총 세후 공제액:",
             label_total_expenses: "총 지출:",
             label_remaining_budget: "남은 예산:",
+            label_deficit: "적자",
             section_data_title: "데이터 관리",
             btn_export: "JSON 내보내기",
             btn_import: "JSON 가져오기",
@@ -198,6 +206,8 @@ document.addEventListener('DOMContentLoaded', () => {
             alert_name_amount_needed: '항목 이름과 양수를 입력해주세요.',
             alert_import_success: '데이터를 성공적으로 가져왔습니다!',
             alert_import_failure: '데이터 가져오기에 실패했습니다. 파일 형식을 확인해주세요.',
+            alert_prompt_name: '항목 이름을 입력하세요:',
+            alert_prompt_amount: '금액을 입력하세요:',
             confirm_clear_data: '모든 예산 데이터를 지우시겠습니까? 이 작업은 되돌릴 수 없습니다.',
             ai_report_intro: '귀하의 맞춤형 AI 지출 보고서입니다:\n\n',
             ai_report_positive_budget: '훌륭합니다! ${remainingBudget}의 남은 예산이 있습니다. 이는 강력한 재정 상태와 좋은 계획을 나타냅니다. 이 잉여 자금을 저축, 투자 또는 자유 지출에 할당하는 것을 고려해 보세요.',
@@ -215,11 +225,21 @@ document.addEventListener('DOMContentLoaded', () => {
         document.documentElement.lang = lang; // Set HTML lang attribute
         document.querySelectorAll('[data-i18n-key]').forEach(element => {
             const key = element.dataset.i18nKey;
-            if (translations[lang][key]) {
+            // Handle placeholders for input elements (like "Item Name" in custom inputs)
+            if (element.tagName === 'INPUT' && element.placeholder && translations[lang][`label_${key}`]) {
+                 element.placeholder = translations[lang][`label_${key}`];
+            } else if (translations[lang][key]) {
                 element.textContent = translations[lang][key];
             }
         });
         languageToggleBtn.textContent = lang === 'ko' ? 'EN' : 'KO';
+
+        // Re-render custom items to apply new language for placeholders
+        renderCustomItems(taxCustomList, customTaxes, 'tax');
+        renderCustomItems(preTaxCustomList, customPreTaxDeductions, 'pre-tax');
+        renderCustomItems(postTaxCustomList, customPostTaxDeductions, 'post-tax');
+        renderCustomItems(expensesCustomList, customExpenses, 'expense');
+
         updateDisplay(); // Update display to reflect translated text in summaries/charts
     }
 
@@ -273,8 +293,8 @@ document.addEventListener('DOMContentLoaded', () => {
         li.classList.add('custom-item');
         li.dataset.id = item.id;
         li.innerHTML = `
-            <input type="text" value="${item.name}" placeholder="${translations[currentLanguage].label_item_name || 'Item Name'}" readonly>
-            <input type="number" value="${item.amount}" min="0" readonly>
+            <input type="text" value="${item.name}" placeholder="${translations[currentLanguage].label_item_name}" readonly>
+            <input type="number" value="${item.amount}" min="0" placeholder="${translations[currentLanguage].label_item_amount}" readonly>
             <button class="delete-custom-btn" data-id="${item.id}" data-type="${type}"><i class="ri-delete-bin-line"></i></button>
         `;
 
@@ -307,13 +327,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     targetArray[index].name = newName;
                     targetArray[index].amount = newAmount;
                 }
-                updateDisplay();
+                updateDisplay(); // Recalculate on edit
             });
             input.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     input.blur(); // Trigger blur to save
                 }
             });
+            // Attach input event listener for immediate calculation update
+            input.addEventListener('input', updateDisplay);
         });
 
         return li;
@@ -423,7 +445,7 @@ document.addEventListener('DOMContentLoaded', () => {
             data: {
                 labels: [], // Populated in updateCharts
                 datasets: [{
-                    label: 'Tax Amount',
+                    label: translations[currentLanguage].section_taxes_title || 'Taxes',
                     data: [], // Populated in updateCharts
                     backgroundColor: 'rgba(75, 192, 192, 0.6)',
                     borderColor: 'rgba(75, 192, 192, 1)',
@@ -439,11 +461,12 @@ document.addEventListener('DOMContentLoaded', () => {
             data: {
                 labels: [], // Populated in updateCharts
                 datasets: [{
-                    label: 'Expenses Breakdown',
+                    label: translations[currentLanguage].section_expenses_title || 'Expenses Breakdown',
                     data: [], // Populated in updateCharts
                     backgroundColor: [
-                        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9900', '#C9CBCF', '#8BC34A', '#FF9800', '#673AB7'
-                    ],
+                        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9900', '#C9CBCF', '#8BC34A', '#FF9800', '#673AB7',
+                        '#E67C73', '#F6BF26', '#33B679', '#039BE5', '#7986CB', '#8E24AA', '#E91E63', '#9C27B0'
+                    ], // More colors for more expenses
                     hoverOffset: 4
                 }]
             },
@@ -456,7 +479,7 @@ document.addEventListener('DOMContentLoaded', () => {
             data: {
                 labels: [], // Populated in updateCharts
                 datasets: [{
-                    label: 'Budget Distribution',
+                    label: translations[currentLanguage].section_summary_title || 'Budget Distribution',
                     data: [], // Populated in updateCharts
                     backgroundColor: [],
                     hoverOffset: 4
@@ -485,6 +508,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         taxChart.data.labels = taxLabels;
         taxChart.data.datasets[0].data = taxData;
+        taxChart.data.datasets[0].label = translations[currentLanguage].section_taxes_title; // Update label
         taxChart.update();
 
         // Update Expenses Chart
@@ -505,6 +529,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         expensesChart.data.labels = expenseLabels;
         expensesChart.data.datasets[0].data = expenseData;
+        expensesChart.data.datasets[0].label = translations[currentLanguage].section_expenses_title; // Update label
         expensesChart.update();
 
         // Update Budget Distribution Chart
@@ -529,7 +554,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '#4BC0C0', // Expenses
             '#4CAF50'  // Remaining Budget (Green)
         ];
-        // If remaining budget is negative, change color to red
+        // If remaining budget is negative, change color to red and label
         if (remainingBudget < 0) {
             budgetColors[4] = '#F44336'; // Red for negative budget
             budgetData[4] = Math.abs(remainingBudget); // Show absolute value of deficit
@@ -540,6 +565,7 @@ document.addEventListener('DOMContentLoaded', () => {
         budgetDistributionChart.data.labels = budgetLabels;
         budgetDistributionChart.data.datasets[0].data = budgetData;
         budgetDistributionChart.data.datasets[0].backgroundColor = budgetColors;
+        budgetDistributionChart.data.datasets[0].label = translations[currentLanguage].section_summary_title; // Update label
         budgetDistributionChart.update();
 
         // Update chart text color based on dark mode
@@ -548,11 +574,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         [taxChart, expensesChart, budgetDistributionChart].forEach(chart => {
             chart.options.plugins.legend.labels.color = chartTextColor;
-            if (chart.options.scales.x) { // Bar chart has x and y scales
+            // Update scales only if they exist for the chart type
+            if (chart.options.scales && chart.options.scales.x) {
                 chart.options.scales.x.ticks.color = chartTextColor;
                 chart.options.scales.x.grid.color = chartGridColor;
             }
-            if (chart.options.scales.y) { // Bar chart has x and y scales
+            if (chart.options.scales && chart.options.scales.y) {
                 chart.options.scales.y.ticks.color = chartTextColor;
                 chart.options.scales.y.grid.color = chartGridColor;
             }
@@ -669,21 +696,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         // Update charts to reflect new theme colors
         if (taxChart && expensesChart && budgetDistributionChart) {
-            const chartTextColor = getComputedStyle(document.body).getPropertyValue('--chart-text-color');
-            const chartGridColor = getComputedStyle(document.body).getPropertyValue('--chart-grid-color');
-
-            [taxChart, expensesChart, budgetDistributionChart].forEach(chart => {
-                chart.options.plugins.legend.labels.color = chartTextColor;
-                if (chart.options.scales.x) {
-                    chart.options.scales.x.ticks.color = chartTextColor;
-                    chart.options.scales.x.grid.color = chartGridColor;
-                }
-                if (chart.options.scales.y) {
-                    chart.options.scales.y.ticks.color = chartTextColor;
-                    chart.options.scales.y.grid.color = chartGridColor;
-                }
-                chart.update();
-            });
+            updateCharts(
+                getTotal(taxInputs, customTaxes),
+                getTotal(expenseInputs, customExpenses),
+                grossSalary - getTotal(preTaxDeductInputs, customPreTaxDeductions) - getTotal(postTaxDeductInputs, customPostTaxDeductions), // Net salary part
+                (grossSalary - getTotal(preTaxDeductInputs, customPreTaxDeductions) - getTotal(taxInputs, customTaxes) - getTotal(postTaxDeductInputs, customPostTaxDeductions)) - getTotal(expenseInputs, customExpenses), // Remaining budget part
+                getTotal(preTaxDeductInputs, customPreTaxDeductions),
+                getTotal(postTaxDeductInputs, customPostTaxDeductions)
+            );
         }
     }
 
@@ -702,7 +722,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Listen for changes on all standard number inputs to update display
-    const allNumberInputs = document.querySelectorAll('input[type="number"]');
+    // IMPORTANT: Attach input event listener to all number inputs
+    const allNumberInputs = document.querySelectorAll('.form-grid input[type="number"]');
     allNumberInputs.forEach(input => {
         input.addEventListener('input', updateDisplay);
     });
@@ -839,6 +860,7 @@ document.addEventListener('DOMContentLoaded', () => {
             for(const key in expenseInputs) {
                 const value = parseFloat(expenseInputs[key].value) || 0;
                 if (value > 0) {
+                    // Use a unique key for lookup later if needed, or just the text
                     allExpenses.push({ name: expenseInputs[key].previousElementSibling.textContent, amount: value });
                 }
             }
@@ -848,7 +870,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
             allExpenses.sort((a, b) => b.amount - a.amount);
-            const highestExpenseCategory = allExpenses.length > 0 ? allExpenses[0].name : translations[currentLanguage].label_expenses || 'your expenses';
+            const highestExpenseCategory = allExpenses.length > 0 ? allExpenses[0].name : (translations[currentLanguage].label_expenses || 'your expenses');
 
             report += translations[currentLanguage].ai_report_negative_budget
                 .replace('${remainingBudget}', `$${Math.abs(remainingBudget).toFixed(2)}`)
