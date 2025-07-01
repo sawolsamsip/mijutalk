@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="../scripts/budget.css">
 </head>
 <body>
-  <!-- 상단 네비게이션 -->
   <nav class="navbar">
     <b>DeepSeek 가계부</b>
     <button id="darkmode-toggle" class="nav-btn" aria-label="다크모드 전환">🌙</button>
@@ -35,9 +34,14 @@
       <label>Medicare: <input type="number" id="tax-medicare" min="0" style="width:110px;"></label>
       <label>CA SDI: <input type="number" id="tax-casdi" min="0" style="width:110px;"></label>
     </form>
-    <!-- 사용자 정의 세금 항목 -->
     <div id="tax-custom-list" style="margin-top:10px;"></div>
     <button type="button" onclick="addCustomRow('tax')" style="margin-top:4px;">세금 항목 추가</button>
+    <form id="tax-add-form" style="margin-top:10px;display:flex;align-items:center;gap:10px;">
+      <label>항목명: <input type="text" id="tax-item-name" style="width:90px;"></label>
+      <label>금액: <input type="number" id="tax-item-amount" min="1" style="width:80px;"></label>
+      <button type="submit" class="nav-btn">기록</button>
+    </form>
+    <div id="tax-hist-list" style="margin-top:12px;"></div>
   </section>
 
   <!-- 세전 공제 섹션 -->
@@ -52,6 +56,12 @@
     </form>
     <div id="pre-tax-custom-list" style="margin-top:10px;"></div>
     <button type="button" onclick="addCustomRow('pre-tax')" style="margin-top:4px;">세전 공제 항목 추가</button>
+    <form id="pre-tax-add-form" style="margin-top:10px;display:flex;align-items:center;gap:10px;">
+      <label>항목명: <input type="text" id="pre-tax-item-name" style="width:90px;"></label>
+      <label>금액: <input type="number" id="pre-tax-item-amount" min="1" style="width:80px;"></label>
+      <button type="submit" class="nav-btn">기록</button>
+    </form>
+    <div id="pre-tax-hist-list" style="margin-top:12px;"></div>
   </section>
 
   <!-- 세후 공제 섹션 -->
@@ -68,9 +78,14 @@
     </form>
     <div id="post-tax-custom-list" style="margin-top:10px;"></div>
     <button type="button" onclick="addCustomRow('post-tax')" style="margin-top:4px;">세후 공제 항목 추가</button>
+    <form id="post-tax-add-form" style="margin-top:10px;display:flex;align-items:center;gap:10px;">
+      <label>항목명: <input type="text" id="post-tax-item-name" style="width:90px;"></label>
+      <label>금액: <input type="number" id="post-tax-item-amount" min="1" style="width:80px;"></label>
+      <button type="submit" class="nav-btn">기록</button>
+    </form>
+    <div id="post-tax-hist-list" style="margin-top:12px;"></div>
   </section>
 
-  <!-- 이하 기존 가계부 입력/차트/리포트 등은 그대로 -->
   <!-- 예산/지출 입력 -->
   <section class="card">
     <h2>지출 입력</h2>
@@ -83,6 +98,7 @@
       <input type="file" id="expense-image" accept="image/*" aria-label="영수증 첨부">
       <button type="submit" class="nav-btn" aria-label="저장">저장</button>
     </form>
+    <div id="expenses-list" style="margin-top:12px;"></div>
   </section>
 
   <!-- 실시간 환율 변환 -->
@@ -120,31 +136,6 @@
     <span id="backup-msg" style="margin-left:12px;"></span>
   </section>
 
-  <!-- 소비/지출 리스트 및 차트 -->
-  <section class="card">
-    <h2>지출 내역</h2>
-    <div id="expenses-list"></div>
-    <canvas id="monthly-chart" height="110" style="margin:18px 0 8px 0;width:99%;"></canvas>
-    <canvas id="category-chart" height="110" style="margin:16px 0 8px 0;width:99%;"></canvas>
-  </section>
-
-  <!-- 카테고리/태그별 분석 -->
-  <section class="card">
-    <h2>카테고리/태그별 분석</h2>
-    <form id="detail-report-form" style="display:flex;gap:10px;flex-wrap:wrap;">
-      <select id="report-category">
-        <option value="">카테고리 전체</option>
-      </select>
-      <input type="text" id="report-tag" placeholder="태그(선택)">
-      <input type="month" id="report-from">
-      <input type="month" id="report-to">
-      <button type="submit" class="nav-btn">분석</button>
-    </form>
-    <canvas id="detail-line-chart" height="120"></canvas>
-    <canvas id="detail-pie-chart" height="120" style="margin-top:20px;"></canvas>
-    <div id="detail-summary"></div>
-  </section>
-
   <!-- AI 소비 리포트 -->
   <section class="card">
     <h2>AI 소비 리포트 & 절약 팁</h2>
@@ -155,15 +146,11 @@
   <!-- 도움말 모달 -->
   <div id="help-modal" style="display:none;"></div>
 
-  <!-- 영수증 이미지 모달 -->
-  <!-- 동적 생성 -->
-
   <script src="../scripts/chart.umd.min.js"></script>
   <script src="../scripts/budget.js"></script>
   <script>
-    // 사용자 정의 입력 행 동적 추가/삭제 함수
+    // 사용자 정의 입력 행 동적 추가/삭제 함수 (기존과 동일)
     function addCustomRow(type) {
-      // type: 'tax', 'pre-tax', 'post-tax'
       const listId = {
         'tax': 'tax-custom-list',
         'pre-tax': 'pre-tax-custom-list',
