@@ -1,695 +1,610 @@
-// 설정값
-const DEFAULT_DEDUCTIONS = {
-    taxes: [
-        "Federal Withholding", 
-        "State Tax (CA)", 
-        "OASDI (Social Security)", 
-        "Medicare", 
-        "CA SDI"
-    ],
-    preTax: [
-        "401k Traditional",
-        "Medical Premium",
-        "Dental Premium",
-        "Vision Premium",
-        "MSEAP"
-    ],
-    postTax: [
-        "401k Roth",
-        "Stock Purchase Plan",
-        "Legal Services",
-        "LTD",
-        "AD&D",
-        "Accident Insurance",
-        "Critical Illness"
-    ]
+// ----------------------- 기본 데이터/상수 -----------------------
+const CATEGORIES = [
+  { id: 'food', label: { ko: '식비' }, icon: '🍚', color: '#f76d6d' },
+  { id: 'cafe', label: { ko: '카페/간식' }, icon: '☕', color: '#ffb86b' },
+  { id: 'mart', label: { ko: '마트/생필' }, icon: '🛒', color: '#7ed6df' },
+  { id: 'health', label: { ko: '의료/건강' }, icon: '💊', color: '#70a1ff' },
+  { id: 'transport', label: { ko: '교통/차량' }, icon: '🚗', color: '#f8c291' },
+  { id: 'life', label: { ko: '생활/공과금' }, icon: '💡', color: '#6ab04c' },
+  { id: 'shopping', label: { ko: '쇼핑' }, icon: '🛍️', color: '#a29bfe' },
+  { id: 'hobby', label: { ko: '취미/여가' }, icon: '🎮', color: '#f3a683' },
+  { id: 'child', label: { ko: '육아/교육' }, icon: '👶', color: '#f7b731' },
+  { id: 'etc', label: { ko: '기타' }, icon: '📝', color: '#b2bec3' }
+];
+let currentLang = 'ko';
+let expenses = JSON.parse(localStorage.getItem('budget.expenses') || '[]');
+let categoryLimits = JSON.parse(localStorage.getItem('budget.limits') || '{}');
+let currentCurrency = localStorage.getItem('budget.currency') || 'KRW';
+let fxRates = JSON.parse(localStorage.getItem('budget.fxRates') || '{"USD":1,"KRW":1300,"JPY":150,"EUR":1.1}');
+let sharedKey = localStorage.getItem('budget.sharedKey') || null;
+let sharedUsers = JSON.parse(localStorage.getItem('budget.sharedUsers')||'[]');
+let budgetGoal = JSON.parse(localStorage.getItem('budget.goal') || '{"expense":0,"saving":0}');
+
+// ----------------------- 다크모드 -----------------------
+const darkPref = localStorage.getItem('budget.darkmode')==='1';
+if(darkPref) document.body.classList.add('dark');
+document.getElementById('darkmode-toggle').onclick = function() {
+  document.body.classList.toggle('dark');
+  localStorage.setItem('budget.darkmode', document.body.classList.contains('dark')?'1':'0');
 };
 
-const budgetData = {
-    income: 0,
-    taxes: [],
-    preTax: [],
-    postTax: [],
-    expenses: [],
-    categories: [
-        { id: 'housing', name: '🏠 주거', nameEn: '🏠 Housing' },
-        { id: 'food', name: '🍔 식비', nameEn: '🍔 Food' },
-        { id: 'transportation', name: '🚗 교통', nameEn: '🚗 Transportation' },
-        { id: 'health', name: '🏥 건강', nameEn: '🏥 Health' },
-        { id: 'family', name: '👪 가족', nameEn: '👪 Family' },
-        { id: 'shopping', name: '🛍️ 쇼핑', nameEn: '🛍️ Shopping' },
-        { id: 'finance', name: '💳 금융', nameEn: '💳 Finance' },
-        { id: 'travel', name: '✈️ 여행', nameEn: '✈️ Travel' },
-        { id: 'saving', name: '💰 저축', nameEn: '💰 Saving' },
-        { id: 'business', name: '💼 업무', nameEn: '💼 Business' }
-    ],
-    currentLanguage: 'ko',
-    uiState: {
-        showDeductions: false,
-        showExpenses: false,
-        showSummary: false,
-        showCharts: false
-    }
-};
-
-let incomeFlowChartInstance = null;
-let expenseCategoryChartInstance = null;
-let editingItem = null;
-
-// UI 상태 토글 함수 추가
-function toggleUISection(section) {
-    budgetData.uiState[`show${section}`] = !budgetData.uiState[`show${section}`];
-    const element = document.querySelector(`.${section.toLowerCase()}-section`);
-    if (budgetData.uiState[`show${section}`]) {
-        element.classList.add('section-active');
-    } else {
-        element.classList.remove('section-active');
-    }
-}
-
-// 데이터 불러오기 함수 추가
-function loadDataFromFile() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
-    
-    input.onchange = e => {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        
-        reader.onload = event => {
-            try {
-                const data = JSON.parse(event.target.result);
-                Object.assign(budgetData, data);
-                updateUI();
-                alert(budgetData.currentLanguage === 'ko' 
-                    ? '데이터 불러오기 성공!' 
-                    : 'Data loaded successfully!');
-            } catch (error) {
-                alert(budgetData.currentLanguage === 'ko' 
-                    ? '파일 형식이 올바르지 않습니다.' 
-                    : 'Invalid file format.');
-            }
-        };
-        
-        reader.readAsText(file);
-    };
-    
-    input.click();
-}
-
-
-
-// --- 유틸리티 함수 ---
-function generateUniqueId() {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
-}
-
-function formatMoney(amount) {
-    if (Number.isNaN(amount)) return "0.00";
-    return parseFloat(amount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
-function calculatePercentage(value, total) {
-    if (total === 0) return "0.0%";
-    return ((value / total) * 100).toFixed(1) + '%';
-}
-
-// --- 언어 전환 ---
-function switchLanguage(lang) {
-    budgetData.currentLanguage = lang;
-    document.querySelectorAll('[data-lang]').forEach(e => {
-        if (e.getAttribute('data-lang') === lang) {
-            e.classList.remove('hidden');
-        } else {
-            e.classList.add('hidden');
-        }
-    });
-
-    document.querySelectorAll('[data-lang-ko-placeholder]').forEach(el => {
-        const koPlaceholder = el.getAttribute('data-lang-ko-placeholder');
-        const enPlaceholder = el.getAttribute('data-lang-en-placeholder');
-        el.placeholder = (lang === 'ko') ? koPlaceholder : enPlaceholder;
-    });
-
-    document.getElementById('lang-ko').classList.toggle('active', lang === 'ko');
-    document.getElementById('lang-en').classList.toggle('active', lang === 'en');
-
-    populateCategorySelect();
-    updateUI();
-}
-
-// --- 카테고리 셀렉트박스 채우기 ---
+// ----------------------- 예산/지출 입력 폼 초기화 -----------------------
 function populateCategorySelect() {
-    const select = document.getElementById('category-select');
-    const prev = select.value;
-    select.innerHTML = '';
-
-    budgetData.categories.forEach(cat => {
-        const o = document.createElement('option');
-        o.value = cat.id;
-        o.textContent = budgetData.currentLanguage === 'ko' ? cat.name : cat.nameEn || cat.name;
-        select.appendChild(o);
-    });
-
-    const c = document.createElement('option');
-    c.value = 'custom';
-    c.textContent = budgetData.currentLanguage === 'ko' ? '✏️ 직접 입력' : '✏️ Custom Category';
-    select.appendChild(c);
-
-    if (budgetData.categories.some(cat => cat.id === prev) || prev === 'custom') {
-        select.value = prev;
-    } else {
-        select.value = budgetData.categories[0] ? budgetData.categories[0].id : '';
-    }
+  const sel = document.getElementById('expense-category');
+  sel.innerHTML = '';
+  CATEGORIES.forEach(cat=>{
+    const opt = document.createElement('option');
+    opt.value = cat.id;
+    opt.textContent = cat.icon + ' ' + cat.label[currentLang];
+    sel.appendChild(opt);
+  });
 }
+populateCategorySelect();
 
-// --- 차트 업데이트 ---
-function updateCharts(grossIncome, preTaxTotal, taxTotal, postTaxTotal, expensesTotal, remaining) {
-    if (incomeFlowChartInstance) incomeFlowChartInstance.destroy();
-    if (expenseCategoryChartInstance) expenseCategoryChartInstance.destroy();
-
-    const ctx1 = document.getElementById('incomeFlowChart').getContext('2d');
-    incomeFlowChartInstance = new Chart(ctx1, {
-        type: 'doughnut',
-        data: {
-            labels: [
-                budgetData.currentLanguage === 'ko' ? '세전 공제' : 'Pre-Tax Deductions',
-                budgetData.currentLanguage === 'ko' ? '세금' : 'Taxes',
-                budgetData.currentLanguage === 'ko' ? '세후 공제' : 'Post-Tax Deductions',
-                budgetData.currentLanguage === 'ko' ? '총 지출' : 'Total Expenses',
-                budgetData.currentLanguage === 'ko' ? '남은 잔액' : 'Remaining Balance'
-            ],
-            datasets: [{
-                data: [preTaxTotal, taxTotal, postTaxTotal, expensesTotal, Math.max(0, remaining)],
-                backgroundColor: ['#4895ef', '#f72585', '#4cc9f0', '#f8961e', '#43aa8b']
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'bottom', labels: { font: { size: 13 } } },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const label = context.label || '';
-                            const value = context.parsed;
-                            const total = context.dataset.data.reduce((sum, current) => sum + current, 0);
-                            const percentage = total === 0 ? '0.0%' : ((value / total) * 100).toFixed(1) + '%';
-                            return `${label}: $${formatMoney(value)} (${percentage})`;
-                        }
-                    }
-                }
-            }
-        }
-    });
-
-    const ctx2 = document.getElementById('expenseCategoryChart').getContext('2d');
-    const categoryTotals = {};
-    budgetData.expenses.forEach(item => {
-        const cat = budgetData.categories.find(c => c.id === item.category);
-        const label = budgetData.currentLanguage === 'ko' ? (cat?.name || '기타') : (cat?.nameEn || cat?.name || 'Other');
-        if (!categoryTotals[label]) {
-            categoryTotals[label] = 0;
-        }
-        categoryTotals[label] += item.amount;
-    });
-
-    expenseCategoryChartInstance = new Chart(ctx2, {
-        type: 'pie',
-        data: {
-            labels: Object.keys(categoryTotals),
-            datasets: [{
-                data: Object.values(categoryTotals),
-                backgroundColor: ['#4895ef', '#f72585', '#4cc9f0', '#f8961e', '#7209b7', '#b5179e', '#43aa8b', '#ffd60a', '#b5ead7', '#ffdac1']
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'bottom', labels: { font: { size: 13 } } },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const label = context.label || '';
-                            const value = context.parsed;
-                            const total = context.dataset.data.reduce((sum, current) => sum + current, 0);
-                            const percentage = total === 0 ? '0.0%' : ((value / total) * 100).toFixed(1) + '%';
-                            return `${label}: $${formatMoney(value)} (${percentage})`;
-                        }
-                    }
-                }
-            }
-        }
+// ----------------------- 환율 기능 -----------------------
+function renderFX() {
+  document.getElementById('currency-select').value = currentCurrency;
+  let info = '';
+  for(const k in fxRates) {
+    if(k !== currentCurrency) info += `1 ${k} ≈ ${fxRates[k]} ${currentCurrency}&nbsp;&nbsp;`;
+  }
+  document.getElementById('fx-info').innerHTML = info;
+}
+function fetchFXRates() {
+  fetch('https://api.exchangerate.host/latest?base=USD&symbols=KRW,JPY,EUR,USD')
+    .then(r=>r.json()).then(data=>{
+      fxRates = data.rates;
+      localStorage.setItem('budget.fxRates', JSON.stringify(fxRates));
+      renderFX();
     });
 }
+document.getElementById('fx-refresh').onclick = fetchFXRates;
+document.getElementById('currency-select').onchange = function() {
+  currentCurrency = this.value;
+  localStorage.setItem('budget.currency', currentCurrency);
+  renderFX();
+  rerenderAllCurrency();
+};
+renderFX();
 
-// --- UI 전체 업데이트 ---
-function updateUI() {
-    localStorage.setItem('budgetData', JSON.stringify(budgetData));
-
-    const gross = budgetData.income;
-    const pretax = budgetData.preTax.reduce((s, i) => s + i.amount, 0);
-    const tax = budgetData.taxes.reduce((s, i) => s + i.amount, 0);
-    const posttax = budgetData.postTax.reduce((s, i) => s + i.amount, 0);
-
-    const totalDeduct = pretax + tax + posttax;
-    const taxable = gross - pretax;
-    const net = taxable - tax - posttax;
-    const expenses = budgetData.expenses.reduce((s, i) => s + i.amount, 0);
-    const remain = net - expenses;
-
-    document.getElementById('income-input').value = gross;
-
-    document.getElementById('gross-income').textContent = formatMoney(gross);
-    document.getElementById('pre-tax-deductions').textContent = formatMoney(pretax);
-    document.getElementById('taxable-income').textContent = formatMoney(taxable);
-    document.getElementById('tax-total').textContent = formatMoney(tax);
-    document.getElementById('post-tax-deductions').textContent = formatMoney(posttax);
-    document.getElementById('total-deductions-taxes').textContent = formatMoney(totalDeduct);
-    document.getElementById('net-income').textContent = formatMoney(net);
-
-    document.getElementById('expenses-total-card').textContent = formatMoney(expenses);
-    document.getElementById('remaining-balance').textContent = formatMoney(remain);
-
-    const remainingBalanceElement = document.getElementById('remaining-balance');
-    remainingBalanceElement.className = `card-amount ${remain >= 0 ? 'positive' : 'negative'}`;
-
-    document.getElementById('expenses-percentage-card').textContent = calculatePercentage(expenses, gross);
-    document.getElementById('remaining-percentage-card').textContent = calculatePercentage(remain, gross);
-
-    renderList('tax-list', budgetData.taxes);
-    renderList('pre-tax-list', budgetData.preTax);
-    renderList('post-tax-list', budgetData.postTax);
-    renderExpenses();
-
-    populateCategorySelect();
-    updateCharts(gross, pretax, tax, posttax, expenses, remain);
+// ----------------------- 예산/지출 저장 -----------------------
+document.getElementById('expense-form').onsubmit = function(e) {
+  e.preventDefault();
+  const catId = document.getElementById('expense-category').value;
+  const desc = document.getElementById('expense-desc').value.trim();
+  const value = Number(document.getElementById('expense-value').value);
+  const tagStr = document.getElementById('expense-tags').value.trim();
+  const tags = tagStr ? tagStr.split(',').map(t=>t.trim()).filter(t=>t) : [];
+  const memo = document.getElementById('expense-memo').value.trim();
+  const date = new Date().toISOString().slice(0,10);
+  let imgUrl = '';
+  const imgInput = document.getElementById('expense-image');
+  if(imgInput.files && imgInput.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(e2) {
+      imgUrl = e2.target.result;
+      addExpense({catId, desc, value, tags, memo, imgUrl, date});
+    };
+    reader.readAsDataURL(imgInput.files[0]);
+    return;
+  }
+  addExpense({catId, desc, value, tags, memo, imgUrl, date});
+};
+function addExpense(e) {
+  expenses.push(e);
+  localStorage.setItem('budget.expenses', JSON.stringify(expenses));
+  if(sharedKey) saveSharedData();
+  renderExpenses();
+  rerenderAllCurrency();
+  renderGoalProgress();
+  checkBudgetAlerts();
+}
+// 금액, 통화 변환
+function formatCurrency(val) {
+  if(!val && val!==0) return '';
+  let v = val;
+  if(currentCurrency !== 'KRW') v = Math.round(val / fxRates['KRW'] * fxRates[currentCurrency]);
+  return v.toLocaleString() + ' ' + currentCurrency;
 }
 
-// --- 목록 렌더링 함수 ---
-function renderList(elementId, items) {
-    const container = document.getElementById(elementId);
-    const type = elementId.replace('-list', '');
-
-    container.innerHTML = items.map(item => `
-        <div class="list-item" data-id="${item.id}" data-type="${type}">
-            ${editingItem && editingItem.id === item.id ?
-                `<div class="list-item-content">
-                    <input type="text" value="${item.name}" id="edit-name-${item.id}" placeholder="${budgetData.currentLanguage === 'ko' ? '항목명' : 'Item name'}">
-                    <input type="number" value="${item.amount}" id="edit-amount-${item.id}" placeholder="${budgetData.currentLanguage === 'ko' ? '금액' : 'Amount'}">
-                </div>
-                <div class="list-item-actions">
-                    <button onclick="saveEdit('${type}','${item.id}')" class="btn-success">${budgetData.currentLanguage === 'ko' ? '저장' : 'Save'}</button>
-                    <button onclick="cancelEdit()" class="btn-warning">${budgetData.currentLanguage === 'ko' ? '취소' : 'Cancel'}</button>
-                </div>`
-                :
-                `<div class="list-item-content">
-                    <span>${item.name}: $${formatMoney(item.amount)}</span>
-                </div>
-                <div class="list-item-actions">
-                    <button onclick="editItem('${type}','${item.id}')" class="btn-info">${budgetData.currentLanguage === 'ko' ? '수정' : 'Edit'}</button>
-                    <button onclick="deleteItem('${type}','${item.id}')" class="btn-danger">${budgetData.currentLanguage === 'ko' ? '삭제' : 'Delete'}</button>
-                </div>`
-            }
-        </div>
-    `).join('');
-}
-
-// --- 지출 목록 렌더링 함수 ---
+// ----------------------- 지출 내역 리스트 -----------------------
 function renderExpenses() {
-    const container = document.getElementById('expenses-list');
-    container.innerHTML = budgetData.expenses.map(item => {
-        const category = budgetData.categories.find(cat => cat.id === item.category);
-        const categoryName = budgetData.currentLanguage === 'ko' ? category?.name : category?.nameEn || category?.name || 'Other';
-        return `
-            <div class="list-item" data-id="${item.id}" data-type="expenses">
-                ${editingItem && editingItem.id === item.id ?
-                    `<div class="list-item-content">
-                        <select id="edit-category-${item.id}" style="margin-right:7px;">
-                            ${budgetData.categories.map(cat => `
-                                <option value="${cat.id}" ${cat.id === item.category ? 'selected' : ''}>
-                                    ${budgetData.currentLanguage === 'ko' ? cat.name : cat.nameEn || cat.name}
-                                </option>
-                            `).join('')}
-                        </select>
-                        <input type="text" value="${item.name}" id="edit-name-${item.id}" placeholder="${budgetData.currentLanguage === 'ko' ? '항목명' : 'Item name'}">
-                        <input type="number" value="${item.amount}" id="edit-amount-${item.id}" placeholder="${budgetData.currentLanguage === 'ko' ? '금액' : 'Amount'}">
-                    </div>
-                    <div class="list-item-actions">
-                        <button onclick="saveEdit('expenses','${item.id}')" class="btn-success">${budgetData.currentLanguage === 'ko' ? '저장' : 'Save'}</button>
-                        <button onclick="cancelEdit()" class="btn-warning">${budgetData.currentLanguage === 'ko' ? '취소' : 'Cancel'}</button>
-                    </div>`
-                    :
-                    `<div class="list-item-content">
-                        <span class="badge">${categoryName || '📌 ' + (budgetData.currentLanguage === 'ko' ? '기타' : 'Other')}</span>
-                        <span>${item.name}</span>
-                    </div>
-                    <span class="list-item-amount">$${formatMoney(item.amount)}</span>
-                    <div class="list-item-actions">
-                        <button onclick="editItem('expenses','${item.id}')" class="btn-info">${budgetData.currentLanguage === 'ko' ? '수정' : 'Edit'}</button>
-                        <button onclick="deleteItem('expenses','${item.id}')" class="btn-danger">${budgetData.currentLanguage === 'ko' ? '삭제' : 'Delete'}</button>
-                    </div>`
-                }
-            </div>
-        `;
-    }).join('');
+  let html = '';
+  expenses.slice().reverse().forEach((e,idx)=>{
+    const cat = CATEGORIES.find(c=>c.id===e.catId)||{icon:'',label:{ko:'기타'}};
+    html += `
+      <div style="margin-bottom:13px;border-bottom:1px solid #e3e3e3;padding-bottom:7px;">
+        <span title="${cat.label.ko}">${cat.icon}</span>
+        <b style="margin-left:6px;">${e.desc}</b>
+        <span style="color:#1976d2;margin-left:8px;">${formatCurrency(e.value)}</span>
+        <span style="color:#888;margin-left:8px;font-size:0.95em;">${e.date||''}</span>
+        ${e.tags&&e.tags.length?e.tags.map(t=>`<span class="tag">#${t}</span>`).join(''):''}
+        ${e.memo?`<span class="memo-box" title="메모">${e.memo}</span>`:''}
+        ${e.imgUrl?`<span class="receipt-thumb" onclick="showReceipt('${e.imgUrl.replace(/'/g,'\\\'')}')">🧾</span>`:''}
+      </div>
+    `;
+  });
+  document.getElementById('expenses-list').innerHTML = html || "<div style='color:#888;'>지출 내역이 없습니다.</div>";
+  checkBudgetAlerts();
 }
+function showReceipt(imgUrl) {
+  let modal = document.createElement('div');
+  modal.style = "position:fixed;left:0;top:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:2000;display:flex;align-items:center;justify-content:center;";
+  modal.onclick = ()=>document.body.removeChild(modal);
+  modal.innerHTML = `<img src="${imgUrl}" style="max-width:85vw;max-height:82vh;border-radius:12px;">`;
+  document.body.appendChild(modal);
+}
+renderExpenses();
 
-// --- CRUD 함수 ---
-function deleteItem(type, id) {
-    if (confirm(budgetData.currentLanguage === 'ko' ? '정말로 삭제하시겠습니까?' : 'Are you sure you want to delete this item?')) {
-        budgetData[type] = budgetData[type].filter(item => item.id !== id);
-        updateUI();
+// ----------------------- 차트(월별, 카테고리별) -----------------------
+let monthlyChart, categoryChart;
+function renderCharts() {
+  // 월별 합계
+  const byMonth = {};
+  expenses.forEach(e=>{
+    const ym = (e.date||'').slice(0,7);
+    byMonth[ym] = (byMonth[ym]||0) + e.value;
+  });
+  const months = Object.keys(byMonth).sort();
+  const vals = months.map(m=>byMonth[m]);
+  if(monthlyChart) monthlyChart.destroy();
+  monthlyChart = new Chart(document.getElementById('monthly-chart').getContext('2d'), {
+    type:'bar',
+    data: { labels: months, datasets: [{label:'월별합계',data:vals,backgroundColor:'#1976d2'}] },
+    options:{responsive:true,plugins:{legend:{display:false}}}
+  });
+  // 카테고리별 합계
+  const byCat = {};
+  expenses.forEach(e=>{
+    byCat[e.catId] = (byCat[e.catId]||0) + e.value;
+  });
+  const cats = Object.keys(byCat);
+  const catLabels = cats.map(cid=>{
+    const c = CATEGORIES.find(c=>c.id===cid);
+    return c?c.icon+' '+c.label.ko:cid;
+  });
+  const catColors = cats.map(cid=>{
+    const c = CATEGORIES.find(c=>c.id===cid); return c?c.color:'#aaa';
+  });
+  const catVals = cats.map(cid=>byCat[cid]);
+  if(categoryChart) categoryChart.destroy();
+  categoryChart = new Chart(document.getElementById('category-chart').getContext('2d'), {
+    type:'doughnut',
+    data: { labels: catLabels, datasets: [{data:catVals,backgroundColor:catColors}] },
+    options:{plugins:{legend:{position:'bottom'}}}
+  });
+}
+function rerenderAllCurrency() {
+  renderExpenses();
+  renderCharts();
+  renderGoalProgress();
+}
+rerenderAllCurrency();
+
+// ----------------------- 알림/위젯 -----------------------
+let alertQueue = [];
+function addAlert(msg, type='warn') {
+  alertQueue.push({msg, type});
+  renderAlerts();
+}
+function renderAlerts() {
+  const bar = document.getElementById('alert-bar');
+  bar.innerHTML = '';
+  alertQueue.forEach((a, idx)=>{
+    bar.innerHTML += `<div class="alert-msg alert-${(a.type==='ok'?'ok':(a.type==='danger'?'danger':'warn'))}">
+      ${a.msg}
+      <span class="alert-close" onclick="closeAlert(${idx})">&times;</span>
+    </div>`;
+  });
+}
+window.closeAlert = function(idx) {
+  alertQueue.splice(idx,1);
+  renderAlerts();
+};
+// 주요 이벤트 감지 (예: renderExpenses/renderCategoryLimits 등에서 호출)
+function checkBudgetAlerts() {
+  alertQueue = []; // 기존 알림 지움(원하면 누적도 가능)
+  // 한도 경고
+  CATEGORIES.forEach(cat => {
+    const limit = categoryLimits[cat.id];
+    if(!limit) return;
+    const spent = expenses.filter(e=>e.catId===cat.id).reduce((a,b)=>a+b.value,0);
+    if(spent > limit) {
+      addAlert(`${cat.icon} <b>${cat.label.ko}</b> 카테고리 한도 <b>초과</b>! (${formatCurrency(spent)} > ${formatCurrency(limit)})`, 'danger');
+    } else if(spent > 0.8*limit) {
+      addAlert(`${cat.icon} <b>${cat.label.ko}</b> 한도 <b>80%</b> 이상 사용! (${formatCurrency(spent)} / ${formatCurrency(limit)})`, 'warn');
     }
+  });
+  // 목표 관련
+  const nowYM = new Date().toISOString().slice(0,7);
+  const monthExpenses = expenses.filter(e=>(e.date||'').slice(0,7)===nowYM).reduce((a,b)=>a+b.value,0);
+  const monthIncomes = (window.incomes||[]).filter(e=>(e.date||'').slice(0,7)===nowYM).reduce((a,b)=>a+b.value,0);
+  const saving = Math.max(monthIncomes - monthExpenses, 0);
+  if(budgetGoal.expense && monthExpenses > budgetGoal.expense) {
+    addAlert(`이달 지출이 <b>목표(${formatCurrency(budgetGoal.expense)})</b>를 초과했습니다!`, 'danger');
+  } else if(budgetGoal.expense && monthExpenses > 0.8*budgetGoal.expense) {
+    addAlert(`이달 지출이 목표의 80% 이상입니다.`, 'warn');
+  }
+  if(budgetGoal.saving && saving >= budgetGoal.saving) {
+    addAlert(`이달 저축 목표 <b>${formatCurrency(budgetGoal.saving)}</b> 달성!`, 'ok');
+  }
 }
 
-function editItem(type, id) {
-    cancelEdit();
-    const item = budgetData[type].find(item => item.id === id);
-    if (item) {
-        editingItem = { ...item, type: type };
-        updateUI();
-    }
+// ----------------------- 카테고리/태그별 상세 리포트 -----------------------
+function populateReportCategory() {
+  const sel = document.getElementById('report-category');
+  sel.innerHTML = '<option value="">카테고리 전체</option>';
+  CATEGORIES.forEach(cat=>{
+    const opt = document.createElement('option');
+    opt.value = cat.id;
+    opt.textContent = cat.icon + ' ' + cat.label[currentLang];
+    sel.appendChild(opt);
+  });
 }
-
-function saveEdit(type, id) {
-    const idx = budgetData[type].findIndex(item => item.id === id);
-    if (idx === -1) return;
-
-    const newNameInput = document.getElementById(`edit-name-${id}`);
-    const newAmountInput = document.getElementById(`edit-amount-${id}`);
-
-    const newName = newNameInput ? newNameInput.value.trim() : '';
-    const newAmount = parseFloat(newAmountInput ? newAmountInput.value : '');
-
-    if (!newName) {
-        alert(budgetData.currentLanguage === 'ko' ? '항목명은 비워둘 수 없습니다.' : 'Item name cannot be empty.');
-        return;
-    }
-    if (isNaN(newAmount)) {
-        alert(budgetData.currentLanguage === 'ko' ? '유효한 금액을 입력해주세요.' : 'Please enter a valid amount.');
-        return;
-    }
-
-    budgetData[type][idx].name = newName;
-    budgetData[type][idx].amount = newAmount;
-
-    if (type === 'expenses') {
-        const newCategorySelect = document.getElementById(`edit-category-${id}`);
-        const newCategory = newCategorySelect ? newCategorySelect.value : '';
-        budgetData[type][idx].category = newCategory;
-    }
-    editingItem = null;
-    updateUI();
-}
-
-function cancelEdit() {
-    editingItem = null;
-    updateUI();
-}
-
-// --- 데이터 저장/불러오기/초기화 ---
-function saveData() {
-    localStorage.setItem('budgetData', JSON.stringify(budgetData));
-    alert(budgetData.currentLanguage === 'ko' ? '데이터가 저장되었습니다!' : 'Data saved!');
-}
-
-function loadData() {
-    const d = localStorage.getItem('budgetData');
-    if (d) {
-        const parsed = JSON.parse(d);
-
-        budgetData.income = parsed.income || 0;
-        budgetData.taxes = Array.isArray(parsed.taxes) ? parsed.taxes : [];
-        budgetData.preTax = Array.isArray(parsed.preTax) ? parsed.preTax : [];
-        budgetData.postTax = Array.isArray(parsed.postTax) ? parsed.postTax : [];
-        budgetData.expenses = Array.isArray(parsed.expenses) ? parsed.expenses : [];
-
-        if (Array.isArray(parsed.categories) && parsed.categories.length > 0) {
-            budgetData.categories = parsed.categories;
-        }
-
-        budgetData.currentLanguage = parsed.currentLanguage || 'ko';
+let detailLineChart, detailPieChart;
+document.getElementById('detail-report-form').onsubmit = function(e) {
+  e.preventDefault();
+  updateDetailReport();
+};
+function updateDetailReport() {
+  const catId = document.getElementById('report-category').value;
+  const tag = document.getElementById('report-tag').value.trim().toLowerCase();
+  const from = document.getElementById('report-from').value;
+  const to = document.getElementById('report-to').value;
+  // 1. 필터링
+  let filtered = expenses.slice();
+  if(catId) filtered = filtered.filter(e=>e.catId===catId);
+  if(tag) filtered = filtered.filter(e=>e.tags && e.tags.map(t=>t.toLowerCase()).includes(tag));
+  if(from) filtered = filtered.filter(e=>(e.date||'').slice(0,7) >= from);
+  if(to) filtered = filtered.filter(e=>(e.date||'').slice(0,7) <= to);
+  // 2. 월별 합계 (라인차트)
+  const monthly = {};
+  filtered.forEach(e=>{
+    const ym = (e.date||'').slice(0,7);
+    if(!monthly[ym]) monthly[ym]=0;
+    monthly[ym]+=e.value;
+  });
+  const labels = Object.keys(monthly).sort();
+  const values = labels.map(ym=>monthly[ym]);
+  if(detailLineChart) detailLineChart.destroy();
+  detailLineChart = new Chart(document.getElementById('detail-line-chart').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: '월별 합계',
+        data: values,
+        borderColor: '#00b894',
+        backgroundColor: 'rgba(0,184,148,0.08)',
+        tension: 0.28,
+        pointRadius: 4
+      }]
+    },
+    options: {responsive:true, plugins:{legend:{display:true}}}
+  });
+  // 3. 태그/카테고리별 비율 (파이차트)
+  let groupField, groupData, groupLabels, groupColors;
+  if(catId || tag) {
+    // 태그 모드면 카테고리별, 카테고리 모드면 태그별
+    if(tag) {
+      groupField = 'catId';
+      groupData = {};
+      filtered.forEach(e=>{
+        if(!groupData[e.catId]) groupData[e.catId]=0;
+        groupData[e.catId]+=e.value;
+      });
+      groupLabels = Object.keys(groupData).map(cid=>{
+        const cat=CATEGORIES.find(c=>c.id===cid);
+        return cat?cat.label[currentLang]:cid;
+      });
+      groupColors = Object.keys(groupData).map(cid=>CATEGORIES.find(c=>c.id===cid)?CATEGORIES.find(c=>c.id===cid).color:'#00b894');
     } else {
-        initDefaultData();
-    }
-    updateUI();
-}
-
-function resetData() {
-    if (confirm(budgetData.currentLanguage === 'ko' ? '모든 데이터를 초기화할까요? 이 작업은 되돌릴 수 없습니다.' : 'Reset all data? This action cannot be undone.')) {
-        localStorage.removeItem('budgetData');
-        initDefaultData();
-        updateUI();
-    }
-}
-
-function initDefaultData() {
-    budgetData.income = 0;
-    budgetData.taxes = [];
-    budgetData.preTax = [];
-    budgetData.postTax = [];
-    budgetData.expenses = [];
-    budgetData.categories = [
-        { id: 'housing', name: '🏠 주거', nameEn: '🏠 Housing' },
-        { id: 'food', name: '🍔 식비', nameEn: '🍔 Food' },
-        { id: 'transportation', name: '🚗 교통', nameEn: '🚗 Transportation' },
-        { id: 'health', name: '🏥 건강', nameEn: '🏥 Health' },
-        { id: 'family', name: '👪 가족', nameEn: '👪 Family' },
-        { id: 'shopping', name: '🛍️ 쇼핑', nameEn: '🛍️ Shopping' },
-        { id: 'finance', name: '💳 금융', nameEn: '💳 Finance' },
-        { id: 'travel', name: '✈️ 여행', nameEn: '✈️ Travel' },
-        { id: 'saving', name: '💰 저축', nameEn: '💰 Saving' },
-        { id: 'business', name: '💼 업무', nameEn: '💼 Business' }
-    ];
-    budgetData.currentLanguage = 'ko';
-    localStorage.setItem('budgetData', JSON.stringify(budgetData));
-}
-
-// --- 세금/공제 항목 추가 함수 ---
-function addDeductionItem(type) {
-    const selectElement = document.getElementById(`${type}-type-select`);
-    const amountInput = document.getElementById(`${type}-amount-input`);
-    const customNameInput = type === 'taxes' ? document.getElementById('tax-custom-name-input') : 
-                          type === 'preTax' ? document.getElementById('pre-tax-custom-name-input') :
-                          document.getElementById('post-tax-custom-name-input');
-    
-    let name = selectElement.value;
-    let amount = parseFloat(amountInput.value);
-
-    // 사용자 정의 항목 처리
-    if (name === 'custom') {
-        name = customNameInput.value.trim();
-        if (!name) {
-            alert(budgetData.currentLanguage === 'ko' ? '항목 이름을 입력하세요.' : 'Please enter item name.');
-            return;
-        }
-    }
-
-    // 유효성 검사
-    if (!name || name === 'default') {
-        alert(budgetData.currentLanguage === 'ko' ? '항목을 선택하세요.' : 'Please select an item.');
-        return;
-    }
-    if (isNaN(amount) || amount <= 0) {
-        alert(budgetData.currentLanguage === 'ko' ? '유효한 금액을 입력하세요.' : 'Please enter a valid amount.');
-        return;
-    }
-
-    // 중복 확인
-    const existingItem = budgetData[type].find(item => item.name.toLowerCase() === name.toLowerCase());
-    if (existingItem) {
-        alert(budgetData.currentLanguage === 'ko' 
-            ? '이미 존재하는 항목입니다. 수정하려면 목록에서 선택하세요.' 
-            : 'This item already exists. To modify, select it from the list.');
-        return;
-    }
-
-    // 새 항목 추가
-    budgetData[type].push({
-        id: generateUniqueId(),
-        name: name,
-        amount: amount,
-        type: type
-    });
-
-    // 입력 필드 초기화
-    selectElement.value = 'default';
-    amountInput.value = '';
-    if (customNameInput) customNameInput.value = '';
-    document.getElementById(`${type}-add-section`).classList.add('hidden');
-
-    updateUI();
-}
-
-// --- 지출 추가 함수 ---
-function addExpense() {
-    const categorySelect = document.getElementById('category-select');
-    const nameInput = document.getElementById('expense-name-input');
-    const amountInput = document.getElementById('expense-amount-input-main');
-
-    const category = categorySelect.value;
-    const name = nameInput.value.trim();
-    const amount = parseFloat(amountInput.value);
-
-    if (category === 'custom') {
-        alert(budgetData.currentLanguage === 'ko' ? '먼저 새 카테고리를 추가하거나 기존 카테고리를 선택하세요.' : 'Please add a new category or select an existing one first.');
-        return;
-    }
-    if (!name) {
-        alert(budgetData.currentLanguage === 'ko' ? '지출 항목 이름을 입력하세요.' : 'Enter expense name.');
-        return;
-    }
-    if (isNaN(amount) || amount <= 0) {
-        alert(budgetData.currentLanguage === 'ko' ? '유효한 금액을 입력하세요.' : 'Enter a valid amount.');
-        return;
-    }
-
-    budgetData.expenses.push({
-        id: generateUniqueId(),
-        name,
-        amount,
-        category
-    });
-
-    nameInput.value = '';
-    amountInput.value = '';
-    categorySelect.value = budgetData.categories[0]?.id || '';
-
-    updateUI();
-}
-
-// --- 카테고리 추가 함수 ---
-function addCategory() {
-    const newCategoryInput = document.getElementById('new-category-input');
-    const name = newCategoryInput.value.trim();
-    if (!name) {
-        alert(budgetData.currentLanguage === 'ko' ? '카테고리 이름을 입력하세요.' : 'Enter category name.');
-        return;
-    }
-
-    const existingCategory = budgetData.categories.find(
-        cat => cat.name.toLowerCase() === name.toLowerCase() || cat.nameEn?.toLowerCase() === name.toLowerCase()
-    );
-    if (existingCategory) {
-        alert(budgetData.currentLanguage === 'ko' ? '이미 존재하는 카테고리입니다.' : 'Category already exists.');
-        return;
-    }
-
-    const id = generateUniqueId();
-    const catObj = { id, name: name, nameEn: name };
-    budgetData.categories.push(catObj);
-    newCategoryInput.value = '';
-    populateCategorySelect();
-    document.getElementById('category-input-container').classList.add('hidden');
-    document.getElementById('category-select').value = id;
-    updateUI();
-}
-
-// --- 이벤트 리스너 설정 ---
-function setupEventListeners() {
-    document.getElementById('lang-ko').onclick = () => switchLanguage('ko');
-    document.getElementById('lang-en').onclick = () => switchLanguage('en');
-    
-    document.getElementById('income-input').addEventListener('input', function(e) {
-        budgetData.income = parseFloat(e.target.value) || 0;
-        updateUI();
-    });
-
-    // 세금/공제 항목 추가 토글 버튼
-    document.getElementById('toggle-tax-add').addEventListener('click', function() {
-        document.getElementById('tax-add-section').classList.toggle('hidden');
-    });
-    document.getElementById('toggle-pre-tax-add').addEventListener('click', function() {
-        document.getElementById('pre-tax-add-section').classList.toggle('hidden');
-    });
-    document.getElementById('toggle-post-tax-add').addEventListener('click', function() {
-        document.getElementById('post-tax-add-section').classList.toggle('hidden');
-    });
-
-    // 세금/공제 항목 추가 핸들러
-    document.getElementById('add-tax-btn').addEventListener('click', function() {
-        addDeductionItem('taxes');
-    });
-    document.getElementById('add-pre-tax-btn').addEventListener('click', function() {
-        addDeductionItem('preTax');
-    });
-    document.getElementById('add-post-tax-btn').addEventListener('click', function() {
-        addDeductionItem('postTax');
-    });
-    // 지출 추가 관련 이벤트
-    document.getElementById('category-select').addEventListener('change', function() {
-        const container = document.getElementById('category-input-container');
-        container.classList.toggle('hidden', this.value !== 'custom');
-    });
-
-    document.getElementById('add-expense-btn').addEventListener('click', addExpense);
-    document.getElementById('add-category-btn').addEventListener('click', addCategory);
-
-    // 세금/공제 select에서 "custom" 선택 시 입력창 표시
-    document.getElementById('tax-type-select').addEventListener('change', function() {
-        document.getElementById('tax-custom-container').classList.toggle('hidden', this.value !== 'custom');
-    });
-    document.getElementById('pre-tax-type-select').addEventListener('change', function() {
-        document.getElementById('pre-tax-custom-container').classList.toggle('hidden', this.value !== 'custom');
-    });
-    document.getElementById('post-tax-type-select').addEventListener('change', function() {
-        document.getElementById('post-tax-custom-container').classList.toggle('hidden', this.value !== 'custom');
-    });
-
-        // 데이터 불러오기 버튼
-    document.getElementById('load-data-btn').addEventListener('click', loadDataFromFile);
-
-    // 섹션 토글 버튼 추가
-    document.querySelectorAll('.section-toggle').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const section = this.getAttribute('data-section');
-            toggleUISection(section);
+      groupField = 'tags';
+      groupData = {};
+      filtered.forEach(e=>{
+        (e.tags||[]).forEach(t=>{
+          if(!groupData[t]) groupData[t]=0;
+          groupData[t]+=e.value;
         });
+      });
+      groupLabels = Object.keys(groupData);
+      groupColors = groupLabels.map((_,i)=>`hsl(${i*40%360},70%,65%)`);
+    }
+  } else {
+    // 전체 모드: 카테고리별 비율
+    groupField = 'catId';
+    groupData = {};
+    filtered.forEach(e=>{
+      if(!groupData[e.catId]) groupData[e.catId]=0;
+      groupData[e.catId]+=e.value;
     });
+    groupLabels = Object.keys(groupData).map(cid=>{
+      const cat=CATEGORIES.find(c=>c.id===cid);
+      return cat?cat.label[currentLang]:cid;
+    });
+    groupColors = Object.keys(groupData).map(cid=>CATEGORIES.find(c=>c.id===cid)?CATEGORIES.find(c=>c.id===cid).color:'#00b894');
+  }
+  if(detailPieChart) detailPieChart.destroy();
+  detailPieChart = new Chart(document.getElementById('detail-pie-chart').getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels: groupLabels,
+      datasets: [{data:Object.values(groupData), backgroundColor: groupColors}]
+    },
+    options: {plugins:{legend:{position:'bottom'}}}
+  });
+  // 4. 요약
+  const total = filtered.reduce((a,b)=>a+b.value,0);
+  document.getElementById('detail-summary').innerHTML =
+    `총 ${filtered.length}건, 합계: <b>${formatCurrency(total)}</b>`;
+}
+window.addEventListener('DOMContentLoaded', ()=>{
+  populateReportCategory();
+  updateDetailReport();
+});
 
-    // 버튼 이벤트 위임 처리 (동적으로 생성된 요소 대응)
-    document.body.addEventListener('click', function(e) {
-        // 삭제 버튼 처리
-        if (e.target.matches('.delete-btn, .delete-btn *')) {
-            const btn = e.target.closest('.delete-btn');
-            const [type, id] = btn.getAttribute('onclick').match(/'([^']+)'/g).map(s => s.replace(/'/g, ''));
-            deleteItem(type, id);
-        }
-        
-        // 수정 버튼 처리
-        if (e.target.matches('.edit-btn, .edit-btn *')) {
-            const btn = e.target.closest('.edit-btn');
-            const [type, id] = btn.getAttribute('onclick').match(/'([^']+)'/g).map(s => s.replace(/'/g, ''));
-            editItem(type, id);
-        }
-        
-        // 저장 버튼 처리
-        if (e.target.matches('.save-btn, .save-btn *')) {
-            const btn = e.target.closest('.save-btn');
-            const [type, id] = btn.getAttribute('onclick').match(/'([^']+)'/g).map(s => s.replace(/'/g, ''));
-            saveEdit(type, id);
-        }
-    });
+// ----------------------- 가족/팀 예산 공유 -----------------------
+function makeInviteCode() {
+  return 'FAMILY-' + Math.random().toString(36).slice(2,8).toUpperCase() + '-' + Date.now().toString().slice(-5);
+}
+document.getElementById('share-link-btn').onclick = function() {
+  if(!sharedKey) {
+    sharedKey = makeInviteCode();
+    localStorage.setItem('budget.sharedKey', sharedKey);
+    sharedUsers = [localStorage.getItem('budget.myName')||'나'];
+    localStorage.setItem('budget.sharedUsers', JSON.stringify(sharedUsers));
+  }
+  const url = location.origin + location.pathname + '?shared=' + sharedKey;
+  navigator.clipboard.writeText(url);
+  document.getElementById('share-link-msg').textContent = "공유 링크가 복사되었습니다!";
+  renderSharedUsers();
+};
+document.getElementById('join-invite-btn').onclick = function() {
+  const code = document.getElementById('invite-code-input').value.trim();
+  if(!code) return;
+  sharedKey = code;
+  localStorage.setItem('budget.sharedKey', sharedKey);
+  let users = JSON.parse(localStorage.getItem('budget.sharedUsers')||'[]');
+  const my = localStorage.getItem('budget.myName')||'나';
+  if(!users.includes(my)) users.push(my);
+  localStorage.setItem('budget.sharedUsers', JSON.stringify(users));
+  document.getElementById('invite-msg').textContent = "공유 예산에 참여했습니다!";
+  renderSharedUsers();
+  loadSharedData();
+};
+function renderSharedUsers() {
+  const users = JSON.parse(localStorage.getItem('budget.sharedUsers')||'[]');
+  document.getElementById('shared-users-list').innerHTML =
+    '<b>참여자:</b> ' + users.map(u=>`<span style="margin-right:7px;">👤${u}</span>`).join('');
+}
+function saveSharedData() {
+  if(!sharedKey) return;
+  localStorage.setItem('budget.shared_'+sharedKey, JSON.stringify(expenses));
+  localStorage.setItem('budget.sharedUsers', JSON.stringify(sharedUsers));
+}
+function loadSharedData() {
+  if(!sharedKey) return;
+  const data = localStorage.getItem('budget.shared_'+sharedKey);
+  if(data) expenses = JSON.parse(data);
+  renderExpenses();
+  rerenderAllCurrency();
+  renderSharedUsers();
+}
+window.addEventListener('DOMContentLoaded', ()=>{
+  const params = new URLSearchParams(location.search);
+  if(params.has('shared')) {
+    sharedKey = params.get('shared');
+    localStorage.setItem('budget.sharedKey', sharedKey);
+  }
+  loadSharedData();
+});
+
+// ----------------------- 데이터 백업/복원 -----------------------
+document.getElementById('export-json-btn').onclick = function() {
+  const data = {
+    expenses,
+    incomes: window.incomes||[],
+    categoryLimits,
+    CATEGORIES,
+    currency: currentCurrency,
+    sharedKey,
+    sharedUsers,
+    backupDate: new Date().toISOString()
+  };
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'budget-backup_'+(new Date().toISOString().slice(0,10))+'.json';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{URL.revokeObjectURL(url); a.remove();}, 600);
+  document.getElementById('backup-msg').textContent = "내보내기 완료!";
+};
+document.getElementById('import-json-btn').onclick = function() {
+  document.getElementById('import-json-input').click();
+};
+document.getElementById('import-json-input').onchange = function(e) {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    try {
+      const data = JSON.parse(event.target.result);
+      if(confirm('기존 데이터를 덮어쓸까요? (확인=덮어쓰기, 취소=병합)')) {
+        // 덮어쓰기
+        expenses = data.expenses||[];
+        window.incomes = data.incomes||[];
+        Object.assign(categoryLimits, data.categoryLimits||{});
+        currentCurrency = data.currency||'KRW';
+        sharedKey = data.sharedKey||null;
+        sharedUsers = data.sharedUsers||[];
+      } else {
+        // 병합: 기존+새 데이터 합치기(중복 검증 필요)
+        expenses = [...expenses, ...(data.expenses||[])];
+        window.incomes = [...(window.incomes||[]), ...(data.incomes||[])];
+      }
+      rerenderAllCurrency();
+      document.getElementById('backup-msg').textContent = "복원/병합 완료!";
+    } catch(e) {
+      document.getElementById('backup-msg').textContent = "가져오기 실패: 올바른 JSON이 아닙니다.";
+    }
+  };
+  reader.readAsText(file);
+};
+function autoBackup() {
+  const last = localStorage.getItem('budget.lastBackup');
+  const today = (new Date()).toISOString().slice(0,10);
+  if(last === today) return;
+  document.getElementById('export-json-btn').click();
+  localStorage.setItem('budget.lastBackup', today);
+}
+window.addEventListener('DOMContentLoaded', ()=>{
+  setTimeout(autoBackup, 1500);
+});
+
+// ----------------------- 목표 예산/저축 관리 -----------------------
+function saveBudgetGoal() {
+  localStorage.setItem('budget.goal', JSON.stringify(budgetGoal));
+}
+document.getElementById('goal-form').onsubmit = function(e) {
+  e.preventDefault();
+  budgetGoal.expense = Number(document.getElementById('goal-expense').value) || 0;
+  budgetGoal.saving = Number(document.getElementById('goal-saving').value) || 0;
+  saveBudgetGoal();
+  renderGoalProgress();
+  checkBudgetAlerts();
+};
+function renderGoalProgress() {
+  const nowYM = new Date().toISOString().slice(0,7);
+  const monthExpenses = expenses.filter(e=>(e.date||'').slice(0,7)===nowYM).reduce((a,b)=>a+b.value,0);
+  const monthIncomes = (window.incomes||[]).filter(e=>(e.date||'').slice(0,7)===nowYM).reduce((a,b)=>a+b.value,0);
+  const saving = Math.max(monthIncomes - monthExpenses, 0);
+  const expGoal = budgetGoal.expense||1;
+  const savGoal = budgetGoal.saving||1;
+  const expP = Math.min(monthExpenses/expGoal*100, 999);
+  const savP = Math.min(saving/savGoal*100, 999);
+  document.getElementById('goal-progress-box').innerHTML = `
+    <div>이달 지출: <b>${formatCurrency(monthExpenses)}</b> / 목표 <b>${formatCurrency(budgetGoal.expense)}</b>
+      <div class="progress-bar"><div class="progress-inner" style="width:${Math.min(expP,100)}%;background:#e17055"></div></div>
+      <span>${expP.toFixed(1)}%</span>
+    </div>
+    <div style="margin-top:10px;">이달 저축: <b>${formatCurrency(saving)}</b> / 목표 <b>${formatCurrency(budgetGoal.saving)}</b>
+      <div class="progress-bar"><div class="progress-inner" style="width:${Math.min(savP,100)}%;background:#00b894"></div></div>
+      <span>${savP.toFixed(1)}%</span>
+    </div>
+  `;
+}
+window.addEventListener('DOMContentLoaded', ()=>{
+  document.getElementById('goal-expense').value = budgetGoal.expense||'';
+  document.getElementById('goal-saving').value = budgetGoal.saving||'';
+  renderGoalProgress();
+});
+
+// ----------------------- AI 소비 리포트/팁 -----------------------
+document.getElementById('ai-report-btn').onclick = function() {
+  renderAIReport();
+};
+function renderAIReport() {
+  const now = new Date();
+  const months = [];
+  for(let i=5; i>=0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+    months.push(d.toISOString().slice(0,7));
+  }
+  let report = '<ul>';
+  const catTrends = {};
+  CATEGORIES.forEach(cat=>{
+    catTrends[cat.id] = months.map(mon=>
+      expenses.filter(e=>e.catId===cat.id && (e.date||'').slice(0,7)===mon)
+              .reduce((a,b)=>a+b.value,0)
+    );
+  });
+  let alerts = [], tips = [], kudos = [];
+  CATEGORIES.forEach(cat=>{
+    const arr = catTrends[cat.id];
+    const avg = arr.reduce((a,b)=>a+b,0)/arr.length;
+    const max = Math.max(...arr);
+    const min = Math.min(...arr);
+    const last = arr[arr.length-1];
+    const prev = arr[arr.length-2];
+    if(last > prev*1.5 && last>10000) alerts.push(`"${cat.label.ko}" 지출이 최근 급증했어요!`);
+    if(last > avg*1.8 && last>20000) alerts.push(`"${cat.label.ko}" 이번달 지출이 평소보다 매우 많아요.`);
+    if(last < avg*0.6 && avg>0) kudos.push(`"${cat.label.ko}"에서 절약을 잘 하고 계세요!`);
+    if(last > 0.5*max && cat.label.ko.match(/외식|쇼핑|취미/)) tips.push(`"${cat.label.ko}"는 할인쿠폰, 미리 예산 설정 등으로 관리해보세요.`);
+  });
+  const total = months.map((mon,i)=>expenses.filter(e=>(e.date||'').slice(0,7)===mon).reduce((a,b)=>a+b.value,0));
+  const totalAvg = total.reduce((a,b)=>a+b,0)/months.length;
+  report += `<li>최근 6개월 월평균 총 지출: <b>${formatCurrency(totalAvg)}</b></li>`;
+  const stddev = Math.sqrt(total.map(v=>Math.pow(v-totalAvg,2)).reduce((a,b)=>a+b,0)/months.length);
+  if(stddev > totalAvg*0.5) alerts.push('지출 변동폭이 크니 매달 예산 점검을 추천합니다.');
+  else kudos.push('매달 일정하게 예산을 잘 관리하고 계세요!');
+  report += alerts.map(a=>`<li style="color:#d90429;">⚠️ ${a}</li>`).join('');
+  report += kudos.map(a=>`<li style="color:#0a7a0a;">🌱 ${a}</li>`).join('');
+  report += tips.map(a=>`<li style="color:#0072c2;">💡 ${a}</li>`).join('');
+  report += '</ul>';
+  document.getElementById('ai-report-box').innerHTML = report;
 }
 
-
-// 초기화 함수 수정
-function initialize() {
-    setupEventListeners();
-    loadData();
-    switchLanguage(budgetData.currentLanguage);
-    
-    // 모든 섹션 초기 상태 숨김
-    Object.keys(budgetData.uiState).forEach(key => {
-        budgetData.uiState[key] = false;
-    });
-    
-    updateUI();
+// ----------------------- 가족/팀 채팅 -----------------------
+let chatKey = sharedKey || 'solo';
+function getChatList() {
+  return JSON.parse(localStorage.getItem('budget.chat_' + chatKey) || '[]');
 }
+function saveChatList(list) {
+  localStorage.setItem('budget.chat_' + chatKey, JSON.stringify(list));
+}
+function renderChatBox() {
+  const chatList = getChatList();
+  const myName = localStorage.getItem('budget.myName') || '나';
+  let html = '';
+  chatList.forEach(msg => {
+    const mine = msg.name === myName;
+    html += `<div style="margin-bottom:7px;text-align:${mine ? 'right':'left'}">
+      <span style="display:inline-block;max-width:80%;background:${mine?'#d1e7dd':'#fff'};padding:6px 10px;border-radius:8px;">
+        <b>${msg.name}</b> <span style="font-size:0.92em;color:#888;">${msg.time.slice(5,16)}</span><br>
+        ${msg.text}
+      </span>
+    </div>`;
+  });
+  document.getElementById('chat-box').innerHTML = html;
+  document.getElementById('chat-box').scrollTop = 99999;
+}
+document.getElementById('chat-form').onsubmit = function(e) {
+  e.preventDefault();
+  const text = document.getElementById('chat-input').value.trim();
+  if(!text) return;
+  const myName = localStorage.getItem('budget.myName') || '나';
+  const chatList = getChatList();
+  chatList.push({
+    name: myName,
+    text,
+    time: new Date().toISOString().replace('T',' ').slice(0,16)
+  });
+  saveChatList(chatList);
+  document.getElementById('chat-input').value = '';
+  renderChatBox();
+};
+setInterval(()=>{
+  renderChatBox();
+}, 1000);
+window.addEventListener('DOMContentLoaded', ()=>{
+  renderChatBox();
+});
 
-// 페이지 로드 시 초기화
-window.onload = initialize;
+// ----------------------- 도움말/튜토리얼 팝업 -----------------------
+document.getElementById('help-btn').onclick = function() {
+  document.getElementById('help-modal').style.display = 'block';
+  document.getElementById('help-modal').innerHTML = `
+    <div style="background:#fff;padding:22px 18px 18px 18px;border-radius:14px;max-width:410px;margin:80px auto;color:#222;position:relative;">
+      <button onclick="document.getElementById('help-modal').style.display='none'" style="position:absolute;right:12px;top:10px;">✖️</button>
+      <h2 style="margin-top:0;">도움말</h2>
+      <ul>
+        <li>예산/지출 입력, 카테고리, 태그, 메모, 사진 첨부 등 다양한 기능 이용</li>
+        <li>다크모드/라이트모드 즉시 전환 지원</li>
+        <li>내보내기/가져오기, 가족공유, AI 리포트, 목표 설정 등 다양한 고급기능</li>
+        <li>(상세 가이드와 FAQ는 <a href="https://github.com/sawolsamsip/mijutalk/wiki" target="_blank">프로젝트 위키</a> 참고)</li>
+      </ul>
+    </div>
+  `;
+};
