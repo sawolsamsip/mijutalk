@@ -29,43 +29,48 @@
   <section class="card">
     <h2>세금 항목 입력</h2>
     <form id="tax-form" style="display:flex;flex-wrap:wrap;gap:14px;">
-      <label>Federal Withholding: <input type="number" id="tax-federal" min="0" style="width:110px;" aria-label="Federal Withholding"></label>
-      <label>State Tax: <input type="number" id="tax-state" min="0" style="width:110px;" aria-label="State Tax"></label>
-      <label>OASDI: <input type="number" id="tax-oasdi" min="0" style="width:110px;" aria-label="OASDI"></label>
-      <label>Medicare: <input type="number" id="tax-medicare" min="0" style="width:110px;" aria-label="Medicare"></label>
-      <label>CA SDI: <input type="number" id="tax-casdi" min="0" style="width:110px;" aria-label="CA SDI"></label>
-      <label>기타(사용자입력): <input type="number" id="tax-other" min="0" style="width:110px;" aria-label="기타 세금"></label>
+      <label>Federal Withholding: <input type="number" id="tax-federal" min="0" style="width:110px;"></label>
+      <label>State Tax: <input type="number" id="tax-state" min="0" style="width:110px;"></label>
+      <label>OASDI: <input type="number" id="tax-oasdi" min="0" style="width:110px;"></label>
+      <label>Medicare: <input type="number" id="tax-medicare" min="0" style="width:110px;"></label>
+      <label>CA SDI: <input type="number" id="tax-casdi" min="0" style="width:110px;"></label>
     </form>
+    <!-- 사용자 정의 세금 항목 -->
+    <div id="tax-custom-list" style="margin-top:10px;"></div>
+    <button type="button" onclick="addCustomRow('tax')" style="margin-top:4px;">세금 항목 추가</button>
   </section>
 
   <!-- 세전 공제 섹션 -->
   <section class="card">
     <h2>세전 공제 항목 입력</h2>
     <form id="pre-tax-deduction-form" style="display:flex;flex-wrap:wrap;gap:14px;">
-      <label>Medical Premium: <input type="number" id="deduct-medical" min="0" style="width:110px;" aria-label="Medical Premium"></label>
-      <label>Dental Premium: <input type="number" id="deduct-dental" min="0" style="width:110px;" aria-label="Dental Premium"></label>
-      <label>Vision Premium: <input type="number" id="deduct-vision" min="0" style="width:110px;" aria-label="Vision Premium"></label>
-      <label>MSEAP: <input type="number" id="deduct-mseap" min="0" style="width:110px;" aria-label="MSEAP"></label>
-      <label>401k Traditional: <input type="number" id="deduct-401k-trad" min="0" style="width:110px;" aria-label="401k Traditional"></label>
-      <label>기타(사용자입력): <input type="number" id="deduct-other" min="0" style="width:110px;" aria-label="세전 기타 공제"></label>
+      <label>Medical Premium: <input type="number" id="deduct-medical" min="0" style="width:110px;"></label>
+      <label>Dental Premium: <input type="number" id="deduct-dental" min="0" style="width:110px;"></label>
+      <label>Vision Premium: <input type="number" id="deduct-vision" min="0" style="width:110px;"></label>
+      <label>MSEAP: <input type="number" id="deduct-mseap" min="0" style="width:110px;"></label>
+      <label>401k Traditional: <input type="number" id="deduct-401k-trad" min="0" style="width:110px;"></label>
     </form>
+    <div id="pre-tax-custom-list" style="margin-top:10px;"></div>
+    <button type="button" onclick="addCustomRow('pre-tax')" style="margin-top:4px;">세전 공제 항목 추가</button>
   </section>
 
   <!-- 세후 공제 섹션 -->
   <section class="card">
     <h2>세후 공제 항목 입력</h2>
     <form id="post-tax-deduction-form" style="display:flex;flex-wrap:wrap;gap:14px;">
-      <label>Stock Purchase Plan: <input type="number" id="deduct-spp" min="0" style="width:110px;" aria-label="Stock Purchase Plan"></label>
-      <label>AD&D: <input type="number" id="deduct-adnd" min="0" style="width:110px;" aria-label="AD&D"></label>
-      <label>Critical Illness: <input type="number" id="deduct-critical" min="0" style="width:110px;" aria-label="Critical Illness"></label>
-      <label>Accidental Insurance: <input type="number" id="deduct-accident" min="0" style="width:110px;" aria-label="Accidental Insurance"></label>
-      <label>401k Roth: <input type="number" id="deduct-401k-roth" min="0" style="width:110px;" aria-label="401k Roth"></label>
-      <label>Legal Services: <input type="number" id="deduct-legal" min="0" style="width:110px;" aria-label="Legal Services"></label>
-      <label>LTD: <input type="number" id="deduct-ltd" min="0" style="width:110px;" aria-label="LTD"></label>
-      <label>기타(사용자입력): <input type="number" id="deduct-post-other" min="0" style="width:110px;" aria-label="세후 기타 공제"></label>
+      <label>Stock Purchase Plan: <input type="number" id="deduct-spp" min="0" style="width:110px;"></label>
+      <label>AD&D: <input type="number" id="deduct-adnd" min="0" style="width:110px;"></label>
+      <label>Critical Illness: <input type="number" id="deduct-critical" min="0" style="width:110px;"></label>
+      <label>Accidental Insurance: <input type="number" id="deduct-accident" min="0" style="width:110px;"></label>
+      <label>401k Roth: <input type="number" id="deduct-401k-roth" min="0" style="width:110px;"></label>
+      <label>Legal Services: <input type="number" id="deduct-legal" min="0" style="width:110px;"></label>
+      <label>LTD: <input type="number" id="deduct-ltd" min="0" style="width:110px;"></label>
     </form>
+    <div id="post-tax-custom-list" style="margin-top:10px;"></div>
+    <button type="button" onclick="addCustomRow('post-tax')" style="margin-top:4px;">세후 공제 항목 추가</button>
   </section>
 
+  <!-- 이하 기존 가계부 입력/차트/리포트 등은 그대로 -->
   <!-- 예산/지출 입력 -->
   <section class="card">
     <h2>지출 입력</h2>
@@ -155,5 +160,24 @@
 
   <script src="../scripts/chart.umd.min.js"></script>
   <script src="../scripts/budget.js"></script>
+  <script>
+    // 사용자 정의 입력 행 동적 추가/삭제 함수
+    function addCustomRow(type) {
+      // type: 'tax', 'pre-tax', 'post-tax'
+      const listId = {
+        'tax': 'tax-custom-list',
+        'pre-tax': 'pre-tax-custom-list',
+        'post-tax': 'post-tax-custom-list'
+      }[type];
+      const div = document.createElement('div');
+      div.style.marginBottom = "6px";
+      div.innerHTML = `
+        <input type="text" placeholder="항목명" class="${type}-custom-name" style="width:90px;">
+        <input type="number" min="0" placeholder="금액" class="${type}-custom-amount" style="width:80px;">
+        <button type="button" onclick="this.parentNode.remove()">삭제</button>
+      `;
+      document.getElementById(listId).appendChild(div);
+    }
+  </script>
 </body>
 </html>
