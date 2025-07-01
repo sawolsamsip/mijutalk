@@ -266,6 +266,7 @@
         }
     </style>
 </head>
+<!-- (코드가 길어 다음 파트에서 계속됩니다) -->
 <body>
 <div class="container">
     <div class="language-switcher">
@@ -488,7 +489,6 @@ let incomeFlowChartInstance = null;
 let expenseCategoryChartInstance = null;
 let editingItem = null;
 let editingExpense = null;
-
 /* --- 유틸리티 --- */
 function generateUniqueId() {
     return Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
@@ -546,7 +546,6 @@ document.getElementById('income-period').onchange = () => {
     updateIncomeSummary();
     switchLanguage(budgetData.currentLanguage); // 옵션 언어 재동기화
 };
-
 /* --- 카테고리/세금/공제 셀렉트 채우기 --- */
 function populateCategorySelect() {
     const select = document.getElementById('category-select');
@@ -711,7 +710,6 @@ function renderCategorizedList(type, items, listId) {
         };
     });
 }
-
 /* --- 지출 항목 추가, 수정, 삭제 --- */
 function addExpense() {
     const categorySelect = document.getElementById('category-select');
