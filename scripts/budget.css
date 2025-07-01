@@ -436,6 +436,13 @@ body.dark-mode .summary-item.final-budget span {
     color: #ffdf7e; /* Slightly different gold for dark mode */
 }
 
+#tax-chart,
+#expenses-chart,
+#budget-distribution-chart {
+    max-height: 400px; /* Adjust as needed */
+    width: 100% !important; /* Ensure it takes full width */
+    height: auto !important; /* Allow height to adjust within max-height */
+}
 
 /* Responsive Design */
 @media (max-width: 768px) {
