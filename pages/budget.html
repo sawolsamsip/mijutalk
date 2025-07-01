@@ -1,147 +1,120 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>딥시크 가계부</title>
-  <link rel="stylesheet" href="../scripts/budget.css">
-  <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n-key="app_title">Deep Chic Budget</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <nav class="navbar" style="display:flex;align-items:center;justify-content:space-between;padding:18px 8vw 0 8vw;max-width:560px;margin:0 auto;">
-    <b style="font-size:1.25rem;letter-spacing:-.03em;">딥시크 가계부</b>
-    <div>
-      <button id="darkmode-toggle" class="nav-btn" aria-label="다크모드 전환"><i class="ri-moon-line"></i></button>
-      <button id="help-btn" class="nav-btn" aria-label="도움말"><i class="ri-question-line"></i></button>
+
+    <div class="container">
+        <nav class="navbar">
+            <b class="logo" data-i18n-key="app_title">Deep Chic Budget</b>
+            <div class="nav-actions">
+                <button id="language-toggle" class="nav-btn" aria-label="Switch Language">EN</button>
+                <button id="darkmode-toggle" class="nav-btn" aria-label="Toggle Dark Mode"><i class="ri-moon-line"></i></button>
+                <button id="help-btn" class="nav-btn" aria-label="Help"><i class="ri-question-line"></i></button>
+            </div>
+        </nav>
+
+        <main>
+            <section class="card">
+                <h2 data-i18n-key="section_salary_title">Gross Monthly Salary</h2>
+                <form id="salary-form" class="input-group">
+                    <label for="salary-gross" data-i18n-key="label_gross_salary">Gross Salary</label>
+                    <input type="number" id="salary-gross" min="0" required placeholder="e.g., 5000">
+                    <button type="submit" class="btn btn-primary" data-i18n-key="btn_save">Save</button>
+                </form>
+                <div id="salary-summary"></div>
+            </section>
+
+            <section class="card">
+                <h2 data-i18n-key="section_taxes_title">Taxes</h2>
+                <div class="form-grid">
+                    <div class="input-group-vertical">
+                        <label for="tax-federal">Federal Withholding</label>
+                        <input type="number" id="tax-federal" min="0">
+                    </div>
+                    <div class="input-group-vertical">
+                        <label for="tax-state">State Tax</label>
+                        <input type="number" id="tax-state" min="0">
+                    </div>
+                    <div class="input-group-vertical">
+                        <label for="tax-oasdi">OASDI</label>
+                        <input type="number" id="tax-oasdi" min="0">
+                    </div>
+                    <div class="input-group-vertical">
+                        <label for="tax-medicare">Medicare</label>
+                        <input type="number" id="tax-medicare" min="0">
+                    </div>
+                     <div class="input-group-vertical">
+                        <label for="tax-casdi">CA SDI</label>
+                        <input type="number" id="tax-casdi" min="0">
+                    </div>
+                </div>
+                 <div id="tax-custom-list" class="custom-list"></div>
+                <button type="button" class="btn btn-secondary add-custom-btn" data-type="tax">
+                    <i class="ri-add-line"></i> <span data-i18n-key="btn_add_item">Add Item</span>
+                </button>
+                <canvas id="tax-chart"></canvas>
+            </section>
+
+            <section class="card">
+                <h2 data-i18n-key="section_pre_tax_title">Pre-Tax Deductions</h2>
+                <div class="form-grid">
+                    <div class="input-group-vertical"><label for="deduct-medical">Medical Premium</label><input type="number" id="deduct-medical" min="0"></div>
+                    <div class="input-group-vertical"><label for="deduct-dental">Dental Premium</label><input type="number" id="deduct-dental" min="0"></div>
+                    <div class="input-group-vertical"><label for="deduct-vision">Vision Premium</label><input type="number" id="deduct-vision" min="0"></div>
+                    <div class="input-group-vertical"><label for="deduct-401k-trad">401k Traditional</label><input type="number" id="deduct-401k-trad" min="0"></div>
+                </div>
+                <div id="pre-tax-custom-list" class="custom-list"></div>
+                <button type="button" class="btn btn-secondary add-custom-btn" data-type="pre-tax">
+                    <i class="ri-add-line"></i> <span data-i18n-key="btn_add_item">Add Item</span>
+                </button>
+            </section>
+
+            <section class="card">
+                <h2 data-i18n-key="section_post_tax_title">Post-Tax Deductions</h2>
+                 <div class="form-grid">
+                    <div class="input-group-vertical"><label for="deduct-spp">Stock Purchase Plan</label><input type="number" id="deduct-spp" min="0"></div>
+                    <div class="input-group-vertical"><label for="deduct-adnd">AD&D</label><input type="number" id="deduct-adnd" min="0"></div>
+                    <div class="input-group-vertical"><label for="deduct-401k-roth">401k Roth</label><input type="number" id="deduct-401k-roth" min="0"></div>
+                    <div class="input-group-vertical"><label for="deduct-ltd">LTD</label><input type="number" id="deduct-ltd" min="0"></div>
+                </div>
+                <div id="post-tax-custom-list" class="custom-list"></div>
+                 <button type="button" class="btn btn-secondary add-custom-btn" data-type="post-tax">
+                    <i class="ri-add-line"></i> <span data-i18n-key="btn_add_item">Add Item</span>
+                </button>
+            </section>
+            
+            <section class="card">
+                <h2 data-i18n-key="section_data_title">Data Management</h2>
+                <div class="button-group">
+                    <button id="export-json-btn" class="btn btn-secondary"><i class="ri-download-2-line"></i> <span data-i18n-key="btn_export">Export JSON</span></button>
+                    <button id="import-json-btn" class="btn btn-secondary"><i class="ri-upload-2-line"></i> <span data-i18n-key="btn_import">Import JSON</span></button>
+                    <input type="file" id="import-json-input" hidden accept="application/json">
+                </div>
+            </section>
+
+            <section class="card">
+                <h2 data-i18n-key="section_ai_title">AI Spending Report</h2>
+                <button id="ai-report-btn" class="btn btn-primary">
+                    <i class="ri-robot-line"></i> <span data-i18n-key="btn_ai_report">Generate AI Report</span>
+                </button>
+                <div id="ai-report-box"></div>
+            </section>
+        </main>
     </div>
-  </nav>
-  <div id="alert-bar"></div>
-  
-  <!-- 세전 월급 입력 -->
-  <section class="card">
-    <h2>세전 월급 입력</h2>
-    <form id="salary-form" style="display:flex;align-items:center;gap:10px;">
-      <label>세전 월급 <input type="number" id="salary-gross" min="0" required style="width:130px;" aria-label="세전 월급 입력"></label>
-      <button type="submit" class="nav-btn">저장</button>
-    </form>
-    <div id="salary-summary" style="margin-top:12px;"></div>
-  </section>
 
-  <!-- 세금 섹션 -->
-  <section class="card">
-    <h2>세금 항목 입력</h2>
-    <form id="tax-form" style="display:flex;flex-wrap:wrap;gap:14px;">
-      <label>Federal Withholding <input type="number" id="tax-federal" min="0" style="width:110px;"></label>
-      <label>State Tax <input type="number" id="tax-state" min="0" style="width:110px;"></label>
-      <label>OASDI <input type="number" id="tax-oasdi" min="0" style="width:110px;"></label>
-      <label>Medicare <input type="number" id="tax-medicare" min="0" style="width:110px;"></label>
-      <label>CA SDI <input type="number" id="tax-casdi" min="0" style="width:110px;"></label>
-    </form>
-    <div id="tax-custom-list" style="margin-top:10px;"></div>
-    <button type="button" onclick="addCustomRow('tax')" class="nav-btn" style="margin-top:7px;">세금 항목 추가</button>
-    <form id="tax-add-form" style="margin-top:13px;display:flex;align-items:center;gap:10px;">
-      <label>항목명 <input type="text" id="tax-item-name" style="width:90px;"></label>
-      <label>금액 <input type="number" id="tax-item-amount" min="1" style="width:80px;"></label>
-      <button type="submit" class="nav-btn">기록</button>
-    </form>
-    <div id="tax-hist-list" class="hist-list" style="margin-top:16px;"></div>
-    <canvas id="tax-chart" style="width:100%;max-width:320px;margin:20px auto 0 auto;display:block;"></canvas>
-  </section>
-
-  <!-- 세전 공제 섹션 -->
-  <section class="card">
-    <h2>세전 공제 항목 입력</h2>
-    <form id="pre-tax-deduction-form" style="display:flex;flex-wrap:wrap;gap:14px;">
-      <label>Medical Premium <input type="number" id="deduct-medical" min="0" style="width:110px;"></label>
-      <label>Dental Premium <input type="number" id="deduct-dental" min="0" style="width:110px;"></label>
-      <label>Vision Premium <input type="number" id="deduct-vision" min="0" style="width:110px;"></label>
-      <label>MSEAP <input type="number" id="deduct-mseap" min="0" style="width:110px;"></label>
-      <label>401k Traditional <input type="number" id="deduct-401k-trad" min="0" style="width:110px;"></label>
-    </form>
-    <div id="pre-tax-custom-list" style="margin-top:10px;"></div>
-    <button type="button" onclick="addCustomRow('pre-tax')" class="nav-btn" style="margin-top:7px;">세전 공제 항목 추가</button>
-    <form id="pre-tax-add-form" style="margin-top:13px;display:flex;align-items:center;gap:10px;">
-      <label>항목명 <input type="text" id="pre-tax-item-name" style="width:90px;"></label>
-      <label>금액 <input type="number" id="pre-tax-item-amount" min="1" style="width:80px;"></label>
-      <button type="submit" class="nav-btn">기록</button>
-    </form>
-    <div id="pre-tax-hist-list" class="hist-list" style="margin-top:16px;"></div>
-  </section>
-
-  <!-- 세후 공제 섹션 -->
-  <section class="card">
-    <h2>세후 공제 항목 입력</h2>
-    <form id="post-tax-deduction-form" style="display:flex;flex-wrap:wrap;gap:14px;">
-      <label>Stock Purchase Plan <input type="number" id="deduct-spp" min="0" style="width:110px;"></label>
-      <label>AD&D <input type="number" id="deduct-adnd" min="0" style="width:110px;"></label>
-      <label>Critical Illness <input type="number" id="deduct-critical" min="0" style="width:110px;"></label>
-      <label>Accidental Insurance <input type="number" id="deduct-accident" min="0" style="width:110px;"></label>
-      <label>401k Roth <input type="number" id="deduct-401k-roth" min="0" style="width:110px;"></label>
-      <label>Legal Services <input type="number" id="deduct-legal" min="0" style="width:110px;"></label>
-      <label>LTD <input type="number" id="deduct-ltd" min="0" style="width:110px;"></label>
-    </form>
-    <div id="post-tax-custom-list" style="margin-top:10px;"></div>
-    <button type="button" onclick="addCustomRow('post-tax')" class="nav-btn" style="margin-top:7px;">세후 공제 항목 추가</button>
-    <form id="post-tax-add-form" style="margin-top:13px;display:flex;align-items:center;gap:10px;">
-      <label>항목명 <input type="text" id="post-tax-item-name" style="width:90px;"></label>
-      <label>금액 <input type="number" id="post-tax-item-amount" min="1" style="width:80px;"></label>
-      <button type="submit" class="nav-btn">기록</button>
-    </form>
-    <div id="post-tax-hist-list" class="hist-list" style="margin-top:16px;"></div>
-  </section>
-
-  <!-- 지출 입력 -->
-  <section class="card">
-    <h2>지출 입력</h2>
-    <form id="expense-form" enctype="multipart/form-data" autocomplete="off" style="display:flex;flex-wrap:wrap;gap:7px;">
-      <select id="expense-category" aria-label="카테고리 선택"></select>
-      <input type="text" id="expense-desc" placeholder="지출 내용" required aria-label="지출 내용 입력">
-      <input type="number" id="expense-value" min="1" placeholder="금액" required aria-label="금액 입력">
-      <input type="text" id="expense-tags" placeholder="태그(쉼표구분)" aria-label="태그 입력">
-      <input type="text" id="expense-memo" placeholder="메모(선택)" aria-label="메모 입력">
-      <input type="file" id="expense-image" accept="image/*" aria-label="영수증 첨부">
-      <button type="submit" class="nav-btn" aria-label="저장">저장</button>
-    </form>
-    <div id="expenses-list" style="margin-top:12px;"></div>
-  </section>
-
-  <!-- 데이터 백업/복원 -->
-  <section class="card">
-    <h2>데이터 백업/복원</h2>
-    <button id="export-json-btn" class="nav-btn">내보내기(JSON)</button>
-    <input type="file" id="import-json-input" style="display:none" accept="application/json">
-    <button id="import-json-btn" class="nav-btn">가져오기(JSON)</button>
-    <span id="backup-msg" style="margin-left:12px;"></span>
-  </section>
-
-  <!-- AI 소비 리포트 -->
-  <section class="card">
-    <h2>AI 소비 리포트 & 절약 팁</h2>
-    <button id="ai-report-btn" class="nav-btn">AI 리포트 생성</button>
-    <div id="ai-report-box" style="margin-top:18px;"></div>
-  </section>
-
-  <!-- 도움말 모달 -->
-  <div id="help-modal" style="display:none;"></div>
-
-  <script src="../scripts/chart.js"></script>
-  <script src="../scripts/budget.js"></script>
-  <script>
-    function addCustomRow(type) {
-      const listId = {
-        'tax': 'tax-custom-list',
-        'pre-tax': 'pre-tax-custom-list',
-        'post-tax': 'post-tax-custom-list'
-      }[type];
-      const div = document.createElement('div');
-      div.style.marginBottom = "6px";
-      div.innerHTML = `
-        <input type="text" placeholder="항목명" class="${type}-custom-name" style="width:90px;">
-        <input type="number" min="0" placeholder="금액" class="${type}-custom-amount" style="width:80px;">
-        <button type="button" onclick="this.parentNode.remove()">삭제</button>
-      `;
-      document.getElementById(listId).appendChild(div);
-    }
-  </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
