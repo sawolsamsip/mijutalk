@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n-key="app_title">Budgeting Tool</title>
-    
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
     <link rel="stylesheet" href="../scripts/budget.css">
 </head>
 <body>
@@ -34,27 +34,27 @@
                 <h2 data-i18n-key="section_taxes_title">Taxes</h2>
                 <div class="form-grid">
                     <div class="input-group-vertical">
-                        <label for="tax-federal">Federal Withholding</label>
-                        <input type="number" id="tax-federal" min="0">
+                        <label for="tax-federal" data-i18n-key="label_federal_withholding">Federal Withholding</label>
+                        <input type="number" id="tax-federal" min="0" value="0">
                     </div>
                     <div class="input-group-vertical">
-                        <label for="tax-state">State Tax</label>
-                        <input type="number" id="tax-state" min="0">
+                        <label for="tax-state" data-i18n-key="label_state_tax">State Tax</label>
+                        <input type="number" id="tax-state" min="0" value="0">
                     </div>
                     <div class="input-group-vertical">
-                        <label for="tax-oasdi">OASDI</label>
-                        <input type="number" id="tax-oasdi" min="0">
+                        <label for="tax-oasdi" data-i18n-key="label_oasdi">OASDI</label>
+                        <input type="number" id="tax-oasdi" min="0" value="0">
                     </div>
                     <div class="input-group-vertical">
-                        <label for="tax-medicare">Medicare</label>
-                        <input type="number" id="tax-medicare" min="0">
+                        <label for="tax-medicare" data-i18n-key="label_medicare">Medicare</label>
+                        <input type="number" id="tax-medicare" min="0" value="0">
                     </div>
-                     <div class="input-group-vertical">
-                        <label for="tax-casdi">CA SDI</label>
-                        <input type="number" id="tax-casdi" min="0">
+                    <div class="input-group-vertical">
+                        <label for="tax-casdi" data-i18n-key="label_ca_sdi">CA SDI</label>
+                        <input type="number" id="tax-casdi" min="0" value="0">
                     </div>
                 </div>
-                 <div id="tax-custom-list" class="custom-list"></div>
+                <div id="tax-custom-list" class="custom-list"></div>
                 <button type="button" class="btn btn-secondary add-custom-btn" data-type="tax">
                     <i class="ri-add-line"></i> <span data-i18n-key="btn_add_item">Add Item</span>
                 </button>
@@ -64,10 +64,10 @@
             <section class="card">
                 <h2 data-i18n-key="section_pre_tax_title">Pre-Tax Deductions</h2>
                 <div class="form-grid">
-                    <div class="input-group-vertical"><label for="deduct-medical">Medical Premium</label><input type="number" id="deduct-medical" min="0"></div>
-                    <div class="input-group-vertical"><label for="deduct-dental">Dental Premium</label><input type="number" id="deduct-dental" min="0"></div>
-                    <div class="input-group-vertical"><label for="deduct-vision">Vision Premium</label><input type="number" id="deduct-vision" min="0"></div>
-                    <div class="input-group-vertical"><label for="deduct-401k-trad">401k Traditional</label><input type="number" id="deduct-401k-trad" min="0"></div>
+                    <div class="input-group-vertical"><label for="deduct-medical" data-i18n-key="label_medical_premium">Medical Premium</label><input type="number" id="deduct-medical" min="0" value="0"></div>
+                    <div class="input-group-vertical"><label for="deduct-dental" data-i18n-key="label_dental_premium">Dental Premium</label><input type="number" id="deduct-dental" min="0" value="0"></div>
+                    <div class="input-group-vertical"><label for="deduct-vision" data-i18n-key="label_vision_premium">Vision Premium</label><input type="number" id="deduct-vision" min="0" value="0"></div>
+                    <div class="input-group-vertical"><label for="deduct-401k-trad" data-i18n-key="label_401k_traditional">401k Traditional</label><input type="number" id="deduct-401k-trad" min="0" value="0"></div>
                 </div>
                 <div id="pre-tax-custom-list" class="custom-list"></div>
                 <button type="button" class="btn btn-secondary add-custom-btn" data-type="pre-tax">
@@ -77,28 +77,14 @@
 
             <section class="card">
                 <h2 data-i18n-key="section_post_tax_title">Post-Tax Deductions</h2>
-                 <div class="form-grid">
-                    <div class="input-group-vertical"><label for="deduct-spp">Stock Purchase Plan</label><input type="number" id="deduct-spp" min="0"></div>
-                    <div class="input-group-vertical"><label for="deduct-adnd">AD&D</label><input type="number" id="deduct-adnd" min="0"></div>
-                    <div class="input-group-vertical"><label for="deduct-401k-roth">401k Roth</label><input type="number" id="deduct-401k-roth" min="0"></div>
-                    <div class="input-group-vertical"><label for="deduct-ltd">LTD</label><input type="number" id="deduct-ltd" min="0"></div>
+                <div class="form-grid">
+                    <div class="input-group-vertical"><label for="deduct-spp" data-i18n-key="label_spp">Stock Purchase Plan</label><input type="number" id="deduct-spp" min="0" value="0"></div>
+                    <div class="input-group-vertical"><label for="deduct-adnd" data-i18n-key="label_adnd">AD&D</label><input type="number" id="deduct-adnd" min="0" value="0"></div>
+                    <div class="input-group-vertical"><label for="deduct-401k-roth" data-i18n-key="label_401k_roth">401k Roth</label><input type="number" id="deduct-401k-roth" min="0" value="0"></div>
+                    <div class="input-group-vertical"><label for="deduct-ltd" data-i18n-key="label_ltd">LTD</label><input type="number" id="deduct-ltd" min="0" value="0"></div>
                 </div>
                 <div id="post-tax-custom-list" class="custom-list"></div>
-                 <button type="button" class="btn btn-secondary add-custom-btn" data-type="post-tax">
-                    <i class="ri-add-line"></i> <span data-i18n-key="btn_add_item">Add Item</span>
-                </button>
-            </section>
-
-            <section class="card">
-                <h2 data-i18n-key="section_post_tax_title">Post-Tax Deductions</h2>
-                 <div class="form-grid">
-                    <div class="input-group-vertical"><label for="deduct-spp">Stock Purchase Plan</label><input type="number" id="deduct-spp" min="0"></div>
-                    <div class="input-group-vertical"><label for="deduct-adnd">AD&D</label><input type="number" id="deduct-adnd" min="0"></div>
-                    <div class="input-group-vertical"><label for="deduct-401k-roth">401k Roth</label><input type="number" id="deduct-401k-roth" min="0"></div>
-                    <div class="input-group-vertical"><label for="deduct-ltd">LTD</label><input type="number" id="deduct-ltd" min="0"></div>
-                </div>
-                <div id="post-tax-custom-list" class="custom-list"></div>
-                 <button type="button" class="btn btn-secondary add-custom-btn" data-type="post-tax">
+                <button type="button" class="btn btn-secondary add-custom-btn" data-type="post-tax">
                     <i class="ri-add-line"></i> <span data-i18n-key="btn_add_item">Add Item</span>
                 </button>
             </section>
@@ -108,66 +94,104 @@
                 <div class="form-grid">
                     <div class="input-group-vertical">
                         <label for="exp-rent" data-i18n-key="label_rent_mortgage">Rent/Mortgage</label>
-                        <input type="number" id="exp-rent" min="0">
+                        <input type="number" id="exp-rent" min="0" value="0">
                     </div>
                     <div class="input-group-vertical">
                         <label for="exp-utilities" data-i18n-key="label_utilities">Utilities</label>
-                        <input type="number" id="exp-utilities" min="0">
+                        <input type="number" id="exp-utilities" min="0" value="0">
                     </div>
                     <div class="input-group-vertical">
                         <label for="exp-internet" data-i18n-key="label_internet">Internet</label>
-                        <input type="number" id="exp-internet" min="0">
+                        <input type="number" id="exp-internet" min="0" value="0">
                     </div>
-                     <div class="input-group-vertical">
+                    <div class="input-group-vertical">
                         <label for="exp-phone" data-i18n-key="label_phone">Phone Bill</label>
-                        <input type="number" id="exp-phone" min="0">
+                        <input type="number" id="exp-phone" min="0" value="0">
                     </div>
                     <div class="input-group-vertical">
                         <label for="exp-groceries" data-i18n-key="label_groceries">Groceries</label>
-                        <input type="number" id="exp-groceries" min="0">
+                        <input type="number" id="exp-groceries" min="0" value="0">
                     </div>
                     <div class="input-group-vertical">
                         <label for="exp-dining" data-i18n-key="label_dining_out">Dining Out</label>
-                        <input type="number" id="exp-dining" min="0">
+                        <input type="number" id="exp-dining" min="0" value="0">
                     </div>
                     <div class="input-group-vertical">
                         <label for="exp-transport" data-i18n-key="label_transportation">Transportation</label>
-                        <input type="number" id="exp-transport" min="0">
+                        <input type="number" id="exp-transport" min="0" value="0">
                     </div>
                     <div class="input-group-vertical">
                         <label for="exp-shopping" data-i18n-key="label_shopping">Shopping</label>
-                        <input type="number" id="exp-shopping" min="0">
+                        <input type="number" id="exp-shopping" min="0" value="0">
                     </div>
                     <div class="input-group-vertical">
                         <label for="exp-health" data-i18n-key="label_health_wellness">Health/Wellness</label>
-                        <input type="number" id="exp-health" min="0">
+                        <input type="number" id="exp-health" min="0" value="0">
                     </div>
                     <div class="input-group-vertical">
                         <label for="exp-entertainment" data-i18n-key="label_entertainment">Entertainment</label>
-                        <input type="number" id="exp-entertainment" min="0">
+                        <input type="number" id="exp-entertainment" min="0" value="0">
                     </div>
                 </div>
+                <div id="expenses-custom-list" class="custom-list"></div>
+                <button type="button" class="btn btn-secondary add-custom-btn" data-type="expense">
+                    <i class="ri-add-line"></i> <span data-i18n-key="btn_add_item">Add Item</span>
+                </button>
+                <canvas id="expenses-chart"></canvas>
             </section>
+
+            <section class="card summary-card">
+                <h2 data-i18n-key="section_summary_title">Budget Summary</h2>
+                <div class="summary-item">
+                    <p data-i18n-key="label_net_salary">Net Monthly Salary:</p>
+                    <span id="net-salary-display">$0.00</span>
+                </div>
+                <div class="summary-item">
+                    <p data-i18n-key="label_total_taxes">Total Taxes:</p>
+                    <span id="total-taxes-display">$0.00</span>
+                </div>
+                <div class="summary-item">
+                    <p data-i18n-key="label_total_pre_tax">Total Pre-Tax Deductions:</p>
+                    <span id="total-pre-tax-display">$0.00</span>
+                </div>
+                <div class="summary-item">
+                    <p data-i18n-key="label_total_post_tax">Total Post-Tax Deductions:</p>
+                    <span id="total-post-tax-display">$0.00</span>
+                </div>
+                <div class="summary-item">
+                    <p data-i18n-key="label_total_expenses">Total Expenses:</p>
+                    <span id="total-expenses-display">$0.00</span>
+                </div>
+                <div class="summary-item final-budget">
+                    <p data-i18n-key="label_remaining_budget">Remaining Budget:</p>
+                    <span id="remaining-budget-display">$0.00</span>
+                </div>
+                <canvas id="budget-distribution-chart"></canvas>
+            </section>
+
             <section class="card">
                 <h2 data-i18n-key="section_data_title">Data Management</h2>
                 <div class="button-group">
                     <button id="export-json-btn" class="btn btn-secondary"><i class="ri-download-2-line"></i> <span data-i18n-key="btn_export">Export JSON</span></button>
                     <button id="import-json-btn" class="btn btn-secondary"><i class="ri-upload-2-line"></i> <span data-i18n-key="btn_import">Import JSON</span></button>
                     <input type="file" id="import-json-input" hidden accept="application/json">
+                    <button id="clear-all-data-btn" class="btn btn-danger"><i class="ri-delete-bin-line"></i> <span data-i18n-key="btn_clear_all_data">Clear All Data</span></button>
                 </div>
             </section>
 
-            <section class="card">
+            <section class="card ai-report-section">
                 <h2 data-i18n-key="section_ai_title">AI Spending Report</h2>
                 <button id="ai-report-btn" class="btn btn-primary">
                     <i class="ri-robot-line"></i> <span data-i18n-key="btn_ai_report">Generate AI Report</span>
                 </button>
-                <div id="ai-report-box"></div>
+                <div id="ai-report-box" class="ai-report-box">
+                    <p data-i18n-key="ai_report_placeholder">Click "Generate AI Report" to get insights into your spending habits.</p>
+                </div>
             </section>
         </main>
     </div>
 
-    <script src="../scripts/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../scripts/budget.js"></script>
 </body>
 </html>
