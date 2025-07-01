@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // 1. I18N Language Management
     const locales = {
         en: {
-            app_title: "Deep Chic Budget",
+            app_title: "Budget",
             section_salary_title: "Gross Monthly Salary",
             label_gross_salary: "Gross Salary",
             btn_save: "Save",
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ai_report_placeholder: "Your AI-generated spending analysis and savings tips will appear here...",
         },
         ko: {
-            app_title: "딥시크 가계부",
+            app_title: "가계부",
             section_salary_title: "세전 월급 입력",
             label_gross_salary: "세전 월급",
             btn_save: "저장",
