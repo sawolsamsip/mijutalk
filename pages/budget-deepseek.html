@@ -14,6 +14,57 @@
     <button id="help-btn" class="nav-btn" aria-label="도움말">❓</button>
   </nav>
   <div id="alert-bar"></div>
+  
+  <!-- 세전 월급 입력 -->
+  <section class="card">
+    <h2>세전 월급 입력</h2>
+    <form id="salary-form" style="display:flex;align-items:center;gap:10px;">
+      <label>세전 월급: <input type="number" id="salary-gross" min="0" required style="width:130px;" aria-label="세전 월급 입력"></label>
+      <button type="submit" class="nav-btn">저장</button>
+    </form>
+    <div id="salary-summary" style="margin-top:12px;"></div>
+  </section>
+
+  <!-- 세금 섹션 -->
+  <section class="card">
+    <h2>세금 항목 입력</h2>
+    <form id="tax-form" style="display:flex;flex-wrap:wrap;gap:14px;">
+      <label>Federal Withholding: <input type="number" id="tax-federal" min="0" style="width:110px;" aria-label="Federal Withholding"></label>
+      <label>State Tax: <input type="number" id="tax-state" min="0" style="width:110px;" aria-label="State Tax"></label>
+      <label>OASDI: <input type="number" id="tax-oasdi" min="0" style="width:110px;" aria-label="OASDI"></label>
+      <label>Medicare: <input type="number" id="tax-medicare" min="0" style="width:110px;" aria-label="Medicare"></label>
+      <label>CA SDI: <input type="number" id="tax-casdi" min="0" style="width:110px;" aria-label="CA SDI"></label>
+      <label>기타(사용자입력): <input type="number" id="tax-other" min="0" style="width:110px;" aria-label="기타 세금"></label>
+    </form>
+  </section>
+
+  <!-- 세전 공제 섹션 -->
+  <section class="card">
+    <h2>세전 공제 항목 입력</h2>
+    <form id="pre-tax-deduction-form" style="display:flex;flex-wrap:wrap;gap:14px;">
+      <label>Medical Premium: <input type="number" id="deduct-medical" min="0" style="width:110px;" aria-label="Medical Premium"></label>
+      <label>Dental Premium: <input type="number" id="deduct-dental" min="0" style="width:110px;" aria-label="Dental Premium"></label>
+      <label>Vision Premium: <input type="number" id="deduct-vision" min="0" style="width:110px;" aria-label="Vision Premium"></label>
+      <label>MSEAP: <input type="number" id="deduct-mseap" min="0" style="width:110px;" aria-label="MSEAP"></label>
+      <label>401k Traditional: <input type="number" id="deduct-401k-trad" min="0" style="width:110px;" aria-label="401k Traditional"></label>
+      <label>기타(사용자입력): <input type="number" id="deduct-other" min="0" style="width:110px;" aria-label="세전 기타 공제"></label>
+    </form>
+  </section>
+
+  <!-- 세후 공제 섹션 -->
+  <section class="card">
+    <h2>세후 공제 항목 입력</h2>
+    <form id="post-tax-deduction-form" style="display:flex;flex-wrap:wrap;gap:14px;">
+      <label>Stock Purchase Plan: <input type="number" id="deduct-spp" min="0" style="width:110px;" aria-label="Stock Purchase Plan"></label>
+      <label>AD&D: <input type="number" id="deduct-adnd" min="0" style="width:110px;" aria-label="AD&D"></label>
+      <label>Critical Illness: <input type="number" id="deduct-critical" min="0" style="width:110px;" aria-label="Critical Illness"></label>
+      <label>Accidental Insurance: <input type="number" id="deduct-accident" min="0" style="width:110px;" aria-label="Accidental Insurance"></label>
+      <label>401k Roth: <input type="number" id="deduct-401k-roth" min="0" style="width:110px;" aria-label="401k Roth"></label>
+      <label>Legal Services: <input type="number" id="deduct-legal" min="0" style="width:110px;" aria-label="Legal Services"></label>
+      <label>LTD: <input type="number" id="deduct-ltd" min="0" style="width:110px;" aria-label="LTD"></label>
+      <label>기타(사용자입력): <input type="number" id="deduct-post-other" min="0" style="width:110px;" aria-label="세후 기타 공제"></label>
+    </form>
+  </section>
 
   <!-- 예산/지출 입력 -->
   <section class="card">
@@ -62,31 +113,6 @@
     <input type="file" id="import-json-input" style="display:none" accept="application/json">
     <button id="import-json-btn" class="nav-btn">가져오기(JSON)</button>
     <span id="backup-msg" style="margin-left:12px;"></span>
-  </section>
-
-  <!-- 가족/팀 예산 공유 -->
-  <section class="card">
-    <h2>가족/팀 예산 공유</h2>
-    <div>
-      <button id="share-link-btn" class="nav-btn">공유 링크 복사</button>
-      <span id="share-link-msg" style="margin-left:10px;"></span>
-    </div>
-    <div style="margin-top:10px;">
-      <input type="text" id="invite-code-input" placeholder="초대 코드 입력" style="min-width:150px;">
-      <button id="join-invite-btn" class="nav-btn">초대 수락</button>
-      <span id="invite-msg" style="margin-left:10px;"></span>
-    </div>
-    <div id="shared-users-list" style="margin-top:16px;"></div>
-  </section>
-
-  <!-- 가족/팀 채팅 -->
-  <section class="card">
-    <h2>가족/팀 채팅</h2>
-    <div id="chat-box" style="height:210px;overflow-y:auto;background:#fafafa;border-radius:10px;padding:12px 8px 8px 8px;margin-bottom:10px;"></div>
-    <form id="chat-form" style="display:flex;gap:8px;">
-      <input type="text" id="chat-input" placeholder="메시지 입력..." autocomplete="off" style="flex:1;">
-      <button type="submit" class="nav-btn">전송</button>
-    </form>
   </section>
 
   <!-- 소비/지출 리스트 및 차트 -->
