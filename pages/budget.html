@@ -27,10 +27,7 @@
                 </div>
                 <button type="submit" class="btn" data-i18n-key="btn_save">저장</button>
             </form>
-            <div id="salary-summary" class="summary-display">
-                월별 총 급여: $0.00
-            </div>
-        </section>
+            </section>
 
         <section class="budget-section">
             <h2 data-i18n-key="section_taxes_title">세금</h2>
@@ -57,7 +54,7 @@
                 </div>
             </div>
             <div class="custom-list" id="tax-custom-list">
-                </div>
+            </div>
             <button class="btn add-custom-btn" data-type="tax" data-i18n-key="btn_add_item">항목 추가</button>
 
             <div class="chart-container">
@@ -86,7 +83,7 @@
                 </div>
             </div>
             <div class="custom-list" id="pre-tax-custom-list">
-                </div>
+            </div>
             <button class="btn add-custom-btn" data-type="pre-tax" data-i18n-key="btn_add_item">항목 추가</button>
 
             <div class="chart-container">
@@ -115,7 +112,7 @@
                 </div>
             </div>
             <div class="custom-list" id="post-tax-custom-list">
-                </div>
+            </div>
             <button class="btn add-custom-btn" data-type="post-tax" data-i18n-key="btn_add_item">항목 추가</button>
 
             <div class="chart-container">
@@ -168,7 +165,7 @@
                 </div>
             </div>
             <div class="custom-list" id="expenses-custom-list">
-                </div>
+            </div>
             <button class="btn add-custom-btn" data-type="expense" data-i18n-key="btn_add_item">항목 추가</button>
 
             <div class="chart-container">
@@ -179,6 +176,7 @@
         <section class="budget-section">
             <h2 data-i18n-key="section_summary_title">예산 요약</h2>
             <div class="summary-results">
+                <p data-i18n-key="label_gross_salary">총 급여:</p> <span id="gross-salary-summary-display">$0.00</span>
                 <p data-i18n-key="label_net_salary">순 월 급여:</p> <span id="net-salary-display">$0.00</span>
                 <p data-i18n-key="label_total_taxes">총 세금:</p> <span id="total-taxes-display">$0.00</span>
                 <p data-i18n-key="label_total_pre_tax">총 세전 공제액:</p> <span id="total-pre-tax-display">$0.00</span>
