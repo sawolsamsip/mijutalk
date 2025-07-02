@@ -655,8 +655,27 @@ function applyLanguage(lang) {
         }
     });
     // Update input placeholders if needed (requires data-i18n-placeholder)
-    document.querySelector('label[for="custom-item-name-input"]')?.textContent = translations[currentLanguage].placeholder_item_name;
-    document.querySelector('label[for="custom-item-amount-input"]')?.textContent = translations[currentLanguage].placeholder_amount;
+    // Note: If you have <input placeholder="..."> attributes that should be translated,
+    // you'll need to add a data-i18n-placeholder attribute to them and handle it here.
+    // For now, only labels and similar text content are handled directly.
+    // If you add placeholder translation, it would look something like this:
+    // document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+    //     const key = element.dataset.i18nPlaceholder;
+    //     if (translations[currentLanguage][key]) {
+    //         element.placeholder = translations[currentLanguage][key];
+    //     }
+    // });
+
+    // Custom item input labels (as per your previous query)
+    // These need to be targeted specifically as they don't have data-i18n-key for labels
+    const customItemNameLabel = document.querySelector('label[for="custom-item-name-input"]');
+    if (customItemNameLabel) {
+        customItemNameLabel.textContent = translations[currentLanguage].placeholder_item_name;
+    }
+    const customItemAmountLabel = document.querySelector('label[for="custom-item-amount-input"]');
+    if (customItemAmountLabel) {
+        customItemAmountLabel.textContent = translations[currentLanguage].placeholder_amount;
+    }
 
 
     languageToggleBtn.textContent = currentLanguage === 'ko' ? 'EN' : 'KO'; // Toggle text
@@ -696,7 +715,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('salary-form').addEventListener('submit', (e) => {
-        e.preventDefault();
+        e.preventDefault(); // 폼 제출 시 페이지 새로고침 방지
         updateDisplay();
         saveData();
     });
@@ -736,6 +755,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Remove Custom Item Buttons (Event Delegation)
     document.addEventListener('click', (e) => {
+        // 이벤트 위임을 사용하여 동적으로 추가된 .remove-btn도 처리
         if (e.target.classList.contains('remove-btn') || e.target.closest('.remove-btn')) {
             const btn = e.target.closest('.remove-btn');
             const index = parseInt(btn.dataset.index);
@@ -773,7 +793,7 @@ document.addEventListener('DOMContentLoaded', () => {
         saveData();
     });
 
-    // Data Management
+    // Data Management: Export JSON
     exportJsonBtn.addEventListener('click', () => {
         const data = {
             grossSalary: grossSalaryInput.value,
@@ -789,10 +809,11 @@ document.addEventListener('DOMContentLoaded', () => {
             isDarkMode: isDarkMode
         };
 
+        // Standard inputs
         for (const key in taxInputs) data.taxInputs[key] = taxInputs[key].value;
         for (const key in preTaxDeductInputs) data.preTaxDeductInputs[key] = preTaxDeductInputs[key].value;
-        for (const key in postTaxDeductInputs) data.postTaxDeductInputs[key] = postTaxDeductInputs[key].value; // 수정된 부분
-        for (const key in expenseInputs) data.expenseInputs[key] = expenseInputs[key].value; // 추가된 부분
+        for (const key in postTaxDeductInputs) data.postTaxDeductInputs[key] = postTaxDeductInputs[key].value;
+        for (const key in expenseInputs) data.expenseInputs[key] = expenseInputs[key].value;
 
         const jsonData = JSON.stringify(data, null, 2);
         const blob = new Blob([jsonData], { type: 'application/json' });
@@ -807,6 +828,7 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('예산 데이터가 성공적으로 내보내졌습니다!');
     });
 
+    // Data Management: Import JSON
     importJsonBtn.addEventListener('click', () => {
         importJsonInput.click(); // Hidden file input 클릭 트리거
     });
@@ -836,6 +858,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Data Management: Clear All Data
     clearAllDataBtn.addEventListener('click', () => {
         if (confirm('모든 저장된 데이터를 지우시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
             localStorage.removeItem('budgetAppData');
@@ -846,6 +869,7 @@ document.addEventListener('DOMContentLoaded', () => {
             for (const key in postTaxDeductInputs) postTaxDeductInputs[key].value = 0;
             for (const key in expenseInputs) expenseInputs[key].value = 0;
 
+            // 커스텀 목록 초기화
             customTaxes = [];
             customPreTaxDeductions = [];
             customPostTaxDeductions = [];
@@ -858,10 +882,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // AI Report Generation (Placeholder for actual AI integration)
     aiReportBtn.addEventListener('click', () => {
-        aiReportBox.innerHTML = `<p>${translations[currentLanguage].ai_report_placeholder}</p>`; // Simulate report generation
-        // 실제 AI 통합은 여기에 API 호출 등을 추가해야 합니다.
-        // 예시: fetch('/api/ai-report', { method: 'POST', body: JSON.stringify(getCurrentBudgetSummary()), headers: { 'Content-Type': 'application/json' } })
+        // 이 부분은 실제 AI API 연동 없이 단순히 플레이스홀더 텍스트를 보여줍니다.
+        aiReportBox.innerHTML = `<p>${translations[currentLanguage].ai_report_placeholder}</p>`;
+        // 실제 AI 통합을 하려면 여기에 API 호출 등을 추가해야 합니다.
+        // 예시:
+        // fetch('/api/ai-report', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify(getCurrentBudgetSummary()) // 현재 예산 데이터를 전송
+        // })
         // .then(response => response.json())
-        // .then(data => { aiReportBox.textContent = data.report; });
+        // .then(data => {
+        //     aiReportBox.textContent = data.report; // AI로부터 받은 보고서 표시
+        // })
+        // .catch(error => {
+        //     console.error('AI 보고서 생성 중 오류 발생:', error);
+        //     aiReportBox.textContent = 'AI 보고서를 생성할 수 없습니다.';
+        // });
     });
 });
