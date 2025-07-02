@@ -1,512 +1,282 @@
-/* General Body & Container Styles */
+/* Variables for colors (Light Mode by default) */
 :root {
-    --text-color: #333;
-    --background-color: #f4f7f6;
-    --card-background: #ffffff;
-    --border-color: #e0e0e0;
-    --primary-color: #007bff;
-    --secondary-color: #6c757d;
-    --danger-color: #dc3545;
-    --hover-color: #0056b3;
-    --active-color: #004085;
-    --shadow-color: rgba(0, 0, 0, 0.1);
-    --input-bg: #fff;
-    --input-border: #ced4da;
-    --focus-ring-color: rgba(0, 123, 255, 0.25);
-    --chart-text-color: #666;
-    --chart-grid-color: #ebedef;
+    --bg-color: #f4f7f6; /* Light gray background */
+    --card-bg-color: #ffffff; /* White card background */
+    --text-color: #333333; /* Dark gray text */
+    --header-bg-color: #4CAF50; /* Green header */
+    --header-text-color: #ffffff; /* White header text */
+    --button-bg-color: #4CAF50; /* Green button */
+    --button-text-color: #ffffff; /* White button text */
+    --input-border-color: #cccccc; /* Light gray input border */
+    --input-focus-border-color: #4CAF50; /* Green input focus */
+    --summary-text-color: #007bff; /* Blue for summary values */
+    --shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    --border-radius: 8px; /* Standard border radius */
+    --accent-color: #007bff; /* Blue accent */
+    --danger-color: #dc3545; /* Red for danger actions */
+
+    /* Chart specific colors */
+    --chart-text-color: #333333;
+    --chart-grid-color: #e0e0e0;
+}
+
+/* Dark Mode Variables */
+body.dark-mode {
+    --bg-color: #2c2c2c; /* Darker gray background */
+    --card-bg-color: #3a3a3a; /* Dark gray card background */
+    --text-color: #e0e0e0; /* Light gray text */
+    --header-bg-color: #333333; /* Darker header */
+    --header-text-color: #e0e0e0; /* Light header text */
+    --button-bg-color: #555555; /* Darker button */
+    --button-text-color: #e0e0e0; /* Light button text */
+    --input-border-color: #555555; /* Darker input border */
+    --input-focus-border-color: #777777; /* Gray input focus */
+    --summary-text-color: #92b0ff; /* Lighter blue for summary */
+    --shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Darker shadow */
+    --accent-color: #92b0ff; /* Lighter blue accent */
+    --danger-color: #ff6b6b; /* Lighter red for danger */
+
+    /* Chart specific colors for dark mode */
+    --chart-text-color: #e0e0e0;
+    --chart-grid-color: #555555;
+}
+
+/* Base Styles */
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    line-height: 1.6;
+    height: 100%; /* Ensure body and html take full viewport height */
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    scroll-behavior: smooth; /* Smooth scrolling for anchors */
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
-    justify-content: center;
-    align-items: flex-start; /* Align to top for longer content */
-    min-height: 100vh;
-    background-color: var(--background-color);
-    margin: 0;
-    padding: 20px;
-    color: var(--text-color);
-    transition: background-color 0.3s, color 0.3s;
-    line-height: 1.6;
+    flex-direction: column;
+    min-height: 100vh; /* Ensure body takes at least full viewport height */
 }
 
-.container {
-    background-color: var(--card-background);
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 8px 25px var(--shadow-color);
-    width: 100%;
-    max-width: 900px;
-    box-sizing: border-box;
-    display: grid;
-    gap: 25px; /* Spacing between sections */
-}
-
-/* Navbar */
-.navbar {
+/* Header */
+header {
+    background-color: var(--header-bg-color);
+    color: var(--header-text-color);
+    padding: 15px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+    flex-shrink: 0; /* Prevent header from shrinking */
 }
 
-.navbar .logo {
+header h1 {
+    margin: 0;
     font-size: 1.8em;
-    font-weight: 700;
-    color: var(--primary-color);
-    user-select: none;
 }
 
-.nav-actions {
+.header-controls {
     display: flex;
     gap: 10px;
 }
 
-.nav-btn {
-    background: none;
-    border: 1px solid var(--border-color);
-    color: var(--text-color);
-    padding: 8px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+/* Main Container */
+.container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 0 20px;
+    flex-grow: 1; /* Allow main content to grow and fill space */
+    width: 100%; /* Ensure it takes full width */
+    box-sizing: border-box; /* Include padding in width */
 }
 
-.nav-btn:hover {
-    background-color: var(--border-color);
-}
-
-.nav-btn i {
-    font-size: 1.2em;
-    margin-right: 5px;
-}
-.nav-btn:last-child i {
-    margin-right: 0; /* No margin for the help icon */
-}
-
-
-/* Card Sections */
-.card {
-    background-color: var(--card-background);
+/* Budget Section */
+.budget-section {
+    background-color: var(--card-bg-color);
     padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px var(--shadow-color);
-    border: 1px solid var(--border-color);
+    margin-bottom: 25px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
 }
 
-.card h2 {
-    color: var(--primary-color);
+.budget-section h2 {
+    color: var(--accent-color);
     margin-top: 0;
     margin-bottom: 20px;
-    font-size: 1.6em;
-    border-bottom: 2px solid var(--primary-color);
+    border-bottom: 2px solid var(--input-border-color);
     padding-bottom: 10px;
-    display: inline-block; /* to make border-bottom only cover text */
 }
 
-/* Input Groups and Forms */
-.input-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    align-items: flex-end;
-    margin-bottom: 20px;
+/* Form Groups */
+.form-group {
+    margin-bottom: 15px;
 }
 
-.input-group label {
-    font-weight: 600;
-    color: var(--text-color);
-    margin-right: 10px;
-    align-self: center;
-}
-
-.input-group input[type="number"] {
-    flex: 1;
-    min-width: 150px;
-    padding: 12px;
-    border: 1px solid var(--input-border);
-    border-radius: 6px;
-    font-size: 1em;
-    color: var(--text-color);
-    background-color: var(--input-bg);
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.input-group input[type="number"]:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px var(--focus-ring-color);
-    outline: none;
-}
-
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 20px;
-    margin-bottom: 20px;
-}
-
-.input-group-vertical {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.input-group-vertical label {
-    font-weight: 500;
-    color: var(--text-color);
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
     font-size: 0.95em;
 }
 
-.input-group-vertical input[type="number"] {
-    padding: 10px;
-    border: 1px solid var(--input-border);
-    border-radius: 6px;
-    font-size: 1em;
+.form-group input[type="number"],
+.form-group input[type="text"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--input-border-color);
+    border-radius: 5px;
+    background-color: var(--bg-color); /* Match background for seamless look */
     color: var(--text-color);
-    background-color: var(--input-bg);
-    transition: border-color 0.2s, box-shadow 0.2s;
+    font-size: 1em;
+    box-sizing: border-box; /* Include padding in width */
+    transition: border-color 0.2s ease-in-out;
 }
 
-.input-group-vertical input[type="number"]:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px var(--focus-ring-color);
+.form-group input[type="number"]:focus,
+.form-group input[type="text"]:focus {
     outline: none;
+    border-color: var(--input-focus-border-color);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2); /* Soft green glow */
 }
 
 /* Buttons */
 .btn {
-    padding: 12px 20px;
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    padding: 10px 20px;
     border: none;
-    border-radius: 6px;
+    border-radius: 5px;
     cursor: pointer;
     font-size: 1em;
-    font-weight: 600;
-    transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+    margin-top: 10px;
+    display: inline-block; /* For proper spacing with other buttons */
 }
 
-.btn-primary {
-    background-color: var(--primary-color);
-    color: white;
-}
-
-.btn-primary:hover {
-    background-color: var(--hover-color);
+.btn:hover {
+    background-color: #388e3c; /* Darker green on hover */
     transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
 }
 
-.btn-secondary {
-    background-color: var(--secondary-color);
-    color: white;
-}
-
-.btn-secondary:hover {
-    background-color: #5a6268;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(108, 117, 125, 0.3);
+.btn:active {
+    transform: translateY(0);
 }
 
 .btn-danger {
     background-color: var(--danger-color);
-    color: white;
 }
 
 .btn-danger:hover {
-    background-color: #c82333;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
+    background-color: #c82333; /* Darker red */
 }
 
-.add-custom-btn {
-    margin-top: 15px;
-    background-color: var(--secondary-color);
-    color: white;
-    width: auto; /* Adjust width */
-    padding: 10px 18px;
-    font-size: 0.95em;
+.icon-btn {
+    background: none;
+    border: none;
+    font-size: 1.5em; /* Larger icon size */
+    color: var(--header-text-color); /* Use header text color for icon */
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.2s ease-in-out;
 }
 
-/* Custom List (for dynamic items) */
+.icon-btn:hover {
+    color: #e0e0e0; /* Lighter color on hover */
+}
+
+/* Form Grid for multiple inputs */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+/* Custom List (for added items) */
 .custom-list {
-    margin-top: 15px;
-    border-top: 1px solid var(--border-color);
+    margin-top: 20px;
+    border-top: 1px solid var(--input-border-color);
     padding-top: 15px;
 }
 
-.custom-item {
-    display: flex;
-    flex-wrap: wrap; /* Allow wrapping on small screens */
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-    background-color: var(--background-color);
-    padding: 10px 15px;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-}
-
-/* IMPORTANT: Styles for dynamically added custom item inputs */
-.custom-item input[type="text"],
-.custom-item input[type="number"] {
-    flex: 1; /* Allow inputs to grow and shrink */
-    min-width: 100px; /* Minimum width for inputs */
-    padding: 8px;
-    border: 1px solid var(--input-border);
-    border-radius: 4px;
-    background-color: var(--input-bg);
-    color: var(--text-color);
-    font-size: 0.95em;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.custom-item input[type="text"]:focus,
-.custom-item input[type="number"]:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px var(--focus-ring-color);
-    outline: none;
-}
-
-.custom-item .delete-custom-btn {
-    background-color: var(--danger-color);
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.85em;
-    transition: background-color 0.2s;
-    /* Ensure button has fixed size and doesn't get squished */
-    flex-shrink: 0;
-}
-
-.custom-item .delete-custom-btn:hover {
-    background-color: #c82333;
-}
-
-/* Summary Section */
-.summary-card {
-    background-color: var(--primary-color); /* Primary color for summary for emphasis */
-    color: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
-    text-align: center;
-}
-
-.summary-card h2 {
-    color: white;
-    border-bottom-color: rgba(255, 255, 255, 0.5);
-}
-
-.summary-item {
+.custom-list-item {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 10px 0;
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
-}
-
-.summary-item:last-child {
-    border-bottom: none;
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 2px solid rgba(255, 255, 255, 0.5);
-}
-
-.summary-item p {
-    margin: 0;
-    font-size: 1.1em;
-    font-weight: 500;
-}
-
-.summary-item span {
-    font-size: 1.1em;
-    font-weight: 700;
-}
-
-.summary-item.final-budget span {
-    font-size: 1.6em;
-    color: #ffd700; /* Gold color for remaining budget */
-}
-
-/* AI Report Section */
-.ai-report-section {
-    text-align: center;
-}
-
-.ai-report-box {
-    margin-top: 20px;
-    background-color: var(--background-color);
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    min-height: 100px;
-    text-align: left;
-    color: var(--text-color);
-    white-space: pre-wrap; /* Preserves whitespace and line breaks */
+    border-bottom: 1px dashed var(--input-border-color);
     font-size: 0.95em;
 }
 
-.ai-report-box p {
+.custom-list-item:last-child {
+    border-bottom: none;
+}
+
+.custom-list-item span {
+    flex-grow: 1; /* Allow text to take available space */
+    padding-right: 10px;
+}
+
+.custom-list-item .remove-btn {
+    background: none;
+    border: none;
+    color: var(--danger-color);
+    cursor: pointer;
+    font-size: 1.2em;
+    margin-left: 10px;
+    transition: color 0.2s ease-in-out;
+}
+
+.custom-list-item .remove-btn:hover {
+    color: #a71d2a;
+}
+
+
+/* Summary Displays */
+.summary-display {
+    background-color: var(--bg-color);
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 20px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: var(--summary-text-color);
+    text-align: center;
+}
+
+.summary-results {
+    display: grid;
+    grid-template-columns: 1fr auto; /* Label on left, value on right */
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid var(--input-border-color);
+}
+
+.summary-results p {
     margin: 0;
-    color: var(--secondary-color);
-}
-
-/* Data Management Buttons */
-.button-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-    margin-top: 15px;
-}
-
-/* Chart Styles */
-canvas {
-    max-width: 100%;
-    height: auto;
-    margin-top: 25px;
-    background-color: var(--card-background); /* Ensure chart background matches card */
-    padding: 10px; /* Add some padding around the chart */
-    border-radius: 8px;
-}
-
-/* Dark Mode Styles */
-body.dark-mode {
-    --text-color: #e0e0e0;
-    --background-color: #282c34;
-    --card-background: #3a3f4a;
-    --border-color: #555;
-    --primary-color: #61dafb; /* Lighter blue for dark mode */
-    --secondary-color: #92b0c9; /* Lighter gray for dark mode */
-    --danger-color: #ff6b6b; /* Lighter red */
-    --hover-color: #21a1f1;
-    --active-color: #1a7fb0;
-    --shadow-color: rgba(0, 0, 0, 0.4);
-    --input-bg: #4c525f;
-    --input-border: #6a717e;
-    --focus-ring-color: rgba(97, 218, 251, 0.25);
-    --chart-text-color: #ccc;
-    --chart-grid-color: #4a505c;
-}
-
-body.dark-mode .navbar .logo {
-    color: var(--primary-color);
-}
-
-body.dark-mode .nav-btn {
-    border-color: var(--border-color);
+    font-weight: bold;
     color: var(--text-color);
 }
-body.dark-mode .nav-btn:hover {
-    background-color: #4c525f;
+
+.summary-results span {
+    font-weight: bold;
+    color: var(--summary-text-color);
+    text-align: right;
 }
 
-body.dark-mode .card h2 {
-    border-bottom-color: var(--primary-color);
-}
-
-body.dark-mode .summary-card {
-    background-color: #21a1f1; /* Adjust background for dark mode summary */
-    box-shadow: 0 8px 25px rgba(33, 161, 241, 0.3);
-}
-
-body.dark-mode .summary-card h2 {
-    border-bottom-color: rgba(255, 255, 255, 0.5);
-}
-
-body.dark-mode .summary-item {
-    border-bottom-color: rgba(255, 255, 255, 0.3);
-}
-body.dark-mode .summary-item:last-child {
-    border-top-color: rgba(255, 255, 255, 0.5);
-}
-
-body.dark-mode .summary-item.final-budget span {
-    color: #ffdf7e; /* Slightly different gold for dark mode */
-}
-
-#tax-chart,
-#expenses-chart,
-#budget-distribution-chart {
-    max-height: 400px; /* Adjust as needed */
-    width: 100% !important; /* Ensure it takes full width */
-    height: auto !important; /* Allow height to adjust within max-height */
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .container {
-        padding: 20px;
-        gap: 20px;
-    }
-
-    .form-grid {
-        grid-template-columns: 1fr; /* Stack inputs vertically on small screens */
-        gap: 15px;
-    }
-
-    .input-group {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .input-group label {
-        margin-right: 0;
-        margin-bottom: 5px;
-    }
-
-    .btn {
-        width: 100%; /* Full width buttons on small screens */
-        box-sizing: border-box;
-    }
-
-    .add-custom-btn {
-        width: 100%;
-    }
-
-    .custom-item {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .custom-item input {
-        width: 100%;
-        margin-bottom: 10px;
-    }
-
-    .custom-item .delete-custom-btn {
-        width: 100%;
-    }
-
-    .navbar {
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .nav-actions {
-        width: 100%;
-        justify-content: space-around;
-    }
-}
+/* Chart Container Styles */
 .chart-container {
     position: relative;
-    margin: 20px 0; /* 상하 여백 */
+    margin: 25px 0; /* 상하 여백 */
     padding: 15px; /* 내부 여백 */
-    background-color: var(--card-bg-color); /* 배경색 */
-    border-radius: 8px; /* 둥근 모서리 */
+    background-color: var(--bg-color); /* 배경색 */
+    border-radius: var(--border-radius); /* 둥근 모서리 */
     box-shadow: var(--shadow); /* 그림자 효과 */
-    height: 350px; /* 차트의 고정 높이 또는 최대 높이 */
+    height: 350px; /* 차트의 고정 높이 */
+    max-height: 400px; /* 최대 높이 설정 */
     display: flex; /* 내부 캔버스를 중앙 정렬하기 위해 */
     justify-content: center;
     align-items: center;
@@ -516,4 +286,77 @@ body.dark-mode .summary-item.final-budget span {
 .chart-container canvas {
     max-width: 100%;
     max-height: 100%;
+    display: block; /* Ensure canvas is a block element */
+}
+
+/* AI Report Box */
+.ai-report-box {
+    background-color: var(--bg-color);
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: var(--border-radius);
+    min-height: 150px;
+    line-height: 1.8;
+    color: var(--text-color);
+    border: 1px dashed var(--input-border-color);
+    display: flex; /* For vertical centering of placeholder */
+    align-items: center; /* For vertical centering of placeholder */
+    justify-content: center; /* For horizontal centering of placeholder */
+    text-align: center;
+}
+
+.ai-report-box p {
+    margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 1.5em;
+    }
+
+    .container {
+        margin: 15px auto;
+        padding: 0 15px;
+    }
+
+    .budget-section {
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr; /* Single column on small screens */
+    }
+
+    .chart-container {
+        height: 300px; /* Adjust chart height for smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+
+    .header-controls {
+        width: 100%;
+        justify-content: center;
+    }
+
+    header h1 {
+        font-size: 1.3em;
+    }
+
+    .btn {
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 15px;
+    }
+
+    .chart-container {
+        height: 250px;
+    }
 }
