@@ -79,6 +79,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let taxChart;
     let expensesChart;
     let budgetDistributionChart;
+    let preTaxDeductionsChart; // 추가
+    let postTaxDeductionsChart; // 추가
 
     // --- Internationalization (i18n) setup ---
     const translations = {
@@ -415,24 +417,88 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- Chart.js Integration ---
-    function initializeCharts() {
-        // --- ADDED: Destroy existing chart instances before creating new ones ---
-        if (taxChart) {
-            taxChart.destroy();
-            console.log('Destroyed existing taxChart.'); // For debugging
-        }
-        if (expensesChart) {
-            expensesChart.destroy();
-            console.log('Destroyed existing expensesChart.'); // For debugging
-        }
-        if (budgetDistributionChart) {
-            budgetDistributionChart.destroy();
-            console.log('Destroyed existing budgetDistributionChart.'); // For debugging
-        }
-        // --- END ADDED ---
+// --- Chart.js Integration ---
+function initializeCharts() {
+    // --- 기존 차트 인스턴스가 있다면 파괴 ---
+    if (taxChart) {
+        taxChart.destroy();
+        console.log('Destroyed existing taxChart.');
+    }
+    if (expensesChart) {
+        expensesChart.destroy();
+        console.log('Destroyed existing expensesChart.');
+    }
+    if (budgetDistributionChart) {
+        budgetDistributionChart.destroy();
+        console.log('Destroyed existing budgetDistributionChart.');
+    }
+    if (preTaxDeductionsChart) { // 새로 추가한 차트 파괴 로직
+        preTaxDeductionsChart.destroy();
+        console.log('Destroyed existing preTaxDeductionsChart.');
+    }
+    if (postTaxDeductionsChart) { // 새로 추가한 차트 파괴 로직
+        postTaxDeductionsChart.destroy();
+        console.log('Destroyed existing postTaxDeductionsChart.');
+    }
+    // --- END Destroy ---
 
-        const chartOptions = {
+    // 공통 차트 옵션 (색상, 반응성 등)
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                labels: {
+                    color: getComputedStyle(document.body).getPropertyValue('--chart-text-color'),
+                }
+            }
+        },
+        scales: {
+            x: {
+                ticks: { color: getComputedStyle(document.body).getPropertyValue('--chart-text-color') },
+                grid: { color: getComputedStyle(document.body).getPropertyValue('--chart-grid-color') }
+            },
+            y: {
+                ticks: { color: getComputedStyle(document.body).getPropertyValue('--chart-text-color') },
+                grid: { color: getComputedStyle(document.body).getPropertyValue('--chart-grid-color') }
+            }
+        }
+    };
+
+    // Tax Chart (막대 차트)
+    taxChart = new Chart(document.getElementById('tax-chart'), {
+        type: 'bar',
+        data: {
+            labels: [], // Populated in updateCharts
+            datasets: [{
+                label: translations[currentLanguage].section_taxes_title || 'Taxes',
+                data: [], // Populated in updateCharts
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: chartOptions // 공통 옵션 사용
+    });
+
+    // Expenses Chart (파이 차트)
+    expensesChart = new Chart(document.getElementById('expenses-chart'), {
+        type: 'pie',
+        data: {
+            labels: [], // Populated in updateCharts
+            datasets: [{
+                label: translations[currentLanguage].section_expenses_title || 'Expenses Breakdown',
+                data: [], // Populated in updateCharts
+                backgroundColor: [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9900', '#C9CBCF', '#8BC34A', '#FF9800', '#673AB7',
+                    '#E67C73', '#F6BF26', '#33B679', '#039BE5', '#7986CB', '#8E24AA', '#E91E63', '#9C27B0'
+                ], // 더 많은 지출 항목을 위한 색상
+                hoverOffset: 4
+            }]
+        },
+        // 파이 차트는 x, y 축 스케일이 필요 없으므로, 공통 옵션에서 scales 부분만 제외하거나, 별도로 정의합니다.
+        // 여기서는 필요 없는 scales 부분만 제외한 새로운 options 객체를 만들었습니다.
+        options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
@@ -441,173 +507,239 @@ document.addEventListener('DOMContentLoaded', () => {
                         color: getComputedStyle(document.body).getPropertyValue('--chart-text-color'),
                     }
                 }
-            },
-            scales: {
-                x: {
-                    ticks: { color: getComputedStyle(document.body).getPropertyValue('--chart-text-color') },
-                    grid: { color: getComputedStyle(document.body).getPropertyValue('--chart-grid-color') }
-                },
-                y: {
-                    ticks: { color: getComputedStyle(document.body).getPropertyValue('--chart-text-color') },
-                    grid: { color: getComputedStyle(document.body).getPropertyValue('--chart-grid-color') }
+            }
+        }
+    });
+
+    // Budget Distribution Chart (도넛 차트)
+    budgetDistributionChart = new Chart(document.getElementById('budget-distribution-chart'), {
+        type: 'doughnut',
+        data: {
+            labels: [], // Populated in updateCharts
+            datasets: [{
+                label: translations[currentLanguage].section_summary_title || 'Budget Distribution',
+                data: [], // Populated in updateCharts
+                backgroundColor: [],
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: getComputedStyle(document.body).getPropertyValue('--chart-text-color'),
+                    }
                 }
             }
-        };
+        }
+    });
 
-        // Tax Chart
-        taxChart = new Chart(document.getElementById('tax-chart'), {
-            type: 'bar',
-            data: {
-                labels: [], // Populated in updateCharts
-                datasets: [{
-                    label: translations[currentLanguage].section_taxes_title || 'Taxes',
-                    data: [], // Populated in updateCharts
-                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: chartOptions
-        });
+    // Pre-Tax Deductions Chart (파이 차트 - 새로 추가)
+    preTaxDeductionsChart = new Chart(document.getElementById('pre-tax-deduct-chart'), {
+        type: 'pie', // 또는 'doughnut'
+        data: {
+            labels: [], // Populated in updateCharts
+            datasets: [{
+                label: translations[currentLanguage].section_pre_tax_title || 'Pre-Tax Deductions Breakdown',
+                data: [], // Populated in updateCharts
+                backgroundColor: [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9900' // 색상 팔레트
+                ],
+                hoverOffset: 4
+            }]
+        },
+        options: { // 파이 차트이므로 scales 제외
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: getComputedStyle(document.body).getPropertyValue('--chart-text-color'),
+                    }
+                }
+            }
+        }
+    });
 
-        // Expenses Chart
-        expensesChart = new Chart(document.getElementById('expenses-chart'), {
-            type: 'pie',
-            data: {
-                labels: [], // Populated in updateCharts
-                datasets: [{
-                    label: translations[currentLanguage].section_expenses_title || 'Expenses Breakdown',
-                    data: [], // Populated in updateCharts
-                    backgroundColor: [
-                        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9900', '#C9CBCF', '#8BC34A', '#FF9800', '#673AB7',
-                        '#E67C73', '#F6BF26', '#33B679', '#039BE5', '#7986CB', '#8E24AA', '#E91E63', '#9C27B0'
-                    ], // More colors for more expenses
-                    hoverOffset: 4
-                }]
-            },
-            options: chartOptions
-        });
+    // Post-Tax Deductions Chart (파이 차트 - 새로 추가)
+    postTaxDeductionsChart = new Chart(document.getElementById('post-tax-deduct-chart'), {
+        type: 'pie', // 또는 'doughnut'
+        data: {
+            labels: [], // Populated in updateCharts
+            datasets: [{
+                label: translations[currentLanguage].section_post_tax_title || 'Post-Tax Deductions Breakdown',
+                data: [], // Populated in updateCharts
+                backgroundColor: [
+                    '#C9CBCF', '#8BC34A', '#FF9800', '#673AB7', '#E67C73', '#F6BF26' // 다른 색상 팔레트
+                ],
+                hoverOffset: 4
+            }]
+        },
+        options: { // 파이 차트이므로 scales 제외
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: getComputedStyle(document.body).getPropertyValue('--chart-text-color'),
+                    }
+                }
+            }
+        }
+    });
 
-        // Budget Distribution Chart (Pie)
-        budgetDistributionChart = new Chart(document.getElementById('budget-distribution-chart'), {
-            type: 'doughnut',
-            data: {
-                labels: [], // Populated in updateCharts
-                datasets: [{
-                    label: translations[currentLanguage].section_summary_title || 'Budget Distribution',
-                    data: [], // Populated in updateCharts
-                    backgroundColor: [],
-                    hoverOffset: 4
-                }]
-            },
-            options: chartOptions
-        });
+    console.log('Charts initialized successfully.');
+}
 
-        // --- Debugging line: confirm initialization ---
-        console.log('Charts initialized successfully.');
+
+function updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, totalPreTaxDeductions, totalPostTaxDeductions) {
+    // Update Tax Chart
+    const taxLabels = [];
+    const taxData = [];
+    for (const key in taxInputs) {
+        const value = parseFloat(taxInputs[key].value) || 0;
+        if (value > 0) {
+            taxLabels.push(taxInputs[key].previousElementSibling.textContent);
+            taxData.push(value);
+        }
+    }
+    customTaxes.forEach(item => {
+        if (item.amount > 0) {
+            taxLabels.push(item.name);
+            taxData.push(item.amount);
+        }
+    });
+    taxChart.data.labels = taxLabels;
+    taxChart.data.datasets[0].data = taxData;
+    taxChart.data.datasets[0].label = translations[currentLanguage].section_taxes_title;
+    taxChart.update();
+
+    // Update Expenses Chart
+    const expenseLabels = [];
+    const expenseData = [];
+    for (const key in expenseInputs) {
+        const value = parseFloat(expenseInputs[key].value) || 0;
+        if (value > 0) {
+            expenseLabels.push(expenseInputs[key].previousElementSibling.textContent);
+            expenseData.push(value);
+        }
+    }
+    customExpenses.forEach(item => {
+        if (item.amount > 0) {
+            expenseLabels.push(item.name);
+            expenseData.push(item.amount);
+        }
+    });
+    expensesChart.data.labels = expenseLabels;
+    expensesChart.data.datasets[0].data = expenseData;
+    expensesChart.data.datasets[0].label = translations[currentLanguage].section_expenses_title;
+    expensesChart.update();
+
+    // Update Budget Distribution Chart
+    const budgetLabels = [
+        translations[currentLanguage].label_total_taxes,
+        translations[currentLanguage].label_total_pre_tax,
+        translations[currentLanguage].label_total_post_tax,
+        translations[currentLanguage].label_total_expenses,
+        translations[currentLanguage].label_remaining_budget
+    ];
+    const budgetData = [
+        totalTaxes,
+        totalPreTaxDeductions,
+        totalPostTaxDeductions,
+        totalExpenses,
+        Math.max(0, remainingBudget) // Show 0 if negative, as pie chart can't show negative
+    ];
+    const budgetColors = [
+        '#FF6384', // Taxes
+        '#36A2EB', // Pre-Tax Deductions
+        '#FFCE56', // Post-Tax Deductions
+        '#4BC0C0', // Expenses
+        '#4CAF50'  // Remaining Budget (Green)
+    ];
+    // If remaining budget is negative, change color to red and label
+    if (remainingBudget < 0) {
+        budgetColors[4] = '#F44336'; // Red for negative budget
+        budgetData[4] = Math.abs(remainingBudget); // Show absolute value of deficit
+        budgetLabels[4] = translations[currentLanguage].label_deficit || 'Deficit'; // Label as Deficit
     }
 
-    function updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, totalPreTaxDeductions, totalPostTaxDeductions) {
-        // Update Tax Chart
-        const taxLabels = [];
-        const taxData = [];
-        for (const key in taxInputs) {
-            const value = parseFloat(taxInputs[key].value) || 0;
-            if (value > 0) {
-                taxLabels.push(taxInputs[key].previousElementSibling.textContent); // Get label text
-                taxData.push(value);
-            }
+
+    budgetDistributionChart.data.labels = budgetLabels;
+    budgetDistributionChart.data.datasets[0].data = budgetData;
+    budgetDistributionChart.data.datasets[0].backgroundColor = budgetColors;
+    budgetDistributionChart.data.datasets[0].label = translations[currentLanguage].section_summary_title;
+    budgetDistributionChart.update();
+
+    // Update Pre-Tax Deductions Chart (새로 추가)
+    const preTaxDeductLabels = [];
+    const preTaxDeductData = [];
+    for (const key in preTaxDeductInputs) {
+        const value = parseFloat(preTaxDeductInputs[key].value) || 0;
+        if (value > 0) {
+            preTaxDeductLabels.push(preTaxDeductInputs[key].previousElementSibling.textContent);
+            preTaxDeductData.push(value);
         }
-        customTaxes.forEach(item => {
-            if (item.amount > 0) {
-                taxLabels.push(item.name);
-                taxData.push(item.amount);
-            }
-        });
-        taxChart.data.labels = taxLabels;
-        taxChart.data.datasets[0].data = taxData;
-        taxChart.data.datasets[0].label = translations[currentLanguage].section_taxes_title; // Update label
-        taxChart.update();
-
-        // Update Expenses Chart
-        const expenseLabels = [];
-        const expenseData = [];
-        for (const key in expenseInputs) {
-            const value = parseFloat(expenseInputs[key].value) || 0;
-            if (value > 0) {
-                expenseLabels.push(expenseInputs[key].previousElementSibling.textContent);
-                expenseData.push(value);
-            }
-        }
-        customExpenses.forEach(item => {
-            if (item.amount > 0) {
-                expenseLabels.push(item.name);
-                expenseData.push(item.amount);
-            }
-        });
-        expensesChart.data.labels = expenseLabels;
-        expensesChart.data.datasets[0].data = expenseData;
-        expensesChart.data.datasets[0].label = translations[currentLanguage].section_expenses_title; // Update label
-        expensesChart.update();
-
-        // Update Budget Distribution Chart
-        const budgetLabels = [
-            translations[currentLanguage].label_total_taxes,
-            translations[currentLanguage].label_total_pre_tax,
-            translations[currentLanguage].label_total_post_tax,
-            translations[currentLanguage].label_total_expenses,
-            translations[currentLanguage].label_remaining_budget
-        ];
-        const budgetData = [
-            totalTaxes,
-            totalPreTaxDeductions,
-            totalPostTaxDeductions,
-            totalExpenses,
-            Math.max(0, remainingBudget) // Show 0 if negative, as pie chart can't show negative
-        ];
-        const budgetColors = [
-            '#FF6384', // Taxes
-            '#36A2EB', // Pre-Tax Deductions
-            '#FFCE56', // Post-Tax Deductions
-            '#4BC0C0', // Expenses
-            '#4CAF50'  // Remaining Budget (Green)
-        ];
-        // If remaining budget is negative, change color to red and label
-        if (remainingBudget < 0) {
-            budgetColors[4] = '#F44336'; // Red for negative budget
-            budgetData[4] = Math.abs(remainingBudget); // Show absolute value of deficit
-            budgetLabels[4] = translations[currentLanguage].label_deficit || 'Deficit'; // Label as Deficit
-        }
-
-
-        budgetDistributionChart.data.labels = budgetLabels;
-        budgetDistributionChart.data.datasets[0].data = budgetData;
-        budgetDistributionChart.data.datasets[0].backgroundColor = budgetColors;
-        budgetDistributionChart.data.datasets[0].label = translations[currentLanguage].section_summary_title; // Update label
-        budgetDistributionChart.update();
-
-        // Update chart text color based on dark mode
-        const chartTextColor = getComputedStyle(document.body).getPropertyValue('--chart-text-color');
-        const chartGridColor = getComputedStyle(document.body).getPropertyValue('--chart-grid-color');
-
-        [taxChart, expensesChart, budgetDistributionChart].forEach(chart => {
-            // Check if chart and its options/scales exist before trying to update properties
-            if (chart && chart.options && chart.options.plugins && chart.options.plugins.legend && chart.options.plugins.legend.labels) {
-                chart.options.plugins.legend.labels.color = chartTextColor;
-            }
-            if (chart && chart.options && chart.options.scales && chart.options.scales.x) {
-                chart.options.scales.x.ticks.color = chartTextColor;
-                chart.options.scales.x.grid.color = chartGridColor;
-            }
-            if (chart && chart.options && chart.options.scales && chart.options.scales.y) {
-                chart.options.scales.y.ticks.color = chartTextColor;
-                chart.options.scales.y.grid.color = chartGridColor;
-            }
-            if (chart) { // Only update if chart instance exists
-                chart.update(); // Re-render with new colors
-            }
-        });
     }
+    customPreTaxDeductions.forEach(item => {
+        if (item.amount > 0) {
+            preTaxDeductLabels.push(item.name);
+            preTaxDeductData.push(item.amount);
+        }
+    });
+    preTaxDeductionsChart.data.labels = preTaxDeductLabels;
+    preTaxDeductionsChart.data.datasets[0].data = preTaxDeductData;
+    preTaxDeductionsChart.data.datasets[0].label = translations[currentLanguage].section_pre_tax_title;
+    preTaxDeductionsChart.update();
+
+    // Update Post-Tax Deductions Chart (새로 추가)
+    const postTaxDeductLabels = [];
+    const postTaxDeductData = [];
+    for (const key in postTaxDeductInputs) {
+        const value = parseFloat(postTaxDeductInputs[key].value) || 0;
+        if (value > 0) {
+            postTaxDeductLabels.push(postTaxDeductInputs[key].previousElementSibling.textContent);
+            postTaxDeductData.push(value);
+        }
+    }
+    customPostTaxDeductions.forEach(item => {
+        if (item.amount > 0) {
+            postTaxDeductLabels.push(item.name);
+            postTaxDeductData.push(item.amount);
+        }
+    });
+    postTaxDeductionsChart.data.labels = postTaxDeductLabels;
+    postTaxDeductionsChart.data.datasets[0].data = postTaxDeductData;
+    postTaxDeductionsChart.data.datasets[0].label = translations[currentLanguage].section_post_tax_title;
+    postTaxDeductionsChart.update();
+
+
+    // Update chart text color based on dark mode
+    const chartTextColor = getComputedStyle(document.body).getPropertyValue('--chart-text-color');
+    const chartGridColor = getComputedStyle(document.body).getPropertyValue('--chart-grid-color');
+
+    // 모든 차트 인스턴스를 배열에 포함하여 반복문으로 처리
+    [taxChart, expensesChart, budgetDistributionChart, preTaxDeductionsChart, postTaxDeductionsChart].forEach(chart => {
+        // Check if chart and its options/plugins/legend exist before trying to update properties
+        if (chart && chart.options && chart.options.plugins && chart.options.plugins.legend && chart.options.plugins.legend.labels) {
+            chart.options.plugins.legend.labels.color = chartTextColor;
+        }
+        // x, y 축이 있는 차트 (막대 차트)에만 적용
+        if (chart && chart.options && chart.options.scales && chart.options.scales.x) {
+            chart.options.scales.x.ticks.color = chartTextColor;
+            chart.options.scales.x.grid.color = chartGridColor;
+        }
+        if (chart && chart.options && chart.options.scales && chart.options.scales.y) {
+            chart.options.scales.y.ticks.color = chartTextColor;
+            chart.options.scales.y.grid.color = chartGridColor;
+        }
+        if (chart) { // Only update if chart instance exists
+            chart.update(); // Re-render with new colors
+        }
+    });
+}
 
     // --- Data Persistence (LocalStorage) ---
     function saveData() {
