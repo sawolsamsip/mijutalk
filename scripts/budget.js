@@ -76,8 +76,8 @@ let isDarkMode = false; // Default theme
 let taxChart;
 let expensesChart;
 let budgetDistributionChart;
-let preTaxDeductionsChart; // 추가
-let postTaxDeductionsChart; // 추가
+let preTaxDeductionsChart;
+let postTaxDeductionsChart;
 
 // --- Chart Color Palettes (새로 정의된 색상 팔레트) ---
 const chartColorPalettes = {
@@ -791,11 +791,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         for (const key in taxInputs) data.taxInputs[key] = taxInputs[key].value;
         for (const key in preTaxDeductInputs) data.preTaxDeductInputs[key] = preTaxDeductInputs[key].value;
-        for (const key in postTaxDeductInputs) data.postTaxDeductInputs[key] = postTaxDeductInputs[key].value;
-        for (const key in expenseInputs) data.expenseInputs[key] = expenseInputs[key].value;
+        for (const key in postTaxDeductInputs) data.postTaxDeductInputs[key] = postTaxDeductInputs[key].value; // 수정된 부분
+        for (const key in expenseInputs) data.expenseInputs[key] = expenseInputs[key].value; // 추가된 부분
 
-        const jsonString = JSON.stringify(data, null, 2);
-        const blob = new Blob([jsonString], { type: 'application/json' });
+        const jsonData = JSON.stringify(data, null, 2);
+        const blob = new Blob([jsonData], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -804,10 +804,11 @@ document.addEventListener('DOMContentLoaded', () => {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+        alert('예산 데이터가 성공적으로 내보내졌습니다!');
     });
 
     importJsonBtn.addEventListener('click', () => {
-        importJsonInput.click(); // Trigger hidden file input click
+        importJsonInput.click(); // Hidden file input 클릭 트리거
     });
 
     importJsonInput.addEventListener('change', (event) => {
@@ -817,37 +818,17 @@ document.addEventListener('DOMContentLoaded', () => {
             reader.onload = (e) => {
                 try {
                     const importedData = JSON.parse(e.target.result);
-                    // Validate imported data structure if necessary
-                    if (importedData.grossSalary !== undefined && importedData.taxInputs !== undefined) {
-                        // Apply imported data to inputs and custom lists
-                        grossSalaryInput.value = importedData.grossSalary || 0;
-
-                        for (const key in taxInputs) taxInputs[key].value = importedData.taxInputs[key] || 0;
-                        customTaxes = importedData.customTaxes || [];
-
-                        for (const key in preTaxDeductInputs) preTaxDeductInputs[key].value = importedData.preTaxDeductInputs[key] || 0;
-                        customPreTaxDeductions = importedData.customPreTaxDeductions || [];
-
-                        for (const key in postTaxDeductInputs) postTaxDeductInputs[key].value = importedData.postTaxDeductInputs[key] || 0;
-                        customPostTaxDeductions = importedData.customPostTaxDeductions || [];
-
-                        for (const key in expenseInputs) expenseInputs[key].value = importedData.expenseInputs[key] || 0;
-                        customExpenses = importedData.customExpenses || [];
-
-                        // Apply language and dark mode from imported data, or keep current if not found
-                        currentLanguage = importedData.currentLanguage || currentLanguage;
-                        isDarkMode = importedData.isDarkMode === true;
-                        
-                        applyLanguage(currentLanguage); // Update UI text
-                        applyDarkMode(isDarkMode); // Apply theme and re-initialize charts
-                        updateDisplay(); // Recalculate and update all displays
-
-                        alert('Data imported successfully!');
+                    // 데이터 유효성 검사 (선택 사항이지만 권장)
+                    if (importedData && typeof importedData.grossSalary !== 'undefined' && importedData.taxInputs) {
+                        // 기존 데이터 로드 함수를 재사용하여 UI 및 내부 변수 업데이트
+                        localStorage.setItem('budgetAppData', JSON.stringify(importedData));
+                        loadData(); // 모든 데이터 로드 및 UI 업데이트
+                        alert('데이터가 성공적으로 가져와졌습니다!');
                     } else {
-                        alert('Invalid JSON file format.');
+                        alert('유효하지 않은 JSON 파일 형식입니다.');
                     }
                 } catch (error) {
-                    alert('Error parsing JSON file: ' + error.message);
+                    alert('JSON 파일을 구문 분석하는 중 오류가 발생했습니다: ' + error.message);
                     console.error('Error parsing JSON:', error);
                 }
             };
@@ -856,36 +837,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     clearAllDataBtn.addEventListener('click', () => {
-        if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+        if (confirm('모든 저장된 데이터를 지우시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
             localStorage.removeItem('budgetAppData');
-            // Reset all inputs to 0 and clear custom lists
+            // 모든 입력 필드 초기화
             grossSalaryInput.value = 0;
             for (const key in taxInputs) taxInputs[key].value = 0;
-            customTaxes = [];
             for (const key in preTaxDeductInputs) preTaxDeductInputs[key].value = 0;
-            customPreTaxDeductions = [];
             for (const key in postTaxDeductInputs) postTaxDeductInputs[key].value = 0;
-            customPostTaxDeductions = [];
             for (const key in expenseInputs) expenseInputs[key].value = 0;
+
+            customTaxes = [];
+            customPreTaxDeductions = [];
+            customPostTaxDeductions = [];
             customExpenses = [];
 
-            // Reset language and dark mode to defaults
-            currentLanguage = 'ko';
-            isDarkMode = false;
-            applyLanguage(currentLanguage);
-            applyDarkMode(isDarkMode); // Will re-initialize charts and update display
-
-            alert('All data cleared!');
-            updateDisplay(); // Final update just in case
+            updateDisplay(); // 초기화된 데이터로 UI 업데이트
+            alert('모든 데이터가 지워졌습니다.');
         }
     });
 
     // AI Report Generation (Placeholder for actual AI integration)
     aiReportBtn.addEventListener('click', () => {
-        aiReportBox.textContent = 'Generating AI report... This feature is under development.';
-        // In a real application, you would send data to an AI API here
-        setTimeout(() => {
-            aiReportBox.textContent = 'Based on your current budget:\n\n- Your total monthly income is ' + formatCurrency(grossSalary) + '.\n- You are spending ' + formatCurrency(getTotal(expenseInputs, customExpenses)) + ' on expenses, which is ' + ((getTotal(expenseInputs, customExpenses) / grossSalary) * 100).toFixed(1) + '% of your income.\n- Your remaining budget is ' + formatCurrency(grossSalary - getTotal(taxInputs, customTaxes) - getTotal(preTaxDeductInputs, customPreTaxDeductions) - getTotal(postTaxDeductInputs, customPostTaxDeductions) - getTotal(expenseInputs, customExpenses)) + '.\n\nConsider reviewing your "Dining Out" expenses if they are high. Explore saving opportunities in "Shopping" as well.';
-        }, 2000); // Simulate AI processing time
+        aiReportBox.innerHTML = `<p>${translations[currentLanguage].ai_report_placeholder}</p>`; // Simulate report generation
+        // 실제 AI 통합은 여기에 API 호출 등을 추가해야 합니다.
+        // 예시: fetch('/api/ai-report', { method: 'POST', body: JSON.stringify(getCurrentBudgetSummary()), headers: { 'Content-Type': 'application/json' } })
+        // .then(response => response.json())
+        // .then(data => { aiReportBox.textContent = data.report; });
     });
 });
