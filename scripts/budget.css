@@ -1,23 +1,52 @@
 /* Variables for colors (Light Mode by default) */
 :root {
-    --bg-color: #f4f7f6; /* Light gray background */
-    --card-bg-color: #ffffff; /* White card background */
-    --text-color: #333333; /* Dark gray text */
-    --header-bg-color: #4CAF50; /* Green header */
+    --bg-color: #f9fbfd; /* Very light subtle gray/blue for background */
+    --card-bg-color: #ffffff; /* Pure white card background */
+    --text-color: #3f4254; /* Darker, slightly muted text for better readability */
+    --header-bg-color: #5d78ff; /* Modern, slightly vibrant blue for header (Accent color) */
     --header-text-color: #ffffff; /* White header text */
-    --button-bg-color: #4CAF50; /* Green button */
+    --button-bg-color: #5d78ff; /* Match header for primary actions */
     --button-text-color: #ffffff; /* White button text */
-    --input-border-color: #cccccc; /* Light gray input border */
-    --input-focus-border-color: #4CAF50; /* Green input focus */
-    --summary-text-color: #007bff; /* Blue for summary values */
-    --shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    --input-border-color: #e4e6ef; /* Lighter, subtle input border */
+    --input-focus-border-color: #5d78ff; /* Match header blue for focus */
+    --summary-text-color: #1abc9c; /* Fresh green for summary (or a calming blue) */
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Softer, more diffused shadow */
     --border-radius: 8px; /* Standard border radius */
-    --accent-color: #007bff; /* Blue accent */
-    --danger-color: #dc3545; /* Red for danger actions */
+    --accent-color: #5d78ff; /* Primary accent blue */
+    --danger-color: #f64e60; /* Slightly desaturated red for danger */
 
-    /* Chart specific colors */
-    --chart-text-color: #333333;
-    --chart-grid-color: #e0e0e0;
+    /* Chart specific colors for Light Mode */
+    --chart-text-color: #3f4254;
+    --chart-grid-color: #ebedef;
+
+    /* Specific chart palette colors (These will be primarily used in JS) */
+    /* Defined here for reference, but Chart.js often needs these as JS arrays directly */
+    --chart-tax-bar-color: #4CAF50; /* A pleasant green for taxes bar */
+    --chart-expenses-palette-1: #6a0dad; /* Purple */
+    --chart-expenses-palette-2: #007bff; /* Blue */
+    --chart-expenses-palette-3: #28a745; /* Green */
+    --chart-expenses-palette-4: #ffc107; /* Yellow */
+    --chart-expenses-palette-5: #dc3545; /* Red */
+    --chart-expenses-palette-6: #fd7e14; /* Orange */
+    --chart-expenses-palette-7: #6610f2; /* Indigo */
+    --chart-expenses-palette-8: #e83e8c; /* Pink */
+
+    --chart-pre-tax-palette-1: #20c997; /* Teal */
+    --chart-pre-tax-palette-2: #6c757d; /* Gray */
+    --chart-pre-tax-palette-3: #00a8cc; /* Sky Blue */
+    --chart-pre-tax-palette-4: #ff9a00; /* Amber */
+
+    --chart-post-tax-palette-1: #6f42c1; /* Dark Purple */
+    --chart-post-tax-palette-2: #a6b1c4; /* Light Gray Blue */
+    --chart-post-tax-palette-3: #e6005c; /* Raspberry */
+    --chart-post-tax-palette-4: #3366ff; /* Royal Blue */
+
+    --chart-budget-taxes-color: #f64e60; /* Red for Taxes */
+    --chart-budget-pre-tax-color: #5d78ff; /* Blue for Pre-Tax */
+    --chart-budget-post-tax-color: #20c997; /* Teal for Post-Tax */
+    --chart-budget-expenses-color: #ffc107; /* Yellow for Expenses */
+    --chart-budget-remaining-color: #1abc9c; /* Green for Remaining */
+    --chart-budget-deficit-color: #dc3545; /* Darker Red for Deficit */
 }
 
 /* Dark Mode Variables */
@@ -39,6 +68,34 @@ body.dark-mode {
     /* Chart specific colors for dark mode */
     --chart-text-color: #e0e0e0;
     --chart-grid-color: #555555;
+
+    /* Specific chart palette colors for Dark Mode (adjust as needed for contrast) */
+    --chart-tax-bar-color: #76FF03; /* Brighter green for taxes */
+    --chart-expenses-palette-1: #9C27B0;
+    --chart-expenses-palette-2: #2196F3;
+    --chart-expenses-palette-3: #4CAF50;
+    --chart-expenses-palette-4: #FFEB3B;
+    --chart-expenses-palette-5: #F44336;
+    --chart-expenses-palette-6: #FF9800;
+    --chart-expenses-palette-7: #673AB7;
+    --chart-expenses-palette-8: #E91E63;
+
+    --chart-pre-tax-palette-1: #00BCD4;
+    --chart-pre-tax-palette-2: #9E9E9E;
+    --chart-pre-tax-palette-3: #8BC34A;
+    --chart-pre-tax-palette-4: #FFC107;
+
+    --chart-post-tax-palette-1: #3F51B5;
+    --chart-post-tax-palette-2: #B0BEC5;
+    --chart-post-tax-palette-3: #E91E63;
+    --chart-post-tax-palette-4: #03A9F4;
+
+    --chart-budget-taxes-color: #F44336;
+    --chart-budget-pre-tax-color: #2196F3;
+    --chart-budget-post-tax-color: #00BCD4;
+    --chart-budget-expenses-color: #FFC107;
+    --chart-budget-remaining-color: #8BC34A;
+    --chart-budget-deficit-color: #E53935;
 }
 
 /* Base Styles */
@@ -138,7 +195,7 @@ header h1 {
 .form-group input[type="text"]:focus {
     outline: none;
     border-color: var(--input-focus-border-color);
-    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2); /* Soft green glow */
+    box-shadow: 0 0 0 3px rgba(93, 120, 255, 0.2); /* Soft blue glow */
 }
 
 /* Buttons */
@@ -156,7 +213,7 @@ header h1 {
 }
 
 .btn:hover {
-    background-color: #388e3c; /* Darker green on hover */
+    background-color: #4968e6; /* Darker blue on hover */
     transform: translateY(-1px);
 }
 
@@ -169,7 +226,7 @@ header h1 {
 }
 
 .btn-danger:hover {
-    background-color: #c82333; /* Darker red */
+    background-color: #e5394b; /* Darker red */
 }
 
 .icon-btn {
@@ -230,7 +287,7 @@ header h1 {
 }
 
 .custom-list-item .remove-btn:hover {
-    color: #a71d2a;
+    color: #cc0011;
 }
 
 
@@ -309,6 +366,20 @@ header h1 {
     margin: 0;
 }
 
+/* Data Actions (for buttons in Data Management section) */
+.data-actions {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    gap: 10px; /* Space between buttons */
+    margin-top: 20px;
+}
+
+.data-actions .btn {
+    margin-top: 0; /* Override default btn margin-top */
+    flex-grow: 1; /* Allow buttons to grow */
+}
+
+
 /* Responsive Design */
 @media (max-width: 768px) {
     header h1 {
@@ -354,6 +425,10 @@ header h1 {
         width: 100%;
         box-sizing: border-box;
         margin-top: 15px;
+    }
+
+    .data-actions .btn {
+        width: 100%; /* Full width for buttons on very small screens */
     }
 
     .chart-container {
