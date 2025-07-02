@@ -499,3 +499,21 @@ body.dark-mode .summary-item.final-budget span {
         justify-content: space-around;
     }
 }
+.chart-container {
+    position: relative;
+    margin: 20px 0; /* 상하 여백 */
+    padding: 15px; /* 내부 여백 */
+    background-color: var(--card-bg-color); /* 배경색 */
+    border-radius: 8px; /* 둥근 모서리 */
+    box-shadow: var(--shadow); /* 그림자 효과 */
+    height: 350px; /* 차트의 고정 높이 또는 최대 높이 */
+    display: flex; /* 내부 캔버스를 중앙 정렬하기 위해 */
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* 차트가 컨테이너를 벗어나지 않도록 */
+}
+
+.chart-container canvas {
+    max-width: 100%;
+    max-height: 100%;
+}
