@@ -1,6 +1,7 @@
 // --- DOM Elements ---
 const grossSalaryInput = document.getElementById('salary-gross');
-const salarySummaryDisplay = document.getElementById('salary-summary');
+// const salarySummaryDisplay = document.getElementById('salary-summary'); // 이 라인은 이제 필요 없음 - HTML에서 해당 div를 제거했으므로
+const grossSalarySummaryDisplay = document.getElementById('gross-salary-summary-display'); // 예산 요약 섹션에 새로 추가된 요소
 
 const taxInputs = {
     federal: document.getElementById('tax-federal'),
@@ -563,7 +564,8 @@ function updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, tot
 // --- Display and Calculation Logic ---
 function updateDisplay() {
     grossSalary = parseFloat(grossSalaryInput.value) || 0;
-    salarySummaryDisplay.textContent = `${translations[currentLanguage].label_gross_salary}: ${formatCurrency(grossSalary)}`;
+    // salarySummaryDisplay.textContent = `${translations[currentLanguage].label_gross_salary}: ${formatCurrency(grossSalary)}`; // 이 라인은 제거
+    grossSalarySummaryDisplay.textContent = formatCurrency(grossSalary); // 새로운 gross-salary-summary-display 업데이트
 
     const totalTaxes = getTotal(taxInputs, customTaxes);
     totalTaxesDisplay.textContent = formatCurrency(totalTaxes);
@@ -660,10 +662,10 @@ function applyLanguage(lang) {
     // For now, only labels and similar text content are handled directly.
     // If you add placeholder translation, it would look something like this:
     // document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
-    //     const key = element.dataset.i18nPlaceholder;
-    //     if (translations[currentLanguage][key]) {
-    //         element.placeholder = translations[currentLanguage][key];
-    //     }
+    //      const key = element.dataset.i18nPlaceholder;
+    //      if (translations[currentLanguage][key]) {
+    //          element.placeholder = translations[currentLanguage][key];
+    //      }
     // });
 
     // Custom item input labels (as per your previous query)
@@ -887,17 +889,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // 실제 AI 통합을 하려면 여기에 API 호출 등을 추가해야 합니다.
         // 예시:
         // fetch('/api/ai-report', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(getCurrentBudgetSummary()) // 현재 예산 데이터를 전송
+        //      method: 'POST',
+        //      headers: { 'Content-Type': 'application/json' },
+        //      body: JSON.stringify(getCurrentBudgetSummary()) // 현재 예산 데이터를 전송
         // })
         // .then(response => response.json())
         // .then(data => {
-        //     aiReportBox.textContent = data.report; // AI로부터 받은 보고서 표시
+        //      aiReportBox.textContent = data.report; // AI로부터 받은 보고서 표시
         // })
         // .catch(error => {
-        //     console.error('AI 보고서 생성 중 오류 발생:', error);
-        //     aiReportBox.textContent = 'AI 보고서를 생성할 수 없습니다.';
+        //      console.error('AI 보고서 생성 중 오류 발생:', error);
+        //      aiReportBox.textContent = 'AI 보고서를 생성할 수 없습니다.';
         // });
     });
 });
