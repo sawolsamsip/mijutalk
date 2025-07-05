@@ -609,9 +609,48 @@ function updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, tot
 
 // --- Display and Calculation Logic ---
 function updateDisplay() {
-    grossSalary = parseFloat(grossSalaryInput.value) || 0;
-    grossSalarySummaryDisplay.textContent = formatCurrency(grossSalary);
+    // ★★★ 이 부분을 수정합니다. ★★★
+    currentSalaryInput = parseFloat(grossSalaryInput.value) || 0; // 사용자가 입력한 값
+    currentSalaryFrequency = salaryFrequencySelect.value; // 사용자가 선택한 급여 주기
 
+    let monthlyGrossSalary = 0;
+    let annualGrossSalary = 0;
+
+    // 선택된 급여 주기에 따라 월별/연간 총 급여 계산
+    switch (currentSalaryFrequency) {
+        case 'monthly':
+            monthlyGrossSalary = currentSalaryInput;
+            annualGrossSalary = currentSalaryInput * 12;
+            break;
+        case 'annually':
+            annualGrossSalary = currentSalaryInput;
+            monthlyGrossSalary = currentSalaryInput / 12;
+            break;
+        case 'weekly':
+            annualGrossSalary = currentSalaryInput * 52;
+            monthlyGrossSalary = annualGrossSalary / 12;
+            break;
+        case 'bi-weekly':
+            annualGrossSalary = currentSalaryInput * 26; // 52주 / 2주 = 26회 지급
+            monthlyGrossSalary = annualGrossSalary / 12;
+            break;
+        default: // 안전장치 (기본값 설정)
+            monthlyGrossSalary = 0;
+            annualGrossSalary = 0;
+            break;
+    }
+
+    // 전역 grossSalary 변수는 이제 항상 월별 기준으로 사용 (모든 계산의 기준)
+    grossSalary = monthlyGrossSalary; // 기존 코드의 'grossSalary'는 이제 'monthlyGrossSalary'와 같습니다.
+
+    // UI 업데이트 (기존 grossSalarySummaryDisplay는 월별로, annualSalarySummaryDisplay는 연간으로)
+    grossSalarySummaryDisplay.textContent = formatCurrency(monthlyGrossSalary); // 월별 표시
+    annualSalarySummaryDisplay.textContent = formatCurrency(annualGrossSalary); // 연간 표시 (새로 추가된 부분)
+    // ★★★ 여기까지 수정/추가합니다. ★★★
+    
+    // 이 아래부터는 기존 updateDisplay() 함수의 나머지 로직입니다.
+    // 기존의 'grossSalary' 변수를 사용하던 부분들은 이제 'monthlyGrossSalary' 값을 사용하게 됩니다.
+    // 변수 이름을 바꿀 필요는 없습니다.
     const totalTaxes = getTotal(taxInputs, customTaxes);
     totalTaxesDisplay.textContent = formatCurrency(totalTaxes);
 
