@@ -484,3 +484,52 @@ header h1 {
         padding: 12px;
     }
 }
+/* 규칙 분배 박스 */
+.rule-breakdown {
+    margin-top: 12px;
+    background: #f1f3f5;
+    padding: 16px 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    display: grid; /* Grid 레이아웃 사용 */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* 반응형으로 2개 또는 1개 컬럼 */
+    gap: 15px; /* 아이템 간 간격 */
+}
+
+.rule-breakdown .breakdown-item {
+    background-color: var(--card-bg-color); /* 각 항목별 배경색 (옵션) */
+    padding: 10px 15px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--input-border-color);
+}
+
+.rule-breakdown .breakdown-item p {
+    font-size: 0.95rem;
+    color: var(--text-color);
+    margin-bottom: 4px; /* 단락 간 간격 줄임 */
+    display: flex;
+    justify-content: space-between; /* 레이블과 값 분리 */
+    align-items: center;
+}
+
+.rule-breakdown .breakdown-item p:last-child {
+    margin-bottom: 0;
+}
+
+.rule-breakdown .breakdown-item span {
+    font-weight: bold;
+    color: var(--summary-text-color); /* 결과 값 색상 */
+}
+
+.rule-breakdown .breakdown-item.total p {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+.rule-breakdown .breakdown-item.status p {
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-align: center;
+    color: var(--text-color);
+}
