@@ -214,7 +214,6 @@ header h1 {
 }
 
 /* 일반적인 input, select, textarea 스타일 (salary-input-container 밖의 모든 input/select) */
-/* ★★★★★ 이 부분에 !important 추가 ★★★★★ */
 .form-group input[type="number"],
 .form-group input[type="text"],
 .form-group select,
@@ -294,7 +293,6 @@ header h1 {
 }
 
 /* form-grid 내부의 input, select 너비 조정 */
-/* ★★★★★ 이 부분에도 !important 추가 ★★★★★ */
 .form-grid .form-group input[type="number"],
 .form-grid .form-group input[type="text"],
 .form-grid .form-group select {
