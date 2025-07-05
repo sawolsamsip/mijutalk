@@ -433,7 +433,7 @@ function initializeCharts() {
             datasets: [{
                 label: translations[currentLanguage].section_post_tax_title || 'Post-Tax Deductions Breakdown',
                 data: [],
-                backgroundColor: isDarkMode ? chartColorPal palettes.dark.postTax : chartColorPalettes.light.postTax,
+                backgroundColor: isDarkMode ? chartColorPalettes.dark.postTax : chartColorPal palettes.light.postTax, // <-- This is line 436
                 hoverOffset: 4
             }]
         },
