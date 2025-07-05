@@ -17,7 +17,6 @@
     --primary-color: #5d78ff; /* Added for general button/accent use */
     --primary-dark-color: #4968e6; /* Darker primary for hover */
 
-
     /* Chart specific colors for Light Mode */
     --chart-text-color: #3f4254;
     --chart-grid-color: #ebedef;
@@ -69,7 +68,6 @@ body.dark-mode {
     --danger-color: #ff6b6b; /* Lighter red for danger */
     --primary-color: #92b0ff; /* Lighter blue for dark mode */
     --primary-dark-color: #7a9cff; /* Darker primary for dark mode hover */
-
 
     /* Chart specific colors for dark mode */
     --chart-text-color: #e0e0e0;
@@ -172,60 +170,59 @@ header h1 {
     padding-bottom: 10px;
 }
 
-/* Form Groups - 가장 중요하게 수정된 부분입니다. */
+/* Form Groups */
 .form-group {
-    margin-bottom: 20px; /* 각 입력 그룹 하단에 충분한 여백을 줍니다 */
+    margin-bottom: 20px;
 }
 
 .form-group label {
-    display: block; /* 레이블을 블록 요소로 만들어 항상 새 줄에서 시작하게 합니다 */
-    margin-bottom: 8px; /* 레이블과 입력 필드 사이에 여백을 줍니다 */
-    font-weight: bold; /* 레이블 글자를 좀 더 두껍게 */
-    color: var(--text-color); /* 레이블 글자색 */
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: var(--text-color);
 }
 
 /* salary-input-container 스타일 - 드롭다운과 input이 한 줄에 오는 경우 */
 .salary-input-container {
-    display: flex; /* 내부 요소들을 가로로 정렬 */
-    gap: 15px; /* 드롭다운과 입력 필드 사이의 간격을 늘립니다 */
-    align-items: center; /* 세로 중앙 정렬 */
-    width: 100%; /* 부모 요소 너비 100% 사용 */
-    flex-wrap: wrap; /* 화면이 작아질 경우 줄바꿈 허용 */
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
 }
 
 .salary-input-container select,
 .salary-input-container input[type="number"] {
-    padding: 10px 12px; /* 내부 여백을 더 줍니다 */
-    border: 1px solid var(--input-border-color); /* 테두리 */
-    border-radius: var(--border-radius); /* 모서리 둥글게 */
-    background-color: var(--card-bg-color); /* 카드 배경색과 동일하게 (깔끔하게) */
-    color: var(--text-color); /* 글자색 */
-    font-size: 1em; /* 글자 크기 */
-    box-sizing: border-box; /* 패딩과 테두리가 너비에 포함되도록 합니다 */
+    padding: 10px 12px;
+    border: 1px solid var(--input-border-color);
+    border-radius: var(--border-radius);
+    background-color: var(--card-bg-color);
+    color: var(--text-color);
+    font-size: 1em;
+    box-sizing: border-box;
 }
 
 .salary-input-container select {
-    flex: 1; /* select가 유연하게 공간을 차지하지만, input보다는 작게 */
-    min-width: 120px; /* select의 최소 너비를 설정하여 내용이 잘리지 않게 합니다 */
-    max-width: 150px; /* select의 최대 너비를 설정하여 너무 커지지 않게 합니다 */
+    flex: 1;
+    min-width: 120px;
+    max-width: 150px;
 }
 
 .salary-input-container input[type="number"] {
-    flex: 2; /* input이 select보다 더 많은 공간을 차지하도록 합니다 */
-    min-width: 150px; /* input의 최소 너비를 설정 */
+    flex: 2;
+    min-width: 150px;
 }
 
-/* 일반적인 input, select, textarea 스타일 (salary-input-container 밖의 요소들) */
-/* .form-group 내부의 input, select에 대한 일반 스타일 */
+/* 일반적인 input, select, textarea 스타일 (salary-frequency-select 제외) */
 .form-group input[type="number"],
 .form-group input[type="text"],
 .form-group select:not(#salary-frequency-select), /* salary-frequency-select는 위에서 이미 스타일링됨 */
-.form-group textarea { /* 혹시 textarea도 있다면 추가 */
-    width: 100%; /* 기본적으로 100% 너비를 가짐 */
+.form-group textarea {
+    width: 100%;
     padding: 10px 12px;
     border: 1px solid var(--input-border-color);
     border-radius: 5px;
-    background-color: var(--card-bg-color); /* 카드 배경색과 동일하게 */
+    background-color: var(--card-bg-color);
     color: var(--text-color);
     font-size: 1em;
     box-sizing: border-box;
@@ -239,7 +236,7 @@ header h1 {
 .form-group textarea:focus {
     outline: none;
     border-color: var(--input-focus-border-color);
-    box-shadow: 0 0 0 3px rgba(93, 120, 255, 0.2); /* Soft blue glow */
+    box-shadow: 0 0 0 3px rgba(93, 120, 255, 0.2);
 }
 
 /* Buttons */
@@ -257,7 +254,7 @@ header h1 {
 }
 
 .btn:hover {
-    background-color: var(--primary-dark-color); /* Using --primary-dark-color */
+    background-color: var(--primary-dark-color);
     transform: translateY(-1px);
 }
 
@@ -270,21 +267,21 @@ header h1 {
 }
 
 .btn-danger:hover {
-    background-color: #e5394b; /* Darker red */
+    background-color: #e5394b;
 }
 
 .icon-btn {
     background: none;
     border: none;
-    font-size: 1.5em; /* Larger icon size */
-    color: var(--header-text-color); /* Use header text color for icon */
+    font-size: 1.5em;
+    color: var(--header-text-color);
     cursor: pointer;
     padding: 5px;
     transition: color 0.2s ease-in-out;
 }
 
 .icon-btn:hover {
-    color: #e0e0e0; /* Lighter color on hover */
+    color: #e0e0e0;
 }
 
 /* Form Grid for multiple inputs */
@@ -316,7 +313,7 @@ header h1 {
 }
 
 .custom-list-item span {
-    flex-grow: 1; /* Allow text to take available space */
+    flex-grow: 1;
     padding-right: 10px;
 }
 
@@ -348,7 +345,7 @@ header h1 {
 
 .summary-results {
     display: grid;
-    grid-template-columns: 1fr auto; /* Label on left, value on right */
+    grid-template-columns: 1fr auto;
     gap: 10px;
     margin-top: 20px;
     padding-top: 15px;
@@ -370,23 +367,23 @@ header h1 {
 /* Chart Container Styles */
 .chart-container {
     position: relative;
-    margin: 25px 0; /* 상하 여백 */
-    padding: 15px; /* 내부 여백 */
-    background-color: var(--bg-color); /* 배경색 */
-    border-radius: var(--border-radius); /* 둥근 모서리 */
-    box-shadow: var(--shadow); /* 그림자 효과 */
-    height: 350px; /* 차트의 고정 높이 */
-    max-height: 400px; /* 최대 높이 설정 */
-    display: flex; /* 내부 캔버스를 중앙 정렬하기 위해 */
+    margin: 25px 0;
+    padding: 15px;
+    background-color: var(--bg-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    height: 350px;
+    max-height: 400px;
+    display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden; /* 차트가 컨테이너를 벗어나지 않도록 */
+    overflow: hidden;
 }
 
 .chart-container canvas {
     max-width: 100%;
     max-height: 100%;
-    display: block; /* Ensure canvas is a block element */
+    display: block;
 }
 
 /* AI Report Box */
@@ -399,9 +396,9 @@ header h1 {
     line-height: 1.8;
     color: var(--text-color);
     border: 1px dashed var(--input-border-color);
-    display: flex; /* For vertical centering of placeholder */
-    align-items: center; /* For vertical centering of placeholder */
-    justify-content: center; /* For horizontal centering of placeholder */
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
 }
 
@@ -412,14 +409,14 @@ header h1 {
 /* Data Actions (for buttons in Data Management section) */
 .data-actions {
     display: flex;
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
-    gap: 10px; /* Space between buttons */
+    flex-wrap: wrap;
+    gap: 10px;
     margin-top: 20px;
 }
 
 .data-actions .btn {
-    margin-top: 0; /* Override default btn margin-top */
-    flex-grow: 1; /* Allow buttons to grow */
+    margin-top: 0;
+    flex-grow: 1;
 }
 
 /* Responsive Design */
@@ -439,11 +436,11 @@ header h1 {
     }
 
     .form-grid {
-        grid-template-columns: 1fr; /* Single column on small screens */
+        grid-template-columns: 1fr;
     }
 
     .chart-container {
-        height: 300px; /* Adjust chart height for smaller screens */
+        height: 300px;
     }
 }
 
@@ -470,7 +467,7 @@ header h1 {
     }
 
     .data-actions .btn {
-        width: 100%; /* Full width for buttons on very small screens */
+        width: 100%;
     }
 
     .chart-container {
@@ -478,17 +475,17 @@ header h1 {
     }
 }
 
-/* 예산 규칙 드롭다운 - 이전에 중복되던 부분 정리 */
+/* 예산 규칙 드롭다운 */
 .rule-select {
     padding: 10px;
-    border: 1px solid var(--input-border-color); /* 변수 사용 */
+    border: 1px solid var(--input-border-color);
     border-radius: var(--border-radius);
-    margin-top: 8px; /* 상단 여백 (조절 가능) */
-    background: var(--card-bg-color); /* 카드 배경색과 동일하게 */
-    color: var(--text-color); /* 글자색 */
+    margin-top: 8px;
+    background: var(--card-bg-color);
+    color: var(--text-color);
     transition: border-color 0.2s;
-    width: 100%; /* 드롭다운 너비 100% */
-    box-sizing: border-box; /* 패딩과 보더 포함 */
+    width: 100%;
+    box-sizing: border-box;
 }
 .rule-select:focus {
     border-color: var(--input-focus-border-color);
@@ -498,18 +495,18 @@ header h1 {
 /* 규칙 분배 박스 */
 .rule-breakdown {
     margin-top: 12px;
-    background: var(--bg-color); /* 메인 배경색 사용 또는 새로운 변수 정의 */
+    background: var(--bg-color);
     padding: 16px 20px;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
-    display: grid; /* Grid 레이아웃 사용 */
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* 반응형으로 2개 또는 1개 컬럼 */
-    gap: 15px; /* 아이템 간 간격 */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
 }
 
 .rule-breakdown .breakdown-item {
-    background-color: var(--card-bg-color); /* 각 항목별 배경색 (옵션) */
-    padding: 15px; /* 내부 여백 좀 더 늘림 */
+    background-color: var(--card-bg-color);
+    padding: 15px;
     border-radius: var(--border-radius);
     border: 1px solid var(--input-border-color);
 }
@@ -517,9 +514,9 @@ header h1 {
 .rule-breakdown .breakdown-item p {
     font-size: 0.95rem;
     color: var(--text-color);
-    margin-bottom: 4px; /* 단락 간 간격 줄임 */
+    margin-bottom: 4px;
     display: flex;
-    justify-content: space-between; /* 레이블과 값 분리 */
+    justify-content: space-between;
     align-items: center;
 }
 
@@ -529,7 +526,7 @@ header h1 {
 
 .rule-breakdown .breakdown-item span {
     font-weight: bold;
-    color: var(--summary-text-color); /* 결과 값 색상 */
+    color: var(--summary-text-color);
 }
 
 .rule-breakdown .breakdown-item.total p {
@@ -545,34 +542,32 @@ header h1 {
     color: var(--text-color);
 }
 
-/* 연간 총 급여 표시 p 태그 스타일 (중복 제거 후 재정의) */
+/* 연간 총 급여 표시 p 태그 스타일 */
 .annual-salary-summary {
-    margin-top: 15px; /* 위쪽에 여백을 줍니다 */
-    font-size: 1.1em; /* 글자 크기 */
-    font-weight: bold; /* 글자 두께 */
-    color: var(--summary-text-color); /* 글자색 */
-    text-align: right; /* 텍스트를 오른쪽으로 정렬합니다 */
-    padding-right: 5px; /* 오른쪽에 약간의 여백을 줍니다 */
+    margin-top: 15px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: var(--summary-text-color);
+    text-align: right;
+    padding-right: 5px;
 }
 
 .annual-salary-summary span {
-    font-weight: bold; /* 금액 부분을 더 두껍게 */
-    /* 위에 .summary-results span과 중복되지만, 좀 더 명시적으로 설정 */
+    font-weight: bold;
 }
 
-
-/* 반응형 간격 (기존 미디어 쿼리 내부에 통합) */
+/* Responsive specific styles for salary-input-container on smaller screens */
 @media (max-width: 600px) {
     .rule-breakdown {
         padding: 12px;
     }
     .salary-input-container {
-        flex-direction: column; /* 작은 화면에서 세로로 정렬 */
-        gap: 10px; /* 세로 정렬 시 간격 */
+        flex-direction: column;
+        gap: 10px;
     }
     .salary-input-container select,
     .salary-input-container input[type="number"] {
-        width: 100%; /* 작은 화면에서 전체 너비 사용 */
-        max-width: none; /* 최대 너비 제한 해제 */
+        width: 100%;
+        max-width: none;
     }
 }
