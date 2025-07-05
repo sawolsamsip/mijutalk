@@ -1,90 +1,38 @@
 // budget.js
 
-// --- Global Variables ---
-let currentLanguage = 'ko'; // Default language
-let isDarkMode = false; // Default theme
-
-let taxChart;
-let expensesChart;
-let budgetDistributionChart;
-let preTaxDeductionsChart;
-let postTaxDeductionsChart;
-
-let customTaxes = [];
-let customPreTaxDeductions = [];
-let customPostTaxDeductions = [];
-let customExpenses = [];
-
-let grossSalary = 0; // 이 변수는 이제 월별 총 급여를 저장합니다.
-let currentSalaryInput = 0; // 사용자가 입력한 raw 값 (monthly, annually 등 기준)
-let currentSalaryFrequency = 'monthly'; // 사용자가 선택한 급여 주기
-
-// --- DOM Elements ---
+// 1. 전역 변수 및 DOM 요소 캐싱
 const grossSalaryInput = document.getElementById('salary-gross');
 const salaryFrequencySelect = document.getElementById('salary-frequency-select');
-const grossSalarySummaryDisplay = document.getElementById('gross-salary-summary-display'); // HTML에 이 ID가 있는지 확인 및 추가 필요
 const annualSalarySummaryDisplay = document.getElementById('annual-salary-summary-display');
 
-// 추가: default-item-frequency-select 도 로드될 수 있도록 추가
 const defaultItemFrequencySelect = document.getElementById('default-item-frequency-select');
 
-
-const totalTaxesDisplay = document.getElementById('total-taxes-display');
-const totalPreTaxDisplay = document.getElementById('total-pre-tax-display');
-const totalPostTaxDisplay = document.getElementById('total-post-tax-display');
-const netSalaryDisplay = document.getElementById('net-salary-display');
-const totalExpensesDisplay = document.getElementById('total-expenses-display');
-const remainingBudgetDisplay = document.getElementById('remaining-budget-display');
-
-const languageToggleBtn = document.getElementById('language-toggle-btn');
-const darkmodeToggleBtn = document.getElementById('darkmode-toggle-btn');
-
-const exportJsonBtn = document.getElementById('export-json-btn');
-const importJsonBtn = document.getElementById('import-json-btn');
-const importJsonInput = document.getElementById('import-json-input'); // Hidden file input
-const clearAllDataBtn = document.getElementById('clear-all-data-btn');
-const aiReportBtn = document.getElementById('ai-report-btn');
-const aiReportBox = document.getElementById('ai-report-box');
-
-const budgetRuleSelect = document.getElementById('budget-rule-select');
-const ruleNeedsDisplay = document.getElementById('rule-needs-display');
-const ruleWantsDisplay = document.getElementById('rule-wants-display');
-const ruleSavingsDisplay = document.getElementById('rule-savings-display');
-const ruleTotalDisplay = document.getElementById('rule-total-display');
-const actualNeedsDisplay = document.getElementById('actual-needs-display');
-const actualWantsDisplay = document.getElementById('actual-wants-display');
-const actualSavingsDisplay = document.getElementById('actual-savings-display');
-const actualTotalDisplay = document.getElementById('actual-total-display');
-const budgetStatusDisplay = document.getElementById('budget-status-display');
-
-
-// IMPORTANT: Ensure these IDs match your HTML input element IDs exactly.
-// If your HTML IDs end with '-1', you must include them here.
+// 세금 입력 필드
 const taxInputs = {
-    federal: document.getElementById('tax-federal-1'), // Assuming HTML ID is 'tax-federal-1'
-    state: document.getElementById('tax-state-1'),     // Assuming HTML ID is 'tax-state-1'
-    oasdi: document.getElementById('tax-oasdi-1'),     // Assuming HTML ID is 'tax-oasdi-1'
-    medicare: document.getElementById('tax-medicare-1'), // Assuming HTML ID is 'tax-medicare-1'
-    casdi: document.getElementById('tax-casdi-1')      // Assuming HTML ID is 'tax-casdi-1'
+    federal: document.getElementById('tax-federal-1'),
+    state: document.getElementById('tax-state-1'),
+    oasdi: document.getElementById('tax-oasdi-1'),
+    medicare: document.getElementById('tax-medicare-1'),
+    casdi: document.getElementById('tax-casdi-1')
 };
-const customTaxList = document.getElementById('tax-custom-list');
 
+// 세전 공제 입력 필드
 const preTaxDeductInputs = {
     medical: document.getElementById('deduct-medical-1'),
     dental: document.getElementById('deduct-dental-1'),
     vision: document.getElementById('deduct-vision-1'),
-    trad401k: document.getElementById('deduct-401k-trad-1')
+    fourZeroOneKTrad: document.getElementById('deduct-401k-trad-1')
 };
-const customPreTaxDeductList = document.getElementById('pre-tax-custom-list');
 
+// 세후 공제 입력 필드
 const postTaxDeductInputs = {
     spp: document.getElementById('deduct-spp-1'),
     adnd: document.getElementById('deduct-adnd-1'),
-    roth401k: document.getElementById('deduct-401k-roth-1'),
+    fourZeroOneKRoth: document.getElementById('deduct-401k-roth-1'),
     ltd: document.getElementById('deduct-ltd-1')
 };
-const customPostTaxDeductList = document.getElementById('post-tax-custom-list');
 
+// 지출 입력 필드
 const expenseInputs = {
     rent: document.getElementById('exp-rent-1'),
     utilities: document.getElementById('exp-utilities-1'),
@@ -97,30 +45,248 @@ const expenseInputs = {
     health: document.getElementById('exp-health-1'),
     entertainment: document.getElementById('exp-entertainment-1')
 };
+
+// 요약 디스플레이 요소
+const grossSalarySummaryDisplay = document.getElementById('gross-salary-summary-display');
+const totalTaxesDisplay = document.getElementById('total-taxes-display');
+const totalPreTaxDisplay = document.getElementById('total-pre-tax-display');
+const totalPostTaxDisplay = document.getElementById('total-post-tax-display');
+const netSalaryDisplay = document.getElementById('net-salary-display');
+const totalExpensesDisplay = document.getElementById('total-expenses-display');
+const remainingBudgetDisplay = document.getElementById('remaining-budget-display');
+
+// 커스텀 항목 목록 컨테이너
+const customTaxList = document.getElementById('tax-custom-list');
+const customPreTaxDeductList = document.getElementById('pre-tax-custom-list');
+const customPostTaxDeductList = document.getElementById('post-tax-custom-list');
 const customExpenseList = document.getElementById('expenses-custom-list');
 
+// 헤더 컨트롤
+const languageToggleBtn = document.getElementById('language-toggle');
+const darkmodeToggleBtn = document.getElementById('darkmode-toggle');
 
-// --- Utility Functions ---
+// 데이터 관리 버튼/입력
+const exportJsonBtn = document.getElementById('export-json-btn');
+const importJsonBtn = document.getElementById('import-json-btn');
+const importJsonInput = document.getElementById('import-json-input');
+const clearAllDataBtn = document.getElementById('clear-all-data-btn');
 
-// Currency Formatting
+// AI 보고서 요소
+const aiReportBtn = document.getElementById('ai-report-btn');
+const aiReportBox = document.getElementById('ai-report-box');
+
+// 예산 규칙 요소
+const budgetRuleSelect = document.getElementById('budget-rule-select');
+const ruleNeedsDisplay = document.getElementById('rule-needs');
+const ruleWantsDisplay = document.getElementById('rule-wants');
+const ruleSavingsDisplay = document.getElementById('rule-savings');
+const ruleTotalDisplay = document.getElementById('rule-total');
+const actualNeedsDisplay = document.getElementById('actual-needs');
+const actualWantsDisplay = document.getElementById('actual-wants');
+const actualSavingsDisplay = document.getElementById('actual-savings');
+const actualTotalDisplay = document.getElementById('actual-total');
+const budgetStatusDisplay = document.getElementById('budget-status');
+
+
+// 2. 전역 상태 변수
+let currentSalaryFrequency = 'monthly'; // 기본값
+let defaultItemFrequency = 'monthly'; // 기본값
+let currentLanguage = 'ko'; // 기본 언어
+let isDarkMode = false; // 기본 다크 모드 상태
+
+// 사용자 정의 항목 배열
+let customTaxes = [];
+let customPreTaxDeductions = [];
+let customPostTaxDeductions = [];
+let customExpenses = [];
+
+// Chart.js 인스턴스
+let taxChartInstance;
+let preTaxDeductChartInstance;
+let postTaxDeductChartInstance;
+let expensesChartInstance;
+let budgetDistributionChartInstance;
+
+// 3. 번역 객체 (더 많은 번역 키 추가)
+const translations = {
+    en: {
+        app_title: "Budget Management Tool",
+        section_salary_title: "Monthly Gross Salary",
+        label_gross_salary: "Gross Salary",
+        frequency_monthly: "Monthly",
+        frequency_annually: "Annually",
+        frequency_weekly: "Weekly",
+        frequency_bi_weekly: "Bi-Weekly",
+        btn_save: "Save",
+        label_annual_salary: "Annual Gross Salary:",
+        section_default_frequency_title: "Default Item Frequency Setting",
+        label_default_item_frequency: "Default Expense/Deduction Frequency:",
+        section_taxes_title: "Taxes",
+        label_federal_withholding: "Federal Withholding",
+        label_state_tax: "State Tax",
+        label_oasdi: "OASDI",
+        label_medicare: "Medicare",
+        label_ca_sdi: "CA SDI",
+        btn_add_item: "Add Item", // 일관성을 위해 HTML의 data-i18n-key와 맞춤
+        section_pre_tax_title: "Pre-Tax Deductions",
+        label_medical_premium: "Medical Premium",
+        label_dental_premium: "Dental Premium",
+        label_vision_premium: "Vision Premium",
+        label_401k_traditional: "401k Traditional",
+        section_post_tax_title: "Post-Tax Deductions",
+        label_spp: "Stock Purchase Plan",
+        label_adnd: "AD&D",
+        label_401k_roth: "401k Roth",
+        label_ltd: "Long Term Disability",
+        section_expenses_title: "Expense Management",
+        label_rent_mortgage: "Rent/Mortgage",
+        label_utilities: "Utilities",
+        label_internet: "Internet",
+        label_phone: "Phone Bill",
+        label_groceries: "Groceries",
+        label_dining_out: "Dining Out",
+        label_transportation: "Transportation",
+        label_shopping: "Shopping",
+        label_health_wellness: "Health/Wellness",
+        label_entertainment: "Entertainment",
+        section_summary_title: "Budget Summary",
+        label_total_taxes: "Total Taxes:",
+        label_total_pre_tax: "Total Pre-Tax Deductions:",
+        label_total_post_tax: "Total Post-Tax Deductions:",
+        label_net_salary: "Net Monthly Salary:",
+        label_total_expenses: "Total Expenses:",
+        label_remaining_budget: "Remaining Budget:",
+        section_ai_title: "AI Expense Report",
+        btn_ai_report: "Generate AI Report",
+        ai_report_placeholder: "Click 'Generate AI Report' to get insights into your spending habits.",
+        section_data_title: "Data Management",
+        btn_export: "Export JSON",
+        btn_import: "Import JSON",
+        btn_clear_all_data: "Clear All Data",
+        remove_item: "Are you sure you want to remove this item",
+        add_item_title: "Add Custom Item",
+        item_name_placeholder: "Item Name",
+        item_amount_placeholder: "Amount",
+        item_category_label: "Category (for expenses)",
+        category_needs: "Needs",
+        category_wants: "Wants",
+        alert_json_export_success: "Budget data successfully exported!",
+        alert_invalid_json: "Invalid JSON file format.",
+        alert_json_parse_error: "Error parsing JSON file: ",
+        alert_data_import_success: "Data successfully imported!",
+        confirm_clear_data: "Are you sure you want to clear all saved data? This action cannot be undone.",
+        alert_data_cleared: "All data has been cleared.",
+        // Budget Rule Specific
+        needs_label: "Needs",
+        wants_label: "Wants",
+        savings_label: "Savings",
+        status_over: "Over Budget",
+        status_under: "Under Budget",
+        status_ok: "On Track",
+        label_deficit: "Deficit",
+        label_rule: "Rule",
+        label_actual: "Actual"
+    },
+    ko: {
+        app_title: "예산 관리 도구",
+        section_salary_title: "월별 총 급여",
+        label_gross_salary: "총 급여",
+        frequency_monthly: "월별",
+        frequency_annually: "연간",
+        frequency_weekly: "주별",
+        frequency_bi_weekly: "2주별",
+        btn_save: "저장",
+        label_annual_salary: "연간 총 급여:",
+        section_default_frequency_title: "기본 항목 주기 설정",
+        label_default_item_frequency: "기본 지출/공제 주기:",
+        section_taxes_title: "세금",
+        label_federal_withholding: "연방 원천징수",
+        label_state_tax: "주 세금",
+        label_oasdi: "OASDI",
+        label_medicare: "메디케어",
+        label_ca_sdi: "CA SDI",
+        btn_add_item: "항목 추가", // 일관성을 위해 HTML의 data-i18n-key와 맞춤
+        section_pre_tax_title: "세전 공제",
+        label_medical_premium: "의료 보험료",
+        label_dental_premium: "치과 보험료",
+        label_vision_premium: "시력 보험료",
+        label_401k_traditional: "401k 일반",
+        section_post_tax_title: "세후 공제",
+        label_spp: "주식 구매 계획",
+        label_adnd: "AD&D",
+        label_401k_roth: "401k Roth",
+        label_ltd: "장기 장애",
+        section_expenses_title: "지출 관리",
+        label_rent_mortgage: "월세/주택담보대출",
+        label_utilities: "공과금",
+        label_internet: "인터넷",
+        label_phone: "휴대폰 요금",
+        label_groceries: "식료품",
+        label_dining_out: "외식",
+        label_transportation: "교통비",
+        label_shopping: "쇼핑",
+        label_health_wellness: "건강/웰빙",
+        label_entertainment: "오락",
+        section_summary_title: "예산 요약",
+        label_total_taxes: "총 세금:",
+        label_total_pre_tax: "총 세전 공제액:",
+        label_total_post_tax: "총 세후 공제액:",
+        label_net_salary: "순 월 급여:",
+        label_total_expenses: "총 지출:",
+        label_remaining_budget: "남은 예산:",
+        section_ai_title: "AI 지출 보고서",
+        btn_ai_report: "AI 보고서 생성",
+        ai_report_placeholder: "\"AI 보고서 생성\"을 클릭하여 지출 습관에 대한 통찰력을 얻으세요.",
+        section_data_title: "데이터 관리",
+        btn_export: "JSON 내보내기",
+        btn_import: "JSON 가져오기",
+        btn_clear_all_data: "모든 데이터 지우기",
+        remove_item: "이 항목을 삭제하시겠습니까",
+        add_item_title: "사용자 정의 항목 추가",
+        item_name_placeholder: "항목 이름",
+        item_amount_placeholder: "금액",
+        item_category_label: "카테고리 (지출용)",
+        category_needs: "필수",
+        category_wants: "원하는 것",
+        alert_json_export_success: "예산 데이터가 성공적으로 내보내졌습니다!",
+        alert_invalid_json: "유효하지 않은 JSON 파일 형식입니다.",
+        alert_json_parse_error: "JSON 파일을 구문 분석하는 중 오류가 발생했습니다: ",
+        alert_data_import_success: "데이터가 성공적으로 가져와졌습니다!",
+        confirm_clear_data: "모든 저장된 데이터를 지우시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+        alert_data_cleared: "모든 데이터가 지워졌습니다.",
+        // Budget Rule Specific
+        needs_label: "필수 지출",
+        wants_label: "원하는 지출",
+        savings_label: "저축",
+        status_over: "예산 초과",
+        status_under: "예산 미달",
+        status_ok: "양호",
+        label_deficit: "적자",
+        label_rule: "규칙",
+        label_actual: "실제"
+    }
+};
+
+
+// 4. 유틸리티 함수
+
+// 통화 형식 지정
 function formatCurrency(amount) {
-    // 한국어 (ko-KR) 또는 영어 (en-US)에 따라 통화 형식을 설정합니다.
-    const locale = currentLanguage === 'ko' ? 'ko-KR' : 'en-US';
-    const currency = currentLanguage === 'ko' ? 'KRW' : 'USD';
-
-    return new Intl.NumberFormat(locale, {
+    return new Intl.NumberFormat(currentLanguage === 'ko' ? 'ko-KR' : 'en-US', {
         style: 'currency',
-        currency: currency,
+        currency: currentLanguage === 'ko' ? 'KRW' : 'USD', // 필요에 따라 통화 변경
         minimumFractionDigits: 0, // 소수점 이하 자리수를 0으로 설정
-        maximumFractionDigits: 0  // 소수점 이하 자리수를 0으로 설정 (반올림됨)
+        maximumFractionDigits: 0, // 최대 소수점 이하 자리수도 0으로 설정
     }).format(amount);
 }
 
-// Get Total from input fields and custom items
+// 모든 입력 필드 및 커스텀 항목의 총액 계산
 function getTotal(inputs, customItems) {
     let total = 0;
     for (const key in inputs) {
-        total += parseFloat(inputs[key].value) || 0;
+        if (inputs[key]) {
+            total += parseFloat(inputs[key].value) || 0;
+        }
     }
     customItems.forEach(item => {
         total += item.amount;
@@ -128,483 +294,137 @@ function getTotal(inputs, customItems) {
     return total;
 }
 
-// Add Custom Item
-function addCustomItem(list, type, name, amount, category = '') { // category 인자 추가
-    list.push({ name, amount, category }); // category도 함께 저장
-    updateDisplay();
-    saveData();
-}
-
-// Remove Custom Item
-function removeCustomItem(list, index) {
-    list.splice(index, 1);
-    updateDisplay();
-    saveData();
-}
-
-// Render Custom Item List
-function renderCustomList(container, items, type) {
-    container.innerHTML = '';
+// 사용자 정의 항목 렌더링
+function renderCustomList(listElement, items, type) {
+    if (!listElement) {
+        console.warn(`renderCustomList: List element not found for type ${type}`);
+        return;
+    }
+    listElement.innerHTML = ''; // 기존 목록 초기화
     items.forEach((item, index) => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-            <span>${item.name}: ${formatCurrency(item.amount)}</span>
-            <button class="remove-btn" data-type="${type}" data-index="${index}">${translations[currentLanguage].button_remove}</button>
+        const itemDiv = document.createElement('div');
+        itemDiv.classList.add('custom-item');
+        itemDiv.innerHTML = `
+            <span>${item.name} (${formatCurrency(item.amount)})</span>
+            <button class="remove-btn icon-btn" data-index="${index}" data-type="${type}" aria-label="${translations[currentLanguage].remove_item}">
+                <i class="ri-close-line"></i>
+            </button>
         `;
-        container.appendChild(li);
+        listElement.appendChild(itemDiv);
     });
 }
 
-// --- Chart Initialization & Update (using Chart.js) ---
-const chartColorPalettes = {
-    light: {
-        taxes: [
-            'rgba(255, 99, 132, 0.7)', 'rgba(54, 162, 235, 0.7)', 'rgba(255, 206, 86, 0.7)',
-            'rgba(75, 192, 192, 0.7)', 'rgba(153, 102, 255, 0.7)', 'rgba(255, 159, 64, 0.7)'
-        ],
-        expenses: [
-            'rgba(255, 99, 132, 0.7)', 'rgba(54, 162, 235, 0.7)', 'rgba(255, 206, 86, 0.7)',
-            'rgba(75, 192, 192, 0.7)', 'rgba(153, 102, 255, 0.7)', 'rgba(255, 159, 64, 0.7)',
-            'rgba(200, 100, 200, 0.7)', 'rgba(100, 200, 200, 0.7)', 'rgba(200, 200, 100, 0.7)',
-            'rgba(100, 100, 200, 0.7)'
-        ],
-        preTax: [
-            'rgba(100, 180, 250, 0.7)', 'rgba(250, 100, 180, 0.7)', 'rgba(180, 250, 100, 0.7)',
-            'rgba(100, 250, 180, 0.7)'
-        ],
-        postTax: [
-            'rgba(250, 180, 100, 0.7)', 'rgba(180, 100, 250, 0.7)', 'rgba(100, 250, 100, 0.7)',
-            'rgba(250, 100, 100, 0.7)'
-        ],
-        budgetDistribution: {
-            taxes: 'rgba(255, 99, 132, 0.7)',
-            preTaxDeductions: 'rgba(54, 162, 235, 0.7)',
-            postTaxDeductions: 'rgba(75, 192, 192, 0.7)',
-            expenses: 'rgba(255, 159, 64, 0.7)',
-            remainingBudget: 'rgba(153, 102, 255, 0.7)',
-            deficit: 'rgba(255, 0, 0, 0.7)' // Red for deficit
-        }
-    },
-    dark: {
-        taxes: [
-            'rgba(255, 99, 132, 0.9)', 'rgba(54, 162, 235, 0.9)', 'rgba(255, 206, 86, 0.9)',
-            'rgba(75, 192, 192, 0.9)', 'rgba(153, 102, 255, 0.9)', 'rgba(255, 159, 64, 0.9)'
-        ],
-        expenses: [
-            'rgba(255, 99, 132, 0.9)', 'rgba(54, 162, 235, 0.9)', 'rgba(255, 206, 86, 0.9)',
-            'rgba(75, 192, 192, 0.9)', 'rgba(153, 102, 255, 0.9)', 'rgba(255, 159, 64, 0.9)',
-            'rgba(200, 100, 200, 0.9)', 'rgba(100, 200, 200, 0.9)', 'rgba(200, 200, 100, 0.9)',
-            'rgba(100, 100, 200, 0.9)'
-        ],
-        preTax: [
-            'rgba(100, 180, 250, 0.9)', 'rgba(250, 100, 180, 0.9)', 'rgba(180, 250, 100, 0.9)',
-            'rgba(100, 250, 180, 0.9)'
-        ],
-        postTax: [
-            'rgba(250, 180, 100, 0.9)', 'rgba(180, 100, 250, 0.9)', 'rgba(100, 250, 100, 0.9)',
-            'rgba(250, 100, 100, 0.9)'
-        ],
-        budgetDistribution: {
-            taxes: 'rgba(255, 99, 132, 0.9)',
-            preTaxDeductions: 'rgba(54, 162, 235, 0.9)',
-            postTaxDeductions: 'rgba(75, 192, 192, 0.9)',
-            expenses: 'rgba(255, 159, 64, 0.9)',
-            remainingBudget: 'rgba(153, 102, 255, 0.9)',
-            deficit: 'rgba(255, 0, 0, 0.9)' // Red for deficit
+// 사용자 정의 항목 추가
+function addCustomItem(array, type) {
+    const itemName = prompt(translations[currentLanguage].add_item_title + " - " + translations[currentLanguage].item_name_placeholder);
+    if (!itemName) return; // 사용자가 취소함
+
+    const itemAmountStr = prompt(translations[currentLanguage].add_item_title + " - " + translations[currentLanguage].item_amount_placeholder);
+    const itemAmount = parseFloat(itemAmountStr);
+
+    if (isNaN(itemAmount) || itemAmount <= 0) {
+        alert("유효한 금액을 입력해주세요.");
+        return;
+    }
+
+    let itemCategory = '';
+    if (type === 'expense') {
+        const categoryPrompt = prompt(`${translations[currentLanguage].item_category_label}: (${translations[currentLanguage].category_needs}/${translations[currentLanguage].category_wants})`, translations[currentLanguage].category_needs);
+        if (categoryPrompt && (categoryPrompt.toLowerCase() === translations[currentLanguage].category_needs.toLowerCase() || categoryPrompt.toLowerCase() === translations[currentLanguage].category_wants.toLowerCase())) {
+            itemCategory = categoryPrompt.toLowerCase() === translations[currentLanguage].category_needs.toLowerCase() ? 'needs' : 'wants';
+        } else {
+            itemCategory = 'needs'; // 기본값
         }
     }
-};
 
-function initializeCharts() {
-    const chartTextColor = getComputedStyle(document.body).getPropertyValue('--chart-text-color');
-    const chartGridColor = getComputedStyle(document.body).getPropertyValue('--chart-grid-color');
-    const chartTaxBarColor = getComputedStyle(document.body).getPropertyValue('--chart-tax-bar-color');
-
-    const commonOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                labels: {
-                    color: chartTextColor
-                }
-            },
-            tooltip: {
-                callbacks: {
-                    label: function(context) {
-                        let label = context.dataset.label || '';
-                        if (label) {
-                            label += ': ';
-                        }
-                        if (context.parsed.y !== null) {
-                            label += formatCurrency(context.parsed.y);
-                        } else if (context.parsed !== null) { // For pie/doughnut charts
-                             label += formatCurrency(context.parsed);
-                        }
-                        return label;
-                    }
-                }
-            }
-        },
-        scales: {
-            x: {
-                ticks: { color: chartTextColor },
-                grid: { color: chartGridColor }
-            },
-            y: {
-                ticks: { color: chartTextColor },
-                grid: { color: chartGridColor }
-            }
-        }
-    };
-
-    const pieDoughnutOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                labels: {
-                    color: chartTextColor
-                }
-            },
-            tooltip: commonOptions.plugins.tooltip // Use the same tooltip formatting
-        }
-    };
-
-    // Destroy existing chart instances if they exist
-    if (taxChart) taxChart.destroy();
-    if (expensesChart) expensesChart.destroy();
-    if (budgetDistributionChart) budgetDistributionChart.destroy();
-    if (preTaxDeductionsChart) preTaxDeductionsChart.destroy();
-    if (postTaxDeductionsChart) postTaxDeductionsChart.destroy();
-
-    const taxCtx = document.getElementById('taxChart').getContext('2d');
-    taxChart = new Chart(taxCtx, {
-        type: 'bar',
-        data: {
-            labels: [],
-            datasets: [{
-                label: '',
-                data: [],
-                backgroundColor: chartTaxBarColor, // Single color for bar charts, dynamically set
-                borderColor: chartTaxBarColor,
-                borderWidth: 1
-            }]
-        },
-        options: commonOptions
-    });
-
-    const expensesCtx = document.getElementById('expensesChart').getContext('2d');
-    expensesChart = new Chart(expensesCtx, {
-        type: 'doughnut',
-        data: {
-            labels: [],
-            datasets: [{
-                label: '',
-                data: [],
-                backgroundColor: chartColorPalettes[isDarkMode ? 'dark' : 'light'].expenses, // Dynamic palette
-                borderColor: 'rgba(255, 255, 255, 0.8)',
-                borderWidth: 1
-            }]
-        },
-        options: pieDoughnutOptions
-    });
-
-    const budgetDistributionCtx = document.getElementById('budgetDistributionChart').getContext('2d');
-    budgetDistributionChart = new Chart(budgetDistributionCtx, {
-        type: 'pie',
-        data: {
-            labels: [],
-            datasets: [{
-                label: '',
-                data: [],
-                backgroundColor: [], // Set dynamically in updateCharts
-                borderColor: 'rgba(255, 255, 255, 0.8)',
-                borderWidth: 1
-            }]
-        },
-        options: pieDoughnutOptions
-    });
-
-    const preTaxDeductionsCtx = document.getElementById('preTaxDeductionsChart').getContext('2d');
-    preTaxDeductionsChart = new Chart(preTaxDeductionsCtx, {
-        type: 'doughnut',
-        data: {
-            labels: [],
-            datasets: [{
-                label: '',
-                data: [],
-                backgroundColor: chartColorPalettes[isDarkMode ? 'dark' : 'light'].preTax, // Dynamic palette
-                borderColor: 'rgba(255, 255, 255, 0.8)',
-                borderWidth: 1
-            }]
-        },
-        options: pieDoughnutOptions
-    });
-
-    const postTaxDeductionsCtx = document.getElementById('postTaxDeductionsChart').getContext('2d');
-    postTaxDeductionsChart = new Chart(postTaxDeductionsCtx, {
-        type: 'doughnut',
-        data: {
-            labels: [],
-            datasets: [{
-                label: '',
-                data: [],
-                backgroundColor: chartColorPalettes[isDarkMode ? 'dark' : 'light'].postTax, // Dynamic palette
-                borderColor: 'rgba(255, 255, 255, 0.8)',
-                borderWidth: 1
-            }]
-        },
-        options: pieDoughnutOptions
-    });
+    array.push({ name: itemName, amount: itemAmount, category: itemCategory, frequency: defaultItemFrequency });
+    updateDisplay();
+    saveData();
 }
 
 
-function updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, totalPreTaxDeductions, totalPostTaxDeductions) {
-    // Current palette based on theme
-    const currentPalette = isDarkMode ? chartColorPalettes.dark : chartColorPalettes.light;
-
-    // Update Tax Chart
-    const taxLabels = [];
-    const taxData = [];
-    for (const key in taxInputs) {
-        // Ensure taxInputs[key] exists before accessing .value
-        const value = taxInputs[key] ? (parseFloat(taxInputs[key].value) || 0) : 0;
-        if (value > 0) {
-            // Ensure previousElementSibling exists before accessing textContent
-            const labelText = taxInputs[key] && taxInputs[key].previousElementSibling ? taxInputs[key].previousElementSibling.textContent : key;
-            taxLabels.push(labelText);
-            taxData.push(value);
-        }
-    }
-    customTaxes.forEach(item => {
-        if (item.amount > 0) {
-            taxLabels.push(item.name);
-            taxData.push(item.amount);
-        }
-    });
-    taxChart.data.labels = taxLabels;
-    taxChart.data.datasets[0].data = taxData;
-    taxChart.data.datasets[0].label = translations[currentLanguage].section_taxes_title;
-    taxChart.update();
-
-    // Update Expenses Chart
-    const expenseLabels = [];
-    const expenseData = [];
-    for (const key in expenseInputs) {
-        // Ensure expenseInputs[key] exists before accessing .value
-        const value = expenseInputs[key] ? (parseFloat(expenseInputs[key].value) || 0) : 0;
-        if (value > 0) {
-            // Ensure previousElementSibling exists before accessing textContent
-            const labelText = expenseInputs[key] && expenseInputs[key].previousElementSibling ? expenseInputs[key].previousElementSibling.textContent : key;
-            expenseLabels.push(labelText);
-            expenseData.push(value);
-        }
-    }
-    customExpenses.forEach(item => {
-        if (item.amount > 0) {
-            expenseLabels.push(item.name);
-            expenseData.push(item.amount);
-        }
-    });
-    expensesChart.data.labels = expenseLabels;
-    expensesChart.data.datasets[0].data = expenseData;
-    expensesChart.data.datasets[0].label = translations[currentLanguage].section_expenses_title;
-    expensesChart.data.datasets[0].backgroundColor = currentPalette.expenses;
-    expensesChart.update();
-
-    // Update Budget Distribution Chart
-    const budgetLabels = [
-        translations[currentLanguage].label_total_taxes,
-        translations[currentLanguage].label_total_pre_tax,
-        translations[currentLanguage].label_total_post_tax,
-        translations[currentLanguage].label_total_expenses,
-        translations[currentLanguage].label_remaining_budget
-    ];
-    const budgetData = [
-        totalTaxes,
-        totalPreTaxDeductions,
-        totalPostTaxDeductions,
-        totalExpenses,
-        Math.max(0, remainingBudget) // Show 0 if negative, as pie chart can't show negative
-    ];
-    const budgetColors = [
-        currentPalette.budgetDistribution.taxes,
-        currentPalette.budgetDistribution.preTaxDeductions,
-        currentPalette.budgetDistribution.postTaxDeductions,
-        currentPalette.budgetDistribution.expenses,
-        currentPalette.budgetDistribution.remainingBudget
-    ];
-    if (remainingBudget < 0) {
-        budgetColors[4] = currentPalette.budgetDistribution.deficit;
-        budgetData[4] = Math.abs(remainingBudget);
-        budgetLabels[4] = translations[currentLanguage].label_deficit || 'Deficit';
-    }
-
-    budgetDistributionChart.data.labels = budgetLabels;
-    budgetDistributionChart.data.datasets[0].data = budgetData;
-    budgetDistributionChart.data.datasets[0].backgroundColor = budgetColors;
-    budgetDistributionChart.data.datasets[0].label = translations[currentLanguage].section_summary_title;
-    budgetDistributionChart.update();
-
-    // Update Pre-Tax Deductions Chart
-    const preTaxDeductLabels = [];
-    const preTaxDeductData = [];
-    for (const key in preTaxDeductInputs) {
-        const value = preTaxDeductInputs[key] ? (parseFloat(preTaxDeductInputs[key].value) || 0) : 0;
-        if (value > 0) {
-            const labelText = preTaxDeductInputs[key] && preTaxDeductInputs[key].previousElementSibling ? preTaxDeductInputs[key].previousElementSibling.textContent : key;
-            preTaxDeductLabels.push(labelText);
-            preTaxDeductData.push(value);
-        }
-    }
-    customPreTaxDeductions.forEach(item => {
-        if (item.amount > 0) {
-            preTaxDeductLabels.push(item.name);
-            preTaxDeductData.push(item.amount);
-        }
-    });
-    preTaxDeductionsChart.data.labels = preTaxDeductLabels;
-    preTaxDeductionsChart.data.datasets[0].data = preTaxDeductData;
-    preTaxDeductionsChart.data.datasets[0].label = translations[currentLanguage].section_pre_tax_title;
-    preTaxDeductionsChart.data.datasets[0].backgroundColor = currentPalette.preTax;
-    preTaxDeductionsChart.update();
-
-    // Update Post-Tax Deductions Chart
-    const postTaxDeductLabels = [];
-    const postTaxDeductData = [];
-    for (const key in postTaxDeductInputs) {
-        const value = postTaxDeductInputs[key] ? (parseFloat(postTaxDeductInputs[key].value) || 0) : 0;
-        if (value > 0) {
-            const labelText = postTaxDeductInputs[key] && postTaxDeductInputs[key].previousElementSibling ? postTaxDeductInputs[key].previousElementSibling.textContent : key;
-            postTaxDeductLabels.push(labelText);
-            postTaxDeductData.push(value);
-        }
-    }
-    customPostTaxDeductions.forEach(item => {
-        if (item.amount > 0) {
-            postTaxDeductLabels.push(item.name);
-            postTaxDeductData.push(item.amount);
-        }
-    });
-    postTaxDeductionsChart.data.labels = postTaxDeductLabels;
-    postTaxDeductionsChart.data.datasets[0].data = postTaxDeductData;
-    postTaxDeductionsChart.data.datasets[0].label = translations[currentLanguage].section_post_tax_title;
-    postTaxDeductionsChart.data.datasets[0].backgroundColor = currentPalette.postTax;
-    postTaxDeductionsChart.update();
-
-    // Update chart text color based on dark mode
-    const chartTextColor = getComputedStyle(document.body).getPropertyValue('--chart-text-color');
-    const chartGridColor = getComputedStyle(document.body).getPropertyValue('--chart-grid-color');
-    const chartTaxBarColor = getComputedStyle(document.body).getPropertyValue('--chart-tax-bar-color'); // Re-fetch for safety
-
-    [taxChart, expensesChart, budgetDistributionChart, preTaxDeductionsChart, postTaxDeductionsChart].forEach(chart => {
-        if (chart) { // Ensure chart object exists
-            if (chart.options && chart.options.plugins && chart.options.plugins.legend && chart.options.plugins.legend.labels) {
-                chart.options.plugins.legend.labels.color = chartTextColor;
-            }
-            // For bar charts (taxChart), ensure scales exist
-            if (chart.options && chart.options.scales) {
-                if (chart.options.scales.x) {
-                    chart.options.scales.x.ticks.color = chartTextColor;
-                    chart.options.scales.x.grid.color = chartGridColor;
-                }
-                if (chart.options.scales.y) {
-                    chart.options.scales.y.ticks.color = chartTextColor;
-                    chart.options.scales.y.grid.color = chartGridColor;
-                }
-            }
-
-            // Update tax chart's bar color specifically
-            if (chart === taxChart && chart.data.datasets.length > 0) {
-                chart.data.datasets[0].backgroundColor = chartTaxBarColor;
-                chart.data.datasets[0].borderColor = chartTaxBarColor;
-            }
-            chart.update(); // Re-render the chart after options change
-        }
-    });
+// 사용자 정의 항목 제거
+function removeCustomItem(array, index) {
+    array.splice(index, 1);
+    updateDisplay();
+    saveData();
 }
 
+// 5. 언어 적용
+function applyLanguage(lang) {
+    currentLanguage = lang;
+    document.documentElement.lang = lang; // HTML lang 속성 변경
 
-// --- Display and Calculation Logic ---
-function updateDisplay() {
-    currentSalaryInput = parseFloat(grossSalaryInput.value) || 0;
-    currentSalaryFrequency = salaryFrequencySelect.value;
+    // 모든 번역 가능한 요소 업데이트
+    document.querySelectorAll('[data-i18n-key]').forEach(element => {
+        const key = element.dataset.i18nKey;
+        if (translations[currentLanguage][key]) {
+            if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                element.placeholder = translations[currentLanguage][key];
+            } else if (element.tagName === 'OPTION') {
+                element.textContent = translations[currentLanguage][key];
+            } else {
+                element.textContent = translations[currentLanguage][key];
+            }
+        }
+    });
 
-    let monthlyGrossSalary = 0;
-    let annualGrossSalary = 0;
-
-    switch (currentSalaryFrequency) {
-        case 'monthly':
-            monthlyGrossSalary = currentSalaryInput;
-            annualGrossSalary = currentSalaryInput * 12;
-            break;
-        case 'annually':
-            annualGrossSalary = currentSalaryInput;
-            monthlyGrossSalary = currentSalaryInput / 12;
-            break;
-        case 'weekly':
-            annualGrossSalary = currentSalaryInput * 52;
-            monthlyGrossSalary = annualGrossSalary / 12;
-            break;
-        case 'bi-weekly':
-            annualGrossSalary = currentSalaryInput * 26;
-            monthlyGrossSalary = annualGrossSalary / 12;
-            break;
-        default:
-            monthlyGrossSalary = 0;
-            annualGrossSalary = 0;
-            break;
+    // 헤더 토글 버튼 텍스트 업데이트
+    if (languageToggleBtn) {
+        languageToggleBtn.textContent = currentLanguage === 'ko' ? 'EN' : 'KO';
     }
 
-    grossSalary = monthlyGrossSalary; // The global 'grossSalary' is now always monthly
+    // 예산 규칙 섹션 라벨 수동 업데이트 (data-i18n-key가 아닌 직접 텍스트 변경이 필요할 수 있음)
+    // HTML에 직접 data-i18n-key를 추가하면 이 부분은 필요 없어집니다.
+    // 현재 HTML에는 <p>필수 지출 (Needs):</p> 와 같이 직접 텍스트가 들어가 있어, 해당 텍스트를 업데이트해야 함.
+    // 만약 <p data-i18n-key="needs_label"></p> 와 같이 HTML을 수정하면 위 루프에서 자동 처리됨.
+    // 현재 HTML 구조에 맞춰 아래와 같이 직접 업데이트하거나, HTML을 수정하는 것을 추천합니다.
+    document.querySelector('.rule-breakdown div:nth-child(1) p:nth-child(1)').textContent = translations[currentLanguage].needs_label + ':';
+    document.querySelector('.rule-breakdown div:nth-child(2) p:nth-child(1)').textContent = translations[currentLanguage].wants_label + ':';
+    document.querySelector('.rule-breakdown div:nth-child(3) p:nth-child(1)').textContent = translations[currentLanguage].savings_label + ':';
+    document.querySelector('.rule-breakdown div.total p:nth-child(1)').textContent = translations[currentLanguage].label_total + ':'; // if you add label_total
 
-    // UI Update for gross salary summaries
-    if (grossSalarySummaryDisplay) { // Null check for grossSalarySummaryDisplay
-        grossSalarySummaryDisplay.textContent = formatCurrency(monthlyGrossSalary);
-    }
-    if (annualSalarySummaryDisplay) { // Null check for annualSalarySummaryDisplay
-        annualSalarySummaryDisplay.textContent = formatCurrency(annualGrossSalary);
-    }
+    // '규칙' 및 '실제' 라벨 업데이트
+    document.querySelectorAll('.rule-breakdown p:nth-child(2)').forEach(p => {
+        p.textContent = `${translations[currentLanguage].label_rule}: ${p.querySelector('span').textContent}`;
+    });
+    document.querySelectorAll('.rule-breakdown p:nth-child(3)').forEach(p => {
+        p.textContent = `${translations[currentLanguage].label_actual}: ${p.querySelector('span').textContent}`;
+    });
 
-    const totalTaxes = getTotal(taxInputs, customTaxes);
-    if (totalTaxesDisplay) totalTaxesDisplay.textContent = formatCurrency(totalTaxes);
-
-    const totalPreTaxDeductions = getTotal(preTaxDeductInputs, customPreTaxDeductions);
-    if (totalPreTaxDisplay) totalPreTaxDisplay.textContent = formatCurrency(totalPreTaxDeductions);
-
-    const totalPostTaxDeductions = getTotal(postTaxDeductInputs, customPostTaxDeductions);
-    if (totalPostTaxDisplay) totalPostTaxDisplay.textContent = formatCurrency(totalPostTaxDeductions);
-
-    const netSalary = grossSalary - totalTaxes - totalPreTaxDeductions - totalPostTaxDeductions;
-    if (netSalaryDisplay) netSalaryDisplay.textContent = formatCurrency(netSalary);
-
-    const totalExpenses = getTotal(expenseInputs, customExpenses);
-    if (totalExpensesDisplay) totalExpensesDisplay.textContent = formatCurrency(totalExpenses);
-
-    const remainingBudget = netSalary - totalExpenses;
-    if (remainingBudgetDisplay) {
-        remainingBudgetDisplay.textContent = formatCurrency(remainingBudget);
-        remainingBudgetDisplay.style.color = remainingBudget >= 0 ? 'var(--summary-text-color)' : 'var(--danger-color)';
+    // AI 보고서 플레이스홀더 텍스트 업데이트
+    if (aiReportBox) {
+        aiReportBox.querySelector('p').textContent = translations[currentLanguage].ai_report_placeholder;
     }
 
-    // Update charts with new data
-    updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, totalPreTaxDeductions, totalPostTaxDeductions);
-
-    renderCustomList(customTaxList, customTaxes, 'tax');
-    renderCustomList(customPreTaxDeductList, customPreTaxDeductions, 'pre-tax');
-    renderCustomList(customPostTaxDeductList, customPostTaxDeductions, 'post-tax');
-    renderCustomList(customExpenseList, customExpenses, 'expense');
-
-    applyBudgetRule(grossSalary, totalExpenses, netSalary, totalPreTaxDeductions + totalPostTaxDeductions);
+    // confirm 메시지도 업데이트될 수 있도록 updateDisplay() 호출
+    updateDisplay();
 }
 
-// --- Data Persistence ---
+// 6. 다크 모드 적용
+function applyDarkMode(enable) {
+    isDarkMode = enable;
+    document.body.classList.toggle('dark-mode', isDarkMode);
+    if (darkmodeToggleBtn) {
+        darkmodeToggleBtn.innerHTML = isDarkMode ? '<i class="ri-sun-line"></i>' : '<i class="ri-moon-line"></i>';
+    }
+    // 차트 색상 업데이트
+    updateCharts(
+        getTotal(taxInputs, customTaxes),
+        getTotal(expenseInputs, customExpenses),
+        (parseFloat(grossSalaryInput.value) || 0) * (currentSalaryFrequency === 'annually' ? 1/12 : 1) - getTotal(taxInputs, customTaxes) - getTotal(preTaxDeductInputs, customPreTaxDeductions) - getTotal(postTaxDeductInputs, customPostTaxDeductions),
+        (parseFloat(grossSalaryInput.value) || 0) * (currentSalaryFrequency === 'annually' ? 1/12 : 1) - getTotal(taxInputs, customTaxes) - getTotal(preTaxDeductInputs, customPreTaxDeductions) - getTotal(postTaxDeductInputs, customPostTaxDeductions) - getTotal(expenseInputs, customExpenses),
+        getTotal(preTaxDeductInputs, customPreTaxDeductions),
+        getTotal(postTaxDeductInputs, customPostTaxDeductions)
+    );
+}
+
+// 7. 데이터 저장 및 로드
 function saveData() {
     const data = {
-        grossSalaryInput: grossSalaryInput.value,
+        grossSalaryInput: grossSalaryInput ? grossSalaryInput.value : 0,
         currentSalaryFrequency: currentSalaryFrequency,
-        defaultItemFrequency: defaultItemFrequencySelect ? defaultItemFrequencySelect.value : 'monthly', // Save default item frequency if element exists
+        defaultItemFrequency: defaultItemFrequencySelect ? defaultItemFrequencySelect.value : 'monthly',
         taxInputs: {},
         customTaxes: customTaxes,
         preTaxDeductInputs: {},
@@ -614,7 +434,8 @@ function saveData() {
         expenseInputs: {},
         customExpenses: customExpenses,
         currentLanguage: currentLanguage,
-        isDarkMode: isDarkMode
+        isDarkMode: isDarkMode,
+        selectedBudgetRule: budgetRuleSelect ? budgetRuleSelect.value : '50-30-20' // 선택된 예산 규칙 저장
     };
 
     for (const key in taxInputs) {
@@ -631,338 +452,491 @@ function saveData() {
     }
 
     localStorage.setItem('budgetAppData', JSON.stringify(data));
-    console.log('Data saved.');
 }
 
 function loadData() {
-    const data = JSON.parse(localStorage.getItem('budgetAppData'));
-    if (data) {
-        if (grossSalaryInput) grossSalaryInput.value = data.grossSalaryInput || 0;
-        if (salaryFrequencySelect) {
-            currentSalaryFrequency = data.currentSalaryFrequency || 'monthly';
-            salaryFrequencySelect.value = currentSalaryFrequency;
-        }
-        if (defaultItemFrequencySelect && data.defaultItemFrequency) {
-            defaultItemFrequencySelect.value = data.defaultItemFrequency;
-        }
+    const savedData = localStorage.getItem('budgetAppData');
+    if (savedData) {
+        const data = JSON.parse(savedData);
+
+        if (grossSalaryInput && data.grossSalaryInput) grossSalaryInput.value = data.grossSalaryInput;
+        if (data.currentSalaryFrequency) currentSalaryFrequency = data.currentSalaryFrequency;
+        if (salaryFrequencySelect) salaryFrequencySelect.value = currentSalaryFrequency;
+        if (defaultItemFrequencySelect && data.defaultItemFrequency) defaultItemFrequencySelect.value = data.defaultItemFrequency;
+        if (data.defaultItemFrequency) defaultItemFrequency = data.defaultItemFrequency;
+
 
         for (const key in taxInputs) {
-            if (taxInputs[key]) taxInputs[key].value = data.taxInputs[key] || 0;
+            if (taxInputs[key] && data.taxInputs[key]) taxInputs[key].value = data.taxInputs[key];
         }
-        customTaxes = data.customTaxes || [];
-
         for (const key in preTaxDeductInputs) {
-            if (preTaxDeductInputs[key]) preTaxDeductInputs[key].value = data.preTaxDeductInputs[key] || 0;
+            if (preTaxDeductInputs[key] && data.preTaxDeductInputs[key]) preTaxDeductInputs[key].value = data.preTaxDeductInputs[key];
         }
-        customPreTaxDeductions = data.customPreTaxDeductions || [];
-
         for (const key in postTaxDeductInputs) {
-            if (postTaxDeductInputs[key]) postTaxDeductInputs[key].value = data.postTaxDeductInputs[key] || 0;
+            if (postTaxDeductInputs[key] && data.postTaxDeductInputs[key]) postTaxDeductInputs[key].value = data.postTaxDeductInputs[key];
         }
-        customPostTaxDeductions = data.customPostTaxDeductions || [];
-
         for (const key in expenseInputs) {
-            if (expenseInputs[key]) expenseInputs[key].value = data.expenseInputs[key] || 0;
+            if (expenseInputs[key] && data.expenseInputs[key]) expenseInputs[key].value = data.expenseInputs[key];
         }
+
+        customTaxes = data.customTaxes || [];
+        customPreTaxDeductions = data.customPreTaxDeductions || [];
+        customPostTaxDeductions = data.customPostTaxDeductions || [];
         customExpenses = data.customExpenses || [];
 
-        currentLanguage = data.currentLanguage || 'ko';
-        isDarkMode = data.isDarkMode === true;
+        if (data.currentLanguage) applyLanguage(data.currentLanguage);
+        if (typeof data.isDarkMode !== 'undefined') applyDarkMode(data.isDarkMode);
+
+        if (budgetRuleSelect && data.selectedBudgetRule) {
+            budgetRuleSelect.value = data.selectedBudgetRule;
+        }
+
+        updateDisplay();
+    } else {
+        // 데이터가 없는 경우 초기 상태 설정 및 디스플레이 업데이트
+        if (grossSalaryInput) grossSalaryInput.value = 0;
+        if (salaryFrequencySelect) salaryFrequencySelect.value = 'monthly';
+        if (defaultItemFrequencySelect) defaultItemFrequencySelect.value = 'monthly';
+        currentSalaryFrequency = 'monthly';
+        defaultItemFrequency = 'monthly';
+        currentLanguage = 'ko';
+        isDarkMode = false;
+
+        customTaxes = [];
+        customPreTaxDeductions = [];
+        customPostTaxDeductions = [];
+        customExpenses = [];
+
+        applyLanguage(currentLanguage); // 언어 초기 적용
+        applyDarkMode(isDarkMode); // 다크 모드 초기 적용
+        updateDisplay();
     }
-    applyLanguage(currentLanguage);
-    applyDarkMode(isDarkMode); // applyDarkMode at the end of loadData to ensure theme is applied after initialization
-    updateDisplay(); // Update displays with loaded data (including charts)
-    console.log('Data loaded.');
 }
 
 
-// --- Language & Dark Mode ---
-// Assume 'translations' object is defined globally or imported
-const translations = {
-    'ko': {
-        // --- General Labels ---
-        app_title: "예산 관리기",
-        section_gross_salary_title: "총 급여",
-        salary_input_label: "월별/연간 총 급여:",
-        salary_frequency_label: "급여 주기:",
-        monthly_frequency: "월별",
-        annually_frequency: "연간",
-        weekly_frequency: "주별",
-        bi_weekly_frequency: "격주",
-        annual_summary_label: "연간 총 급여:",
-        monthly_summary_label: "월별 총 급여:",
+// 8. 차트 관리 (Chart.js)
+function initializeCharts() {
+    const taxCtx = document.getElementById('tax-chart')?.getContext('2d');
+    const preTaxCtx = document.getElementById('pre-tax-deduct-chart')?.getContext('2d');
+    const postTaxCtx = document.getElementById('post-tax-deduct-chart')?.getContext('2d');
+    const expensesCtx = document.getElementById('expenses-chart')?.getContext('2d');
+    const budgetDistributionCtx = document.getElementById('budget-distribution-chart')?.getContext('2d');
 
-        section_taxes_title: "세금",
-        section_pre_tax_title: "세전 공제",
-        section_post_tax_title: "세후 공제",
-        section_expenses_title: "지출",
-        section_summary_title: "요약",
-        section_data_management_title: "데이터 관리",
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    color: isDarkMode ? '#fff' : '#333'
+                }
+            }
+        }
+    };
 
-        label_total_taxes: "총 세금",
-        label_total_pre_tax: "총 세전 공제",
-        label_total_post_tax: "총 세후 공제",
-        label_net_salary: "실수령액",
-        label_total_expenses: "총 지출",
-        label_remaining_budget: "남은 예산",
-        label_deficit: "적자", // Added for deficit in charts
-
-        button_add_custom: "항목 추가",
-        button_remove: "삭제",
-        placeholder_item_name: "항목 이름",
-        placeholder_amount: "금액",
-        remove_item: "이 항목을 삭제하시겠습니까",
-
-        // --- Budget Rule Section ---
-        budget_rule_title: "예산 규칙",
-        budget_rule_select_label: "예산 규칙 선택:",
-        rule_50_30_20: "50/30/20 규칙 (필수/선택/저축)",
-        rule_70_20_10: "70/20/10 규칙 (필수/선택/저축)",
-        rule_80_20: "80/20 규칙 (필수/저축)",
-        needs_label: "필수 지출",
-        wants_label: "선택 지출",
-        savings_label: "저축",
-        total_budget_label: "총 예산",
-        budget_status_label: "예산 상태",
-        rule_label: "규칙:",
-        actual_label: "실제:",
-        status_ok: "양호",
-        status_over: "초과",
-        status_warning: "경고",
-        status_under: "부족",
-
-        // --- Data Management Buttons ---
-        button_export_json: "JSON 내보내기",
-        button_import_json: "JSON 가져오기",
-        button_clear_all_data: "모든 데이터 지우기",
-        button_ai_report: "AI 보고서 생성",
-        ai_report_placeholder: "AI 보고서가 여기에 표시됩니다. (통합 예정)"
-    },
-    'en': {
-        // --- General Labels ---
-        app_title: "Budget Manager",
-        section_gross_salary_title: "Gross Salary",
-        salary_input_label: "Monthly/Annual Gross Salary:",
-        salary_frequency_label: "Salary Frequency:",
-        monthly_frequency: "Monthly",
-        annually_frequency: "Annually",
-        weekly_frequency: "Weekly",
-        bi_weekly_frequency: "Bi-Weekly",
-        annual_summary_label: "Annual Gross Salary:",
-        monthly_summary_label: "Monthly Gross Salary:",
-
-        section_taxes_title: "Taxes",
-        section_pre_tax_title: "Pre-Tax Deductions",
-        section_post_tax_title: "Post-Tax Deductions",
-        section_expenses_title: "Expenses",
-        section_summary_title: "Summary",
-        section_data_management_title: "Data Management",
-
-        label_total_taxes: "Total Taxes",
-        label_total_pre_tax: "Total Pre-Tax Deductions",
-        label_total_post_tax: "Total Post-Tax Deductions",
-        label_net_salary: "Net Salary",
-        label_total_expenses: "Total Expenses",
-        label_remaining_budget: "Remaining Budget",
-        label_deficit: "Deficit",
-
-        button_add_custom: "Add Item",
-        button_remove: "Remove",
-        placeholder_item_name: "Item Name",
-        placeholder_amount: "Amount",
-        remove_item: "Are you sure you want to remove this item",
-
-        // --- Budget Rule Section ---
-        budget_rule_title: "Budget Rule",
-        budget_rule_select_label: "Select Budget Rule:",
-        rule_50_30_20: "50/30/20 Rule (Needs/Wants/Savings)",
-        rule_70_20_10: "70/20/10 Rule (Needs/Wants/Savings)",
-        rule_80_20: "80/20 Rule (Needs/Savings)",
-        needs_label: "Needs",
-        wants_label: "Wants",
-        savings_label: "Savings",
-        total_budget_label: "Total Budget",
-        budget_status_label: "Budget Status",
-        rule_label: "Rule:",
-        actual_label: "Actual:",
-        status_ok: "On Track",
-        status_over: "Over Budget",
-        status_warning: "Warning",
-        status_under: "Under Budget",
-
-        // --- Data Management Buttons ---
-        button_export_json: "Export JSON",
-        button_import_json: "Import JSON",
-        button_clear_all_data: "Clear All Data",
-        button_ai_report: "Generate AI Report",
-        ai_report_placeholder: "AI Report will appear here. (Integration pending)"
+    if (taxCtx) {
+        taxChartInstance = new Chart(taxCtx, {
+            type: 'pie',
+            data: { labels: [], datasets: [{ data: [], backgroundColor: [] }] },
+            options: chartOptions
+        });
     }
+    if (preTaxCtx) {
+        preTaxDeductChartInstance = new Chart(preTaxCtx, {
+            type: 'pie',
+            data: { labels: [], datasets: [{ data: [], backgroundColor: [] }] },
+            options: chartOptions
+        });
+    }
+    if (postTaxCtx) {
+        postTaxDeductChartInstance = new Chart(postTaxCtx, {
+            type: 'pie',
+            data: { labels: [], datasets: [{ data: [], backgroundColor: [] }] },
+            options: chartOptions
+        });
+    }
+    if (expensesCtx) {
+        expensesChartInstance = new Chart(expensesCtx, {
+            type: 'pie',
+            data: { labels: [], datasets: [{ data: [], backgroundColor: [] }] },
+            options: chartOptions
+        });
+    }
+    if (budgetDistributionCtx) {
+        budgetDistributionChartInstance = new Chart(budgetDistributionCtx, {
+            type: 'doughnut', // 총 예산 분포는 도넛 차트가 좋을 수 있음
+            data: { labels: [], datasets: [{ data: [], backgroundColor: [] }] },
+            options: chartOptions
+        });
+    }
+}
+
+function updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, totalPreTaxDeductions, totalPostTaxDeductions) {
+    const defaultColors = [
+        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#E7E9ED', '#A0B0C0', '#C0A0B0', '#B0C0A0'
+    ];
+    const darkColors = [
+        '#E0567A', '#2A8CD9', '#E6B830', '#3FAAAA', '#8040E0', '#E08020', '#C0C2C4', '#8090A0', '#A08090', '#90A080'
+    ];
+    const colors = isDarkMode ? darkColors : defaultColors;
+
+    // Helper to update individual chart
+    const updateChartData = (chartInstance, inputs, customItems, titlePrefix = '', excludeZero = true) => {
+        if (!chartInstance) return;
+
+        let labels = [];
+        let data = [];
+        let backgroundColors = [];
+        let currentColorIndex = 0;
+
+        // Add fixed inputs
+        for (const key in inputs) {
+            if (inputs[key] && parseFloat(inputs[key].value) > 0) {
+                labels.push(translations[currentLanguage][`label_${key.replace(/([A-Z])/g, '_$1').toLowerCase()}`] || key);
+                data.push(parseFloat(inputs[key].value));
+                backgroundColors.push(colors[currentColorIndex % colors.length]);
+                currentColorIndex++;
+            }
+        }
+
+        // Add custom items
+        customItems.forEach(item => {
+            if (item.amount > 0) {
+                labels.push(item.name);
+                data.push(item.amount);
+                backgroundColors.push(colors[currentColorIndex % colors.length]);
+                currentColorIndex++;
+            }
+        });
+
+        // Remove zero values if excludeZero is true
+        if (excludeZero) {
+            const filteredData = [];
+            const filteredLabels = [];
+            const filteredColors = [];
+            for(let i = 0; i < data.length; i++) {
+                if (data[i] > 0) {
+                    filteredData.push(data[i]);
+                    filteredLabels.push(labels[i]);
+                    filteredColors.push(backgroundColors[i]);
+                }
+            }
+            labels = filteredLabels;
+            data = filteredData;
+            backgroundColors = filteredColors;
+        }
+
+        // If no data, clear chart
+        if (data.every(val => val === 0)) {
+             chartInstance.data.labels = [];
+             chartInstance.data.datasets[0].data = [];
+             chartInstance.data.datasets[0].backgroundColor = [];
+        } else {
+            chartInstance.data.labels = labels;
+            chartInstance.data.datasets[0].data = data;
+            chartInstance.data.datasets[0].backgroundColor = backgroundColors;
+        }
+
+
+        // Update legend label color based on dark mode
+        chartInstance.options.plugins.legend.labels.color = isDarkMode ? '#fff' : '#333';
+        chartInstance.update();
+    };
+
+    // Update individual charts
+    updateChartData(taxChartInstance, taxInputs, customTaxes, translations[currentLanguage].section_taxes_title);
+    updateChartData(preTaxDeductChartInstance, preTaxDeductInputs, customPreTaxDeductions, translations[currentLanguage].section_pre_tax_title);
+    updateChartData(postTaxDeductChartInstance, postTaxDeductInputs, customPostTaxDeductions, translations[currentLanguage].section_post_tax_title);
+    updateChartData(expensesChartInstance, expenseInputs, customExpenses, translations[currentLanguage].section_expenses_title);
+
+    // Update budget distribution chart (Doughnut chart)
+    if (budgetDistributionChartInstance) {
+        const budgetLabels = [
+            translations[currentLanguage].label_total_taxes,
+            translations[currentLanguage].label_total_pre_tax,
+            translations[currentLanguage].label_total_post_tax,
+            translations[currentLanguage].label_total_expenses,
+            translations[currentLanguage].label_remaining_budget
+        ];
+
+        const budgetData = [
+            totalTaxes,
+            totalPreTaxDeductions,
+            totalPostTaxDeductions,
+            totalExpenses,
+            remainingBudget
+        ];
+
+        // Filter out zero values for better chart representation
+        const filteredBudgetLabels = [];
+        const filteredBudgetData = [];
+        const filteredBudgetColors = [];
+        let currentColorIndex = 0;
+
+        for (let i = 0; i < budgetData.length; i++) {
+            if (budgetData[i] > 0) {
+                filteredBudgetLabels.push(budgetLabels[i]);
+                filteredBudgetData.push(budgetData[i]);
+                filteredBudgetColors.push(colors[currentColorIndex % colors.length]);
+                currentColorIndex++;
+            }
+        }
+
+        budgetDistributionChartInstance.data.labels = filteredBudgetLabels;
+        budgetDistributionChartInstance.data.datasets[0].data = filteredBudgetData;
+        budgetDistributionChartInstance.data.datasets[0].backgroundColor = filteredBudgetColors;
+        budgetDistributionChartInstance.options.plugins.legend.labels.color = isDarkMode ? '#fff' : '#333';
+        budgetDistributionChartInstance.update();
+    }
+}
+
+
+// 9. 디스플레이 업데이트 (계산 및 UI 갱신)
+function updateDisplay() {
+    let grossSalary = parseFloat(grossSalaryInput.value) || 0;
+
+    // 선택된 급여 주기에 따라 연간 급여 조정
+    switch (currentSalaryFrequency) {
+        case 'annually':
+            grossSalary = grossSalary; // Already annual
+            annualSalarySummaryDisplay.textContent = formatCurrency(grossSalary);
+            grossSalary = grossSalary / 12; // Use monthly gross for calculations
+            break;
+        case 'monthly':
+            annualSalarySummaryDisplay.textContent = formatCurrency(grossSalary * 12);
+            break;
+        case 'weekly':
+            annualSalarySummaryDisplay.textContent = formatCurrency(grossSalary * 52);
+            grossSalary = grossSalary * 4; // Approx 4 weeks in a month for monthly calculations
+            break;
+        case 'bi-weekly':
+            annualSalarySummaryDisplay.textContent = formatCurrency(grossSalary * 26);
+            grossSalary = grossSalary * 2; // Approx 2 bi-weekly periods in a month
+            break;
+    }
+
+    // 커스텀 항목 렌더링
+    renderCustomList(customTaxList, customTaxes, 'tax');
+    renderCustomList(customPreTaxDeductList, customPreTaxDeductions, 'pre-tax');
+    renderCustomList(customPostTaxDeductList, customPostTaxDeductions, 'post-tax');
+    renderCustomList(customExpenseList, customExpenses, 'expense');
+
+    // 총계 계산
+    const totalTaxes = getTotal(taxInputs, customTaxes);
+    const totalPreTaxDeductions = getTotal(preTaxDeductInputs, customPreTaxDeductions);
+    const totalPostTaxDeductions = getTotal(postTaxDeductInputs, customPostTaxDeductions);
+    const totalExpenses = getTotal(expenseInputs, customExpenses); // Fixed expenses + custom expenses
+    const totalDeductions = totalTaxes + totalPreTaxDeductions + totalPostTaxDeductions;
+
+
+    // 순 급여 계산 (Gross - All Deductions)
+    const netSalary = grossSalary - totalTaxes - totalPreTaxDeductions - totalPostTaxDeductions;
+
+    const remainingBudget = netSalary - totalExpenses;
+
+
+    // UI 업데이트
+    if (grossSalarySummaryDisplay) grossSalarySummaryDisplay.textContent = formatCurrency(grossSalary);
+    if (totalTaxesDisplay) totalTaxesDisplay.textContent = formatCurrency(totalTaxes);
+    if (totalPreTaxDisplay) totalPreTaxDisplay.textContent = formatCurrency(totalPreTaxDeductions);
+    if (totalPostTaxDisplay) totalPostTaxDisplay.textContent = formatCurrency(totalPostTaxDeductions);
+    if (netSalaryDisplay) netSalaryDisplay.textContent = formatCurrency(netSalary);
+    if (totalExpensesDisplay) totalExpensesDisplay.textContent = formatCurrency(totalExpenses);
+    if (remainingBudgetDisplay) remainingBudgetDisplay.textContent = formatCurrency(remainingBudget);
+
+    // 예산 규칙 적용
+    applyBudgetRule(grossSalary, totalExpenses, netSalary, totalDeductions);
+
+    // 차트 업데이트
+    updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, totalPreTaxDeductions, totalPostTaxDeductions);
+
+    saveData(); // 데이터 변경 시마다 저장
+}
+
+// 10. 예산 규칙 정의
+const BUDGET_RULES = {
+    "50-30-20": { needs: 0.5, wants: 0.3, savings: 0.2 },
+    "70-20-10": { needs: 0.7, wants: 0.2, savings: 0.1 },
+    "80-20": { needs: 0.8, wants: 0.0, savings: 0.2 } // 80/20 rule often implies 0 wants
 };
 
-function applyLanguage(lang) {
-    currentLanguage = lang;
-    document.querySelectorAll('[data-i18n-key]').forEach(element => {
-        const key = element.dataset.i18nKey;
-        if (translations[currentLanguage][key]) {
-            element.textContent = translations[currentLanguage][key];
-        }
-    });
-
-    // Translate specific elements that might not have data-i18n-key
-    // Null checks added for safety
-    if (document.querySelector('.budget-section h2')) document.querySelector('.budget-section h2').textContent = translations[currentLanguage].budget_rule_title;
-    if (document.querySelector('label[for="budget-rule-select"]')) document.querySelector('label[for="budget-rule-select"]').textContent = translations[currentLanguage].budget_rule_select_label;
-
-    // Update option texts in the select dropdown
-    if (budgetRuleSelect) {
-        const options = budgetRuleSelect.options;
-        for (let i = 0; i < options.length; i++) {
-            const value = options[i].value.replace(/-/g, '_'); // Convert "50-30-20" to "50_30_20" for translation key
-            if (translations[currentLanguage][`rule_${value}`]) {
-                options[i].textContent = translations[currentLanguage][`rule_${value}`];
-            }
-        }
+// 11. 예산 규칙 적용 함수
+function applyBudgetRule(grossIncome, totalExpenses, netSalary, totalDeductions) {
+    // Null checks for display elements
+    if (!ruleNeedsDisplay || !ruleWantsDisplay || !ruleSavingsDisplay || !ruleTotalDisplay ||
+        !actualNeedsDisplay || !actualWantsDisplay || !actualSavingsDisplay || !actualTotalDisplay || !budgetStatusDisplay) {
+        console.warn("One or more budget rule display elements are missing from the DOM.");
+        return; // Exit if essential elements are missing
     }
 
-    // Update breakdown item labels
-    if (document.querySelector('.breakdown-item:nth-child(1) p:nth-child(1)')) document.querySelector('.breakdown-item:nth-child(1) p:nth-child(1)').textContent = translations[currentLanguage].needs_label;
-    if (document.querySelector('.breakdown-item:nth-child(2) p:nth-child(1)')) document.querySelector('.breakdown-item:nth-child(2) p:nth-child(1)').textContent = translations[currentLanguage].wants_label;
-    if (document.querySelector('.breakdown-item:nth-child(3) p:nth-child(1)')) document.querySelector('.breakdown-item:nth-child(3) p:nth-child(1)').textContent = translations[currentLanguage].savings_label;
-    if (document.querySelector('.breakdown-item.total p:nth-child(1)')) document.querySelector('.breakdown-item.total p:nth-child(1)').textContent = translations[currentLanguage].total_budget_label;
-    if (document.querySelector('.breakdown-item.status p:nth-child(1)')) document.querySelector('.breakdown-item.status p:nth-child(1)').textContent = translations[currentLanguage].budget_status_label;
+    const selectedRule = budgetRuleSelect.value;
+    const rule = BUDGET_RULES[selectedRule];
 
-
-    document.querySelectorAll('.rule-breakdown .breakdown-item p').forEach(pElement => {
-        // const spanElement = pElement.querySelector('span[id]'); // This was problematic, removed reliance on it.
-
-        // Check text content and update only the text node if it's the first child
-        if (pElement.firstChild && pElement.firstChild.nodeType === Node.TEXT_NODE) {
-            const originalText = pElement.firstChild.nodeValue.trim();
-            if (originalText.includes('규칙') || originalText.includes('Rule')) {
-                pElement.firstChild.nodeValue = translations[currentLanguage].rule_label + ' ';
-            } else if (originalText.includes('실제') || originalText.includes('Actual')) {
-                pElement.firstChild.nodeValue = translations[currentLanguage].actual_label + ' ';
-            }
-        }
-    });
-
-    const budgetStatusP = document.querySelector('.breakdown-item.status p:nth-child(1)');
-    if (budgetStatusP) {
-        budgetStatusP.textContent = translations[currentLanguage].budget_status_label;
+    if (!rule) {
+        ruleNeedsDisplay.textContent = formatCurrency(0);
+        ruleWantsDisplay.textContent = formatCurrency(0);
+        ruleSavingsDisplay.textContent = formatCurrency(0);
+        ruleTotalDisplay.textContent = formatCurrency(0);
+        actualNeedsDisplay.textContent = formatCurrency(0);
+        actualWantsDisplay.textContent = formatCurrency(0);
+        actualSavingsDisplay.textContent = formatCurrency(0);
+        actualTotalDisplay.textContent = formatCurrency(0);
+        budgetStatusDisplay.textContent = "";
+        return;
     }
 
+    // 1. Calculate budget based on the rule (based on gross income for rule calculation)
+    const ruleNeeds = grossIncome * rule.needs;
+    const ruleWants = grossIncome * rule.wants;
+    const ruleSavings = grossIncome * rule.savings;
+    const ruleTotal = ruleNeeds + ruleWants + ruleSavings; // Should ideally be grossIncome
 
-    if (languageToggleBtn) languageToggleBtn.textContent = currentLanguage === 'ko' ? 'EN' : 'KO';
-    updateDisplay(); // Recalculate and update displays with new language
-}
+    ruleNeedsDisplay.textContent = formatCurrency(ruleNeeds);
+    ruleWantsDisplay.textContent = formatCurrency(ruleWants);
+    ruleSavingsDisplay.textContent = formatCurrency(ruleSavings);
+    ruleTotalDisplay.textContent = formatCurrency(ruleTotal);
 
-function applyDarkMode(enable) {
-    isDarkMode = enable;
-    if (document.body) { // Ensure body exists
-        if (enable) {
-            document.body.classList.add('dark-mode');
-            if (darkmodeToggleBtn) darkmodeToggleBtn.innerHTML = '<i class="ri-sun-line"></i>'; // Sun icon for light mode
+    // 2. Calculate actual spending based on user inputs
+    let actualNeeds = 0;
+    let actualWants = 0;
+    let actualSavingsFromNet = netSalary; // Start with net salary for savings calculation
+
+    // Sum fixed expense inputs for Needs (as per common 50/30/20 interpretation)
+    actualNeeds += (parseFloat(expenseInputs.rent?.value) || 0);
+    actualNeeds += (parseFloat(expenseInputs.utilities?.value) || 0);
+    actualNeeds += (parseFloat(expenseInputs.internet?.value) || 0);
+    actualNeeds += (parseFloat(expenseInputs.phone?.value) || 0);
+    actualNeeds += (parseFloat(expenseInputs.groceries?.value) || 0);
+    actualNeeds += (parseFloat(expenseInputs.transport?.value) || 0);
+    actualNeeds += (parseFloat(expenseInputs.health?.value) || 0);
+
+    // Sum fixed expense inputs for Wants
+    actualWants += (parseFloat(expenseInputs.dining?.value) || 0);
+    actualWants += (parseFloat(expenseInputs.shopping?.value) || 0);
+    actualWants += (parseFloat(expenseInputs.entertainment?.value) || 0);
+
+    // Add custom expenses based on their 'category'
+    customExpenses.forEach(item => {
+        if (item.category === 'needs') {
+            actualNeeds += item.amount;
+        } else if (item.category === 'wants') {
+            actualWants += item.amount;
         } else {
-            document.body.classList.remove('dark-mode');
-            if (darkmodeToggleBtn) darkmodeToggleBtn.innerHTML = '<i class="ri-moon-line"></i>'; // Moon icon for dark mode
+            // If category is not specified or unknown, default to needs
+            actualNeeds += item.amount;
         }
-    }
-    initializeCharts(); // Re-initialize chart instances to apply new theme colors
-    updateDisplay(); // Update all values and charts
-}
-
-
-// --- Event Listeners ---
-document.addEventListener('DOMContentLoaded', () => {
-    initializeCharts(); // Ensure chart canvases exist and chart instances are initialized
-    loadData(); // Load saved data (includes applyDarkMode and updateDisplay)
-
-    // Input Change Listeners for number inputs
-    document.querySelectorAll('input[type="number"]').forEach(input => {
-        input.addEventListener('input', () => {
-            updateDisplay();
-            saveData();
-        });
     });
 
-    // Salary Frequency Select Listener
+    // Actual Savings: Net salary minus all expenses (needs + wants)
+    const actualSavings = netSalary - (actualNeeds + actualWants);
+
+    actualNeedsDisplay.textContent = formatCurrency(actualNeeds);
+    actualWantsDisplay.textContent = formatCurrency(actualWants);
+    actualSavingsDisplay.textContent = formatCurrency(actualSavings);
+
+    // Actual total budget should be grossIncome (or netSalary if rule applied to net)
+    // For 50/30/20, it's typically applied to gross income after taxes, so using netSalary here is more common for "actual total"
+    actualTotalDisplay.textContent = formatCurrency(netSalary); // Changed to netSalary for actual total
+
+    // 3. Evaluate budget status
+    let statusText = "";
+    let statusColor = "var(--summary-text-color)"; // Default to positive color
+
+    // Check Needs
+    if (actualNeeds > ruleNeeds) {
+        statusText += `${translations[currentLanguage].needs_label} ${translations[currentLanguage].status_over}. `;
+        statusColor = "var(--danger-color)";
+    }
+
+    // Check Wants (only if the rule has a Wants component)
+    if (rule.wants > 0 && actualWants > ruleWants) {
+        statusText += `${translations[currentLanguage].wants_label} ${translations[currentLanguage].status_over}. `;
+        statusColor = "var(--danger-color)";
+    }
+
+    // Check Savings
+    if (actualSavings < ruleSavings) {
+        statusText += `${translations[currentLanguage].savings_label} ${translations[currentLanguage].status_under}. `;
+        statusColor = "var(--danger-color)";
+    }
+
+    // Overall deficit check: if net salary minus total actual expenses is negative
+    if (netSalary - (actualNeeds + actualWants) < 0) {
+        statusText = translations[currentLanguage].status_over + " (" + translations[currentLanguage].label_deficit + ")";
+        statusColor = "var(--danger-color)";
+    } else if (statusText.trim() === "") { // If no specific issues found above
+        statusText = translations[currentLanguage].status_ok;
+        statusColor = "var(--summary-text-color)";
+    } else { // If there are specific warnings but no overall deficit
+        // Keep the warnings and set color to warning if not already danger
+        if (statusColor !== "var(--danger-color)") {
+            statusColor = "var(--warning-color)"; // Assuming you have a CSS variable for warning color
+        }
+    }
+
+    budgetStatusDisplay.textContent = statusText;
+    budgetStatusDisplay.style.color = statusColor;
+}
+
+// 12. 이벤트 리스너 설정
+document.addEventListener('DOMContentLoaded', () => {
+    loadData(); // DOM 로드 후 저장된 데이터 로드
+
+    initializeCharts(); // 차트 초기화 (데이터 로드 후)
+    updateDisplay(); // 초기 UI 업데이트
+
+    // 급여 양식 입력 변경 시
+    if (grossSalaryInput) {
+        grossSalaryInput.addEventListener('input', updateDisplay);
+    }
     if (salaryFrequencySelect) {
-        salaryFrequencySelect.addEventListener('change', () => {
+        salaryFrequencySelect.addEventListener('change', (e) => {
+            currentSalaryFrequency = e.target.value;
             updateDisplay();
-            saveData();
         });
     }
 
-    // Default Item Frequency Select Listener (if implemented)
+    // 기본 항목 주기 변경 시
     if (defaultItemFrequencySelect) {
-        defaultItemFrequencySelect.addEventListener('change', () => {
-            // No direct impact on calculations in updateDisplay, but might affect how new custom items are handled.
-            // For now, just save data.
-            saveData();
+        defaultItemFrequencySelect.addEventListener('change', (e) => {
+            defaultItemFrequency = e.target.value;
+            saveData(); // 기본 주기만 변경 시에도 저장
         });
     }
 
+    // 고정 입력 필드 변경 시
+    const allInputGroups = [taxInputs, preTaxDeductInputs, postTaxDeductInputs, expenseInputs];
+    allInputGroups.forEach(group => {
+        for (const key in group) {
+            if (group[key]) {
+                group[key].addEventListener('input', updateDisplay);
+            }
+        }
+    });
 
-    // Form Submission Listener
-    if (document.getElementById('salary-form')) {
-        document.getElementById('salary-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            updateDisplay();
-            saveData();
-        });
-    }
-
-    // Add Custom Item Buttons
+    // 커스텀 항목 추가 버튼
     document.querySelectorAll('.add-custom-btn').forEach(button => {
         button.addEventListener('click', (e) => {
             const type = e.target.dataset.type;
-            const customName = prompt(translations[currentLanguage].placeholder_item_name + ':');
-            if (customName === null || customName.trim() === '') { // Prompt cancelled or empty name
-                alert(translations[currentLanguage].placeholder_item_name + ' cannot be empty.');
-                return;
-            }
-
-            let customAmount = prompt(translations[currentLanguage].placeholder_amount + ':');
-            if (customAmount === null) return;
-            customAmount = parseFloat(customAmount);
-
-            if (isNaN(customAmount) || customAmount < 0) {
-                alert('Please enter a valid positive number for amount.');
-                return;
-            }
-
-            let category = ''; // Default category
-            if (type === 'expense') {
-                const expenseCategory = prompt(translations[currentLanguage].needs_label + ' (N) or ' + translations[currentLanguage].wants_label + ' (W)?').toLowerCase();
-                if (expenseCategory === 'n') {
-                    category = 'needs';
-                } else if (expenseCategory === 'w') {
-                    category = 'wants';
-                } else {
-                    alert('Invalid category. Defaulting to Needs.');
-                    category = 'needs'; // Default to 'needs' if invalid input
-                }
-            }
-
-
             switch (type) {
                 case 'tax':
-                    addCustomItem(customTaxes, type, customName, customAmount);
+                    addCustomItem(customTaxes, 'tax');
                     break;
                 case 'pre-tax':
-                    addCustomItem(customPreTaxDeductions, type, customName, customAmount);
+                    addCustomItem(customPreTaxDeductions, 'pre-tax');
                     break;
                 case 'post-tax':
-                    addCustomItem(customPostTaxDeductions, type, customName, customAmount);
+                    addCustomItem(customPostTaxDeductions, 'post-tax');
                     break;
                 case 'expense':
-                    addCustomItem(customExpenses, type, customName, customAmount, category); // Pass category
+                    addCustomItem(customExpenses, 'expense');
                     break;
             }
         });
     });
 
-    // Remove Custom Item Buttons (Event Delegation)
+    // Custom Item Remove Buttons (Event Delegation)
     document.addEventListener('click', (e) => {
         if (e.target.classList.contains('remove-btn') || e.target.closest('.remove-btn')) {
             const btn = e.target.closest('.remove-btn');
@@ -1021,7 +995,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 expenseInputs: {},
                 customExpenses: customExpenses,
                 currentLanguage: currentLanguage,
-                isDarkMode: isDarkMode
+                isDarkMode: isDarkMode,
+                selectedBudgetRule: budgetRuleSelect ? budgetRuleSelect.value : '50-30-20'
             };
 
             for (const key in taxInputs) {
@@ -1047,7 +1022,7 @@ document.addEventListener('DOMContentLoaded', () => {
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            alert('예산 데이터가 성공적으로 내보내졌습니다!');
+            alert(translations[currentLanguage].alert_json_export_success);
         });
     }
 
@@ -1066,13 +1041,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         const importedData = JSON.parse(e.target.result);
                         if (importedData && typeof importedData.grossSalaryInput !== 'undefined' && importedData.taxInputs) {
                             localStorage.setItem('budgetAppData', JSON.stringify(importedData));
-                            loadData();
-                            alert('데이터가 성공적으로 가져와졌습니다!');
+                            loadData(); // 데이터 로드 및 UI 업데이트
+                            alert(translations[currentLanguage].alert_data_import_success);
                         } else {
-                            alert('유효하지 않은 JSON 파일 형식입니다.');
+                            alert(translations[currentLanguage].alert_invalid_json);
                         }
                     } catch (error) {
-                        alert('JSON 파일을 구문 분석하는 중 오류가 발생했습니다: ' + error.message);
+                        alert(translations[currentLanguage].alert_json_parse_error + error.message);
                         console.error('Error parsing JSON:', error);
                     }
                 };
@@ -1081,11 +1056,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-
     // Data Management: Clear All Data
     if (clearAllDataBtn) {
         clearAllDataBtn.addEventListener('click', () => {
-            if (confirm('모든 저장된 데이터를 지우시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+            if (confirm(translations[currentLanguage].confirm_clear_data)) {
                 localStorage.removeItem('budgetAppData');
                 if (grossSalaryInput) grossSalaryInput.value = 0;
                 for (const key in taxInputs) {
@@ -1106,12 +1080,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 customPostTaxDeductions = [];
                 customExpenses = [];
 
-                updateDisplay();
-                alert('모든 데이터가 지워졌습니다.');
+                updateDisplay(); // UI 다시 그리기
+                alert(translations[currentLanguage].alert_data_cleared);
             }
         });
     }
-
 
     // AI Report Generation (Placeholder for actual AI integration)
     if (aiReportBtn && aiReportBox) {
@@ -1127,131 +1100,3 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-
-const BUDGET_RULES = {
-    "50-30-20": { needs: 0.5, wants: 0.3, savings: 0.2 },
-    "70-20-10": { needs: 0.7, wants: 0.2, savings: 0.1 },
-    "80-20": { needs: 0.8, wants: 0.0, savings: 0.2 } // 80/20 rule often implies 0 wants
-};
-
-function applyBudgetRule(grossIncome, totalExpenses, netSalary, totalDeductions) {
-    // Null checks for display elements
-    if (!ruleNeedsDisplay || !ruleWantsDisplay || !ruleSavingsDisplay || !ruleTotalDisplay ||
-        !actualNeedsDisplay || !actualWantsDisplay || !actualSavingsDisplay || !actualTotalDisplay || !budgetStatusDisplay) {
-        console.warn("One or more budget rule display elements are missing from the DOM.");
-        return; // Exit if essential elements are missing
-    }
-
-
-    const selectedRule = budgetRuleSelect.value;
-    const rule = BUDGET_RULES[selectedRule];
-
-    if (!rule) {
-        ruleNeedsDisplay.textContent = formatCurrency(0);
-        ruleWantsDisplay.textContent = formatCurrency(0);
-        ruleSavingsDisplay.textContent = formatCurrency(0);
-        ruleTotalDisplay.textContent = formatCurrency(0);
-        actualNeedsDisplay.textContent = formatCurrency(0);
-        actualWantsDisplay.textContent = formatCurrency(0);
-        actualSavingsDisplay.textContent = formatCurrency(0);
-        actualTotalDisplay.textContent = formatCurrency(0);
-        budgetStatusDisplay.textContent = "";
-        return;
-    }
-
-    // 1. Calculate budget based on the rule
-    const ruleNeeds = grossIncome * rule.needs;
-    const ruleWants = grossIncome * rule.wants;
-    const ruleSavings = grossIncome * rule.savings;
-    const ruleTotal = ruleNeeds + ruleWants + ruleSavings;
-
-    ruleNeedsDisplay.textContent = formatCurrency(ruleNeeds);
-    ruleWantsDisplay.textContent = formatCurrency(ruleWants);
-    ruleSavingsDisplay.textContent = formatCurrency(ruleSavings);
-    ruleTotalDisplay.textContent = formatCurrency(ruleTotal);
-
-    // 2. Calculate actual spending based on user inputs
-    // This part requires careful consideration if you want a strict Needs/Wants/Savings breakdown.
-    // For now, it assumes a simplified classification or requires custom items to have a 'category'.
-
-    let actualNeeds = 0;
-    let actualWants = 0;
-
-    // Sum fixed expense inputs for Needs (as per common 50/30/20 interpretation)
-    actualNeeds += (parseFloat(expenseInputs.rent?.value) || 0);
-    actualNeeds += (parseFloat(expenseInputs.utilities?.value) || 0);
-    actualNeeds += (parseFloat(expenseInputs.internet?.value) || 0);
-    actualNeeds += (parseFloat(expenseInputs.phone?.value) || 0);
-    actualNeeds += (parseFloat(expenseInputs.groceries?.value) || 0);
-    actualNeeds += (parseFloat(expenseInputs.transport?.value) || 0);
-    actualNeeds += (parseFloat(expenseInputs.health?.value) || 0);
-
-    // Sum fixed expense inputs for Wants
-    actualWants += (parseFloat(expenseInputs.dining?.value) || 0);
-    actualWants += (parseFloat(expenseInputs.shopping?.value) || 0);
-    actualWants += (parseFloat(expenseInputs.entertainment?.value) || 0);
-
-    // Add custom expenses based on their 'category'
-    customExpenses.forEach(item => {
-        if (item.category === 'needs') {
-            actualNeeds += item.amount;
-        } else if (item.category === 'wants') {
-            actualWants += item.amount;
-        } else {
-            // If category is not specified, default to needs
-            actualNeeds += item.amount;
-        }
-    });
-
-    // Actual Savings: Net salary minus all expenses
-    const actualSavings = netSalary - (actualNeeds + actualWants); // Note: totalExpenses might be different if category not applied to all
-
-    actualNeedsDisplay.textContent = formatCurrency(actualNeeds);
-    actualWantsDisplay.textContent = formatCurrency(actualWants);
-    actualSavingsDisplay.textContent = formatCurrency(actualSavings);
-
-    // Actual total budget: This should ideally be equal to grossIncome
-    actualTotalDisplay.textContent = formatCurrency(grossIncome);
-
-    // 3. Evaluate budget status
-    let statusText = "";
-    let statusColor = "var(--summary-text-color)"; // Default to positive color
-
-    const currentTotalExpenses = actualNeeds + actualWants;
-
-    // Check Needs
-    if (actualNeeds > ruleNeeds) {
-        statusText += `${translations[currentLanguage].needs_label} ${translations[currentLanguage].status_over}. `;
-        statusColor = "var(--danger-color)";
-    }
-
-    // Check Wants (only if the rule has a Wants component)
-    if (rule.wants > 0 && actualWants > ruleWants) {
-        statusText += `${translations[currentLanguage].wants_label} ${translations[currentLanguage].status_over}. `;
-        statusColor = "var(--danger-color)";
-    }
-
-    // Check Savings
-    if (actualSavings < ruleSavings) {
-        statusText += `${translations[currentLanguage].savings_label} ${translations[currentLanguage].status_under}. `;
-        statusColor = "var(--danger-color)";
-    }
-
-    // Overall deficit check
-    if (netSalary - currentTotalExpenses < 0) {
-        statusText = translations[currentLanguage].status_over + " (" + translations[currentLanguage].label_deficit + ")";
-        statusColor = "var(--danger-color)";
-    } else if (statusText.trim() === "") { // If no specific issues found above
-        statusText = translations[currentLanguage].status_ok;
-        statusColor = "var(--summary-text-color)";
-    } else { // If there are specific warnings but no overall deficit
-        // Keep the warnings and set color to warning if not already danger
-        if (statusColor !== "var(--danger-color)") {
-             statusColor = "var(--warning-color)"; // Assuming you have a CSS variable for warning color
-        }
-    }
-
-
-    budgetStatusDisplay.textContent = statusText;
-    budgetStatusDisplay.style.color = statusColor;
-}
