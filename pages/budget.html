@@ -23,8 +23,17 @@
             <form id="salary-form">
                 <div class="form-group">
                     <label for="salary-gross" data-i18n-key="label_gross_salary">총 급여</label>
-                    <input type="number" id="salary-gross" min="0" value="0">
+                    <div class="salary-input-container"> 
+                        <select id="salary-frequency-select" class="form-control">
+                            <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
+                            <option value="annually" data-i18n-key="frequency_annually">연간</option>
+                            <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
+                            <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
+                        </select>
+                        <input type="number" id="salary-gross" class="form-control" placeholder="0.00" value="0" min="0">
+                    </div>
                 </div>
+                <p class="annual-salary-summary"><span data-i18n-key="label_annual_salary">연간 총 급여:</span> <span id="annual-salary-summary-display">$0.00</span></p>
                 <button type="submit" class="btn" data-i18n-key="btn_save">저장</button>
             </form>
         </section>
