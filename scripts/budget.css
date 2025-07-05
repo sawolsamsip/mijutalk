@@ -189,6 +189,7 @@ header h1 {
 .form-group input[type="text"],
 /* ★★★ select 태그도 함께 선택하여 스타일 적용 ★★★ */
 .form-group select {
+    display: flex;
     width: 100%; /* 기본적으로 100% 너비를 가짐 */
     padding: 10px 12px;
     border: 1px solid var(--input-border-color);
