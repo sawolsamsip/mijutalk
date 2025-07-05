@@ -38,200 +38,109 @@
             </form>
         </section>
 
-<section class="budget-section">
-            <h2 data-i18n-key="section_taxes_title">세금</h2>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="tax-federal" data-i18n-key="label_federal_withholding">연방 원천징수</label>
-                    <div class="tax-input-container">
-                        <select id="tax-federal-frequency" class="input-frequency-select">
-                            <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
-                            <option value="annually" data-i18n-key="frequency_annually">연간</option>
-                            <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
-                            <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
-                        </select>
-                        <input type="number" id="tax-federal" min="0" value="0">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="tax-state" data-i18n-key="label_state_tax">주 세금</label>
-                    <div class="tax-input-container">
-                        <select id="tax-state-frequency" class="input-frequency-select">
-                            <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
-                            <option value="annually" data-i18n-key="frequency_annually">연간</option>
-                            <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
-                            <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
-                        </select>
-                        <input type="number" id="tax-state" min="0" value="0">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="tax-oasdi" data-i18n-key="label_oasdi">OASDI</label>
-                    <div class="tax-input-container">
-                        <select id="tax-oasdi-frequency" class="input-frequency-select">
-                            <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
-                            <option value="annually" data-i18n-key="frequency_annually">연간</option>
-                            <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
-                            <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
-                        </select>
-                        <input type="number" id="tax-oasdi" min="0" value="0">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="tax-medicare" data-i18n-key="label_medicare">메디케어</label>
-                    <div class="tax-input-container">
-                        <select id="tax-medicare-frequency" class="input-frequency-select">
-                            <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
-                            <option value="annually" data-i18n-key="frequency_annually">연간</option>
-                            <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
-                            <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
-                        </select>
-                        <input type="number" id="tax-medicare" min="0" value="0">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="tax-casdi" data-i18n-key="label_ca_sdi">CA SDI</label>
-                    <div class="tax-input-container">
-                        <select id="tax-casdi-frequency" class="input-frequency-select">
-                            <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
-                            <option value="annually" data-i18n-key="frequency_annually">연간</option>
-                            <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
-                            <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
-                        </select>
-                        <input type="number" id="tax-casdi" min="0" value="0">
-                    </div>
-                </div>
-            </div>
-            <div class="custom-list" id="tax-custom-list">
-            </div>
-            <button class="btn add-custom-btn" data-type="tax" data-i18n-key="btn_add_item">항목 추가</button>
 
-            <div class="chart-container">
-                <canvas id="tax-chart"></canvas>
+        </section> <section class="budget-section">
+            <h2 data-i18n-key="section_default_frequency_title">기본 항목 주기 설정</h2>
+            <div class="form-group">
+                <label for="default-item-frequency-select" data-i18n-key="label_default_item_frequency">기본 지출/공제 주기:</label>
+                <select id="default-item-frequency-select" class="form-control">
+                    <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
+                    <option value="annually" data-i18n-key="frequency_annually">연간</option>
+                    <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
+                    <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
+                </select>
             </div>
         </section>
+       
+        <section class="budget-section">
+            <h2 data-i18n-key="section_taxes_title">세금</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="tax-federal" data-i18n-key="label_federal_withholding">연방 원천징수</label>
+                    <input type="number" id="tax-federal" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="tax-state" data-i18n-key="label_state_tax">주 세금</label>
+                    <input type="number" id="tax-state" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="tax-oasdi" data-i18n-key="label_oasdi">OASDI</label>
+                    <input type="number" id="tax-oasdi" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="tax-medicare" data-i18n-key="label_medicare">메디케어</label>
+                    <input type="number" id="tax-medicare" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="tax-casdi" data-i18n-key="label_ca_sdi">CA SDI</label>
+                    <input type="number" id="tax-casdi" min="0" value="0">
+                </div>
+            </div>
+            <div class="custom-list" id="tax-custom-list">
+            </div>
+            <button class="btn add-custom-btn" data-type="tax" data-i18n-key="btn_add_item">항목 추가</button>
+            <div class="chart-container">
+                <canvas id="tax-chart"></canvas>
+            </div>
+        </section>
+
+        <section class="budget-section">
+            <h2 data-i18n-key="section_pre_tax_title">세전 공제</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="deduct-medical" data-i18n-key="label_medical_premium">의료 보험료</label>
+                    <input type="number" id="deduct-medical" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="deduct-dental" data-i18n-key="label_dental_premium">치과 보험료</label>
+                    <input type="number" id="deduct-dental" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="deduct-vision" data-i18n-key="label_vision_premium">시력 보험료</label>
+                    <input type="number" id="deduct-vision" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="deduct-401k-trad" data-i18n-key="label_401k_traditional">401k 일반</label>
+                    <input type="number" id="deduct-401k-trad" min="0" value="0">
+                </div>
+            </div>
+            <div class="custom-list" id="pre-tax-custom-list">
+            </div>
+            <button class="btn add-custom-btn" data-type="pre-tax" data-i18n-key="btn_add_item">항목 추가</button>
+
+            <div class="chart-container">
+                <canvas id="pre-tax-deduct-chart"></canvas>
+            </div>
+        </section>
 
         <section class="budget-section">
-            <h2 data-i18n-key="section_pre_tax_title">세전 공제</h2>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="deduct-medical" data-i18n-key="label_medical_premium">의료 보험료</label>
-                    <div class="deduct-input-container">
-                        <select id="deduct-medical-frequency" class="input-frequency-select">
-                            <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
-                            <option value="annually" data-i18n-key="frequency_annually">연간</option>
-                            <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
-                            <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
-                        </select>
-                        <input type="number" id="deduct-medical" min="0" value="0">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="deduct-dental" data-i18n-key="label_dental_premium">치과 보험료</label>
-                    <div class="deduct-input-container">
-                        <select id="deduct-dental-frequency" class="input-frequency-select">
-                            <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
-                            <option value="annually" data-i18n-key="frequency_annually">연간</option>
-                            <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
-                            <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
-                        </select>
-                        <input type="number" id="deduct-dental" min="0" value="0">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="deduct-vision" data-i18n-key="label_vision_premium">시력 보험료</label>
-                    <div class="deduct-input-container">
-                        <select id="deduct-vision-frequency" class="input-frequency-select">
-                            <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
-                            <option value="annually" data-i18n-key="frequency_annually">연간</option>
-                            <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
-                            <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
-                        </select>
-                        <input type="number" id="deduct-vision" min="0" value="0">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="deduct-401k-trad" data-i18n-key="label_401k_traditional">401k 일반</label>
-                    <div class="deduct-input-container">
-                        <select id="deduct-401k-trad-frequency" class="input-frequency-select">
-                            <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
-                            <option value="annually" data-i18n-key="frequency_annually">연간</option>
-                            <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
-                            <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
-                        </select>
-                        <input type="number" id="deduct-401k-trad" min="0" value="0">
-                    </div>
-                </div>
-            </div>
-            <div class="custom-list" id="pre-tax-custom-list">
-            </div>
-            <button class="btn add-custom-btn" data-type="pre-tax" data-i18n-key="btn_add_item">항목 추가</button>
+            <h2 data-i18n-key="section_post_tax_title">세후 공제</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="deduct-spp" data-i18n-key="label_spp">주식 구매 계획</label>
+                    <input type="number" id="deduct-spp" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="deduct-adnd" data-i18n-key="label_adnd">AD&D</label>
+                    <input type="number" id="deduct-adnd" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="deduct-401k-roth" data-i18n-key="label_401k_roth">401k Roth</label>
+                    <input type="number" id="deduct-401k-roth" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="deduct-ltd" data-i18n-key="label_ltd">장기 장애</label>
+                    <input type="number" id="deduct-ltd" min="0" value="0">
+                </div>
+            </div>
+            <div class="custom-list" id="post-tax-custom-list">
+            </div>
+            <button class="btn add-custom-btn" data-type="post-tax" data-i18n-key="btn_add_item">항목 추가</button>
 
-            <div class="chart-container">
-                <canvas id="pre-tax-deduct-chart"></canvas>
-            </div>
-        </section>
-
-        <section class="budget-section">
-            <h2 data-i18n-key="section_post_tax_title">세후 공제</h2>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="deduct-spp" data-i18n-key="label_spp">주식 구매 계획</label>
-                    <div class="deduct-input-container">
-                        <select id="deduct-spp-frequency" class="input-frequency-select">
-                            <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
-                            <option value="annually" data-i18n-key="frequency_annually">연간</option>
-                            <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
-                            <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
-                        </select>
-                        <input type="number" id="deduct-spp" min="0" value="0">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="deduct-adnd" data-i18n-key="label_adnd">AD&D</label>
-                    <div class="deduct-input-container">
-                        <select id="deduct-adnd-frequency" class="input-frequency-select">
-                            <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
-                            <option value="annually" data-i18n-key="frequency_annually">연간</option>
-                            <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
-                            <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
-                        </select>
-                        <input type="number" id="deduct-adnd" min="0" value="0">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="deduct-401k-roth" data-i18n-key="label_401k_roth">401k Roth</label>
-                    <div class="deduct-input-container">
-                        <select id="deduct-401k-roth-frequency" class="input-frequency-select">
-                            <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
-                            <option value="annually" data-i18n-key="frequency_annually">연간</option>
-                            <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
-                            <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
-                        </select>
-                        <input type="number" id="deduct-401k-roth" min="0" value="0">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="deduct-ltd" data-i18n-key="label_ltd">장기 장애</label>
-                    <div class="deduct-input-container">
-                        <select id="deduct-ltd-frequency" class="input-frequency-select">
-                            <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
-                            <option value="annually" data-i18n-key="frequency_annually">연간</option>
-                            <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
-                            <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
-                        </select>
-                        <input type="number" id="deduct-ltd" min="0" value="0">
-                    </div>
-                </div>
-            </div>
-            <div class="custom-list" id="post-tax-custom-list">
-            </div>
-            <button class="btn add-custom-btn" data-type="post-tax" data-i18n-key="btn_add_item">항목 추가</button>
-
-            <div class="chart-container">
-                <canvas id="post-tax-deduct-chart"></canvas>
-            </div>
-        </section>
+            <div class="chart-container">
+                <canvas id="post-tax-deduct-chart"></canvas>
+            </div>
+        </section>
 
         <section class="budget-section">
             <h2 data-i18n-key="section_expenses_title">지출 관리</h2>
