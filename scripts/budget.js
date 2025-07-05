@@ -1,6 +1,8 @@
 // --- DOM Elements ---
 const grossSalaryInput = document.getElementById('salary-gross');
 const grossSalarySummaryDisplay = document.getElementById('gross-salary-summary-display');
+const salaryFrequencySelect = document.getElementById('salary-frequency-select');
+const annualSalarySummaryDisplay = document.getElementById('annual-salary-summary-display');
 
 const taxInputs = {
     federal: document.getElementById('tax-federal'),
@@ -74,6 +76,8 @@ const budgetStatusDisplay = document.getElementById('budget-status');
 
 // --- Data Variables ---
 let grossSalary = 0;
+let currentSalaryInput = 0; // 사용자가 입력 필드에 직접 입력한 값 (예: 주급 1000)
+let currentSalaryFrequency = 'monthly'; // 사용자가 선택한 급여 주기 ('monthly', 'annually', 'weekly', 'bi-weekly')
 let customTaxes = [];
 let customPreTaxDeductions = [];
 let customPostTaxDeductions = [];
