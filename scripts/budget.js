@@ -1,7 +1,6 @@
 // --- DOM Elements ---
 const grossSalaryInput = document.getElementById('salary-gross');
-// const salarySummaryDisplay = document.getElementById('salary-summary'); // 이 라인은 이제 필요 없음 - HTML에서 해당 div를 제거했으므로
-const grossSalarySummaryDisplay = document.getElementById('gross-salary-summary-display'); // 예산 요약 섹션에 새로 추가된 요소
+const grossSalarySummaryDisplay = document.getElementById('gross-salary-summary-display');
 
 const taxInputs = {
     federal: document.getElementById('tax-federal'),
@@ -28,7 +27,6 @@ const postTaxDeductInputs = {
 };
 const customPostTaxDeductList = document.getElementById('post-tax-custom-list');
 
-
 const expenseInputs = {
     rent: document.getElementById('exp-rent'),
     utilities: document.getElementById('exp-utilities'),
@@ -42,7 +40,6 @@ const expenseInputs = {
     entertainment: document.getElementById('exp-entertainment')
 };
 const customExpenseList = document.getElementById('expenses-custom-list');
-
 
 const totalTaxesDisplay = document.getElementById('total-taxes-display');
 const totalPreTaxDisplay = document.getElementById('total-pre-tax-display');
@@ -61,6 +58,18 @@ const clearAllDataBtn = document.getElementById('clear-all-data-btn');
 
 const languageToggleBtn = document.getElementById('language-toggle');
 const darkmodeToggleBtn = document.getElementById('darkmode-toggle');
+
+// --- Budget Rule Specific DOM Elements ---
+const budgetRuleSelect = document.getElementById('budget-rule-select');
+const ruleNeedsDisplay = document.getElementById('rule-needs');
+const ruleWantsDisplay = document.getElementById('rule-wants');
+const ruleSavingsDisplay = document.getElementById('rule-savings');
+const ruleTotalDisplay = document.getElementById('rule-total'); // Total based on rule
+const actualNeedsDisplay = document.getElementById('actual-needs');
+const actualWantsDisplay = document.getElementById('actual-wants');
+const actualSavingsDisplay = document.getElementById('actual-savings');
+const actualTotalDisplay = document.getElementById('actual-total'); // Total actual spending
+const budgetStatusDisplay = document.getElementById('budget-status');
 
 
 // --- Data Variables ---
@@ -167,7 +176,23 @@ const translations = {
         placeholder_item_name: "항목 이름",
         placeholder_amount: "금액",
         remove_item: "항목 제거",
-        currency_symbol: "$"
+        currency_symbol: "$",
+        // Budget Rule Specific Translations
+        budget_rule_title: "예산 규칙 적용 (Budget Rules)",
+        budget_rule_select_label: "예산 규칙 선택:",
+        rule_50_30_20: "50/30/20 (필수/원하는 것/저축)",
+        rule_70_20_10: "70/20/10 (필수/원하는 것/저축)",
+        rule_80_20: "80/20 (필수/저축)",
+        needs_label: "필수 지출 (Needs):",
+        wants_label: "원하는 지출 (Wants):",
+        savings_label: "저축 (Savings):",
+        rule_label: "규칙:",
+        actual_label: "실제:",
+        total_budget_label: "총 예산:",
+        budget_status_label: "예산 상태:",
+        status_ok: "양호",
+        status_warning: "주의 필요",
+        status_over: "초과"
     },
     en: {
         app_title: "Budget Management Tool",
@@ -220,7 +245,23 @@ const translations = {
         placeholder_item_name: "Item Name",
         placeholder_amount: "Amount",
         remove_item: "Remove Item",
-        currency_symbol: "$"
+        currency_symbol: "$",
+        // Budget Rule Specific Translations
+        budget_rule_title: "Apply Budget Rules",
+        budget_rule_select_label: "Select Budget Rule:",
+        rule_50_30_20: "50/30/20 (Needs/Wants/Savings)",
+        rule_70_20_10: "70/20/10 (Needs/Wants/Savings)",
+        rule_80_20: "80/20 (Needs/Savings)",
+        needs_label: "Needs:",
+        wants_label: "Wants:",
+        savings_label: "Savings:",
+        rule_label: "Rule:",
+        actual_label: "Actual:",
+        total_budget_label: "Total Budget:",
+        budget_status_label: "Budget Status:",
+        status_ok: "Good",
+        status_warning: "Needs Attention",
+        status_over: "Over Budget"
     }
 };
 
@@ -392,7 +433,7 @@ function initializeCharts() {
             datasets: [{
                 label: translations[currentLanguage].section_post_tax_title || 'Post-Tax Deductions Breakdown',
                 data: [],
-                backgroundColor: isDarkMode ? chartColorPalettes.dark.postTax : chartColorPalettes.light.postTax,
+                backgroundColor: isDarkMode ? chartColorPal palettes.dark.postTax : chartColorPalettes.light.postTax,
                 hoverOffset: 4
             }]
         },
@@ -447,6 +488,8 @@ function updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, tot
     expensesChart.data.labels = expenseLabels;
     expensesChart.data.datasets[0].data = expenseData;
     expensesChart.data.datasets[0].label = translations[currentLanguage].section_expenses_title;
+    // 색상 팔레트를 직접 배열로 전달 (JS에서 정의)
+    expensesChart.data.datasets[0].backgroundColor = currentPalette.expenses;
     expensesChart.update();
 
     // Update Budget Distribution Chart
@@ -560,12 +603,10 @@ function updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, tot
     });
 }
 
-
 // --- Display and Calculation Logic ---
 function updateDisplay() {
     grossSalary = parseFloat(grossSalaryInput.value) || 0;
-    // salarySummaryDisplay.textContent = `${translations[currentLanguage].label_gross_salary}: ${formatCurrency(grossSalary)}`; // 이 라인은 제거
-    grossSalarySummaryDisplay.textContent = formatCurrency(grossSalary); // 새로운 gross-salary-summary-display 업데이트
+    grossSalarySummaryDisplay.textContent = formatCurrency(grossSalary);
 
     const totalTaxes = getTotal(taxInputs, customTaxes);
     totalTaxesDisplay.textContent = formatCurrency(totalTaxes);
@@ -594,7 +635,8 @@ function updateDisplay() {
     renderCustomList(customPostTaxDeductList, customPostTaxDeductions, 'post-tax');
     renderCustomList(customExpenseList, customExpenses, 'expense');
 
-    applyBudgetRule(grossSalary); // <- 예산 룰 자동 반영
+    // ★★★ 이 부분이 변경되었습니다. applyBudgetRule 함수 호출 ★★★
+    applyBudgetRule(grossSalary, totalExpenses, netSalary, totalPreTaxDeductions + totalPostTaxDeductions);
 }
 
 // --- Data Persistence ---
@@ -658,29 +700,41 @@ function applyLanguage(lang) {
             element.textContent = translations[currentLanguage][key];
         }
     });
-    // Update input placeholders if needed (requires data-i18n-placeholder)
-    // Note: If you have <input placeholder="..."> attributes that should be translated,
-    // you'll need to add a data-i18n-placeholder attribute to them and handle it here.
-    // For now, only labels and similar text content are handled directly.
-    // If you add placeholder translation, it would look something like this:
-    // document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
-    //      const key = element.dataset.i18nPlaceholder;
-    //      if (translations[currentLanguage][key]) {
-    //          element.placeholder = translations[currentLanguage][key];
-    //      }
-    // });
 
-    // Custom item input labels (as per your previous query)
-    // These need to be targeted specifically as they don't have data-i18n-key for labels
-    const customItemNameLabel = document.querySelector('label[for="custom-item-name-input"]');
-    if (customItemNameLabel) {
-        customItemNameLabel.textContent = translations[currentLanguage].placeholder_item_name;
-    }
-    const customItemAmountLabel = document.querySelector('label[for="custom-item-amount-input"]');
-    if (customItemAmountLabel) {
-        customItemAmountLabel.textContent = translations[currentLanguage].placeholder_amount;
+    // Translate specific elements that might not have data-i18n-key
+    document.querySelector('.budget-section h2').textContent = translations[currentLanguage].budget_rule_title;
+    document.querySelector('label[for="budget-rule-select"]').textContent = translations[currentLanguage].budget_rule_select_label;
+
+    // Update option texts in the select dropdown
+    const options = budgetRuleSelect.options;
+    for (let i = 0; i < options.length; i++) {
+        const value = options[i].value.replace(/-/g, '_'); // Convert "50-30-20" to "50_30_20" for translation key
+        if (translations[currentLanguage][`rule_${value}`]) {
+            options[i].textContent = translations[currentLanguage][`rule_${value}`];
+        }
     }
 
+    // Update specific breakdown item labels using their IDs or a more robust selector if available
+    // Assuming you have elements like <p>필수 지출 (Needs):</p>
+    // These might need specific data-i18n-key if not already handled by a more general selector.
+    // For now, we'll manually update the static text within the p tags if not using data-i18n-key.
+    document.querySelector('.breakdown-item:nth-child(1) p:nth-child(1)').childNodes[0].nodeValue = translations[currentLanguage].needs_label + ' ';
+    document.querySelector('.breakdown-item:nth-child(2) p:nth-child(1)').childNodes[0].nodeValue = translations[currentLanguage].wants_label + ' ';
+    document.querySelector('.breakdown-item:nth-child(3) p:nth-child(1)').childNodes[0].nodeValue = translations[currentLanguage].savings_label + ' ';
+    document.querySelector('.breakdown-item.total p:nth-child(1)').childNodes[0].nodeValue = translations[currentLanguage].total_budget_label + ' ';
+    document.querySelector('.breakdown-item.status p:nth-child(1)').childNodes[0].nodeValue = translations[currentLanguage].budget_status_label + ' ';
+
+
+    // Update "규칙:" and "실제:" labels within breakdown items
+    document.querySelectorAll('.rule-breakdown .breakdown-item p').forEach(pElement => {
+        if (pElement.textContent.includes('규칙:') || pElement.textContent.includes('Rule:')) {
+            const span = pElement.querySelector('span');
+            pElement.innerHTML = `${translations[currentLanguage].rule_label} <span id="${span.id}"></span>`;
+        } else if (pElement.textContent.includes('실제:') || pElement.textContent.includes('Actual:')) {
+            const span = pElement.querySelector('span');
+            pElement.innerHTML = `${translations[currentLanguage].actual_label} <span id="${span.id}"></span>`;
+        }
+    });
 
     languageToggleBtn.textContent = currentLanguage === 'ko' ? 'EN' : 'KO'; // Toggle text
     updateDisplay(); // Recalculate and update displays with new language
@@ -695,10 +749,6 @@ function applyDarkMode(enable) {
         document.body.classList.remove('dark-mode');
         darkmodeToggleBtn.innerHTML = '<i class="ri-moon-line"></i>'; // Moon icon for dark mode
     }
-    // Update charts to reflect new theme colors
-    // This will be handled by updateCharts, which is called by updateDisplay
-    // We explicitly re-initialize charts to ensure all color options are re-applied based on new CSS variables
-    // and then update their data.
     initializeCharts(); // 차트 인스턴스를 테마에 맞게 다시 초기화
     updateDisplay(); // 모든 값과 차트 업데이트
 }
@@ -706,7 +756,6 @@ function applyDarkMode(enable) {
 
 // --- Event Listeners ---
 document.addEventListener('DOMContentLoaded', () => {
-    // 중요한 순서: initializeCharts -> loadData -> updateDisplay (loadData 내에서 호출)
     initializeCharts(); // 차트 캔버스가 존재함을 확인하고 차트 인스턴스 초기화
     loadData(); // 저장된 데이터 로드 (applyDarkMode와 updateDisplay 포함)
 
@@ -886,47 +935,178 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // AI Report Generation (Placeholder for actual AI integration)
     aiReportBtn.addEventListener('click', () => {
-        // 이 부분은 실제 AI API 연동 없이 단순히 플레이스홀더 텍스트를 보여줍니다.
         aiReportBox.innerHTML = `<p>${translations[currentLanguage].ai_report_placeholder}</p>`;
-        // 실제 AI 통합을 하려면 여기에 API 호출 등을 추가해야 합니다.
-        // 예시:
-        // fetch('/api/ai-report', {
-        //      method: 'POST',
-        //      headers: { 'Content-Type': 'application/json' },
-        //      body: JSON.stringify(getCurrentBudgetSummary()) // 현재 예산 데이터를 전송
-        // })
-        // .then(response => response.json())
-        // .then(data => {
-        //      aiReportBox.textContent = data.report; // AI로부터 받은 보고서 표시
-        // })
-        // .catch(error => {
-        //      console.error('AI 보고서 생성 중 오류 발생:', error);
-        //      aiReportBox.textContent = 'AI 보고서를 생성할 수 없습니다.';
-        // });
     });
 
-    document.getElementById("budget-rule-select").addEventListener("change", () => {
-    const gross = parseFloat(grossSalaryInput.value) || 0;
-    applyBudgetRule(gross);
-});
+    // ★★★ 예산 규칙 선택 드롭다운 리스너 ★★★
+    budgetRuleSelect.addEventListener("change", () => {
+        // grossSalary는 updateDisplay()에서 이미 최신 값으로 업데이트되므로 직접 사용
+        updateDisplay(); // updateDisplay 내부에서 applyBudgetRule이 호출됩니다.
+    });
 });
 
 const BUDGET_RULES = {
     "50-30-20": { needs: 0.5, wants: 0.3, savings: 0.2 },
     "70-20-10": { needs: 0.7, wants: 0.2, savings: 0.1 },
-    "80-20":    { needs: 0.8, wants: 0.0, savings: 0.2 }
+    "80-20": { needs: 0.8, wants: 0.0, savings: 0.2 }
 };
 
-function applyBudgetRule(grossIncome) {
-    const select = document.getElementById("budget-rule-select");
-    const rule = BUDGET_RULES[select.value];
-    if (!rule) return;
+// ★★★ applyBudgetRule 함수가 수정되었습니다. ★★★
+function applyBudgetRule(grossIncome, totalExpenses, netSalary, totalDeductions) {
+    const selectedRule = budgetRuleSelect.value;
+    const rule = BUDGET_RULES[selectedRule];
 
-    const needs = grossIncome * rule.needs;
-    const wants = grossIncome * rule.wants;
-    const savings = grossIncome * rule.savings;
+    if (!rule) {
+        // 규칙이 없을 경우 모든 표시를 0으로 초기화
+        ruleNeedsDisplay.textContent = formatCurrency(0);
+        ruleWantsDisplay.textContent = formatCurrency(0);
+        ruleSavingsDisplay.textContent = formatCurrency(0);
+        ruleTotalDisplay.textContent = formatCurrency(0);
+        actualNeedsDisplay.textContent = formatCurrency(0);
+        actualWantsDisplay.textContent = formatCurrency(0);
+        actualSavingsDisplay.textContent = formatCurrency(0);
+        budgetStatusDisplay.textContent = "";
+        return;
+    }
 
-    document.getElementById("rule-needs").textContent = formatCurrency(needs);
-    document.getElementById("rule-wants").textContent = formatCurrency(wants);
-    document.getElementById("rule-savings").textContent = formatCurrency(savings);
+    // 1. 규칙에 따른 예산 계산
+    const ruleNeeds = grossIncome * rule.needs;
+    const ruleWants = grossIncome * rule.wants;
+    const ruleSavings = grossIncome * rule.savings;
+    const ruleTotal = ruleNeeds + ruleWants + ruleSavings; // 총 급여와 같음 (비율이 100%이므로)
+
+    ruleNeedsDisplay.textContent = formatCurrency(ruleNeeds);
+    ruleWantsDisplay.textContent = formatCurrency(ruleWants);
+    ruleSavingsDisplay.textContent = formatCurrency(ruleSavings);
+    ruleTotalDisplay.textContent = formatCurrency(ruleTotal);
+
+
+    // 2. 실제 지출 및 저축 계산
+    // 여기서 '실제' 금액을 어떻게 분류할지는 비즈니스 로직에 따라 다릅니다.
+    // 예시:
+    // - Needs: 총 지출 (고정 지출 + 변동 지출 중 필수적인 부분)
+    // - Wants: 총 지출 (변동 지출 중 원하는 부분)
+    // - Savings: 순 급여 - (Needs + Wants) 또는 순 급여 - 총 지출
+
+    // 편의상 현재 총 지출을 Wants로 가정하고,
+    // 세후 잔여 금액을 Savings로,
+    // Needs는 총 급여에서 Wants와 Savings를 뺀 값으로 계산해봅니다.
+    // 실제 Needs/Wants/Savings 분류는 사용자의 지출 항목 태깅이 필요합니다.
+
+    // 일단은 가장 간단한 방식으로 "실제" 금액을 계산해봅니다.
+    // 여기서 totalExpenses는 지출 관리 섹션의 총합입니다.
+    // 순 급여에서 (세금 + 공제)를 뺀 후 남은 돈 (netSalary)
+    // 순 급여에서 지출을 뺀 후 남은 돈 (remainingBudget)
+
+    // 가장 간단한 '실제' 계산 방식 (조정 필요):
+    // 실제 필수 지출은 총 지출에서 '원하는 지출'이 아닌 부분을 빼는 방식
+    // 실제 저축은 순 급여에서 실제 지출을 뺀 값으로
+    // 이는 정확한 비즈니스 로직에 따라 조정해야 합니다.
+    // 예를 들어, 모든 지출을 Needs로 간주하고 Savings를 순이익-지출로 볼 수도 있습니다.
+    // 아니면 각 지출 항목에 'Needs', 'Wants' 태그를 달아 합계를 내야 합니다.
+
+    // 임시적인 실제 값 계산 로직 (더 정확한 로직 필요)
+    // 여기서는 Net Salary에서 총 지출을 뺀 금액을 '저축'으로 간주하고,
+    // 총 지출을 '필수'와 '원하는 것'으로 나누는 것은 현재 데이터 구조로는 어렵습니다.
+    // 따라서, 예시 목적으로 총 지출을 'Needs'로, 남은 예산을 'Savings'로 해보겠습니다.
+    // 'Wants'는 일단 0으로 두거나, 특정 지출 항목을 'Wants'로 할당해야 합니다.
+
+    const actualTotalExpenses = totalExpenses; // getTotal(expenseInputs, customExpenses);
+
+    // 단순화된 실제 값 할당 (사용자 정의 분류에 따라 변경되어야 함)
+    // 실제 Needs: 일단 전체 지출 중 '필수'로 분류될 수 있는 부분을 여기 합산해야 합니다.
+    // 실제 Wants: '원하는 지출'로 분류될 수 있는 부분을 여기 합산해야 합니다.
+    // 실제 Savings: 최종 남은 예산
+    // 정확한 분류를 위해서는 각 지출 항목에 대한 분류(필수/원하는 것)를 입력받아야 합니다.
+    // 현재는 이 데이터가 없으므로, 일단 총 지출을 'Needs'로 간주하고,
+    // 'Wants'는 0으로, 'Savings'는 순수익에서 총 지출을 뺀 값으로 임시 처리합니다.
+    // 이 부분은 실제 지출 항목에 Needs/Wants 구분이 도입되면 더욱 정확해질 수 있습니다.
+
+    // 예시로, '실제 필수 지출'은 전체 지출에서 '외식', '쇼핑', '오락'을 제외한 것으로 가정합니다.
+    const actualNeeds = (parseFloat(expenseInputs.rent.value) || 0) +
+                        (parseFloat(expenseInputs.utilities.value) || 0) +
+                        (parseFloat(expenseInputs.internet.value) || 0) +
+                        (parseFloat(expenseInputs.phone.value) || 0) +
+                        (parseFloat(expenseInputs.groceries.value) || 0) +
+                        (parseFloat(expenseInputs.transport.value) || 0) +
+                        (parseFloat(expenseInputs.health.value) || 0) +
+                        customExpenses.filter(item => item.category !== 'wants').reduce((sum, item) => sum + item.amount, 0); // 커스텀 항목 중 wants가 아닌 것
+
+    const actualWants = (parseFloat(expenseInputs.dining.value) || 0) +
+                        (parseFloat(expenseInputs.shopping.value) || 0) +
+                        (parseFloat(expenseInputs.entertainment.value) || 0) +
+                        customExpenses.filter(item => item.category === 'wants').reduce((sum, item) => sum + item.amount, 0); // 커스텀 항목 중 wants인 것
+    
+    // 만약 customExpenses에 category 속성이 없다면, 위의 필터링은 동작하지 않습니다.
+    // 이를 위해 custom item 추가 시 category를 입력받도록 하거나, 기본 값을 부여해야 합니다.
+    // 임시로, 모든 customExpenses를 totalExpenses에 포함시키고, 여기서 Needs와 Wants로 분배하는 것은 현재로서는 어려울 수 있습니다.
+    // 따라서, 임시로 실제 Wants는 "dining", "shopping", "entertainment"만으로 계산하고, 나머지는 Needs로 간주하겠습니다.
+    // 이 부분은 추후 '지출 항목' 입력 시 '카테고리' (Needs/Wants)를 추가하도록 변경하면 더 정확해질 수 있습니다.
+
+    // 일단은 모든 총 지출을 실제 Needs로, 순 월급에서 총 지출을 뺀 것을 저축으로 간주합니다.
+    const actualNeedsSimplified = getTotal(expenseInputs, customExpenses); // 모든 지출을 Needs로 간주
+    const actualWantsSimplified = 0; // Wants는 일단 0으로
+    const actualSavingsSimplified = netSalary - actualNeedsSimplified; // 순 급여 - 실제 지출
+
+
+    actualNeedsDisplay.textContent = formatCurrency(actualNeedsSimplified);
+    actualWantsDisplay.textContent = formatCurrency(actualWantsSimplified); // Needs/Wants 분류가 없다면 0
+    actualSavingsDisplay.textContent = formatCurrency(actualSavingsSimplified);
+
+    // 총 예산 실제 (세금, 공제, 지출, 저축을 모두 합한 총 급여와 동일해야 함)
+    actualTotalDisplay.textContent = formatCurrency(grossIncome); // 실제 총 급여와 동일
+
+    // 3. 예산 상태 평가
+    let statusText = "";
+    let statusColor = "var(--text-color)";
+
+    // 규칙의 Needs와 실제 Needs 비교
+    if (actualNeedsSimplified > ruleNeeds) {
+        statusText += `${translations[currentLanguage].needs_label} ${translations[currentLanguage].status_over}. `;
+        statusColor = "var(--danger-color)";
+    } else if (actualNeedsSimplified < ruleNeeds * 0.8) { // Needs를 너무 적게 쓰는 경우도 경고 (선택 사항)
+         // statusText += `${translations[currentLanguage].needs_label} ${translations[currentLanguage].status_warning} (Too Low). `;
+    }
+
+    // 규칙의 Wants와 실제 Wants 비교 (Wants가 0이 아니거나, 실제 Wants 데이터가 있을 경우)
+    if (rule.wants > 0 && actualWantsSimplified > ruleWants) {
+        statusText += `${translations[currentLanguage].wants_label} ${translations[currentLanguage].status_over}. `;
+        statusColor = "var(--danger-color)"; // 하나라도 초과하면 위험
+    } else if (rule.wants > 0 && actualWantsSimplified < ruleWants * 0.8) {
+        // statusText += `${translations[currentLanguage].wants_label} ${translations[currentLanguage].status_warning} (Too Low). `;
+    }
+
+
+    // 규칙의 Savings와 실제 Savings 비교
+    if (actualSavingsSimplified < ruleSavings) {
+        statusText += `${translations[currentLanguage].savings_label} ${translations[currentLanguage].status_warning}. `;
+        statusColor = "var(--danger-color)"; // 저축 부족은 항상 위험
+    } else {
+        // 저축 목표를 달성했으면 긍정적인 메시지
+        if (actualSavingsSimplified >= ruleSavings) {
+            statusText += `${translations[currentLanguage].savings_label} ${translations[currentLanguage].status_ok}. `;
+        }
+    }
+    
+    // 전반적인 예산 상태
+    if (netSalary - actualTotalExpenses < 0) { // 적자인 경우
+        statusText = translations[currentLanguage].status_over + " (" + translations[currentLanguage].label_deficit + ")";
+        statusColor = "var(--danger-color)";
+    } else if (statusText === "") { // 모든 항목이 양호할 때
+        statusText = translations[currentLanguage].status_ok;
+        statusColor = "var(--summary-text-color)";
+    } else { // 부분적으로 초과/부족이 있지만 적자는 아닐 때
+        statusText = translations[currentLanguage].status_warning; // 기존 경고 메시지를 유지
+        statusColor = "var(--danger-color)"; // 경고색 유지
+    }
+
+    // 최종적으로 statusText가 비어있으면 "양호"로 설정
+    if (statusText.trim() === "") {
+        statusText = translations[currentLanguage].status_ok;
+        statusColor = "var(--summary-text-color)";
+    }
+
+
+    budgetStatusDisplay.textContent = statusText;
+    budgetStatusDisplay.style.color = statusColor;
 }
