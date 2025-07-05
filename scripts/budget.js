@@ -131,7 +131,12 @@ const chartColorPalettes = {
 const translations = {
     ko: {
         app_title: "예산 관리 도구",
-        section_salary_title: "월별 총 급여",
+        section_salary_title: "급여 입력",
+        label_annual_salary: "연간 총 급여:",
+        frequency_monthly: "월별",
+        frequency_annually: "연간",
+        frequency_weekly: "주별",
+        frequency_bi_weekly: "2주별",        
         label_gross_salary: "총 급여",
         btn_save: "저장",
         section_taxes_title: "세금",
@@ -200,7 +205,12 @@ const translations = {
     },
     en: {
         app_title: "Budget Management Tool",
-        section_salary_title: "Gross Monthly Salary",
+        section_salary_title: "Salary Input",
+        label_annual_salary: "Annual Gross Salary:",
+        frequency_monthly: "Monthly",
+        frequency_annually: "Annually",
+        frequency_weekly: "Weekly",
+        frequency_bi_weekly: "Bi-Weekly",
         label_gross_salary: "Gross Salary",
         btn_save: "Save",
         section_taxes_title: "Taxes",
@@ -830,6 +840,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // ★★★ 새로 추가할 부분 ★★★
+    // 급여 주기 선택 드롭다운 리스너 추가
+    salaryFrequencySelect.addEventListener('change', () => {
+        updateDisplay(); // 급여 주기가 바뀌면 다시 계산하여 표시
+        saveData();     // 변경된 급여 주기를 저장
+    });
+    // ★★★ 여기까지 ★★★
+    
     document.getElementById('salary-form').addEventListener('submit', (e) => {
         e.preventDefault(); // 폼 제출 시 페이지 새로고침 방지
         updateDisplay();
