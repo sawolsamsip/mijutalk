@@ -173,10 +173,12 @@ header h1 {
 /* Form Groups */
 .form-group {
     margin-bottom: 20px;
-    /* ★★★★★ 이 부분을 추가/수정했습니다 ★★★★★ */
-    display: flex; /* Flex 컨테이너로 설정 */
-    flex-direction: column; /* 세로 방향으로 아이템 정렬 */
-    align-items: flex-start; /* 아이템을 시작점에 정렬 (기본적으로 왼쪽) */
+    /* Added/Modified for better input scaling within form-grid */
+    display: flex;
+    flex-direction: column; /* Stacks label and input vertically */
+    align-items: flex-start; /* Aligns content to the start (left) */
+    width: 100%; /* Ensure form-group itself takes full width available in grid */
+    box-sizing: border-box;
 }
 
 .form-group label {
@@ -186,43 +188,37 @@ header h1 {
     color: var(--text-color);
 }
 
-/* salary-input-container 스타일 - 드롭다운과 input이 한 줄에 오는 경우 */
-.salary-input-container {
+/* input-container (for items like salary, where select and input are together) */
+.input-container {
     display: flex;
-    gap: 15px;
+    width: 100%; /* Ensure input-container takes full width within its parent */
+    gap: 10px; /* Space between select and input */
     align-items: center;
-    width: 100%;
-    flex-wrap: wrap;
 }
 
-.salary-input-container select,
-.salary-input-container input[type="number"] {
-    padding: 10px 12px;
-    border: 1px solid var(--input-border-color);
-    border-radius: var(--border-radius);
-    background-color: var(--card-bg-color);
-    color: var(--text-color);
-    font-size: 1em;
-    box-sizing: border-box;
+/* salary-input-container specific styles */
+.salary-input-container {
+    flex-wrap: wrap; /* Allows select and input to wrap on smaller screens */
+    gap: 15px; /* Adjust gap for salary input */
 }
 
 .salary-input-container select {
-    flex: 1;
-    min-width: 120px;
-    max-width: 150px;
+    flex: 1; /* Allows select to grow but also respect min-width */
+    min-width: 120px; /* Minimum width for the select dropdown */
+    max-width: 150px; /* Maximum width to prevent it from getting too wide */
 }
 
 .salary-input-container input[type="number"] {
-    flex: 2;
-    min-width: 150px;
+    flex: 2; /* Allows input to take more space than select */
+    min-width: 150px; /* Minimum width for the number input */
 }
 
-/* 일반적인 input, select, textarea 스타일 (salary-input-container 밖의 모든 input/select) */
+/* General input, select, textarea styles (affecting all inputs unless overridden) */
 .form-group input[type="number"],
 .form-group input[type="text"],
-.form-group select,
+.form-group select:not(.salary-input-container select), /* Exclude salary select here if specific styles are needed elsewhere */
 .form-group textarea {
-    width: 100% !important; /* 너비를 100%로 강제 적용 */
+    width: 100% !important; /* Force width to 100% */
     padding: 10px 12px;
     border: 1px solid var(--input-border-color);
     border-radius: 5px;
@@ -230,12 +226,12 @@ header h1 {
     color: var(--text-color);
     font-size: 1em;
     transition: border-color 0.2s ease-in-out;
-    /* ★★★★★ 이 부분을 다시 수정했습니다 (강력하게) ★★★★★ */
-    box-sizing: border-box !important; /* box-sizing을 !important로 강제 */
-    display: block !important; /* display를 !important로 강제 */
-    flex: 1 1 auto; /* Flex 아이템으로 유연하게 공간을 채우고, 기본 크기는 auto */
-    min-width: 0 !important; /* 최소 너비를 0으로 강제하여 넘침 방지 */
-    max-width: 100% !important; /* 최대 너비를 100%로 강제 */
+    /* IMPORTANT: Override browser's default behavior */
+    box-sizing: border-box !important; /* Ensure padding/border are included in width */
+    display: block !important; /* Make it a block-level element for full width */
+    flex: 1 1 auto; /* Flex properties for responsive behavior within flex containers */
+    min-width: 0 !important; /* Allow shrinking below content size in flex */
+    max-width: 100% !important; /* Ensure it doesn't exceed 100% */
 }
 
 /* Focus Styles */
@@ -301,17 +297,20 @@ header h1 {
     margin-bottom: 20px;
 }
 
-/* form-grid 내부의 input, select 너비 조정 */
+/*
+ * Specific rules for inputs within form-grid (should already be covered by general .form-group input rules above,
+ * but keeping this for explicit clarity or if minor adjustments are needed in the future).
+ * The `form-group` styles within the grid will ensure inputs take full width.
+*/
 .form-grid .form-group input[type="number"],
 .form-grid .form-group input[type="text"],
 .form-grid .form-group select {
-    width: 100% !important; /* grid 아이템 안에서 너비를 100%로 강제 적용 */
-    /* ★★★★★ 이 부분을 다시 수정했습니다 (강력하게) ★★★★★ */
-    box-sizing: border-box !important; /* box-sizing을 !important로 강제 */
-    display: block !important; /* display를 !important로 강제 */
-    flex: 1 1 auto; /* Flex 아이템으로 유연하게 공간을 채우고, 기본 크기는 auto */
-    min-width: 0 !important; /* 최소 너비를 0으로 강제하여 넘침 방지 */
-    max-width: 100% !important; /* 최대 너비를 100%로 강제 */
+    width: 100% !important;
+    box-sizing: border-box !important;
+    display: block !important;
+    flex: 1 1 auto;
+    min-width: 0 !important;
+    max-width: 100% !important;
 }
 
 
@@ -496,6 +495,17 @@ header h1 {
     .chart-container {
         height: 250px;
     }
+
+    /* Adjust salary input container for very small screens */
+    .salary-input-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .salary-input-container select,
+    .salary-input-container input[type="number"] {
+        width: 100%;
+        max-width: none;
+    }
 }
 
 /* 예산 규칙 드롭다운 */
@@ -577,20 +587,4 @@ header h1 {
 
 .annual-salary-summary span {
     font-weight: bold;
-}
-
-/* Responsive specific styles for salary-input-container on smaller screens */
-@media (max-width: 600px) {
-    .rule-breakdown {
-        padding: 12px;
-    }
-    .salary-input-container {
-        flex-direction: column;
-        gap: 10px;
-    }
-    .salary-input-container select,
-    .salary-input-container input[type="number"] {
-        width: 100%;
-        max-width: none;
-    }
 }
