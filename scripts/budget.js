@@ -685,7 +685,8 @@ function updateDisplay() {
 // --- Data Persistence ---
 function saveData() {
     const data = {
-        grossSalary: grossSalaryInput.value,
+        grossSalaryInput: grossSalaryInput.value, // 사용자가 입력한 원본 값 저장
+        currentSalaryFrequency: currentSalaryFrequency, // 선택된 급여 주기 저장
         taxInputs: {},
         customTaxes: customTaxes,
         preTaxDeductInputs: {},
@@ -710,7 +711,9 @@ function saveData() {
 function loadData() {
     const data = JSON.parse(localStorage.getItem('budgetAppData'));
     if (data) {
-        grossSalaryInput.value = data.grossSalary || 0;
+        grossSalaryInput.value = data.grossSalaryInput || 0; // 원본 값 로드
+        currentSalaryFrequency = data.currentSalaryFrequency || 'monthly'; // 급여 주기 로드
+        salaryFrequencySelect.value = currentSalaryFrequency; // 드롭다운에 반영
 
         for (const key in taxInputs) taxInputs[key].value = data.taxInputs[key] || 0;
         customTaxes = data.customTaxes || [];
