@@ -14,6 +14,9 @@
     --border-radius: 8px; /* Standard border radius */
     --accent-color: #5d78ff; /* Primary accent blue */
     --danger-color: #f64e60; /* Slightly desaturated red for danger */
+    --primary-color: #5d78ff; /* Added for general button/accent use */
+    --primary-dark-color: #4968e6; /* Darker primary for hover */
+
 
     /* Chart specific colors for Light Mode */
     --chart-text-color: #3f4254;
@@ -64,6 +67,9 @@ body.dark-mode {
     --shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Darker shadow */
     --accent-color: #92b0ff; /* Lighter blue accent */
     --danger-color: #ff6b6b; /* Lighter red for danger */
+    --primary-color: #92b0ff; /* Lighter blue for dark mode */
+    --primary-dark-color: #7a9cff; /* Darker primary for dark mode hover */
+
 
     /* Chart specific colors for dark mode */
     --chart-text-color: #e0e0e0;
@@ -166,46 +172,71 @@ header h1 {
     padding-bottom: 10px;
 }
 
-/* Form Groups */
-/* ★★★ 이 부분이 수정되었습니다. ★★★ */
+/* Form Groups - 가장 중요하게 수정된 부분입니다. */
 .form-group {
-    margin-bottom: 15px;
-    display: flex; /* Flexbox 활성화 */
-    align-items: center; /* 자식 요소들을 수직 중앙 정렬 */
-    gap: 10px; /* 레이블과 입력 필드/셀렉트 사이의 간격 */
-    flex-wrap: wrap; /* 작은 화면에서 요소들이 다음 줄로 넘어가도록 허용 */
+    margin-bottom: 20px; /* 각 입력 그룹 하단에 충분한 여백을 줍니다 */
 }
 
 .form-group label {
-    /* display: block; /* 이 속성을 제거하거나 display: inline-block;으로 변경합니다. */
-    /* Flexbox 컨테이너 내에서는 display: block이 필요하지 않으며, flex-shrink로 대체할 수 있습니다. */
-    margin-bottom: 0; /* flexbox 사용 시 label의 하단 마진 제거 */
-    font-weight: bold;
-    font-size: 0.95em;
-    flex-shrink: 0; /* 레이블이 줄어들지 않도록 */
+    display: block; /* 레이블을 블록 요소로 만들어 항상 새 줄에서 시작하게 합니다 */
+    margin-bottom: 8px; /* 레이블과 입력 필드 사이에 여백을 줍니다 */
+    font-weight: bold; /* 레이블 글자를 좀 더 두껍게 */
+    color: var(--text-color); /* 레이블 글자색 */
 }
 
+/* salary-input-container 스타일 - 드롭다운과 input이 한 줄에 오는 경우 */
+.salary-input-container {
+    display: flex; /* 내부 요소들을 가로로 정렬 */
+    gap: 15px; /* 드롭다운과 입력 필드 사이의 간격을 늘립니다 */
+    align-items: center; /* 세로 중앙 정렬 */
+    width: 100%; /* 부모 요소 너비 100% 사용 */
+    flex-wrap: wrap; /* 화면이 작아질 경우 줄바꿈 허용 */
+}
+
+.salary-input-container select,
+.salary-input-container input[type="number"] {
+    padding: 10px 12px; /* 내부 여백을 더 줍니다 */
+    border: 1px solid var(--input-border-color); /* 테두리 */
+    border-radius: var(--border-radius); /* 모서리 둥글게 */
+    background-color: var(--card-bg-color); /* 카드 배경색과 동일하게 (깔끔하게) */
+    color: var(--text-color); /* 글자색 */
+    font-size: 1em; /* 글자 크기 */
+    box-sizing: border-box; /* 패딩과 테두리가 너비에 포함되도록 합니다 */
+}
+
+.salary-input-container select {
+    flex: 1; /* select가 유연하게 공간을 차지하지만, input보다는 작게 */
+    min-width: 120px; /* select의 최소 너비를 설정하여 내용이 잘리지 않게 합니다 */
+    max-width: 150px; /* select의 최대 너비를 설정하여 너무 커지지 않게 합니다 */
+}
+
+.salary-input-container input[type="number"] {
+    flex: 2; /* input이 select보다 더 많은 공간을 차지하도록 합니다 */
+    min-width: 150px; /* input의 최소 너비를 설정 */
+}
+
+/* 일반적인 input, select, textarea 스타일 (salary-input-container 밖의 요소들) */
+/* .form-group 내부의 input, select에 대한 일반 스타일 */
 .form-group input[type="number"],
 .form-group input[type="text"],
-/* ★★★ select 태그도 함께 선택하여 스타일 적용 ★★★ */
-.form-group select {
-    display: flex;
+.form-group select:not(#salary-frequency-select), /* salary-frequency-select는 위에서 이미 스타일링됨 */
+.form-group textarea { /* 혹시 textarea도 있다면 추가 */
     width: 100%; /* 기본적으로 100% 너비를 가짐 */
     padding: 10px 12px;
     border: 1px solid var(--input-border-color);
     border-radius: 5px;
-    background-color: var(--bg-color); /* Match background for seamless look */
+    background-color: var(--card-bg-color); /* 카드 배경색과 동일하게 */
     color: var(--text-color);
     font-size: 1em;
-    box-sizing: border-box; /* Include padding in width */
+    box-sizing: border-box;
     transition: border-color 0.2s ease-in-out;
-    flex-grow: 1; /* flex-group 내에서 남은 공간을 채우도록 확장 */
 }
 
-
+/* Focus Styles */
 .form-group input[type="number"]:focus,
 .form-group input[type="text"]:focus,
-.form-group select:focus { /* ★★★ select 태그 focus 스타일 추가 ★★★ */
+.form-group select:focus,
+.form-group textarea:focus {
     outline: none;
     border-color: var(--input-focus-border-color);
     box-shadow: 0 0 0 3px rgba(93, 120, 255, 0.2); /* Soft blue glow */
@@ -222,11 +253,11 @@ header h1 {
     font-size: 1em;
     transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
     margin-top: 10px;
-    display: inline-block; /* For proper spacing with other buttons */
+    display: inline-block;
 }
 
 .btn:hover {
-    background-color: #4968e6; /* Darker blue on hover */
+    background-color: var(--primary-dark-color); /* Using --primary-dark-color */
     transform: translateY(-1px);
 }
 
@@ -302,7 +333,6 @@ header h1 {
 .custom-list-item .remove-btn:hover {
     color: #cc0011;
 }
-
 
 /* Summary Displays */
 .summary-display {
@@ -392,7 +422,6 @@ header h1 {
     flex-grow: 1; /* Allow buttons to grow */
 }
 
-
 /* Responsive Design */
 @media (max-width: 768px) {
     header h1 {
@@ -449,45 +478,27 @@ header h1 {
     }
 }
 
-/* 예산 규칙 드롭다운 */
+/* 예산 규칙 드롭다운 - 이전에 중복되던 부분 정리 */
 .rule-select {
-    /* width: 100%; /* flex-grow가 100%를 담당하므로 이 width는 필요 없을 수 있지만, 혹시 모르니 남겨둡니다. */
     padding: 10px;
-    border: 1px solid var(--medium-gray);
+    border: 1px solid var(--input-border-color); /* 변수 사용 */
     border-radius: var(--border-radius);
-    margin-top: 8px; /* flexbox 사용 시 이 마진도 필요 없을 수 있음. form-group의 gap을 활용 */
-    background: var(--light-gray);
+    margin-top: 8px; /* 상단 여백 (조절 가능) */
+    background: var(--card-bg-color); /* 카드 배경색과 동일하게 */
+    color: var(--text-color); /* 글자색 */
     transition: border-color 0.2s;
+    width: 100%; /* 드롭다운 너비 100% */
+    box-sizing: border-box; /* 패딩과 보더 포함 */
 }
 .rule-select:focus {
-    border-color: var(--primary);
+    border-color: var(--input-focus-border-color);
     outline: none;
 }
 
 /* 규칙 분배 박스 */
 .rule-breakdown {
     margin-top: 12px;
-    background: #f1f3f5;
-    padding: 16px 20px;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
-}
-.rule-breakdown p {
-    font-size: 1rem;
-    color: var(--text-color);
-    margin-bottom: 6px;
-}
-
-/* 반응형 간격 */
-@media (max-width: 600px) {
-    .rule-breakdown {
-        padding: 12px;
-    }
-}
-/* 규칙 분배 박스 */
-.rule-breakdown {
-    margin-top: 12px;
-    background: #f1f3f5;
+    background: var(--bg-color); /* 메인 배경색 사용 또는 새로운 변수 정의 */
     padding: 16px 20px;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
@@ -498,7 +509,7 @@ header h1 {
 
 .rule-breakdown .breakdown-item {
     background-color: var(--card-bg-color); /* 각 항목별 배경색 (옵션) */
-    padding: 10px 15px;
+    padding: 15px; /* 내부 여백 좀 더 늘림 */
     border-radius: var(--border-radius);
     border: 1px solid var(--input-border-color);
 }
@@ -533,34 +544,8 @@ header h1 {
     text-align: center;
     color: var(--text-color);
 }
-/* salary-input-container 스타일 */
-.salary-input-container {
-    display: flex; /* 자식 요소들을 가로로 정렬합니다 */
-    gap: 10px; /* 자식 요소들 사이에 간격을 줍니다 */
-    align-items: center; /* 세로 중앙 정렬합니다 */
-    width: 100%; /* 부모 요소의 너비를 꽉 채웁니다 */
-}
 
-.salary-input-container select {
-    flex: 1; /* select 박스가 사용 가능한 공간을 유연하게 차지하도록 합니다 */
-    min-width: 100px; /* 최소 너비를 지정하여 너무 작아지지 않도록 합니다 */
-    padding: 8px; /* 내부 여백 */
-    border: 1px solid var(--border-color); /* 테두리 색상 */
-    border-radius: var(--border-radius); /* 모서리 둥글게 */
-    background-color: var(--input-bg-color); /* 배경색 */
-    color: var(--text-color); /* 글자색 */
-}
-
-.salary-input-container input[type="number"] {
-    flex: 2; /* input 필드가 select보다 더 많은 공간을 차지하도록 합니다 (조절 가능) */
-    padding: 8px; /* 내부 여백 */
-    border: 1px solid var(--border-color); /* 테두리 색상 */
-    border-radius: var(--border-radius); /* 모서리 둥글게 */
-    background-color: var(--input-bg-color); /* 배경색 */
-    color: var(--text-color); /* 글자색 */
-}
-
-/* 연간 급여 요약 표시 p 태그 스타일 */
+/* 연간 총 급여 표시 p 태그 스타일 (중복 제거 후 재정의) */
 .annual-salary-summary {
     margin-top: 15px; /* 위쪽에 여백을 줍니다 */
     font-size: 1.1em; /* 글자 크기 */
@@ -570,99 +555,24 @@ header h1 {
     padding-right: 5px; /* 오른쪽에 약간의 여백을 줍니다 */
 }
 
-/* 기존 form-group 내 label과 input의 간격 조절 (필요시) */
-.form-group label {
-    display: block; /* label을 블록 요소로 만들어 다음 요소와 분리합니다 */
-    margin-bottom: 8px; /* label 아래에 여백을 줍니다 */
-}
-
-/* 버튼 스타일 (기존 .btn 스타일과 충돌하지 않도록 확인) */
-.budget-section .btn {
-    margin-top: 20px; /* 버튼 위에 여백을 줍니다 */
-    padding: 10px 20px; /* 버튼 내부 여백 */
-    background-color: var(--primary-color); /* 버튼 배경색 */
-    color: var(--button-text-color); /* 버튼 글자색 */
-    border: none; /* 테두리 없음 */
-    border-radius: var(--border-radius); /* 모서리 둥글게 */
-    cursor: pointer; /* 마우스 오버 시 커서 모양 변경 */
-    font-size: 1em; /* 글자 크기 */
-    transition: background-color 0.3s ease; /* 호버 효과 */
-}
-
-.budget-section .btn:hover {
-    background-color: var(--primary-dark-color); /* 호버 시 배경색 변경 */
-}
-/* 전체 폼 그룹의 레이아웃을 개선 */
-.form-group {
-    margin-bottom: 20px; /* 각 입력 그룹 하단에 충분한 여백을 줍니다 */
-}
-
-.form-group label {
-    display: block; /* 레이블을 블록 요소로 만들어 항상 새 줄에서 시작하게 합니다 */
-    margin-bottom: 8px; /* 레이블과 입력 필드 사이에 여백을 줍니다 */
-    font-weight: bold; /* 레이블 글자를 좀 더 두껍게 */
-    color: var(--text-color); /* 레이블 글자색 */
-}
-
-/* 급여 입력 컨테이너 스타일 */
-.salary-input-container {
-    display: flex; /* 내부 요소들을 가로로 정렬 */
-    gap: 15px; /* 드롭다운과 입력 필드 사이의 간격을 늘립니다 */
-    align-items: center; /* 세로 중앙 정렬 */
-    width: 100%; /* 부모 요소 너비 100% 사용 */
-    flex-wrap: wrap; /* 화면이 작아질 경우 줄바꿈 허용 (선택 사항) */
-}
-
-.salary-input-container select,
-.salary-input-container input[type="number"] {
-    padding: 10px 12px; /* 내부 여백을 더 줍니다 */
-    border: 1px solid var(--border-color); /* 테두리 */
-    border-radius: var(--border-radius); /* 모서리 둥글게 */
-    background-color: var(--input-bg-color); /* 배경색 */
-    color: var(--text-color); /* 글자색 */
-    font-size: 1em; /* 글자 크기 */
-    box-sizing: border-box; /* 패딩과 테두리가 너비에 포함되도록 합니다 */
-}
-
-.salary-input-container select {
-    flex: 1; /* select가 유연하게 공간을 차지하지만, input보다는 작게 */
-    min-width: 120px; /* select의 최소 너비를 설정하여 내용이 잘리지 않게 합니다 */
-    max-width: 150px; /* select의 최대 너비를 설정하여 너무 커지지 않게 합니다 */
-}
-
-.salary-input-container input[type="number"] {
-    flex: 2; /* input이 select보다 더 많은 공간을 차지하도록 합니다 */
-    min-width: 150px; /* input의 최소 너비를 설정 */
-}
-
-/* 연간 총 급여 표시 스타일 */
-.annual-salary-summary {
-    text-align: right; /* 오른쪽 정렬 */
-    margin-top: 15px; /* 위쪽 여백 */
-    font-size: 1.1em; /* 글자 크기 */
-    color: var(--summary-text-color); /* 글자색 */
-    padding-right: 5px; /* 오른쪽에 약간의 여백 */
-}
-
 .annual-salary-summary span {
     font-weight: bold; /* 금액 부분을 더 두껍게 */
+    /* 위에 .summary-results span과 중복되지만, 좀 더 명시적으로 설정 */
 }
 
-/* "저장" 버튼 스타일 */
-.budget-section .btn {
-    margin-top: 25px; /* 버튼 위에 더 많은 여백을 줍니다 */
-    width: 100%; /* 버튼 너비를 100%로 설정하여 가로로 꽉 차게 */
-    padding: 12px 20px; /* 버튼 내부 여백 */
-    font-size: 1.1em; /* 버튼 글자 크기 */
-    /* 기타 버튼 스타일 (기존에 정의된 var(--primary-color) 등 사용) */
-    background-color: var(--primary-color);
-    color: var(--button-text-color);
-    border: none;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
 
-.budget-section .btn:hover {
-    background-color: var(--primary-dark-color);
+/* 반응형 간격 (기존 미디어 쿼리 내부에 통합) */
+@media (max-width: 600px) {
+    .rule-breakdown {
+        padding: 12px;
+    }
+    .salary-input-container {
+        flex-direction: column; /* 작은 화면에서 세로로 정렬 */
+        gap: 10px; /* 세로 정렬 시 간격 */
+    }
+    .salary-input-container select,
+    .salary-input-container input[type="number"] {
+        width: 100%; /* 작은 화면에서 전체 너비 사용 */
+        max-width: none; /* 최대 너비 제한 해제 */
+    }
 }
