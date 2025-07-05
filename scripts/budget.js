@@ -714,27 +714,44 @@ function applyLanguage(lang) {
         }
     }
 
-    // Update specific breakdown item labels using their IDs or a more robust selector if available
-    // Assuming you have elements like <p>필수 지출 (Needs):</p>
-    // These might need specific data-i18n-key if not already handled by a more general selector.
-    // For now, we'll manually update the static text within the p tags if not using data-i18n-key.
-    document.querySelector('.breakdown-item:nth-child(1) p:nth-child(1)').childNodes[0].nodeValue = translations[currentLanguage].needs_label + ' ';
-    document.querySelector('.breakdown-item:nth-child(2) p:nth-child(1)').childNodes[0].nodeValue = translations[currentLanguage].wants_label + ' ';
-    document.querySelector('.breakdown-item:nth-child(3) p:nth-child(1)').childNodes[0].nodeValue = translations[currentLanguage].savings_label + ' ';
-    document.querySelector('.breakdown-item.total p:nth-child(1)').childNodes[0].nodeValue = translations[currentLanguage].total_budget_label + ' ';
-    document.querySelector('.breakdown-item.status p:nth-child(1)').childNodes[0].nodeValue = translations[currentLanguage].budget_status_label + ' ';
+    // Update main breakdown item labels (e.g., "필수 지출 (Needs):")
+    // Note: If you want to use data-i18n-key for these, add them to your HTML like:
+    // <p data-i18n-key="needs_label_full">필수 지출 (Needs):</p>
+    // Then the first loop with data-i18n-key will handle it.
+    // If not, these manual updates are fine.
+    document.querySelector('.breakdown-item:nth-child(1) p:nth-child(1)').textContent = translations[currentLanguage].needs_label;
+    document.querySelector('.breakdown-item:nth-child(2) p:nth-child(1)').textContent = translations[currentLanguage].wants_label;
+    document.querySelector('.breakdown-item:nth-child(3) p:nth-child(1)').textContent = translations[currentLanguage].savings_label;
+    document.querySelector('.breakdown-item.total p:nth-child(1)').textContent = translations[currentLanguage].total_budget_label;
+    document.querySelector('.breakdown-item.status p:nth-child(1)').textContent = translations[currentLanguage].budget_status_label;
 
 
-    // Update "규칙:" and "실제:" labels within breakdown items
+    // ★★★ 이 부분이 중요하게 수정되었습니다. span의 id를 유지하고 텍스트만 업데이트하도록 ★★★
     document.querySelectorAll('.rule-breakdown .breakdown-item p').forEach(pElement => {
+        const spanElement = pElement.querySelector('span[id]'); // id를 가진 span을 찾습니다.
+
         if (pElement.textContent.includes('규칙:') || pElement.textContent.includes('Rule:')) {
-            const span = pElement.querySelector('span');
-            pElement.innerHTML = `${translations[currentLanguage].rule_label} <span id="${span.id}"></span>`;
+            // "규칙:" 레이블만 업데이트하고, span 내부의 값은 그대로 둡니다.
+            // HTML 구조가 "규칙: <span>" 이므로, p의 textContent만 변경합니다.
+            // span은 이미 ID를 가지고 있으므로, pElement.firstChild.nodeValue로 접근하여 텍스트만 변경합니다.
+            // 단, pElement.firstChild가 텍스트 노드여야 합니다.
+            if (pElement.firstChild && pElement.firstChild.nodeType === Node.TEXT_NODE) {
+                pElement.firstChild.nodeValue = translations[currentLanguage].rule_label + ' ';
+            }
         } else if (pElement.textContent.includes('실제:') || pElement.textContent.includes('Actual:')) {
-            const span = pElement.querySelector('span');
-            pElement.innerHTML = `${translations[currentLanguage].actual_label} <span id="${span.id}"></span>`;
+            if (pElement.firstChild && pElement.firstChild.nodeType === Node.TEXT_NODE) {
+                pElement.firstChild.nodeValue = translations[currentLanguage].actual_label + ' ';
+            }
         }
     });
+
+    // 예외: budget-status span은 p 태그 안에 있으므로, p 태그의 textContent를 직접 변경하지 않습니다.
+    // 이는 updateDisplay()에서 값을 설정할 것이므로, 여기서는 레이블만 변경합니다.
+    const budgetStatusP = document.querySelector('.breakdown-item.status p:nth-child(1)');
+    if (budgetStatusP) {
+        budgetStatusP.textContent = translations[currentLanguage].budget_status_label;
+    }
+
 
     languageToggleBtn.textContent = currentLanguage === 'ko' ? 'EN' : 'KO'; // Toggle text
     updateDisplay(); // Recalculate and update displays with new language
