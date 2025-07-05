@@ -227,6 +227,8 @@ header h1 {
     font-size: 1em;
     box-sizing: border-box;
     transition: border-color 0.2s ease-in-out;
+    /* ★★★★★ 이 부분을 추가했습니다 ★★★★★ */
+    display: block; /* 명시적으로 블록 레벨 요소로 설정 */
 }
 
 /* Focus Styles */
@@ -297,6 +299,8 @@ header h1 {
 .form-grid .form-group input[type="text"],
 .form-grid .form-group select {
     width: 100% !important; /* grid 아이템 안에서 너비를 100%로 강제 적용 */
+    /* ★★★★★ 이 부분을 추가했습니다 ★★★★★ */
+    display: block; /* 명시적으로 블록 레벨 요소로 설정 */
 }
 
 
