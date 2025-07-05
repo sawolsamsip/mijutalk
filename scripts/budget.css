@@ -1,105 +1,44 @@
 /* Variables for colors (Light Mode by default) */
 :root {
-    --bg-color: #f9fbfd; /* Very light subtle gray/blue for background */
-    --card-bg-color: #ffffff; /* Pure white card background */
-    --text-color: #3f4254; /* Darker, slightly muted text for better readability */
-    --header-bg-color: #5d78ff; /* Modern, slightly vibrant blue for header (Accent color) */
-    --header-text-color: #ffffff; /* White header text */
-    --button-bg-color: #5d78ff; /* Match header for primary actions */
-    --button-text-color: #ffffff; /* White button text */
-    --input-border-color: #e4e6ef; /* Lighter, subtle input border */
-    --input-focus-border-color: #5d78ff; /* Match header blue for focus */
-    --summary-text-color: #1abc9c; /* Fresh green for summary (or a calming blue) */
-    --shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Softer, more diffused shadow */
-    --border-radius: 8px; /* Standard border radius */
-    --accent-color: #5d78ff; /* Primary accent blue */
-    --danger-color: #f64e60; /* Slightly desaturated red for danger */
-    --primary-color: #5d78ff; /* Added for general button/accent use */
-    --primary-dark-color: #4968e6; /* Darker primary for hover */
-
-    /* Chart specific colors for Light Mode */
+    --bg-color: #f9fbfd;
+    --card-bg-color: #ffffff;
+    --text-color: #3f4254;
+    --header-bg-color: #5d78ff;
+    --header-text-color: #ffffff;
+    --button-bg-color: #5d78ff;
+    --button-text-color: #ffffff;
+    --input-border-color: #e4e6ef;
+    --input-focus-border-color: #5d78ff;
+    --summary-text-color: #1abc9c;
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    --border-radius: 8px;
+    --accent-color: #5d78ff;
+    --danger-color: #f64e60;
+    --primary-color: #5d78ff;
+    --primary-dark-color: #4968e6;
     --chart-text-color: #3f4254;
     --chart-grid-color: #ebedef;
-
-    /* Specific chart palette colors (These will be primarily used in JS) */
-    /* Defined here for reference, but Chart.js often needs these as JS arrays directly */
-    --chart-tax-bar-color: #4CAF50; /* A pleasant green for taxes bar */
-    --chart-expenses-palette-1: #6a0dad; /* Purple */
-    --chart-expenses-palette-2: #007bff; /* Blue */
-    --chart-expenses-palette-3: #28a745; /* Green */
-    --chart-expenses-palette-4: #ffc107; /* Yellow */
-    --chart-expenses-palette-5: #dc3545; /* Red */
-    --chart-expenses-palette-6: #fd7e14; /* Orange */
-    --chart-expenses-palette-7: #6610f2; /* Indigo */
-    --chart-expenses-palette-8: #e83e8c; /* Pink */
-
-    --chart-pre-tax-palette-1: #20c997; /* Teal */
-    --chart-pre-tax-palette-2: #6c757d; /* Gray */
-    --chart-pre-tax-palette-3: #00a8cc; /* Sky Blue */
-    --chart-pre-tax-palette-4: #ff9a00; /* Amber */
-
-    --chart-post-tax-palette-1: #6f42c1; /* Dark Purple */
-    --chart-post-tax-palette-2: #a6b1c4; /* Light Gray Blue */
-    --chart-post-tax-palette-3: #e6005c; /* Raspberry */
-    --chart-post-tax-palette-4: #3366ff; /* Royal Blue */
-
-    --chart-budget-taxes-color: #f64e60; /* Red for Taxes */
-    --chart-budget-pre-tax-color: #5d78ff; /* Blue for Pre-Tax */
-    --chart-budget-post-tax-color: #20c997; /* Teal for Post-Tax */
-    --chart-budget-expenses-color: #ffc107; /* Yellow for Expenses */
-    --chart-budget-remaining-color: #1abc9c; /* Green for Remaining */
-    --chart-budget-deficit-color: #dc3545; /* Darker Red for Deficit */
 }
 
 /* Dark Mode Variables */
 body.dark-mode {
-    --bg-color: #2c2c2c; /* Darker gray background */
-    --card-bg-color: #3a3a3a; /* Dark gray card background */
-    --text-color: #e0e0e0; /* Light gray text */
-    --header-bg-color: #333333; /* Darker header */
-    --header-text-color: #e0e0e0; /* Light header text */
-    --button-bg-color: #555555; /* Darker button */
-    --button-text-color: #e0e0e0; /* Light button text */
-    --input-border-color: #555555; /* Darker input border */
-    --input-focus-border-color: #777777; /* Gray input focus */
-    --summary-text-color: #92b0ff; /* Lighter blue for summary */
-    --shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Darker shadow */
-    --accent-color: #92b0ff; /* Lighter blue accent */
-    --danger-color: #ff6b6b; /* Lighter red for danger */
-    --primary-color: #92b0ff; /* Lighter blue for dark mode */
-    --primary-dark-color: #7a9cff; /* Darker primary for dark mode hover */
-
-    /* Chart specific colors for dark mode */
+    --bg-color: #2c2c2c;
+    --card-bg-color: #3a3a3a;
+    --text-color: #e0e0e0;
+    --header-bg-color: #333333;
+    --header-text-color: #e0e0e0;
+    --button-bg-color: #555555;
+    --button-text-color: #e0e0e0;
+    --input-border-color: #555555;
+    --input-focus-border-color: #777777;
+    --summary-text-color: #92b0ff;
+    --shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    --accent-color: #92b0ff;
+    --danger-color: #ff6b6b;
+    --primary-color: #92b0ff;
+    --primary-dark-color: #7a9cff;
     --chart-text-color: #e0e0e0;
     --chart-grid-color: #555555;
-
-    /* Specific chart palette colors for Dark Mode (adjust as needed for contrast) */
-    --chart-tax-bar-color: #76FF03; /* Brighter green for taxes */
-    --chart-expenses-palette-1: #9C27B0;
-    --chart-expenses-palette-2: #2196F3;
-    --chart-expenses-palette-3: #4CAF50;
-    --chart-expenses-palette-4: #FFEB3B;
-    --chart-expenses-palette-5: #F44336;
-    --chart-expenses-palette-6: #FF9800;
-    --chart-expenses-palette-7: #673AB7;
-    --chart-expenses-palette-8: #E91E63;
-
-    --chart-pre-tax-palette-1: #00BCD4;
-    --chart-pre-tax-palette-2: #9E9E9E;
-    --chart-pre-tax-palette-3: #8BC34A;
-    --chart-pre-tax-palette-4: #FFC107;
-
-    --chart-post-tax-palette-1: #3F51B5;
-    --chart-post-tax-palette-2: #B0BEC5;
-    --chart-post-tax-palette-3: #E91E63;
-    --chart-post-tax-palette-4: #03A9F4;
-
-    --chart-budget-taxes-color: #F44336;
-    --chart-budget-pre-tax-color: #2196F3;
-    --chart-budget-post-tax-color: #00BCD4;
-    --chart-budget-expenses-color: #FFC107;
-    --chart-budget-remaining-color: #8BC34A;
-    --chart-budget-deficit-color: #E53935;
 }
 
 /* Base Styles */
@@ -110,15 +49,15 @@ html, body {
     color: var(--text-color);
     background-color: var(--bg-color);
     line-height: 1.6;
-    height: 100%; /* Ensure body and html take full viewport height */
-    overflow-x: hidden; /* Prevent horizontal scroll */
-    scroll-behavior: smooth; /* Smooth scrolling for anchors */
+    height: 100%;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
 }
 
 body {
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Ensure body takes at least full viewport height */
+    min-height: 100vh;
 }
 
 /* Header */
@@ -130,7 +69,7 @@ header {
     justify-content: space-between;
     align-items: center;
     box-shadow: var(--shadow);
-    flex-shrink: 0; /* Prevent header from shrinking */
+    flex-shrink: 0;
 }
 
 header h1 {
@@ -148,9 +87,9 @@ header h1 {
     max-width: 900px;
     margin: 20px auto;
     padding: 0 20px;
-    flex-grow: 1; /* Allow main content to grow and fill space */
-    width: 100%; /* Ensure it takes full width */
-    box-sizing: border-box; /* Include padding in width */
+    flex-grow: 1;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Budget Section */
@@ -173,10 +112,7 @@ header h1 {
 /* Form Groups */
 .form-group {
     margin-bottom: 20px;
-    /* ★★★★★ 이 부분을 추가/수정했습니다 ★★★★★ */
-    display: flex; /* Flex 컨테이너로 설정 */
-    flex-direction: column; /* 세로 방향으로 아이템 정렬 */
-    align-items: flex-start; /* 아이템을 시작점에 정렬 (기본적으로 왼쪽) */
+    width: 100%;
 }
 
 .form-group label {
@@ -184,68 +120,43 @@ header h1 {
     margin-bottom: 8px;
     font-weight: bold;
     color: var(--text-color);
-}
-
-/* salary-input-container 스타일 - 드롭다운과 input이 한 줄에 오는 경우 */
-.salary-input-container {
-    display: flex;
-    gap: 15px;
-    align-items: center;
     width: 100%;
-    flex-wrap: wrap;
 }
 
-.salary-input-container select,
-.salary-input-container input[type="number"] {
+/* Input Elements */
+.form-control {
+    width: 100%;
     padding: 10px 12px;
     border: 1px solid var(--input-border-color);
     border-radius: var(--border-radius);
     background-color: var(--card-bg-color);
     color: var(--text-color);
     font-size: 1em;
+    transition: border-color 0.2s ease-in-out;
     box-sizing: border-box;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--input-focus-border-color);
+    box-shadow: 0 0 0 3px rgba(93, 120, 255, 0.2);
+}
+
+/* salary-input-container */
+.salary-input-container {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    width: 100%;
 }
 
 .salary-input-container select {
     flex: 1;
     min-width: 120px;
-    max-width: 150px;
 }
 
 .salary-input-container input[type="number"] {
     flex: 2;
-    min-width: 150px;
-}
-
-/* 일반적인 input, select, textarea 스타일 (salary-input-container 밖의 모든 input/select) */
-.form-group input[type="number"],
-.form-group input[type="text"],
-.form-group select,
-.form-group textarea {
-    width: 100% !important; /* 너비를 100%로 강제 적용 */
-    padding: 10px 12px;
-    border: 1px solid var(--input-border-color);
-    border-radius: 5px;
-    background-color: var(--card-bg-color);
-    color: var(--text-color);
-    font-size: 1em;
-    transition: border-color 0.2s ease-in-out;
-    /* ★★★★★ 이 부분을 다시 수정했습니다 (강력하게) ★★★★★ */
-    box-sizing: border-box !important; /* box-sizing을 !important로 강제 */
-    display: block !important; /* display를 !important로 강제 */
-    flex: 1 1 auto; /* Flex 아이템으로 유연하게 공간을 채우고, 기본 크기는 auto */
-    min-width: 0 !important; /* 최소 너비를 0으로 강제하여 넘침 방지 */
-    max-width: 100% !important; /* 최대 너비를 100%로 강제 */
-}
-
-/* Focus Styles */
-.form-group input[type="number"]:focus,
-.form-group input[type="text"]:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-    outline: none;
-    border-color: var(--input-focus-border-color);
-    box-shadow: 0 0 0 3px rgba(93, 120, 255, 0.2);
 }
 
 /* Buttons */
@@ -254,7 +165,7 @@ header h1 {
     color: var(--button-text-color);
     padding: 10px 20px;
     border: none;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
     cursor: pointer;
     font-size: 1em;
     transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
@@ -293,7 +204,7 @@ header h1 {
     color: #e0e0e0;
 }
 
-/* Form Grid for multiple inputs */
+/* Form Grid */
 .form-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -301,21 +212,7 @@ header h1 {
     margin-bottom: 20px;
 }
 
-/* form-grid 내부의 input, select 너비 조정 */
-.form-grid .form-group input[type="number"],
-.form-grid .form-group input[type="text"],
-.form-grid .form-group select {
-    width: 100% !important; /* grid 아이템 안에서 너비를 100%로 강제 적용 */
-    /* ★★★★★ 이 부분을 다시 수정했습니다 (강력하게) ★★★★★ */
-    box-sizing: border-box !important; /* box-sizing을 !important로 강제 */
-    display: block !important; /* display를 !important로 강제 */
-    flex: 1 1 auto; /* Flex 아이템으로 유연하게 공간을 채우고, 기본 크기는 auto */
-    min-width: 0 !important; /* 최소 너비를 0으로 강제하여 넘침 방지 */
-    max-width: 100% !important; /* 최대 너비를 100%로 강제 */
-}
-
-
-/* Custom List (for added items) */
+/* Custom List */
 .custom-list {
     margin-top: 20px;
     border-top: 1px solid var(--input-border-color);
@@ -358,7 +255,7 @@ header h1 {
 .summary-display {
     background-color: var(--bg-color);
     padding: 15px;
-    border-radius: 5px;
+    border-radius: var(--border-radius);
     margin-top: 20px;
     font-size: 1.1em;
     font-weight: bold;
@@ -387,7 +284,7 @@ header h1 {
     text-align: right;
 }
 
-/* Chart Container Styles */
+/* Chart Container */
 .chart-container {
     position: relative;
     margin: 25px 0;
@@ -429,7 +326,7 @@ header h1 {
     margin: 0;
 }
 
-/* Data Actions (for buttons in Data Management section) */
+/* Data Actions */
 .data-actions {
     display: flex;
     flex-wrap: wrap;
@@ -440,6 +337,87 @@ header h1 {
 .data-actions .btn {
     margin-top: 0;
     flex-grow: 1;
+}
+
+/* Budget Rules Section */
+.rule-select {
+    padding: 10px;
+    border: 1px solid var(--input-border-color);
+    border-radius: var(--border-radius);
+    margin-top: 8px;
+    background: var(--card-bg-color);
+    color: var(--text-color);
+    transition: border-color 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.rule-select:focus {
+    border-color: var(--input-focus-border-color);
+    outline: none;
+}
+
+.rule-breakdown {
+    margin-top: 12px;
+    background: var(--bg-color);
+    padding: 16px 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.breakdown-item {
+    background-color: var(--card-bg-color);
+    padding: 15px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--input-border-color);
+}
+
+.breakdown-item p {
+    font-size: 0.95rem;
+    color: var(--text-color);
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.breakdown-item p:last-child {
+    margin-bottom: 0;
+}
+
+.breakdown-item span {
+    font-weight: bold;
+    color: var(--summary-text-color);
+}
+
+.breakdown-item.total p {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+.breakdown-item.status p {
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-align: center;
+    color: var(--text-color);
+}
+
+/* Annual Salary Summary */
+.annual-salary-summary {
+    margin-top: 15px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: var(--summary-text-color);
+    text-align: right;
+    padding-right: 5px;
+}
+
+.annual-salary-summary span {
+    font-weight: bold;
 }
 
 /* Responsive Design */
@@ -459,11 +437,15 @@ header h1 {
     }
 
     .form-grid {
-        grid-template-columns: 1fr; /* Single column on small screens */
+        grid-template-columns: 1fr;
     }
 
     .chart-container {
         height: 300px;
+    }
+
+    .rule-breakdown {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -496,101 +478,14 @@ header h1 {
     .chart-container {
         height: 250px;
     }
-}
 
-/* 예산 규칙 드롭다운 */
-.rule-select {
-    padding: 10px;
-    border: 1px solid var(--input-border-color);
-    border-radius: var(--border-radius);
-    margin-top: 8px;
-    background: var(--card-bg-color);
-    color: var(--text-color);
-    transition: border-color 0.2s;
-    width: 100%; /* 드롭다운 너비 100% */
-    box-sizing: border-box;
-}
-.rule-select:focus {
-    border-color: var(--input-focus-border-color);
-    outline: none;
-}
-
-/* 규칙 분배 박스 */
-.rule-breakdown {
-    margin-top: 12px;
-    background: var(--bg-color);
-    padding: 16px 20px;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-}
-
-.rule-breakdown .breakdown-item {
-    background-color: var(--card-bg-color);
-    padding: 15px;
-    border-radius: var(--border-radius);
-    border: 1px solid var(--input-border-color);
-}
-
-.rule-breakdown .breakdown-item p {
-    font-size: 0.95rem;
-    color: var(--text-color);
-    margin-bottom: 4px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.rule-breakdown .breakdown-item p:last-child {
-    margin-bottom: 0;
-}
-
-.rule-breakdown .breakdown-item span {
-    font-weight: bold;
-    color: var(--summary-text-color);
-}
-
-.rule-breakdown .breakdown-item.total p {
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: var(--accent-color);
-}
-
-.rule-breakdown .breakdown-item.status p {
-    font-size: 1.1rem;
-    font-weight: bold;
-    text-align: center;
-    color: var(--text-color);
-}
-
-/* 연간 총 급여 표시 p 태그 스타일 */
-.annual-salary-summary {
-    margin-top: 15px;
-    font-size: 1.1em;
-    font-weight: bold;
-    color: var(--summary-text-color);
-    text-align: right;
-    padding-right: 5px;
-}
-
-.annual-salary-summary span {
-    font-weight: bold;
-}
-
-/* Responsive specific styles for salary-input-container on smaller screens */
-@media (max-width: 600px) {
-    .rule-breakdown {
-        padding: 12px;
-    }
     .salary-input-container {
         flex-direction: column;
         gap: 10px;
     }
+    
     .salary-input-container select,
     .salary-input-container input[type="number"] {
         width: 100%;
-        max-width: none;
     }
 }
