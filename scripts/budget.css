@@ -203,22 +203,24 @@ header h1 {
 }
 
 .salary-input-container select {
-    flex: 1;
-    min-width: 120px;
-    max-width: 150px;
+    flex: 1; /* select가 유연하게 공간을 차지하지만, input보다는 작게 */
+    min-width: 120px; /* select의 최소 너비를 설정하여 내용이 잘리지 않게 합니다 */
+    max-width: 150px; /* select의 최대 너비를 설정하여 너무 커지지 않게 합니다 */
 }
 
 .salary-input-container input[type="number"] {
-    flex: 2;
-    min-width: 150px;
+    flex: 2; /* input이 select보다 더 많은 공간을 차지하도록 합니다 */
+    min-width: 150px; /* input의 최소 너비를 설정 */
 }
 
-/* 일반적인 input, select, textarea 스타일 (salary-frequency-select 제외) */
+/* ★★★★★ 이 부분이 가장 중요합니다. ★★★★★ */
+/* 일반적인 input, select, textarea 스타일 (salary-input-container 밖의 모든 input/select) */
+/* .form-group 내부의 모든 input[type="number"], input[type="text"], select, textarea에 적용 */
 .form-group input[type="number"],
 .form-group input[type="text"],
-.form-group select:not(#salary-frequency-select), /* salary-frequency-select는 위에서 이미 스타일링됨 */
+.form-group select, /* 이제 salary-frequency-select 제외 로직 제거 (전체 select에 적용) */
 .form-group textarea {
-    width: 100%;
+    width: 100%; /* 너비를 100%로 설정하여 부모 컨테이너에 꽉 차도록 합니다 */
     padding: 10px 12px;
     border: 1px solid var(--input-border-color);
     border-radius: 5px;
@@ -228,6 +230,8 @@ header h1 {
     box-sizing: border-box;
     transition: border-color 0.2s ease-in-out;
 }
+/* ★★★★★ 여기까지 ★★★★★ */
+
 
 /* Focus Styles */
 .form-group input[type="number"]:focus,
@@ -436,7 +440,7 @@ header h1 {
     }
 
     .form-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* Single column on small screens */
     }
 
     .chart-container {
@@ -484,7 +488,7 @@ header h1 {
     background: var(--card-bg-color);
     color: var(--text-color);
     transition: border-color 0.2s;
-    width: 100%;
+    width: 100%; /* 드롭다운 너비 100% */
     box-sizing: border-box;
 }
 .rule-select:focus {
