@@ -593,6 +593,8 @@ function updateDisplay() {
     renderCustomList(customPreTaxDeductList, customPreTaxDeductions, 'pre-tax');
     renderCustomList(customPostTaxDeductList, customPostTaxDeductions, 'post-tax');
     renderCustomList(customExpenseList, customExpenses, 'expense');
+
+    applyBudgetRule(grossSalary); // <- 예산 룰 자동 반영
 }
 
 // --- Data Persistence ---
@@ -902,4 +904,29 @@ document.addEventListener('DOMContentLoaded', () => {
         //      aiReportBox.textContent = 'AI 보고서를 생성할 수 없습니다.';
         // });
     });
+
+    document.getElementById("budget-rule-select").addEventListener("change", () => {
+    const gross = parseFloat(grossSalaryInput.value) || 0;
+    applyBudgetRule(gross);
 });
+});
+
+const BUDGET_RULES = {
+    "50-30-20": { needs: 0.5, wants: 0.3, savings: 0.2 },
+    "70-20-10": { needs: 0.7, wants: 0.2, savings: 0.1 },
+    "80-20":    { needs: 0.8, wants: 0.0, savings: 0.2 }
+};
+
+function applyBudgetRule(grossIncome) {
+    const select = document.getElementById("budget-rule-select");
+    const rule = BUDGET_RULES[select.value];
+    if (!rule) return;
+
+    const needs = grossIncome * rule.needs;
+    const wants = grossIncome * rule.wants;
+    const savings = grossIncome * rule.savings;
+
+    document.getElementById("rule-needs").textContent = formatCurrency(needs);
+    document.getElementById("rule-wants").textContent = formatCurrency(wants);
+    document.getElementById("rule-savings").textContent = formatCurrency(savings);
+}
