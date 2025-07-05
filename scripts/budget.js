@@ -285,11 +285,6 @@ function formatCurrency(amount) {
     }).format(amount);
 }
 
-// 이 함수가 사용되는 곳 (예: 총 급여를 업데이트하는 부분)
-document.getElementById('annual-salary-summary-display').textContent = formatCurrency(annualSalary);
-document.getElementById('gross-salary-summary-display').textContent = formatCurrency(grossSalary);
-// ... 다른 금액 표시 부분도 모두 이 함수를 사용하도록 변경
-
 // 모든 입력 필드 및 커스텀 항목의 총액 계산
 function getTotal(inputs, customItems) {
     let total = 0;
