@@ -588,3 +588,56 @@ header h1 {
 .annual-salary-summary span {
     font-weight: bold;
 }
+/* salary-form 내부 요소 정렬 */
+#salary-form {
+    display: flex;
+    flex-direction: column; /* 세로로 정렬 */
+    gap: 15px; /* 요소들 사이 간격 */
+    align-items: flex-start; /* 왼쪽 정렬 */
+}
+
+/* label과 input/select를 가로로 배치 (optional, 현재 form-group이 세로로 되어있어 필요 없을 수도 있음) */
+.salary-input-container {
+    display: flex; /* 이미 flex로 되어있음 */
+    gap: 10px; /* 기존 15px에서 조정하여 다른 input-container와 유사하게 */
+    align-items: center;
+    width: 100%; /* 부모 form-group에 맞춰 전체 너비 차지 */
+}
+
+.salary-input-container select {
+    flex: 0 0 auto; /* 크기 고정 */
+    width: 120px; /* 고정 너비 지정 */
+}
+
+.salary-input-container input[type="number"] {
+    flex-grow: 1; /* 남은 공간을 채우도록 성장 */
+    min-width: 100px; /* 최소 너비 지정 */
+}
+
+/* 연간 총 급여 표시 */
+.annual-salary-summary {
+    width: 100%; /* 부모 form에 맞춰 전체 너비 차지 */
+    text-align: right; /* 오른쪽 정렬 유지 */
+    margin-top: 5px; /* 간격 조절 */
+    /* 기존 스타일 유지하면서 필요한 간격 조정 */
+}
+
+/* 저장 버튼 */
+#salary-form .btn {
+    align-self: flex-end; /* 오른쪽으로 정렬 */
+    margin-top: 0; /* form-group의 margin-bottom과 겹치지 않도록 초기화 */
+}
+
+/* 모바일 뷰에서 salary-input-container가 세로로 쌓이도록 */
+@media (max-width: 480px) {
+    .salary-input-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .salary-input-container select,
+    .salary-input-container input[type="number"] {
+        width: 100%; /* 모바일에서 100% 너비 */
+        max-width: none;
+    }
+}
