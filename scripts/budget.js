@@ -271,14 +271,24 @@ const translations = {
 // 4. 유틸리티 함수
 
 // 통화 형식 지정
+// 예시: 금액 포맷팅 함수 (실제 함수 이름은 다를 수 있습니다)
 function formatCurrency(amount) {
-    return new Intl.NumberFormat(currentLanguage === 'ko' ? 'ko-KR' : 'en-US', {
+    // navigator.language를 사용하여 사용자 로케일을 가져오거나, 'en-US'로 고정
+    const locale = navigator.language || 'en-US';
+
+    // Intl.NumberFormat을 사용하여 통화 형식으로 포맷팅
+    return new Intl.NumberFormat(locale, {
         style: 'currency',
-        currency: currentLanguage === 'ko' ? 'KRW' : 'USD', // 필요에 따라 통화 변경
-        minimumFractionDigits: 0, // 소수점 이하 자리수를 0으로 설정
-        maximumFractionDigits: 0, // 최대 소수점 이하 자리수도 0으로 설정
+        currency: 'USD', // 통화를 'USD'로 명시적으로 지정
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
     }).format(amount);
 }
+
+// 이 함수가 사용되는 곳 (예: 총 급여를 업데이트하는 부분)
+document.getElementById('annual-salary-summary-display').textContent = formatCurrency(annualSalary);
+document.getElementById('gross-salary-summary-display').textContent = formatCurrency(grossSalary);
+// ... 다른 금액 표시 부분도 모두 이 함수를 사용하도록 변경
 
 // 모든 입력 필드 및 커스텀 항목의 총액 계산
 function getTotal(inputs, customItems) {
