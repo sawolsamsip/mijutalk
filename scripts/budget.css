@@ -214,11 +214,12 @@ header h1 {
 }
 
 /* 일반적인 input, select, textarea 스타일 (salary-input-container 밖의 모든 input/select) */
+/* ★★★★★ 이 부분에 !important 추가 ★★★★★ */
 .form-group input[type="number"],
 .form-group input[type="text"],
 .form-group select,
 .form-group textarea {
-    width: 100%; /* 너비를 100%로 설정하여 부모 컨테이너에 꽉 차도록 합니다 */
+    width: 100% !important; /* 너비를 100%로 강제 적용 */
     padding: 10px 12px;
     border: 1px solid var(--input-border-color);
     border-radius: 5px;
@@ -292,14 +293,13 @@ header h1 {
     margin-bottom: 20px;
 }
 
-/* ★★★★★ 추가된 부분 ★★★★★ */
 /* form-grid 내부의 input, select 너비 조정 */
+/* ★★★★★ 이 부분에도 !important 추가 ★★★★★ */
 .form-grid .form-group input[type="number"],
 .form-grid .form-group input[type="text"],
 .form-grid .form-group select {
-    width: 100%; /* grid 아이템 안에서 너비를 100%로 */
+    width: 100% !important; /* grid 아이템 안에서 너비를 100%로 강제 적용 */
 }
-/* ★★★★★ 여기까지 ★★★★★ */
 
 
 /* Custom List (for added items) */
