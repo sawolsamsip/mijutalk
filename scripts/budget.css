@@ -588,56 +588,93 @@ header h1 {
 .annual-salary-summary span {
     font-weight: bold;
 }
-/* salary-form 내부 요소 정렬 */
+/* --- "총 급여" 섹션 레이아웃 개선 (기존 코드에 추가) --- */
+
+/* #salary-form (총 급여 폼 전체에 Flexbox 적용) */
 #salary-form {
     display: flex;
-    flex-direction: column; /* 세로로 정렬 */
-    gap: 15px; /* 요소들 사이 간격 */
-    align-items: flex-start; /* 왼쪽 정렬 */
+    flex-direction: column; /* 자식 요소들을 세로로 정렬 */
+    gap: 20px; /* 각 요소 사이의 간격 (form-group, p, button) */
+    /* align-items: flex-start; /* 모든 항목을 왼쪽으로 정렬 */
 }
 
-/* label과 input/select를 가로로 배치 (optional, 현재 form-group이 세로로 되어있어 필요 없을 수도 있음) */
+/* salary-input-container 내부의 select와 input 정렬 */
 .salary-input-container {
     display: flex; /* 이미 flex로 되어있음 */
-    gap: 10px; /* 기존 15px에서 조정하여 다른 input-container와 유사하게 */
-    align-items: center;
-    width: 100%; /* 부모 form-group에 맞춰 전체 너비 차지 */
+    gap: 15px; /* select와 input 사이의 간격 */
+    align-items: center; /* 세로 중앙 정렬 */
+    width: 100%; /* 부모 .form-group 너비에 맞춰 전체 너비 차지 */
 }
 
-.salary-input-container select {
-    flex: 0 0 auto; /* 크기 고정 */
-    width: 120px; /* 고정 너비 지정 */
+/* 총 급여 주기 선택 (Select Box) 디자인 및 너비 조절 */
+.salary-input-container select#salary-frequency-select {
+    flex: 0 0 auto; /* 크기 고정 (성장/수축하지 않음) */
+    width: 120px; /* 고정 너비 지정. 필요에 따라 조절하세요. */
+    /* 현재 .form-group input[type="number"], .form-group select 등의 공통 스타일을 따르도록 */
+    /* 추가적인 border, padding, background-color 등의 스타일은 .form-control 이나 .form-group select에 의해 이미 적용되고 있음 */
 }
 
-.salary-input-container input[type="number"] {
-    flex-grow: 1; /* 남은 공간을 채우도록 성장 */
+/* 총 급여 입력 필드 (Number Input) */
+.salary-input-container input[type="number"]#salary-gross {
+    flex-grow: 1; /* 남은 공간을 최대한 채우도록 성장 */
     min-width: 100px; /* 최소 너비 지정 */
 }
 
-/* 연간 총 급여 표시 */
+/* 연간 총 급여 요약 텍스트 정렬 */
 .annual-salary-summary {
-    width: 100%; /* 부모 form에 맞춰 전체 너비 차지 */
+    width: 100%; /* 부모 #salary-form 너비에 맞춰 전체 너비 차지 */
     text-align: right; /* 오른쪽 정렬 유지 */
-    margin-top: 5px; /* 간격 조절 */
-    /* 기존 스타일 유지하면서 필요한 간격 조정 */
+    margin-top: 0px; /* #salary-form의 gap으로 간격 조절되므로 불필요한 상단 마진 제거 */
+    margin-bottom: 0px; /* 불필요한 하단 마진 제거 */
+    padding-right: 5px; /* 기존 HTML에 맞춰 약간의 패딩 유지 */
 }
 
-/* 저장 버튼 */
+/* "저장" 버튼 정렬 */
 #salary-form .btn {
-    align-self: flex-end; /* 오른쪽으로 정렬 */
-    margin-top: 0; /* form-group의 margin-bottom과 겹치지 않도록 초기화 */
+    align-self: flex-end; /* 부모 flex 컨테이너 (#salary-form) 내에서 자신을 오른쪽으로 정렬 */
+    margin-top: 0; /* #salary-form의 gap으로 간격 조절되므로 불필요한 상단 마진 제거 */
 }
 
-/* 모바일 뷰에서 salary-input-container가 세로로 쌓이도록 */
+/* --- 기존 공통 input/select 스타일에 대한 확인 및 조정 --- */
+/*
+   이 부분은 이미 기존 CSS에 잘 정의되어 있습니다.
+   특히 `.form-group input[type="number"], .form-group select`에
+   `width: 100% !important; box-sizing: border-box !important;` 등의 속성이
+   `form-control` 클래스를 통해 적용되어 대부분의 필드에 일관된 스타일을 제공하고 있습니다.
+   `salary-input-container select`에 대한 특정 `width`를 부여하여
+   다른 `form-grid` 내부의 `select`와는 다르게 동작하도록 만듭니다.
+*/
+.form-group input[type="number"],
+.form-group input[type="text"],
+.form-group select, /* 이 셀렉터에 salary-input-container select가 포함되므로 위에서 덮어쓰기 가능 */
+.form-group textarea {
+    /* 기존 스타일 유지 */
+    width: 100% !important;
+    padding: 10px 12px;
+    border: 1px solid var(--input-border-color);
+    border-radius: 5px;
+    background-color: var(--card-bg-color);
+    color: var(--text-color);
+    font-size: 1em;
+    transition: border-color 0.2s ease-in-out;
+    box-sizing: border-box !important;
+    display: block !important;
+    flex: 1 1 auto;
+    min-width: 0 !important;
+    max-width: 100% !important;
+}
+
+/* 모바일 반응형 조절 (기존 @media (max-width: 480px) 블록 안에 추가 또는 수정) */
 @media (max-width: 480px) {
+    /* 기존 모바일 스타일 유지 */
     .salary-input-container {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: column; /* 세로로 쌓이도록 변경 */
+        align-items: flex-start; /* 왼쪽 정렬 */
         gap: 10px;
     }
     .salary-input-container select,
     .salary-input-container input[type="number"] {
-        width: 100%; /* 모바일에서 100% 너비 */
-        max-width: none;
+        width: 100%; /* 모바일에서 전체 너비 */
+        max-width: none; /* 최대 너비 제한 해제 */
     }
 }
