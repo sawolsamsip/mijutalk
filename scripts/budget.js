@@ -58,7 +58,7 @@ const remainingBudgetDisplay = document.getElementById('remaining-budget-display
 // 커스텀 항목 목록 컨테이너 (이전과 동일)
 const customTaxList = document.getElementById('tax-custom-list');
 const customPreTaxDeductList = document.getElementById('pre-tax-custom-list');
-const customPostTaxDeductList = document('post-tax-custom-list');
+const customPostTaxDeductList = document.getElementById('post-tax-custom-list');
 const customExpenseList = document.getElementById('expenses-custom-list');
 
 // 헤더 컨트롤
