@@ -1,124 +1,54 @@
 /* Variables for colors (Light Mode by default) */
 :root {
-    --bg-color: #f9fbfd; /* Very light subtle gray/blue for background */
-    --card-bg-color: #ffffff; /* Pure white card background */
-    --text-color: #3f4254; /* Darker, slightly muted text for better readability */
-    --header-bg-color: #5d78ff; /* Modern, slightly vibrant blue for header (Accent color) */
-    --header-text-color: #ffffff; /* White header text */
-    --button-bg-color: #5d78ff; /* Match header for primary actions */
-    --button-text-color: #ffffff; /* White button text */
-    --input-border-color: #e4e6ef; /* Lighter, subtle input border */
-    --input-focus-border-color: #5d78ff; /* Match header blue for focus */
-    --summary-text-color: #1abc9c; /* Fresh green for summary (or a calming blue) */
-    --shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Softer, more diffused shadow */
-    --border-radius: 8px; /* Standard border radius */
-    --accent-color: #5d78ff; /* Primary accent blue */
-    --danger-color: #f64e60; /* Slightly desaturated red for danger */
-    --primary-color: #5d78ff; /* Added for general button/accent use */
-    --primary-dark-color: #4968e6; /* Darker primary for hover */
-
-    /* Chart specific colors for Light Mode */
-    --chart-text-color: #3f4254;
-    --chart-grid-color: #ebedef;
-
-    /* Specific chart palette colors (These will be primarily used in JS) */
-    /* Defined here for reference, but Chart.js often needs these as JS arrays directly */
-    --chart-tax-bar-color: #4CAF50; /* A pleasant green for taxes bar */
-    --chart-expenses-palette-1: #6a0dad; /* Purple */
-    --chart-expenses-palette-2: #007bff; /* Blue */
-    --chart-expenses-palette-3: #28a745; /* Green */
-    --chart-expenses-palette-4: #ffc107; /* Yellow */
-    --chart-expenses-palette-5: #dc3545; /* Red */
-    --chart-expenses-palette-6: #fd7e14; /* Orange */
-    --chart-expenses-palette-7: #6610f2; /* Indigo */
-    --chart-expenses-palette-8: #e83e8c; /* Pink */
-
-    --chart-pre-tax-palette-1: #20c997; /* Teal */
-    --chart-pre-tax-palette-2: #6c757d; /* Gray */
-    --chart-pre-tax-palette-3: #00a8cc; /* Sky Blue */
-    --chart-pre-tax-palette-4: #ff9a00; /* Amber */
-
-    --chart-post-tax-palette-1: #6f42c1; /* Dark Purple */
-    --chart-post-tax-palette-2: #a6b1c4; /* Light Gray Blue */
-    --chart-post-tax-palette-3: #e6005c; /* Raspberry */
-    --chart-post-tax-palette-4: #3366ff; /* Royal Blue */
-
-    --chart-budget-taxes-color: #f64e60; /* Red for Taxes */
-    --chart-budget-pre-tax-color: #5d78ff; /* Blue for Pre-Tax */
-    --chart-budget-post-tax-color: #20c997; /* Teal for Post-Tax */
-    --chart-budget-expenses-color: #ffc107; /* Yellow for Expenses */
-    --chart-budget-remaining-color: #1abc9c; /* Green for Remaining */
-    --chart-budget-deficit-color: #dc3545; /* Darker Red for Deficit */
+    --bg-color: #f9fbfd;
+    --card-bg-color: #ffffff;
+    --text-color: #3f4254;
+    --header-bg-color: #5d78ff;
+    --header-text-color: #ffffff;
+    --button-bg-color: #5d78ff;
+    --button-text-color: #ffffff;
+    --input-border-color: #e4e6ef;
+    --input-focus-border-color: #5d78ff;
+    --summary-text-color: #1abc9c;
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    --border-radius: 8px;
+    --accent-color: #5d78ff;
+    --danger-color: #f64e60;
+    --positive-color: #1abc9c;
+    --negative-color: #f64e60;
+    --balanced-color: #5d78ff;
+    --primary-dark-color: #4968e6;
 }
 
 /* Dark Mode Variables */
 body.dark-mode {
-    --bg-color: #2c2c2c; /* Darker gray background */
-    --card-bg-color: #3a3a3a; /* Dark gray card background */
-    --text-color: #e0e0e0; /* Light gray text */
-    --header-bg-color: #333333; /* Darker header */
-    --header-text-color: #e0e0e0; /* Light header text */
-    --button-bg-color: #555555; /* Darker button */
-    --button-text-color: #e0e0e0; /* Light button text */
-    --input-border-color: #555555; /* Darker input border */
-    --input-focus-border-color: #777777; /* Gray input focus */
-    --summary-text-color: #92b0ff; /* Lighter blue for summary */
-    --shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Darker shadow */
-    --accent-color: #92b0ff; /* Lighter blue accent */
-    --danger-color: #ff6b6b; /* Lighter red for danger */
-    --primary-color: #92b0ff; /* Lighter blue for dark mode */
-    --primary-dark-color: #7a9cff; /* Darker primary for dark mode hover */
-
-    /* Chart specific colors for dark mode */
-    --chart-text-color: #e0e0e0;
-    --chart-grid-color: #555555;
-
-    /* Specific chart palette colors for Dark Mode (adjust as needed for contrast) */
-    --chart-tax-bar-color: #76FF03; /* Brighter green for taxes */
-    --chart-expenses-palette-1: #9C27B0;
-    --chart-expenses-palette-2: #2196F3;
-    --chart-expenses-palette-3: #4CAF50;
-    --chart-expenses-palette-4: #FFEB3B;
-    --chart-expenses-palette-5: #F44336;
-    --chart-expenses-palette-6: #FF9800;
-    --chart-expenses-palette-7: #673AB7;
-    --chart-expenses-palette-8: #E91E63;
-
-    --chart-pre-tax-palette-1: #00BCD4;
-    --chart-pre-tax-palette-2: #9E9E9E;
-    --chart-pre-tax-palette-3: #8BC34A;
-    --chart-pre-tax-palette-4: #FFC107;
-
-    --chart-post-tax-palette-1: #3F51B5;
-    --chart-post-tax-palette-2: #B0BEC5;
-    --chart-post-tax-palette-3: #E91E63;
-    --chart-post-tax-palette-4: #03A9F4;
-
-    --chart-budget-taxes-color: #F44336;
-    --chart-budget-pre-tax-color: #2196F3;
-    --chart-budget-post-tax-color: #00BCD4;
-    --chart-budget-expenses-color: #FFC107;
-    --chart-budget-remaining-color: #8BC34A;
-    --chart-budget-deficit-color: #E53935;
+    --bg-color: #2c2c2c;
+    --card-bg-color: #3a3a3a;
+    --text-color: #e0e0e0;
+    --header-bg-color: #333333;
+    --header-text-color: #e0e0e0;
+    --button-bg-color: #555555;
+    --button-text-color: #e0e0e0;
+    --input-border-color: #555555;
+    --input-focus-border-color: #777777;
+    --summary-text-color: #92b0ff;
+    --shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    --accent-color: #92b0ff;
+    --danger-color: #ff6b6b;
+    --positive-color: #20c997;
+    --negative-color: #ff6b6b;
+    --balanced-color: #92b0ff;
+    --primary-dark-color: #7a9cff;
 }
 
 /* Base Styles */
-html, body {
+body {
     margin: 0;
-    padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: var(--text-color);
     background-color: var(--bg-color);
     line-height: 1.6;
-    height: 100%; /* Ensure body and html take full viewport height */
-    overflow-x: hidden; /* Prevent horizontal scroll */
-    scroll-behavior: smooth; /* Smooth scrolling for anchors */
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh; /* Ensure body takes at least full viewport height */
+    transition: background-color 0.3s, color 0.3s;
 }
 
 /* Header */
@@ -130,7 +60,6 @@ header {
     justify-content: space-between;
     align-items: center;
     box-shadow: var(--shadow);
-    flex-shrink: 0; /* Prevent header from shrinking */
 }
 
 header h1 {
@@ -148,9 +77,6 @@ header h1 {
     max-width: 900px;
     margin: 20px auto;
     padding: 0 20px;
-    flex-grow: 1; /* Allow main content to grow and fill space */
-    width: 100%; /* Ensure it takes full width */
-    box-sizing: border-box; /* Include padding in width */
 }
 
 /* Budget Section */
@@ -160,6 +86,7 @@ header h1 {
     margin-bottom: 25px;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
+    transition: background-color 0.3s;
 }
 
 .budget-section h2 {
@@ -170,78 +97,50 @@ header h1 {
     padding-bottom: 10px;
 }
 
-/* Form Groups */
+/* Form Groups & Inputs */
 .form-group {
     margin-bottom: 20px;
-    /* Added/Modified for better input scaling within form-grid */
     display: flex;
-    flex-direction: column; /* Stacks label and input vertically */
-    align-items: flex-start; /* Aligns content to the start (left) */
-    width: 100%; /* Ensure form-group itself takes full width available in grid */
-    box-sizing: border-box;
+    flex-direction: column;
 }
 
 .form-group label {
-    display: block;
     margin-bottom: 8px;
     font-weight: bold;
-    color: var(--text-color);
 }
 
-/* input-container (for items like salary, where select and input are together) */
 .input-container {
     display: flex;
-    width: 100%; /* Ensure input-container takes full width within its parent */
-    gap: 10px; /* Space between select and input */
+    width: 100%;
+    gap: 10px;
     align-items: center;
 }
 
-/* salary-input-container specific styles */
-.salary-input-container {
-    flex-wrap: wrap; /* Allows select and input to wrap on smaller screens */
-    gap: 15px; /* Adjust gap for salary input */
-}
-
-.salary-input-container select {
-    flex: 1; /* Allows select to grow but also respect min-width */
-    min-width: 120px; /* Minimum width for the select dropdown */
-    max-width: 150px; /* Maximum width to prevent it from getting too wide */
-}
-
-.salary-input-container input[type="number"] {
-    flex: 2; /* Allows input to take more space than select */
-    min-width: 150px; /* Minimum width for the number input */
-}
-
-/* General input, select, textarea styles (affecting all inputs unless overridden) */
-.form-group input[type="number"],
-.form-group input[type="text"],
-.form-group select:not(.salary-input-container select), /* Exclude salary select here if specific styles are needed elsewhere */
-.form-group textarea {
-    width: 100% !important; /* Force width to 100% */
+.form-control {
+    width: 100%;
     padding: 10px 12px;
     border: 1px solid var(--input-border-color);
     border-radius: 5px;
     background-color: var(--card-bg-color);
     color: var(--text-color);
     font-size: 1em;
-    transition: border-color 0.2s ease-in-out;
-    /* IMPORTANT: Override browser's default behavior */
-    box-sizing: border-box !important; /* Ensure padding/border are included in width */
-    display: block !important; /* Make it a block-level element for full width */
-    flex: 1 1 auto; /* Flex properties for responsive behavior within flex containers */
-    min-width: 0 !important; /* Allow shrinking below content size in flex */
-    max-width: 100% !important; /* Ensure it doesn't exceed 100% */
+    transition: border-color 0.2s ease-in-out, background-color 0.3s, color 0.3s;
+    box-sizing: border-box;
 }
 
-/* Focus Styles */
-.form-group input[type="number"]:focus,
-.form-group input[type="text"]:focus,
-.form-group select:focus,
-.form-group textarea:focus {
+.form-control:focus {
     outline: none;
     border-color: var(--input-focus-border-color);
     box-shadow: 0 0 0 3px rgba(93, 120, 255, 0.2);
+}
+
+.salary-input-container select {
+    flex: 1;
+    max-width: 150px;
+}
+
+.salary-input-container input {
+    flex: 2;
 }
 
 /* Buttons */
@@ -253,18 +152,13 @@ header h1 {
     border-radius: 5px;
     cursor: pointer;
     font-size: 1em;
-    transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
-    margin-top: 10px;
+    transition: background-color 0.2s, transform 0.1s;
     display: inline-block;
 }
 
 .btn:hover {
     background-color: var(--primary-dark-color);
     transform: translateY(-1px);
-}
-
-.btn:active {
-    transform: translateY(0);
 }
 
 .btn-danger {
@@ -281,15 +175,9 @@ header h1 {
     font-size: 1.5em;
     color: var(--header-text-color);
     cursor: pointer;
-    padding: 5px;
-    transition: color 0.2s ease-in-out;
 }
 
-.icon-btn:hover {
-    color: #e0e0e0;
-}
-
-/* Form Grid for multiple inputs */
+/* Form Grid */
 .form-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -297,78 +185,32 @@ header h1 {
     margin-bottom: 20px;
 }
 
-/*
- * Specific rules for inputs within form-grid (should already be covered by general .form-group input rules above,
- * but keeping this for explicit clarity or if minor adjustments are needed in the future).
- * The `form-group` styles within the grid will ensure inputs take full width.
-*/
-.form-grid .form-group input[type="number"],
-.form-grid .form-group input[type="text"],
-.form-grid .form-group select {
-    width: 100% !important;
-    box-sizing: border-box !important;
-    display: block !important;
-    flex: 1 1 auto;
-    min-width: 0 !important;
-    max-width: 100% !important;
-}
-
-
-/* Custom List (for added items) */
+/* Custom List */
 .custom-list {
     margin-top: 20px;
     border-top: 1px solid var(--input-border-color);
     padding-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
 .custom-list-item {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr auto;
+    gap: 10px;
     align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px dashed var(--input-border-color);
-    font-size: 0.95em;
 }
 
-.custom-list-item:last-child {
-    border-bottom: none;
+.add-custom-btn {
+    margin-top: 10px;
 }
 
-.custom-list-item span {
-    flex-grow: 1;
-    padding-right: 10px;
-}
-
-.custom-list-item .remove-btn {
-    background: none;
-    border: none;
-    color: var(--danger-color);
-    cursor: pointer;
-    font-size: 1.2em;
-    margin-left: 10px;
-    transition: color 0.2s ease-in-out;
-}
-
-.custom-list-item .remove-btn:hover {
-    color: #cc0011;
-}
-
-/* Summary Displays */
-.summary-display {
-    background-color: var(--bg-color);
-    padding: 15px;
-    border-radius: 5px;
-    margin-top: 20px;
-    font-size: 1.1em;
-    font-weight: bold;
-    color: var(--summary-text-color);
-    text-align: center;
-}
-
+/* Summary & Results */
 .summary-results {
     display: grid;
     grid-template-columns: 1fr auto;
-    gap: 10px;
+    gap: 12px 20px;
     margin-top: 20px;
     padding-top: 15px;
     border-top: 1px solid var(--input-border-color);
@@ -376,37 +218,80 @@ header h1 {
 
 .summary-results p {
     margin: 0;
-    font-weight: bold;
-    color: var(--text-color);
+    font-weight: 500;
 }
 
 .summary-results span {
+    font-weight: bold;
+    text-align: right;
+}
+
+#remaining-budget-display.positive { color: var(--positive-color); }
+#remaining-budget-display.negative { color: var(--negative-color); }
+#remaining-budget-display.balanced { color: var(--balanced-color); }
+
+.annual-salary-summary {
+    margin-top: 15px;
+    font-size: 1.1em;
     font-weight: bold;
     color: var(--summary-text-color);
     text-align: right;
 }
 
-/* Chart Container Styles */
+#salary-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+#salary-form .btn {
+    align-self: flex-end;
+}
+
+/* Chart Container */
 .chart-container {
     position: relative;
     margin: 25px 0;
     padding: 15px;
     background-color: var(--bg-color);
     border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
     height: 350px;
-    max-height: 400px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
 }
 
-.chart-container canvas {
-    max-width: 100%;
-    max-height: 100%;
-    display: block;
+/* Budget Rule Section */
+.rule-breakdown {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
 }
+
+.breakdown-item {
+    background-color: var(--bg-color);
+    padding: 15px;
+    border-radius: var(--border-radius);
+}
+
+.breakdown-item p {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.95rem;
+}
+
+.breakdown-item p:first-child span {
+    font-weight: bold;
+    color: var(--accent-color);
+    font-size: 1.1rem;
+}
+
+.breakdown-item.status {
+    grid-column: 1 / -1;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+.status-surplus { color: var(--positive-color); }
+.status-deficit { color: var(--negative-color); }
+.status-balanced { color: var(--balanced-color); }
+
 
 /* AI Report Box */
 .ai-report-box {
@@ -414,9 +299,7 @@ header h1 {
     padding: 20px;
     margin-top: 20px;
     border-radius: var(--border-radius);
-    min-height: 150px;
-    line-height: 1.8;
-    color: var(--text-color);
+    min-height: 100px;
     border: 1px dashed var(--input-border-color);
     display: flex;
     align-items: center;
@@ -424,257 +307,12 @@ header h1 {
     text-align: center;
 }
 
-.ai-report-box p {
-    margin: 0;
-}
-
-/* Data Actions (for buttons in Data Management section) */
-.data-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.data-actions .btn {
-    margin-top: 0;
-    flex-grow: 1;
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
-    header h1 {
-        font-size: 1.5em;
-    }
-
-    .container {
-        margin: 15px auto;
-        padding: 0 15px;
-    }
-
-    .budget-section {
-        padding: 20px;
-        margin-bottom: 20px;
-    }
-
     .form-grid {
-        grid-template-columns: 1fr; /* Single column on small screens */
+        grid-template-columns: 1fr;
     }
-
-    .chart-container {
-        height: 300px;
-    }
-}
-
-@media (max-width: 480px) {
-    header {
-        flex-direction: column;
-        text-align: center;
-        gap: 10px;
-    }
-
-    .header-controls {
-        width: 100%;
-        justify-content: center;
-    }
-
-    header h1 {
-        font-size: 1.3em;
-    }
-
-    .btn {
-        width: 100%;
-        box-sizing: border-box;
-        margin-top: 15px;
-    }
-
-    .data-actions .btn {
-        width: 100%;
-    }
-
-    .chart-container {
-        height: 250px;
-    }
-
-    /* Adjust salary input container for very small screens */
-    .salary-input-container {
-        flex-direction: column;
-        gap: 10px;
-    }
-    .salary-input-container select,
-    .salary-input-container input[type="number"] {
-        width: 100%;
-        max-width: none;
-    }
-}
-
-/* 예산 규칙 드롭다운 */
-.rule-select {
-    padding: 10px;
-    border: 1px solid var(--input-border-color);
-    border-radius: var(--border-radius);
-    margin-top: 8px;
-    background: var(--card-bg-color);
-    color: var(--text-color);
-    transition: border-color 0.2s;
-    width: 100%; /* 드롭다운 너비 100% */
-    box-sizing: border-box;
-}
-.rule-select:focus {
-    border-color: var(--input-focus-border-color);
-    outline: none;
-}
-
-/* 규칙 분배 박스 */
-.rule-breakdown {
-    margin-top: 12px;
-    background: var(--bg-color);
-    padding: 16px 20px;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-}
-
-.rule-breakdown .breakdown-item {
-    background-color: var(--card-bg-color);
-    padding: 15px;
-    border-radius: var(--border-radius);
-    border: 1px solid var(--input-border-color);
-}
-
-.rule-breakdown .breakdown-item p {
-    font-size: 0.95rem;
-    color: var(--text-color);
-    margin-bottom: 4px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.rule-breakdown .breakdown-item p:last-child {
-    margin-bottom: 0;
-}
-
-.rule-breakdown .breakdown-item span {
-    font-weight: bold;
-    color: var(--summary-text-color);
-}
-
-.rule-breakdown .breakdown-item.total p {
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: var(--accent-color);
-}
-
-.rule-breakdown .breakdown-item.status p {
-    font-size: 1.1rem;
-    font-weight: bold;
-    text-align: center;
-    color: var(--text-color);
-}
-
-/* 연간 총 급여 표시 p 태그 스타일 */
-.annual-salary-summary {
-    margin-top: 15px;
-    font-size: 1.1em;
-    font-weight: bold;
-    color: var(--summary-text-color);
-    text-align: right;
-    padding-right: 5px;
-}
-
-.annual-salary-summary span {
-    font-weight: bold;
-}
-/* --- "총 급여" 섹션 레이아웃 개선 (기존 코드에 추가) --- */
-
-/* #salary-form (총 급여 폼 전체에 Flexbox 적용) */
-#salary-form {
-    display: flex;
-    flex-direction: column; /* 자식 요소들을 세로로 정렬 */
-    gap: 20px; /* 각 요소 사이의 간격 (form-group, p, button) */
-    /* align-items: flex-start; /* 모든 항목을 왼쪽으로 정렬 */
-}
-
-/* salary-input-container 내부의 select와 input 정렬 */
-.salary-input-container {
-    display: flex; /* 이미 flex로 되어있음 */
-    gap: 15px; /* select와 input 사이의 간격 */
-    align-items: center; /* 세로 중앙 정렬 */
-    width: 100%; /* 부모 .form-group 너비에 맞춰 전체 너비 차지 */
-}
-
-/* 총 급여 주기 선택 (Select Box) 디자인 및 너비 조절 */
-.salary-input-container select#salary-frequency-select {
-    flex: 0 0 auto; /* 크기 고정 (성장/수축하지 않음) */
-    width: 120px; /* 고정 너비 지정. 필요에 따라 조절하세요. */
-    /* 현재 .form-group input[type="number"], .form-group select 등의 공통 스타일을 따르도록 */
-    /* 추가적인 border, padding, background-color 등의 스타일은 .form-control 이나 .form-group select에 의해 이미 적용되고 있음 */
-}
-
-/* 총 급여 입력 필드 (Number Input) */
-.salary-input-container input[type="number"]#salary-gross {
-    flex-grow: 1; /* 남은 공간을 최대한 채우도록 성장 */
-    min-width: 100px; /* 최소 너비 지정 */
-}
-
-/* 연간 총 급여 요약 텍스트 정렬 */
-.annual-salary-summary {
-    width: 100%; /* 부모 #salary-form 너비에 맞춰 전체 너비 차지 */
-    text-align: right; /* 오른쪽 정렬 유지 */
-    margin-top: 0px; /* #salary-form의 gap으로 간격 조절되므로 불필요한 상단 마진 제거 */
-    margin-bottom: 0px; /* 불필요한 하단 마진 제거 */
-    padding-right: 5px; /* 기존 HTML에 맞춰 약간의 패딩 유지 */
-}
-
-/* "저장" 버튼 정렬 */
-#salary-form .btn {
-    align-self: flex-end; /* 부모 flex 컨테이너 (#salary-form) 내에서 자신을 오른쪽으로 정렬 */
-    margin-top: 0; /* #salary-form의 gap으로 간격 조절되므로 불필요한 상단 마진 제거 */
-}
-
-/* --- 기존 공통 input/select 스타일에 대한 확인 및 조정 --- */
-/*
-   이 부분은 이미 기존 CSS에 잘 정의되어 있습니다.
-   특히 `.form-group input[type="number"], .form-group select`에
-   `width: 100% !important; box-sizing: border-box !important;` 등의 속성이
-   `form-control` 클래스를 통해 적용되어 대부분의 필드에 일관된 스타일을 제공하고 있습니다.
-   `salary-input-container select`에 대한 특정 `width`를 부여하여
-   다른 `form-grid` 내부의 `select`와는 다르게 동작하도록 만듭니다.
-*/
-.form-group input[type="number"],
-.form-group input[type="text"],
-.form-group select, /* 이 셀렉터에 salary-input-container select가 포함되므로 위에서 덮어쓰기 가능 */
-.form-group textarea {
-    /* 기존 스타일 유지 */
-    width: 100% !important;
-    padding: 10px 12px;
-    border: 1px solid var(--input-border-color);
-    border-radius: 5px;
-    background-color: var(--card-bg-color);
-    color: var(--text-color);
-    font-size: 1em;
-    transition: border-color 0.2s ease-in-out;
-    box-sizing: border-box !important;
-    display: block !important;
-    flex: 1 1 auto;
-    min-width: 0 !important;
-    max-width: 100% !important;
-}
-
-/* 모바일 반응형 조절 (기존 @media (max-width: 480px) 블록 안에 추가 또는 수정) */
-@media (max-width: 480px) {
-    /* 기존 모바일 스타일 유지 */
-    .salary-input-container {
-        flex-direction: column; /* 세로로 쌓이도록 변경 */
-        align-items: flex-start; /* 왼쪽 정렬 */
-        gap: 10px;
-    }
-    .salary-input-container select,
-    .salary-input-container input[type="number"] {
-        width: 100%; /* 모바일에서 전체 너비 */
-        max-width: none; /* 최대 너비 제한 해제 */
+    .custom-list-item {
+        grid-template-columns: 1fr;
     }
 }
