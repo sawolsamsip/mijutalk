@@ -39,6 +39,21 @@
         </section>
 
         <section class="budget-section">
+            <h2 data-i18n-key="section_default_frequency_title">기본 항목 주기 설정</h2>
+            <div class="form-group">
+                <label for="default-item-frequency-select" data-i18n-key="label_default_frequency">기본 지출/항목 주기:</label>
+                <div class="input-container">
+                    <select id="default-item-frequency-select" class="form-control" onchange="updateDisplay()">
+                        <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
+                        <option value="annually" data-i18n-key="frequency_annually">연간</option>
+                        <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
+                        <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <section class="budget-section">
             <h2 data-i18n-key="section_taxes_title">세금</h2>
             <div class="form-group">
                 <label for="tax-frequency-select" data-i18n-key="label_frequency">세금 주기:</label>
