@@ -60,10 +60,10 @@ const expenseInputs = {
 };
 
 // Custom Lists
-const customTaxList = document.getElementById('custom-tax-list');
-const customPreTaxDeductList = document.getElementById('custom-pre-tax-deduct-list');
-const customPostTaxDeductList = document.getElementById('custom-post-tax-deduct-list');
-const customExpenseList = document.getElementById('custom-expense-list');
+let customTaxList = null;
+let customPreTaxDeductList = null;
+let customPostTaxDeductList = null;
+let customExpenseList = null;
 
 // Buttons & Toggles
 const addTaxBtn = document.getElementById('add-tax-btn');
@@ -1191,6 +1191,11 @@ function applyBudgetRule(netSalary, totalExpenses, totalTaxes, totalPreTaxDeduct
 
 // 12. 이벤트 리스너 설정
 document.addEventListener('DOMContentLoaded', () => {
+    customTaxList = document.getElementById('custom-tax-list');
+    customPreTaxDeductList = document.getElementById('custom-pre-tax-deduct-list');
+    customPostTaxDeductList = document.getElementById('custom-post-tax-deduct-list');
+    customExpenseList = document.getElementById('custom-expense-list');
+    
     loadData(); // DOM 로드 후 저장된 데이터 로드
     initializeCharts(); // 차트 초기화 (데이터 로드 후)
     // updateDisplay()는 loadData() 내부에서 이미 호출되므로 중복 호출 제거.
