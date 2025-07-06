@@ -711,10 +711,10 @@ function updateCharts() {
     const preTaxColors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#E7E9ED']; // 예시 색상
 
     if (preTaxDeductChartInstance) {
-        preTaxDeductChartInstance.destroy();
+    preTaxDeductChartInstance.destroy();
     }
-    preTaxDeductChartInstance = createChart('preTaxDeductionsChart', translations[data.currentLanguage].chart_pre_tax, combinedPreTaxAmounts, combinedPreTaxLabels, preTaxColors);
-
+    preTaxDeductChartInstance = createChart('pre-tax-deduct-chart', translations[data.currentLanguage].chart_pre_tax_deductions_title, preTaxDeductAmounts, preTaxDeductLabels, preTaxDeductColors);
+        
     // Post-Tax Deductions Chart
     const postTaxLabels = Object.keys(data.postTaxDeductions)
         .filter(key => key !== 'custom' && data.postTaxDeductions[key] > 0)
