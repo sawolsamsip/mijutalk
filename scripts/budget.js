@@ -688,9 +688,6 @@ function updateCharts() {
     if (taxChartInstance) {
         taxChartInstance.destroy();
     }
-    if (taxChartInstance) {
-        taxChartInstance.destroy();
-    }
     taxChartInstance = createChart('tax-chart', translations[data.currentLanguage].chart_taxes_title, taxAmounts, taxLabels, taxColors);
     // Pre-Tax Deductions Chart
     const preTaxLabels = Object.keys(data.preTaxDeductions)
@@ -713,7 +710,7 @@ function updateCharts() {
     if (preTaxDeductChartInstance) {
     preTaxDeductChartInstance.destroy();
     }
-    preTaxDeductChartInstance = createChart('pre-tax-deduct-chart', translations[data.currentLanguage].chart_pre_tax_deductions_title, preTaxDeductAmounts, preTaxDeductLabels, preTaxDeductColors);
+    preTaxDeductChartInstance = createChart('pre-tax-deduct-chart', translations[data.currentLanguage].chart_pre_tax_deductions_title, combinedPreTaxAmounts, combinedPreTaxLabels, preTaxColors);
         
     // Post-Tax Deductions Chart
     const postTaxLabels = Object.keys(data.postTaxDeductions)
@@ -736,7 +733,7 @@ function updateCharts() {
     if (postTaxDeductChartInstance) {
         postTaxDeductChartInstance.destroy();
     }
-    postTaxDeductChartInstance = createChart('postTaxDeductionsChart', translations[data.currentLanguage].chart_post_tax, combinedPostTaxAmounts, combinedPostTaxLabels, postTaxColors);
+    postTaxDeductChartInstance = createChart('post-tax-deduct-chart', translations[data.currentLanguage].chart_post_tax, combinedPostTaxAmounts, combinedPostTaxLabels, postTaxColors);
 
 
     // Expenses Chart
