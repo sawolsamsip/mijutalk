@@ -24,17 +24,17 @@
                 <div class="form-group">
                     <label for="salary-gross" data-i18n-key="label_gross_salary">총 급여</label>
                     <div class="input-container salary-input-container">
-                        <select id="salary-frequency-select" class="form-control" onchange="updateDisplay()">
+                        <select id="salary-frequency-select" class="form-control">
                             <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
                             <option value="annually" data-i18n-key="frequency_annually">연간</option>
                             <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
                             <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
                         </select>
-                        <input type="number" id="salary-gross" class="form-control" placeholder="0.00" value="0" min="0" oninput="updateDisplay()">
+                        <input type="number" id="salary-gross" class="form-control" placeholder="0.00" value="0" min="0">
                     </div>
                 </div>
                 <p class="annual-salary-summary"><span data-i18n-key="label_annual_salary">연간 총 급여:</span> <span id="annual-salary-summary-display">$0.00</span></p>
-                <button type="submit" class="btn" data-i18n-key="btn_save">저장</button>
+                <button type="submit" class="btn" data-i18n-key="btn_save" onclick="event.preventDefault(); saveData(); alert(translations[data.currentLanguage].alert_data_saved);">저장</button>
             </form>
         </section>
 
@@ -43,7 +43,7 @@
             <div class="form-group">
                 <label for="default-item-frequency-select" data-i18n-key="label_default_frequency">기본 지출/항목 주기:</label>
                 <div class="input-container">
-                    <select id="default-item-frequency-select" class="form-control" onchange="updateDisplay()">
+                    <select id="default-item-frequency-select" class="form-control">
                         <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
                         <option value="annually" data-i18n-key="frequency_annually">연간</option>
                         <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
@@ -58,7 +58,7 @@
             <div class="form-group">
                 <label for="tax-frequency-select" data-i18n-key="label_frequency">세금 주기:</label>
                 <div class="input-container">
-                    <select id="tax-frequency-select" class="form-control" onchange="updateDisplay()">
+                    <select id="tax-frequency-select" class="form-control">
                         <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
                         <option value="annually" data-i18n-key="frequency_annually">연간</option>
                         <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
@@ -69,37 +69,26 @@
             <div class="form-grid">
                 <div class="form-group">
                     <label for="tax-federal-1" data-i18n-key="label_federal_withholding">연방 원천징수</label>
-                    <div class="input-container">
-                        <input type="number" id="tax-federal-1" class="form-control" min="0" value="0" oninput="updateDisplay()">
-                    </div>
+                    <input type="number" id="tax-federal-1" class="form-control" min="0" value="0">
                 </div>
                 <div class="form-group">
                     <label for="tax-state-1" data-i18n-key="label_state_tax">주 세금</label>
-                    <div class="input-container">
-                        <input type="number" id="tax-state-1" class="form-control" min="0" value="0" oninput="updateDisplay()">
-                    </div>
+                    <input type="number" id="tax-state-1" class="form-control" min="0" value="0">
                 </div>
                 <div class="form-group">
                     <label for="tax-oasdi-1" data-i18n-key="label_oasdi">OASDI</label>
-                    <div class="input-container">
-                        <input type="number" id="tax-oasdi-1" class="form-control" min="0" value="0" oninput="updateDisplay()">
-                    </div>
+                    <input type="number" id="tax-oasdi-1" class="form-control" min="0" value="0">
                 </div>
                 <div class="form-group">
                     <label for="tax-medicare-1" data-i18n-key="label_medicare">메디케어</label>
-                    <div class="input-container">
-                        <input type="number" id="tax-medicare-1" class="form-control" min="0" value="0" oninput="updateDisplay()">
-                    </div>
+                    <input type="number" id="tax-medicare-1" class="form-control" min="0" value="0">
                 </div>
                 <div class="form-group">
                     <label for="tax-casdi-1" data-i18n-key="label_ca_sdi">CA SDI</label>
-                    <div class="input-container">
-                        <input type="number" id="tax-casdi-1" class="form-control" min="0" value="0" oninput="updateDisplay()">
-                    </div>
+                    <input type="number" id="tax-casdi-1" class="form-control" min="0" value="0">
                 </div>
             </div>
-            <div class="custom-list" id="tax-custom-list">
-            </div>
+            <div class="custom-list" id="tax-custom-list"></div>
             <button class="btn add-custom-btn" data-type="tax" data-i18n-key="btn_add_item">항목 추가</button>
             <div class="chart-container">
                 <canvas id="tax-chart"></canvas>
@@ -108,45 +97,25 @@
 
         <section class="budget-section">
             <h2 data-i18n-key="section_pre_tax_title">세전 공제</h2>
-            <div class="form-group">
-                <label for="pre-tax-frequency-select" data-i18n-key="label_frequency">세전 공제 주기:</label>
-                <div class="input-container">
-                    <select id="pre-tax-frequency-select" class="form-control" onchange="updateDisplay()">
-                        <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
-                        <option value="annually" data-i18n-key="frequency_annually">연간</option>
-                        <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
-                        <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
-                    </select>
-                </div>
-            </div>
             <div class="form-grid">
                 <div class="form-group">
                     <label for="deduct-medical-1" data-i18n-key="label_medical_premium">의료 보험료</label>
-                    <div class="input-container">
-                        <input type="number" id="deduct-medical-1" class="form-control" min="0" value="0" oninput="updateDisplay()">
-                    </div>
+                    <input type="number" id="deduct-medical-1" class="form-control" min="0" value="0">
                 </div>
                 <div class="form-group">
                     <label for="deduct-dental-1" data-i18n-key="label_dental_premium">치과 보험료</label>
-                    <div class="input-container">
-                        <input type="number" id="deduct-dental-1" class="form-control" min="0" value="0" oninput="updateDisplay()">
-                    </div>
+                    <input type="number" id="deduct-dental-1" class="form-control" min="0" value="0">
                 </div>
                 <div class="form-group">
                     <label for="deduct-vision-1" data-i18n-key="label_vision_premium">시력 보험료</label>
-                    <div class="input-container">
-                        <input type="number" id="deduct-vision-1" class="form-control" min="0" value="0" oninput="updateDisplay()">
-                    </div>
+                    <input type="number" id="deduct-vision-1" class="form-control" min="0" value="0">
                 </div>
                 <div class="form-group">
                     <label for="deduct-401k-trad-1" data-i18n-key="label_401k_traditional">401k 일반</label>
-                    <div class="input-container">
-                        <input type="number" id="deduct-401k-trad-1" class="form-control" min="0" value="0" oninput="updateDisplay()">
-                    </div>
+                    <input type="number" id="deduct-401k-trad-1" class="form-control" min="0" value="0">
                 </div>
             </div>
-            <div class="custom-list" id="pre-tax-custom-list">
-            </div>
+            <div class="custom-list" id="pre-tax-custom-list"></div>
             <button class="btn add-custom-btn" data-type="pre-tax" data-i18n-key="btn_add_item">항목 추가</button>
             <div class="chart-container">
                 <canvas id="pre-tax-deduct-chart"></canvas>
@@ -155,45 +124,25 @@
 
         <section class="budget-section">
             <h2 data-i18n-key="section_post_tax_title">세후 공제</h2>
-            <div class="form-group">
-                <label for="post-tax-frequency-select" data-i18n-key="label_frequency">세후 공제 주기:</label>
-                <div class="input-container">
-                    <select id="post-tax-frequency-select" class="form-control" onchange="updateDisplay()">
-                        <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
-                        <option value="annually" data-i18n-key="frequency_annually">연간</option>
-                        <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
-                        <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
-                    </select>
-                </div>
-            </div>
             <div class="form-grid">
                 <div class="form-group">
                     <label for="deduct-spp-1" data-i18n-key="label_spp">주식 구매 계획</label>
-                    <div class="input-container">
-                        <input type="number" id="deduct-spp-1" class="form-control" min="0" value="0" oninput="updateDisplay()">
-                    </div>
+                    <input type="number" id="deduct-spp-1" class="form-control" min="0" value="0">
                 </div>
                 <div class="form-group">
                     <label for="deduct-adnd-1" data-i18n-key="label_adnd">AD&D</label>
-                    <div class="input-container">
-                        <input type="number" id="deduct-adnd-1" class="form-control" min="0" value="0" oninput="updateDisplay()">
-                    </div>
+                    <input type="number" id="deduct-adnd-1" class="form-control" min="0" value="0">
                 </div>
                 <div class="form-group">
                     <label for="deduct-401k-roth-1" data-i18n-key="label_401k_roth">401k Roth</label>
-                    <div class="input-container">
-                        <input type="number" id="deduct-401k-roth-1" class="form-control" min="0" value="0" oninput="updateDisplay()">
-                    </div>
+                    <input type="number" id="deduct-401k-roth-1" class="form-control" min="0" value="0">
                 </div>
                 <div class="form-group">
                     <label for="deduct-ltd-1" data-i18n-key="label_ltd">장기 장애</label>
-                    <div class="input-container">
-                        <input type="number" id="deduct-ltd-1" class="form-control" min="0" value="0" oninput="updateDisplay()">
-                    </div>
+                    <input type="number" id="deduct-ltd-1" class="form-control" min="0" value="0">
                 </div>
             </div>
-            <div class="custom-list" id="post-tax-custom-list">
-            </div>
+            <div class="custom-list" id="post-tax-custom-list"></div>
             <button class="btn add-custom-btn" data-type="post-tax" data-i18n-key="btn_add_item">항목 추가</button>
             <div class="chart-container">
                 <canvas id="post-tax-deduct-chart"></canvas>
@@ -202,81 +151,49 @@
 
         <section class="budget-section">
             <h2 data-i18n-key="section_expenses_title">지출 관리</h2>
-            <div class="form-group">
-                <label for="expense-frequency-select" data-i18n-key="label_frequency">지출 주기:</label>
-                <div class="input-container">
-                    <select id="expense-frequency-select" class="form-control" onchange="updateDisplay()">
-                        <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
-                        <option value="annually" data-i18n-key="frequency_annually">연간</option>
-                        <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
-                        <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
-                    </select>
-                </div>
-            </div>
             <div class="form-grid">
                 <div class="form-group">
                     <label for="exp-rent-1" data-i18n-key="label_rent_mortgage">월세/주택담보대출</label>
-                    <div class="input-container">
-                        <input type="number" id="exp-rent-1" class="form-control" min="0" value="0" oninput="updateDisplay()">
-                    </div>
+                    <input type="number" id="exp-rent-1" class="form-control" min="0" value="0">
                 </div>
                 <div class="form-group">
                     <label for="exp-utilities-1" data-i18n-key="label_utilities">공과금</label>
-                    <div class="input-container">
-                        <input type="number" id="exp-utilities-1" class="form-control" min="0" value="0" oninput="updateDisplay()">
-                    </div>
+                    <input type="number" id="exp-utilities-1" class="form-control" min="0" value="0">
                 </div>
                 <div class="form-group">
                     <label for="exp-internet-1" data-i18n-key="label_internet">인터넷</label>
-                    <div class="input-container">
-                        <input type="number" id="exp-internet-1" class="form-control" min="0" value="0" oninput="updateDisplay()">
-                    </div>
+                    <input type="number" id="exp-internet-1" class="form-control" min="0" value="0">
                 </div>
                 <div class="form-group">
                     <label for="exp-phone-1" data-i18n-key="label_phone">휴대폰 요금</label>
-                    <div class="input-container">
-                        <input type="number" id="exp-phone-1" class="form-control" min="0" value="0" oninput="updateDisplay()">
-                    </div>
+                    <input type="number" id="exp-phone-1" class="form-control" min="0" value="0">
                 </div>
                 <div class="form-group">
                     <label for="exp-groceries-1" data-i18n-key="label_groceries">식료품</label>
-                    <div class="input-container">
-                        <input type="number" id="exp-groceries-1" class="form-control" min="0" value="0" oninput="updateDisplay()">
-                    </div>
+                    <input type="number" id="exp-groceries-1" class="form-control" min="0" value="0">
                 </div>
                 <div class="form-group">
                     <label for="exp-dining-1" data-i18n-key="label_dining_out">외식</label>
-                    <div class="input-container">
-                        <input type="number" id="exp-dining-1" class="form-control" min="0" value="0" oninput="updateDisplay()">
-                    </div>
+                    <input type="number" id="exp-dining-1" class="form-control" min="0" value="0">
                 </div>
                 <div class="form-group">
                     <label for="exp-transport-1" data-i18n-key="label_transportation">교통비</label>
-                    <div class="input-container">
-                        <input type="number" id="exp-transport-1" class="form-control" min="0" value="0" oninput="updateDisplay()">
-                    </div>
+                    <input type="number" id="exp-transport-1" class="form-control" min="0" value="0">
                 </div>
                 <div class="form-group">
                     <label for="exp-shopping-1" data-i18n-key="label_shopping">쇼핑</label>
-                    <div class="input-container">
-                        <input type="number" id="exp-shopping-1" class="form-control" min="0" value="0" oninput="updateDisplay()">
-                    </div>
+                    <input type="number" id="exp-shopping-1" class="form-control" min="0" value="0">
                 </div>
                 <div class="form-group">
                     <label for="exp-health-1" data-i18n-key="label_health_wellness">건강/웰빙</label>
-                    <div class="input-container">
-                        <input type="number" id="exp-health-1" class="form-control" min="0" value="0" oninput="updateDisplay()">
-                    </div>
+                    <input type="number" id="exp-health-1" class="form-control" min="0" value="0">
                 </div>
                 <div class="form-group">
                     <label for="exp-entertainment-1" data-i18n-key="label_entertainment">오락</label>
-                    <div class="input-container">
-                        <input type="number" id="exp-entertainment-1" class="form-control" min="0" value="0" oninput="updateDisplay()">
-                    </div>
+                    <input type="number" id="exp-entertainment-1" class="form-control" min="0" value="0">
                 </div>
             </div>
-            <div class="custom-list" id="expenses-custom-list">
-            </div>
+            <div class="custom-list" id="expenses-custom-list"></div>
             <button class="btn add-custom-btn" data-type="expense" data-i18n-key="btn_add_item">항목 추가</button>
             <div class="chart-container">
                 <canvas id="expenses-chart"></canvas>
@@ -304,7 +221,7 @@
             <div class="form-group">
                 <label for="budget-rule-select" data-i18n-key="label_budget_rule_select">예산 규칙 선택:</label>
                 <div class="input-container">
-                    <select id="budget-rule-select" class="form-control rule-select" onchange="updateDisplay()">
+                    <select id="budget-rule-select" class="form-control rule-select">
                         <option value="50-30-20" data-i18n-key="rule_50_30_20">50/30/20 (필수/원하는 것/저축)</option>
                         <option value="70-20-10" data-i18n-key="rule_70_20_10">70/20/10 (필수/원하는 것/저축)</option>
                         <option value="80-20" data-i18n-key="rule_80_20">80/20 (필수/저축)</option>
@@ -315,12 +232,13 @@
                 <div class="breakdown-item">
                     <p><span data-i18n-key="needs_label">필수 지출 (Needs)</span>:</p>
                     <p><span data-i18n-key="label_rule">규칙</span>: <span id="rule-needs-display">$0.00</span></p>
-<p><span data-i18n-key="label_actual">실제</span>: <span id="actual-needs-display">$0.00</span></p>
+                    <p><span data-i18n-key="label_actual">실제</span>: <span id="actual-needs-display">$0.00</span></p>
                 </div>
                 <div class="breakdown-item">
                     <p><span data-i18n-key="wants_label">원하는 지출 (Wants)</span>:</p>
                     <p><span data-i18n-key="label_rule">규칙</span>: <span id="rule-wants-display">$0.00</span></p>
                     <p><span data-i18n-key="label_actual">실제</span>: <span id="actual-wants-display">$0.00</span></p>
+                </div>
                 <div class="breakdown-item">
                     <p><span data-i18n-key="savings_label">저축 (Savings)</span>:</p>
                     <p><span data-i18n-key="label_rule">규칙</span>: <span id="rule-savings-display">$0.00</span></p>
@@ -352,20 +270,14 @@
             <h2 data-i18n-key="section_data_title">데이터 관리</h2>
             <div class="form-grid">
                 <div class="form-group">
-                    <div class="input-container">
-                        <button id="export-json-btn" class="btn" data-i18n-key="btn_export">JSON 내보내기</button>
-                    </div>
+                    <button id="export-json-btn" class="btn" data-i18n-key="btn_export">JSON 내보내기</button>
                 </div>
                 <div class="form-group">
-                    <div class="input-container">
-                        <button id="import-json-btn" class="btn" data-i18n-key="btn_import">JSON 가져오기</button>
-                        <input type="file" id="import-json-input" class="form-control" accept=".json" style="display: none;">
-                    </div>
+                    <button id="import-json-btn" class="btn" data-i18n-key="btn_import">JSON 가져오기</button>
+                    <input type="file" id="import-json-input" accept=".json" style="display: none;">
                 </div>
                 <div class="form-group">
-                    <div class="input-container">
-                        <button id="clear-all-data-btn" class="btn btn-danger" data-i18n-key="btn_clear_all_data">모든 데이터 지우기</button>
-                    </div>
+                    <button id="clear-all-data-btn" class="btn btn-danger" data-i18n-key="btn_clear_all_data">모든 데이터 지우기</button>
                 </div>
             </div>
         </section>
