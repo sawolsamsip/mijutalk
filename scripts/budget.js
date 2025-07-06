@@ -109,14 +109,15 @@ function calculateBudget() {
 
 // 4. UI 업데이트 & 렌더링
 function formatCurrency(amount) {
+    // 숫자 서식(쉼표 등)은 언어 설정에 맞추고, 통화 기호는 '$'로 고정합니다.
     const lang = data.currentLanguage === 'ko' ? 'ko-KR' : 'en-US';
-    const currency = data.currency; // 고정된 화폐 단위 사용
-
-    return new Intl.NumberFormat(lang, {
-        style: 'currency',
-        currency: currency,
-        minimumFractionDigits: 2
+    
+    const numberPart = new Intl.NumberFormat(lang, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
     }).format(amount);
+
+    return `$${numberPart}`;
 }
 
 function updateDisplay() {
@@ -327,7 +328,11 @@ function updateCharts() {
         let labels = [], amounts = [];
         for(const key in items) {
             if(key !== 'custom' && items[key] > 0) {
-                labels.push(translations[lang][`label_${key.replace(/-/g, '_')}`] || key);
+                // HTML id에서 숫자 제거 (예: 'tax-federal-1' -> 'tax-federal')
+                const cleanKey = key.replace(/-\d$/, ''); 
+                // 번역 키 형식으로 변환 (예: 'tax-federal' -> 'label_tax_federal')
+                const translationKey = `label_${cleanKey.replace(/-/g, '_')}`;
+                labels.push(translations[lang][translationKey] || key);
                 amounts.push(convertToAnnual(items[key], sectionFrequency));
             }
         }
@@ -358,6 +363,7 @@ function updateCharts() {
     const filteredLabels = overallLabels.filter((_, i) => overallData[i] > 0);
     budgetDistributionChartInstance = createOrUpdateChart(budgetDistributionChartInstance, 'budget-distribution-chart', translations[lang].chart_budget_distribution, filteredAmounts, filteredLabels);
 }
+
 
 // 9. 예산 규칙
 function applyBudgetRule(netSalary, totalAnnualExpenses) {
