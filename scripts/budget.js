@@ -820,8 +820,7 @@ function updateDisplay() {
 
 
     // 순 급여 계산 (Gross - All Deductions)
-    const netSalary = monthlyGrossSalaryForCalculation - totalTaxes - totalPreTaxDeductions - totalPostTaxDeductio
-    ns;
+    const netSalary = monthlyGrossSalaryForCalculation - totalTaxes - totalPreTaxDeductions - totalPostTaxDeductions;
 
     const remainingBudget = netSalary - totalExpenses;
 
