@@ -757,7 +757,7 @@ function updateCharts() {
     if (expensesChartInstance) {
         expensesChartInstance.destroy();
     }
-    expensesChartInstance = createChart('expensesChart', translations[data.currentLanguage].chart_expenses, combinedExpenseAmounts, combinedExpenseLabels, expenseColors);
+    expensesChartInstance = createChart('expenses-chart', translations[data.currentLanguage].chart_expenses, combinedExpenseAmounts, combinedExpenseLabels, expenseColors);
 
 
     // Overall Budget Distribution Chart
