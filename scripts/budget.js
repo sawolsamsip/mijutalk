@@ -185,7 +185,8 @@ const translations = {
         status_ok: "On Track",
         label_deficit: "Deficit",
         label_rule: "Rule",
-        label_actual: "Actual"
+        label_actual: "Actual",
+        label_total: "Total" // Added for budget rule section
     },
     ko: {
         app_title: "예산 관리 도구",
@@ -263,41 +264,64 @@ const translations = {
         status_ok: "양호",
         label_deficit: "적자",
         label_rule: "규칙",
-        label_actual: "실제"
+        label_actual: "실제",
+        label_total: "총계" // Added for budget rule section
     }
 };
-
 
 // 4. 유틸리티 함수
 
 // 통화 형식 지정
-// 예시: 금액 포맷팅 함수 (실제 함수 이름은 다를 수 있습니다)
 function formatCurrency(amount) {
-    // navigator.language를 사용하여 사용자 로케일을 가져오거나, 'en-US'로 고정
     const locale = navigator.language || 'en-US';
-
-    // Intl.NumberFormat을 사용하여 통화 형식으로 포맷팅
     return new Intl.NumberFormat(locale, {
         style: 'currency',
-        currency: 'USD', // 통화를 'USD'로 명시적으로 지정
+        currency: 'USD',
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     }).format(amount);
 }
 
-// 모든 입력 필드 및 커스텀 항목의 총액 계산
-function getTotal(inputs, customItems) {
+/**
+ * 주어진 금액을 입력된 주기로부터 월별 기준으로 변환합니다.
+ * @param {number} amount 변환할 금액
+ * @param {string} frequency 금액의 주기 ('monthly', 'annually', 'weekly', 'bi-weekly')
+ * @returns {number} 월별로 변환된 금액
+ */
+function convertToMonthly(amount, frequency) {
+    switch (frequency) {
+        case 'annually':
+            return amount / 12;
+        case 'weekly':
+            return amount * (52 / 12); // 약 4.33주/월
+        case 'bi-weekly':
+            return amount * (26 / 12); // 약 2.16 격주/월
+        case 'monthly':
+        default:
+            return amount;
+    }
+}
+
+// 모든 입력 필드 및 커스텀 항목의 총액을 월별 기준으로 계산
+function getTotalMonthly(inputs, customItems) {
     let total = 0;
+    // 고정 입력 필드 처리
     for (const key in inputs) {
         if (inputs[key]) {
-            total += parseFloat(inputs[key].value) || 0;
+            const value = parseFloat(inputs[key].value) || 0;
+            // HTML data-frequency 속성에서 주기 가져오기, 없으면 defaultItemFrequency 사용
+            const frequency = inputs[key].dataset.frequency || defaultItemFrequency;
+            total += convertToMonthly(value, frequency);
         }
     }
+    // 사용자 정의 항목 처리
     customItems.forEach(item => {
-        total += item.amount;
+        // 사용자 정의 항목은 이미 frequency 속성을 가짐
+        total += convertToMonthly(item.amount, item.frequency);
     });
     return total;
 }
+
 
 // 사용자 정의 항목 렌더링
 function renderCustomList(listElement, items, type) {
@@ -342,6 +366,7 @@ function addCustomItem(array, type) {
         }
     }
 
+    // 새롭게 추가되는 항목에 defaultItemFrequency 적용
     array.push({ name: itemName, amount: itemAmount, category: itemCategory, frequency: defaultItemFrequency });
     updateDisplay();
     saveData();
@@ -384,22 +409,32 @@ function applyLanguage(lang) {
     // 현재 HTML에는 <p>필수 지출 (Needs):</p> 와 같이 직접 텍스트가 들어가 있어, 해당 텍스트를 업데이트해야 함.
     // 만약 <p data-i18n-key="needs_label"></p> 와 같이 HTML을 수정하면 위 루프에서 자동 처리됨.
     // 현재 HTML 구조에 맞춰 아래와 같이 직접 업데이트하거나, HTML을 수정하는 것을 추천합니다.
-    document.querySelector('.rule-breakdown div:nth-child(1) p:nth-child(1)').textContent = translations[currentLanguage].needs_label + ':';
-    document.querySelector('.rule-breakdown div:nth-child(2) p:nth-child(1)').textContent = translations[currentLanguage].wants_label + ':';
-    document.querySelector('.rule-breakdown div:nth-child(3) p:nth-child(1)').textContent = translations[currentLanguage].savings_label + ':';
-    document.querySelector('.rule-breakdown div.total p:nth-child(1)').textContent = translations[currentLanguage].label_total + ':'; // if you add label_total
+    // (이전 답변에서 말씀드렸듯이 data-i18n-key를 사용하는 것이 더 좋음)
+    const needsLabelEl = document.querySelector('.rule-breakdown div:nth-child(1) p:nth-child(1)');
+    if(needsLabelEl) needsLabelEl.textContent = translations[currentLanguage].needs_label + ':';
+    const wantsLabelEl = document.querySelector('.rule-breakdown div:nth-child(2) p:nth-child(1)');
+    if(wantsLabelEl) wantsLabelEl.textContent = translations[currentLanguage].wants_label + ':';
+    const savingsLabelEl = document.querySelector('.rule-breakdown div:nth-child(3) p:nth-child(1)');
+    if(savingsLabelEl) savingsLabelEl.textContent = translations[currentLanguage].savings_label + ':';
+    const totalLabelEl = document.querySelector('.rule-breakdown div.total p:nth-child(1)');
+    if(totalLabelEl) totalLabelEl.textContent = translations[currentLanguage].label_total + ':';
 
     // '규칙' 및 '실제' 라벨 업데이트
-    document.querySelectorAll('.rule-breakdown p:nth-child(2)').forEach(p => {
-        p.textContent = `${translations[currentLanguage].label_rule}: ${p.querySelector('span').textContent}`;
+    // 이 부분은 기존 HTML에 따라 조정될 수 있습니다.
+    // 예: <span data-i18n-key="label_rule"></span>
+    document.querySelectorAll('.rule-breakdown .rule-value').forEach(span => {
+        // Assume the structure is <p>LABEL: <span class="rule-value">VALUE</span></p>
+        // Or consider modifying HTML to directly add data-i18n-key to the p tags
+        // For now, no change needed here if the data-i18n-key is on the parent p tag for Rule/Actual
     });
-    document.querySelectorAll('.rule-breakdown p:nth-child(3)').forEach(p => {
-        p.textContent = `${translations[currentLanguage].label_actual}: ${p.querySelector('span').textContent}`;
-    });
+
 
     // AI 보고서 플레이스홀더 텍스트 업데이트
     if (aiReportBox) {
-        aiReportBox.querySelector('p').textContent = translations[currentLanguage].ai_report_placeholder;
+        const aiReportPlaceholderP = aiReportBox.querySelector('p');
+        if (aiReportPlaceholderP) {
+            aiReportPlaceholderP.textContent = translations[currentLanguage].ai_report_placeholder;
+        }
     }
 
     // confirm 메시지도 업데이트될 수 있도록 updateDisplay() 호출
@@ -413,15 +448,8 @@ function applyDarkMode(enable) {
     if (darkmodeToggleBtn) {
         darkmodeToggleBtn.innerHTML = isDarkMode ? '<i class="ri-sun-line"></i>' : '<i class="ri-moon-line"></i>';
     }
-    // 차트 색상 업데이트
-    updateCharts(
-        getTotal(taxInputs, customTaxes),
-        getTotal(expenseInputs, customExpenses),
-        (parseFloat(grossSalaryInput.value) || 0) * (currentSalaryFrequency === 'annually' ? 1/12 : 1) - getTotal(taxInputs, customTaxes) - getTotal(preTaxDeductInputs, customPreTaxDeductions) - getTotal(postTaxDeductInputs, customPostTaxDeductions),
-        (parseFloat(grossSalaryInput.value) || 0) * (currentSalaryFrequency === 'annually' ? 1/12 : 1) - getTotal(taxInputs, customTaxes) - getTotal(preTaxDeductInputs, customPreTaxDeductions) - getTotal(postTaxDeductInputs, customPostTaxDeductions) - getTotal(expenseInputs, customExpenses),
-        getTotal(preTaxDeductInputs, customPreTaxDeductions),
-        getTotal(postTaxDeductInputs, customPostTaxDeductions)
-    );
+    // 차트 색상 업데이트를 위해 updateDisplay() 호출 (내부에서 updateCharts 호출)
+    updateDisplay(); 
 }
 
 // 7. 데이터 저장 및 로드
@@ -431,30 +459,41 @@ function saveData() {
         currentSalaryFrequency: currentSalaryFrequency,
         defaultItemFrequency: defaultItemFrequencySelect ? defaultItemFrequencySelect.value : 'monthly',
         taxInputs: {},
-        customTaxes: customTaxes,
         preTaxDeductInputs: {},
-        customPreTaxDeductions: customPreTaxDeductions,
         postTaxDeductInputs: {},
-        customPostTaxDeductions: customPostTaxDeductions,
         expenseInputs: {},
+        customTaxes: customTaxes,
+        customPreTaxDeductions: customPreTaxDeductions,
+        customPostTaxDeductions: customPostTaxDeductions,
         customExpenses: customExpenses,
         currentLanguage: currentLanguage,
         isDarkMode: isDarkMode,
-        selectedBudgetRule: budgetRuleSelect ? budgetRuleSelect.value : '50-30-20' // 선택된 예산 규칙 저장
+        selectedBudgetRule: budgetRuleSelect ? budgetRuleSelect.value : '50-30-20', // 선택된 예산 규칙 저장
+        // 각 고정 입력 필드의 frequency도 저장
+        taxInputFrequencies: {},
+        preTaxDeductInputFrequencies: {},
+        postTaxDeductInputFrequencies: {},
+        expenseInputFrequencies: {}
     };
 
-    for (const key in taxInputs) {
-        if (taxInputs[key]) data.taxInputs[key] = taxInputs[key].value;
-    }
-    for (const key in preTaxDeductInputs) {
-        if (preTaxDeductInputs[key]) data.preTaxDeductInputs[key] = preTaxDeductInputs[key].value;
-    }
-    for (const key in postTaxDeductInputs) {
-        if (postTaxDeductInputs[key]) data.postTaxDeductInputs[key] = postTaxDeductInputs[key].value;
-    }
-    for (const key in expenseInputs) {
-        if (expenseInputs[key]) data.expenseInputs[key] = expenseInputs[key].value;
-    }
+    const inputGroups = [
+        { inputs: taxInputs, frequencies: data.taxInputFrequencies },
+        { inputs: preTaxDeductInputs, frequencies: data.preTaxDeductInputFrequencies },
+        { inputs: postTaxDeductInputs, frequencies: data.postTaxDeductInputFrequencies },
+        { inputs: expenseInputs, frequencies: data.expenseInputFrequencies }
+    ];
+
+    inputGroups.forEach(group => {
+        for (const key in group.inputs) {
+            if (group.inputs[key]) {
+                data[group.inputs === taxInputs ? 'taxInputs' : 
+                     group.inputs === preTaxDeductInputs ? 'preTaxDeductInputs' :
+                     group.inputs === postTaxDeductInputs ? 'postTaxDeductInputs' :
+                     'expenseInputs'][key] = group.inputs[key].value;
+                group.frequencies[key] = group.inputs[key].dataset.frequency || 'monthly'; // frequency 저장
+            }
+        }
+    });
 
     localStorage.setItem('budgetAppData', JSON.stringify(data));
 }
@@ -471,18 +510,30 @@ function loadData() {
         if (data.defaultItemFrequency) defaultItemFrequency = data.defaultItemFrequency;
 
 
-        for (const key in taxInputs) {
-            if (taxInputs[key] && data.taxInputs[key]) taxInputs[key].value = data.taxInputs[key];
-        }
-        for (const key in preTaxDeductInputs) {
-            if (preTaxDeductInputs[key] && data.preTaxDeductInputs[key]) preTaxDeductInputs[key].value = data.preTaxDeductInputs[key];
-        }
-        for (const key in postTaxDeductInputs) {
-            if (postTaxDeductInputs[key] && data.postTaxDeductInputs[key]) postTaxDeductInputs[key].value = data.postTaxDeductInputs[key];
-        }
-        for (const key in expenseInputs) {
-            if (expenseInputs[key] && data.expenseInputs[key]) expenseInputs[key].value = data.expenseInputs[key];
-        }
+        const inputGroups = [
+            { inputs: taxInputs, frequencies: data.taxInputFrequencies },
+            { inputs: preTaxDeductInputs, frequencies: data.preTaxDeductInputFrequencies },
+            { inputs: postTaxDeductInputs, frequencies: data.postTaxDeductInputFrequencies },
+            { inputs: expenseInputs, frequencies: data.expenseInputFrequencies }
+        ];
+
+        inputGroups.forEach(group => {
+            for (const key in group.inputs) {
+                if (group.inputs[key] && data[group.inputs === taxInputs ? 'taxInputs' : 
+                                             group.inputs === preTaxDeductInputs ? 'preTaxDeductInputs' :
+                                             group.inputs === postTaxDeductInputs ? 'postTaxDeductInputs' :
+                                             'expenseInputs'][key]) {
+                    group.inputs[key].value = data[group.inputs === taxInputs ? 'taxInputs' : 
+                                                 group.inputs === preTaxDeductInputs ? 'preTaxDeductInputs' :
+                                                 group.inputs === postTaxDeductInputs ? 'postTaxDeductInputs' :
+                                                 'expenseInputs'][key];
+                    // data-frequency 로드
+                    if (group.frequencies && group.frequencies[key]) {
+                        group.inputs[key].dataset.frequency = group.frequencies[key];
+                    }
+                }
+            }
+        });
 
         customTaxes = data.customTaxes || [];
         customPreTaxDeductions = data.customPreTaxDeductions || [];
@@ -507,6 +558,15 @@ function loadData() {
         currentLanguage = 'ko';
         isDarkMode = false;
 
+        // 고정 입력 필드의 data-frequency 초기화
+        const allInputFields = [...Object.values(taxInputs), ...Object.values(preTaxDeductInputs), 
+                                ...Object.values(postTaxDeductInputs), ...Object.values(expenseInputs)];
+        allInputFields.forEach(input => {
+            if (input) input.dataset.frequency = 'monthly'; // 기본값을 'monthly'로 설정
+            if (input) input.value = 0; // 값도 0으로 초기화
+        });
+
+
         customTaxes = [];
         customPreTaxDeductions = [];
         customPostTaxDeductions = [];
@@ -517,7 +577,6 @@ function loadData() {
         updateDisplay();
     }
 }
-
 
 // 8. 차트 관리 (Chart.js)
 function initializeCharts() {
@@ -595,9 +654,10 @@ function updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, tot
         let backgroundColors = [];
         let currentColorIndex = 0;
 
-        // Add fixed inputs
+        // Add fixed inputs (using their current value, which is assumed to be monthly equivalent from updateDisplay)
         for (const key in inputs) {
             if (inputs[key] && parseFloat(inputs[key].value) > 0) {
+                // Here, we assume inputs[key].value is already the monthly equivalent
                 labels.push(translations[currentLanguage][`label_${key.replace(/([A-Z])/g, '_$1').toLowerCase()}`] || key);
                 data.push(parseFloat(inputs[key].value));
                 backgroundColors.push(colors[currentColorIndex % colors.length]);
@@ -605,7 +665,7 @@ function updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, tot
             }
         }
 
-        // Add custom items
+        // Add custom items (using their current value, which is assumed to be monthly equivalent from updateDisplay)
         customItems.forEach(item => {
             if (item.amount > 0) {
                 labels.push(item.name);
@@ -634,9 +694,9 @@ function updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, tot
 
         // If no data, clear chart
         if (data.every(val => val === 0)) {
-             chartInstance.data.labels = [];
-             chartInstance.data.datasets[0].data = [];
-             chartInstance.data.datasets[0].backgroundColor = [];
+            chartInstance.data.labels = [];
+            chartInstance.data.datasets[0].data = [];
+            chartInstance.data.datasets[0].backgroundColor = [];
         } else {
             chartInstance.data.labels = labels;
             chartInstance.data.datasets[0].data = data;
@@ -650,10 +710,33 @@ function updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, tot
     };
 
     // Update individual charts
+    // Note: totalTaxes, totalPreTaxDeductions, totalPostTaxDeductions, totalExpenses passed here
+    // are already the SUM of monthly converted values from updateDisplay().
+    // So, we need to pass the *individual monthly converted values* to updateChartData.
+    // To do this, we re-calculate or pass the monthly values of each input here.
+    
+    // It's simpler to just pass the raw inputs and let updateChartData handle conversion for its display
+    // BUT the getTotalMonthly function is more robust for overall sums.
+    // For individual charts, Chart.js needs the actual values that make up the total.
+    // So, updateChartData should also use convertToMonthly.
+    
+    // REVISED: updateChartData should be passed the raw input objects and custom arrays.
+    // It will then convert individual amounts to monthly for chart display.
+
+    // Helper to get raw input values for chart display (to convert inside updateChartData)
+    const getRawInputValues = (inputs) => {
+        const raw = {};
+        for(const key in inputs) {
+            if(inputs[key]) raw[key] = parseFloat(inputs[key].value) || 0;
+        }
+        return raw;
+    };
+
     updateChartData(taxChartInstance, taxInputs, customTaxes, translations[currentLanguage].section_taxes_title);
     updateChartData(preTaxDeductChartInstance, preTaxDeductInputs, customPreTaxDeductions, translations[currentLanguage].section_pre_tax_title);
     updateChartData(postTaxDeductChartInstance, postTaxDeductInputs, customPostTaxDeductions, translations[currentLanguage].section_post_tax_title);
     updateChartData(expensesChartInstance, expenseInputs, customExpenses, translations[currentLanguage].section_expenses_title);
+
 
     // Update budget distribution chart (Doughnut chart)
     if (budgetDistributionChartInstance) {
@@ -666,11 +749,11 @@ function updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, tot
         ];
 
         const budgetData = [
-            totalTaxes,
-            totalPreTaxDeductions,
-            totalPostTaxDeductions,
-            totalExpenses,
-            remainingBudget
+            totalTaxes, // These are already monthly sums
+            totalPreTaxDeductions, // These are already monthly sums
+            totalPostTaxDeductions, // These are already monthly sums
+            totalExpenses, // These are already monthly sums
+            remainingBudget // This is already monthly
         ];
 
         // Filter out zero values for better chart representation
@@ -699,25 +782,26 @@ function updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, tot
 
 // 9. 디스플레이 업데이트 (계산 및 UI 갱신)
 function updateDisplay() {
-    let grossSalary = parseFloat(grossSalaryInput.value) || 0;
+    let grossSalaryInputVal = parseFloat(grossSalaryInput.value) || 0;
+    let monthlyGrossSalaryForCalculation = grossSalaryInputVal; // 실제 계산에 사용될 월별 급여
 
-    // 선택된 급여 주기에 따라 연간 급여 조정
+    // 선택된 급여 주기에 따라 연간 급여 조정 및 월별 계산 기준 급여 설정
     switch (currentSalaryFrequency) {
         case 'annually':
-            grossSalary = grossSalary; // Already annual
-            annualSalarySummaryDisplay.textContent = formatCurrency(grossSalary);
-            grossSalary = grossSalary / 12; // Use monthly gross for calculations
+            annualSalarySummaryDisplay.textContent = formatCurrency(grossSalaryInputVal); // 연간 그대로 표시
+            monthlyGrossSalaryForCalculation = grossSalaryInputVal / 12; // 월별로 변환하여 계산에 사용
             break;
         case 'monthly':
-            annualSalarySummaryDisplay.textContent = formatCurrency(grossSalary * 12);
+            annualSalarySummaryDisplay.textContent = formatCurrency(grossSalaryInputVal * 12); // 월별 * 12하여 연간 표시
+            // monthlyGrossSalaryForCalculation은 이미 월별이므로 그대로 사용
             break;
         case 'weekly':
-            annualSalarySummaryDisplay.textContent = formatCurrency(grossSalary * 52);
-            grossSalary = grossSalary * 4; // Approx 4 weeks in a month for monthly calculations
+            annualSalarySummaryDisplay.textContent = formatCurrency(grossSalaryInputVal * 52);
+            monthlyGrossSalaryForCalculation = grossSalaryInputVal * (52 / 12); // 주 52회 / 12개월 = 월별 주 수
             break;
         case 'bi-weekly':
-            annualSalarySummaryDisplay.textContent = formatCurrency(grossSalary * 26);
-            grossSalary = grossSalary * 2; // Approx 2 bi-weekly periods in a month
+            annualSalarySummaryDisplay.textContent = formatCurrency(grossSalaryInputVal * 26);
+            monthlyGrossSalaryForCalculation = grossSalaryInputVal * (26 / 12); // 격주 26회 / 12개월 = 월별 격주 수
             break;
     }
 
@@ -727,22 +811,23 @@ function updateDisplay() {
     renderCustomList(customPostTaxDeductList, customPostTaxDeductions, 'post-tax');
     renderCustomList(customExpenseList, customExpenses, 'expense');
 
-    // 총계 계산
-    const totalTaxes = getTotal(taxInputs, customTaxes);
-    const totalPreTaxDeductions = getTotal(preTaxDeductInputs, customPreTaxDeductions);
-    const totalPostTaxDeductions = getTotal(postTaxDeductInputs, customPostTaxDeductions);
-    const totalExpenses = getTotal(expenseInputs, customExpenses); // Fixed expenses + custom expenses
+    // 총계 계산 (이제 모든 getTotal 함수가 getTotalMonthly로 변경됨)
+    const totalTaxes = getTotalMonthly(taxInputs, customTaxes);
+    const totalPreTaxDeductions = getTotalMonthly(preTaxDeductInputs, customPreTaxDeductions);
+    const totalPostTaxDeductions = getTotalMonthly(postTaxDeductInputs, customPostTaxDeductions);
+    const totalExpenses = getTotalMonthly(expenseInputs, customExpenses); // Fixed expenses + custom expenses
     const totalDeductions = totalTaxes + totalPreTaxDeductions + totalPostTaxDeductions;
 
 
     // 순 급여 계산 (Gross - All Deductions)
-    const netSalary = grossSalary - totalTaxes - totalPreTaxDeductions - totalPostTaxDeductions;
+    const netSalary = monthlyGrossSalaryForCalculation - totalTaxes - totalPreTaxDeductions - totalPostTaxDeductio
+    ns;
 
     const remainingBudget = netSalary - totalExpenses;
 
 
     // UI 업데이트
-    if (grossSalarySummaryDisplay) grossSalarySummaryDisplay.textContent = formatCurrency(grossSalary);
+    if (grossSalarySummaryDisplay) grossSalarySummaryDisplay.textContent = formatCurrency(monthlyGrossSalaryForCalculation); // 월별 총 급여 표시
     if (totalTaxesDisplay) totalTaxesDisplay.textContent = formatCurrency(totalTaxes);
     if (totalPreTaxDisplay) totalPreTaxDisplay.textContent = formatCurrency(totalPreTaxDeductions);
     if (totalPostTaxDisplay) totalPostTaxDisplay.textContent = formatCurrency(totalPostTaxDeductions);
@@ -751,7 +836,7 @@ function updateDisplay() {
     if (remainingBudgetDisplay) remainingBudgetDisplay.textContent = formatCurrency(remainingBudget);
 
     // 예산 규칙 적용
-    applyBudgetRule(grossSalary, totalExpenses, netSalary, totalDeductions);
+    applyBudgetRule(monthlyGrossSalaryForCalculation, totalExpenses, netSalary, totalDeductions); // 월별 급여 기준 적용
 
     // 차트 업데이트
     updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, totalPreTaxDeductions, totalPostTaxDeductions);
@@ -792,6 +877,7 @@ function applyBudgetRule(grossIncome, totalExpenses, netSalary, totalDeductions)
     }
 
     // 1. Calculate budget based on the rule (based on gross income for rule calculation)
+    // 여기서 grossIncome은 이미 월별로 변환된 값입니다.
     const ruleNeeds = grossIncome * rule.needs;
     const ruleWants = grossIncome * rule.wants;
     const ruleSavings = grossIncome * rule.savings;
@@ -805,31 +891,29 @@ function applyBudgetRule(grossIncome, totalExpenses, netSalary, totalDeductions)
     // 2. Calculate actual spending based on user inputs
     let actualNeeds = 0;
     let actualWants = 0;
-    let actualSavingsFromNet = netSalary; // Start with net salary for savings calculation
+    
+    // 고정 지출 항목들에서 needs와 wants 분류 (월별 변환된 값 사용)
+    actualNeeds += convertToMonthly(parseFloat(expenseInputs.rent?.value) || 0, expenseInputs.rent?.dataset.frequency || 'monthly');
+    actualNeeds += convertToMonthly(parseFloat(expenseInputs.utilities?.value) || 0, expenseInputs.utilities?.dataset.frequency || 'monthly');
+    actualNeeds += convertToMonthly(parseFloat(expenseInputs.internet?.value) || 0, expenseInputs.internet?.dataset.frequency || 'monthly');
+    actualNeeds += convertToMonthly(parseFloat(expenseInputs.phone?.value) || 0, expenseInputs.phone?.dataset.frequency || 'monthly');
+    actualNeeds += convertToMonthly(parseFloat(expenseInputs.groceries?.value) || 0, expenseInputs.groceries?.dataset.frequency || 'monthly');
+    actualNeeds += convertToMonthly(parseFloat(expenseInputs.transport?.value) || 0, expenseInputs.transport?.dataset.frequency || 'monthly');
+    actualNeeds += convertToMonthly(parseFloat(expenseInputs.health?.value) || 0, expenseInputs.health?.dataset.frequency || 'monthly');
 
-    // Sum fixed expense inputs for Needs (as per common 50/30/20 interpretation)
-    actualNeeds += (parseFloat(expenseInputs.rent?.value) || 0);
-    actualNeeds += (parseFloat(expenseInputs.utilities?.value) || 0);
-    actualNeeds += (parseFloat(expenseInputs.internet?.value) || 0);
-    actualNeeds += (parseFloat(expenseInputs.phone?.value) || 0);
-    actualNeeds += (parseFloat(expenseInputs.groceries?.value) || 0);
-    actualNeeds += (parseFloat(expenseInputs.transport?.value) || 0);
-    actualNeeds += (parseFloat(expenseInputs.health?.value) || 0);
+    actualWants += convertToMonthly(parseFloat(expenseInputs.dining?.value) || 0, expenseInputs.dining?.dataset.frequency || 'monthly');
+    actualWants += convertToMonthly(parseFloat(expenseInputs.shopping?.value) || 0, expenseInputs.shopping?.dataset.frequency || 'monthly');
+    actualWants += convertToMonthly(parseFloat(expenseInputs.entertainment?.value) || 0, expenseInputs.entertainment?.dataset.frequency || 'monthly');
 
-    // Sum fixed expense inputs for Wants
-    actualWants += (parseFloat(expenseInputs.dining?.value) || 0);
-    actualWants += (parseFloat(expenseInputs.shopping?.value) || 0);
-    actualWants += (parseFloat(expenseInputs.entertainment?.value) || 0);
-
-    // Add custom expenses based on their 'category'
+    // 사용자 정의 지출 항목들에서 'category' 기반 분류 (월별 변환된 값 사용)
     customExpenses.forEach(item => {
+        const monthlyAmount = convertToMonthly(item.amount, item.frequency);
         if (item.category === 'needs') {
-            actualNeeds += item.amount;
+            actualNeeds += monthlyAmount;
         } else if (item.category === 'wants') {
-            actualWants += item.amount;
+            actualWants += monthlyAmount;
         } else {
-            // If category is not specified or unknown, default to needs
-            actualNeeds += item.amount;
+            actualNeeds += monthlyAmount; // If category is not specified or unknown, default to needs
         }
     });
 
@@ -840,8 +924,6 @@ function applyBudgetRule(grossIncome, totalExpenses, netSalary, totalDeductions)
     actualWantsDisplay.textContent = formatCurrency(actualWants);
     actualSavingsDisplay.textContent = formatCurrency(actualSavings);
 
-    // Actual total budget should be grossIncome (or netSalary if rule applied to net)
-    // For 50/30/20, it's typically applied to gross income after taxes, so using netSalary here is more common for "actual total"
     actualTotalDisplay.textContent = formatCurrency(netSalary); // Changed to netSalary for actual total
 
     // 3. Evaluate budget status
@@ -906,7 +988,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (defaultItemFrequencySelect) {
         defaultItemFrequencySelect.addEventListener('change', (e) => {
             defaultItemFrequency = e.target.value;
-            saveData(); // 기본 주기만 변경 시에도 저장
+            // 모든 고정 입력 필드의 data-frequency 업데이트
+            const allInputFields = [...Object.values(taxInputs), ...Object.values(preTaxDeductInputs), 
+                                    ...Object.values(postTaxDeductInputs), ...Object.values(expenseInputs)];
+            allInputFields.forEach(input => {
+                if (input) {
+                    input.dataset.frequency = defaultItemFrequency;
+                }
+            });
+            updateDisplay(); // 변경된 주기를 반영하여 UI 업데이트
+            saveData(); // 기본 주기 및 변경된 input frequencies 저장
         });
     }
 
@@ -992,30 +1083,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentSalaryFrequency: currentSalaryFrequency,
                 defaultItemFrequency: defaultItemFrequencySelect ? defaultItemFrequencySelect.value : 'monthly',
                 taxInputs: {},
-                customTaxes: customTaxes,
                 preTaxDeductInputs: {},
-                customPreTaxDeductions: customPreTaxDeductions,
                 postTaxDeductInputs: {},
-                customPostTaxDeductions: customPostTaxDeductions,
                 expenseInputs: {},
+                customTaxes: customTaxes,
+                customPreTaxDeductions: customPreTaxDeductions,
+                customPostTaxDeductions: customPostTaxDeductions,
                 customExpenses: customExpenses,
                 currentLanguage: currentLanguage,
                 isDarkMode: isDarkMode,
-                selectedBudgetRule: budgetRuleSelect ? budgetRuleSelect.value : '50-30-20'
+                selectedBudgetRule: budgetRuleSelect ? budgetRuleSelect.value : '50-30-20',
+                taxInputFrequencies: {},
+                preTaxDeductInputFrequencies: {},
+                postTaxDeductInputFrequencies: {},
+                expenseInputFrequencies: {}
             };
 
-            for (const key in taxInputs) {
-                if (taxInputs[key]) data.taxInputs[key] = taxInputs[key].value;
-            }
-            for (const key in preTaxDeductInputs) {
-                if (preTaxDeductInputs[key]) data.preTaxDeductInputs[key] = preTaxDeductInputs[key].value;
-            }
-            for (const key in postTaxDeductInputs) {
-                if (postTaxDeductInputs[key]) data.postTaxDeductInputs[key] = postTaxDeductInputs[key].value;
-            }
-            for (const key in expenseInputs) {
-                if (expenseInputs[key]) data.expenseInputs[key] = expenseInputs[key].value;
-            }
+            const inputGroups = [
+                { inputs: taxInputs, frequencies: data.taxInputFrequencies },
+                { inputs: preTaxDeductInputs, frequencies: data.preTaxDeductInputFrequencies },
+                { inputs: postTaxDeductInputs, frequencies: data.postTaxDeductInputFrequencies },
+                { inputs: expenseInputs, frequencies: data.expenseInputFrequencies }
+            ];
+
+            inputGroups.forEach(group => {
+                for (const key in group.inputs) {
+                    if (group.inputs[key]) {
+                        data[group.inputs === taxInputs ? 'taxInputs' : 
+                             group.inputs === preTaxDeductInputs ? 'preTaxDeductInputs' :
+                             group.inputs === postTaxDeductInputs ? 'postTaxDeductInputs' :
+                             'expenseInputs'][key] = group.inputs[key].value;
+                        group.frequencies[key] = group.inputs[key].dataset.frequency || 'monthly'; // frequency 저장
+                    }
+                }
+            });
 
             const jsonData = JSON.stringify(data, null, 2);
             const blob = new Blob([jsonData], { type: 'application/json' });
@@ -1066,19 +1167,22 @@ document.addEventListener('DOMContentLoaded', () => {
         clearAllDataBtn.addEventListener('click', () => {
             if (confirm(translations[currentLanguage].confirm_clear_data)) {
                 localStorage.removeItem('budgetAppData');
+                
+                // 모든 입력 필드 초기화 및 data-frequency 재설정
+                const allInputFields = [...Object.values(taxInputs), ...Object.values(preTaxDeductInputs), 
+                                        ...Object.values(postTaxDeductInputs), ...Object.values(expenseInputs)];
+                allInputFields.forEach(input => {
+                    if (input) {
+                        input.value = 0;
+                        input.dataset.frequency = 'monthly'; // 초기화 시 기본 주기로 설정
+                    }
+                });
                 if (grossSalaryInput) grossSalaryInput.value = 0;
-                for (const key in taxInputs) {
-                    if (taxInputs[key]) taxInputs[key].value = 0;
-                }
-                for (const key in preTaxDeductInputs) {
-                    if (preTaxDeductInputs[key]) preTaxDeductInputs[key].value = 0;
-                }
-                for (const key in postTaxDeductInputs) {
-                    if (postTaxDeductInputs[key]) postTaxDeductInputs[key].value = 0;
-                }
-                for (const key in expenseInputs) {
-                    if (expenseInputs[key]) expenseInputs[key].value = 0;
-                }
+                if (salaryFrequencySelect) salaryFrequencySelect.value = 'monthly';
+                if (defaultItemFrequencySelect) defaultItemFrequencySelect.value = 'monthly';
+                currentSalaryFrequency = 'monthly';
+                defaultItemFrequency = 'monthly';
+
 
                 customTaxes = [];
                 customPreTaxDeductions = [];
