@@ -39,11 +39,11 @@
         </section>
 
         <section class="budget-section">
-            <h2 data-i18n-key="section_default_frequency_title">기본 항목 주기 설정</h2>
+            <h2 data-i18n-key="section_taxes_title">세금</h2>
             <div class="form-group">
-                <label for="default-item-frequency-select" data-i18n-key="label_default_item_frequency">기본 지출/공제 주기:</label>
+                <label for="tax-frequency-select" data-i18n-key="label_frequency">세금 주기:</label>
                 <div class="input-container">
-                    <select id="default-item-frequency-select" class="form-control" onchange="updateDisplay()">
+                    <select id="tax-frequency-select" class="form-control" onchange="updateDisplay()">
                         <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
                         <option value="annually" data-i18n-key="frequency_annually">연간</option>
                         <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
@@ -51,10 +51,6 @@
                     </select>
                 </div>
             </div>
-        </section>
-
-        <section class="budget-section">
-            <h2 data-i18n-key="section_taxes_title">세금</h2>
             <div class="form-grid">
                 <div class="form-group">
                     <label for="tax-federal-1" data-i18n-key="label_federal_withholding">연방 원천징수</label>
@@ -97,6 +93,17 @@
 
         <section class="budget-section">
             <h2 data-i18n-key="section_pre_tax_title">세전 공제</h2>
+            <div class="form-group">
+                <label for="pre-tax-frequency-select" data-i18n-key="label_frequency">세전 공제 주기:</label>
+                <div class="input-container">
+                    <select id="pre-tax-frequency-select" class="form-control" onchange="updateDisplay()">
+                        <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
+                        <option value="annually" data-i18n-key="frequency_annually">연간</option>
+                        <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
+                        <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
+                    </select>
+                </div>
+            </div>
             <div class="form-grid">
                 <div class="form-group">
                     <label for="deduct-medical-1" data-i18n-key="label_medical_premium">의료 보험료</label>
@@ -133,6 +140,17 @@
 
         <section class="budget-section">
             <h2 data-i18n-key="section_post_tax_title">세후 공제</h2>
+            <div class="form-group">
+                <label for="post-tax-frequency-select" data-i18n-key="label_frequency">세후 공제 주기:</label>
+                <div class="input-container">
+                    <select id="post-tax-frequency-select" class="form-control" onchange="updateDisplay()">
+                        <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
+                        <option value="annually" data-i18n-key="frequency_annually">연간</option>
+                        <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
+                        <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
+                    </select>
+                </div>
+            </div>
             <div class="form-grid">
                 <div class="form-group">
                     <label for="deduct-spp-1" data-i18n-key="label_spp">주식 구매 계획</label>
@@ -169,6 +187,17 @@
 
         <section class="budget-section">
             <h2 data-i18n-key="section_expenses_title">지출 관리</h2>
+            <div class="form-group">
+                <label for="expense-frequency-select" data-i18n-key="label_frequency">지출 주기:</label>
+                <div class="input-container">
+                    <select id="expense-frequency-select" class="form-control" onchange="updateDisplay()">
+                        <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
+                        <option value="annually" data-i18n-key="frequency_annually">연간</option>
+                        <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
+                        <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
+                    </select>
+                </div>
+            </div>
             <div class="form-grid">
                 <div class="form-group">
                     <label for="exp-rent-1" data-i18n-key="label_rent_mortgage">월세/주택담보대출</label>
@@ -239,93 +268,93 @@
             </div>
         </section>
 
-    <section class="budget-section">
-        <h2 data-i18n-key="section_summary_title">예산 요약</h2>
-        <div class="summary-results">
-            <p data-i18n-key="label_gross_salary">총 급여:</p> <span id="gross-salary-summary-display">$0.00</span>
-            <p data-i18n-key="label_total_taxes">총 세금:</p> <span id="total-taxes-display">$0.00</span>
-            <p data-i18n-key="label_total_pre_tax">총 세전 공제액:</p> <span id="total-pre-tax-display">$0.00</span>
-            <p data-i18n-key="label_total_post_tax">총 세후 공제액:</p> <span id="total-post-tax-display">$0.00</span>
-            <p data-i18n-key="label_net_salary">순 월 급여:</p> <span id="net-salary-display">$0.00</span>
-            <p data-i18n-key="label_total_expenses">총 지출:</p> <span id="total-expenses-display">$0.00</span>
-            <p data-i18n-key="label_remaining_budget">남은 예산:</p> <span id="remaining-budget-display">$0.00</span>
-        </div>
-        <div class="chart-container">
-            <canvas id="budget-distribution-chart"></canvas>
-        </div>
-    </section>
+        <section class="budget-section">
+            <h2 data-i18n-key="section_summary_title">예산 요약</h2>
+            <div class="summary-results">
+                <p data-i18n-key="label_gross_salary">총 급여:</p> <span id="gross-salary-summary-display">$0.00</span>
+                <p data-i18n-key="label_total_taxes">총 세금:</p> <span id="total-taxes-display">$0.00</span>
+                <p data-i18n-key="label_total_pre_tax">총 세전 공제액:</p> <span id="total-pre-tax-display">$0.00</span>
+                <p data-i18n-key="label_total_post_tax">총 세후 공제액:</p> <span id="total-post-tax-display">$0.00</span>
+                <p data-i18n-key="label_net_salary">순 월 급여:</p> <span id="net-salary-display">$0.00</span>
+                <p data-i18n-key="label_total_expenses">총 지출:</p> <span id="total-expenses-display">$0.00</span>
+                <p data-i18n-key="label_remaining_budget">남은 예산:</p> <span id="remaining-budget-display">$0.00</span>
+            </div>
+            <div class="chart-container">
+                <canvas id="budget-distribution-chart"></canvas>
+            </div>
+        </section>
 
-    <section class="budget-section">
-        <h2 data-i18n-key="section_budget_rule_title">예산 규칙 적용 (Budget Rules)</h2>
-        <div class="form-group">
-            <label for="budget-rule-select" data-i18n-key="label_budget_rule_select">예산 규칙 선택:</label>
-            <div class="input-container">
-                <select id="budget-rule-select" class="form-control rule-select" onchange="updateDisplay()">
-                    <option value="50-30-20" data-i18n-key="rule_50_30_20">50/30/20 (필수/원하는 것/저축)</option>
-                    <option value="70-20-10" data-i18n-key="rule_70_20_10">70/20/10 (필수/원하는 것/저축)</option>
-                    <option value="80-20" data-i18n-key="rule_80_20">80/20 (필수/저축)</option>
-                </select>
-            </div>
-        </div>
-        <div class="summary-results rule-breakdown">
-            <div class="breakdown-item">
-                <p><span data-i18n-key="needs_label">필수 지출 (Needs)</span>:</p>
-                <p><span data-i18n-key="label_rule">규칙</span>: <span id="rule-needs">$0.00</span></p>
-                <p><span data-i18n-key="label_actual">실제</span>: <span id="actual-needs">$0.00</span></p>
-            </div>
-            <div class="breakdown-item">
-                <p><span data-i18n-key="wants_label">원하는 지출 (Wants)</span>:</p>
-                <p><span data-i18n-key="label_rule">규칙</span>: <span id="rule-wants">$0.00</span></p>
-                <p><span data-i18n-key="label_actual">실제</span>: <span id="actual-wants">$0.00</span></p>
-            </div>
-            <div class="breakdown-item">
-                <p><span data-i18n-key="savings_label">저축 (Savings)</span>:</p>
-                <p><span data-i18n-key="label_rule">규칙</span>: <span id="rule-savings">$0.00</span></p>
-                <p><span data-i18n-key="label_actual">실제</span>: <span id="actual-savings">$0.00</span></p>
-            </div>
-            <div class="breakdown-item total">
-                <p><span data-i18n-key="label_total_budget">총 예산</span>:</p>
-                <p><span data-i18n-key="label_rule">규칙</span>: <span id="rule-total">$0.00</span></p>
-                <p><span data-i18n-key="label_actual">실제</span>: <span id="actual-total">$0.00</span></p>
-            </div>
-            <div class="breakdown-item status">
-                <p><span data-i18n-key="label_budget_status">예산 상태</span>:</p>
-                <p><span id="budget-status"></span></p>
-            </div>
-        </div>
-    </section>
-
-    <section class="budget-section">
-        <h2 data-i18n-key="section_ai_title">AI 지출 보고서</h2>
-        <div class="form-group">
-            <button id="ai-report-btn" class="btn" data-i18n-key="btn_ai_report">AI 보고서 생성</button>
-        </div>
-        <div id="ai-report-box" class="ai-report-box">
-            <p data-i18n-key="ai_report_placeholder">"AI 보고서 생성"을 클릭하여 지출 습관에 대한 통찰력을 얻으세요.</p>
-        </div>
-    </section>
-
-    <section class="budget-section">
-        <h2 data-i18n-key="section_data_title">데이터 관리</h2>
-        <div class="form-grid">
+        <section class="budget-section">
+            <h2 data-i18n-key="section_budget_rule_title">예산 규칙 적용 (Budget Rules)</h2>
             <div class="form-group">
+                <label for="budget-rule-select" data-i18n-key="label_budget_rule_select">예산 규칙 선택:</label>
                 <div class="input-container">
-                    <button id="export-json-btn" class="btn" data-i18n-key="btn_export">JSON 내보내기</button>
+                    <select id="budget-rule-select" class="form-control rule-select" onchange="updateDisplay()">
+                        <option value="50-30-20" data-i18n-key="rule_50_30_20">50/30/20 (필수/원하는 것/저축)</option>
+                        <option value="70-20-10" data-i18n-key="rule_70_20_10">70/20/10 (필수/원하는 것/저축)</option>
+                        <option value="80-20" data-i18n-key="rule_80_20">80/20 (필수/저축)</option>
+                    </select>
                 </div>
             </div>
-            <div class="form-group">
-                <div class="input-container">
-                    <button id="import-json-btn" class="btn" data-i18n-key="btn_import">JSON 가져오기</button>
-                    <input type="file" id="import-json-input" class="form-control" accept=".json" style="display: none;">
+            <div class="summary-results rule-breakdown">
+                <div class="breakdown-item">
+                    <p><span data-i18n-key="needs_label">필수 지출 (Needs)</span>:</p>
+                    <p><span data-i18n-key="label_rule">규칙</span>: <span id="rule-needs">$0.00</span></p>
+                    <p><span data-i18n-key="label_actual">실제</span>: <span id="actual-needs">$0.00</span></p>
+                </div>
+                <div class="breakdown-item">
+                    <p><span data-i18n-key="wants_label">원하는 지출 (Wants)</span>:</p>
+                    <p><span data-i18n-key="label_rule">규칙</span>: <span id="rule-wants">$0.00</span></p>
+                    <p><span data-i18n-key="label_actual">실제</span>: <span id="actual-wants">$0.00</span></p>
+                </div>
+                <div class="breakdown-item">
+                    <p><span data-i18n-key="savings_label">저축 (Savings)</span>:</p>
+                    <p><span data-i18n-key="label_rule">규칙</span>: <span id="rule-savings">$0.00</span></p>
+                    <p><span data-i18n-key="label_actual">실제</span>: <span id="actual-savings">$0.00</span></p>
+                </div>
+                <div class="breakdown-item total">
+                    <p><span data-i18n-key="label_total_budget">총 예산</span>:</p>
+                    <p><span data-i18n-key="label_rule">규칙</span>: <span id="rule-total">$0.00</span></p>
+                    <p><span data-i18n-key="label_actual">실제</span>: <span id="actual-total">$0.00</span></p>
+                </div>
+                <div class="breakdown-item status">
+                    <p><span data-i18n-key="label_budget_status">예산 상태</span>:</p>
+                    <p><span id="budget-status"></span></p>
                 </div>
             </div>
+        </section>
+
+        <section class="budget-section">
+            <h2 data-i18n-key="section_ai_title">AI 지출 보고서</h2>
             <div class="form-group">
-                <div class="input-container">
-                    <button id="clear-all-data-btn" class="btn btn-danger" data-i18n-key="btn_clear_all_data">모든 데이터 지우기</button>
+                <button id="ai-report-btn" class="btn" data-i18n-key="btn_ai_report">AI 보고서 생성</button>
+            </div>
+            <div id="ai-report-box" class="ai-report-box">
+                <p data-i18n-key="ai_report_placeholder">"AI 보고서 생성"을 클릭하여 지출 습관에 대한 통찰력을 얻으세요.</p>
+            </div>
+        </section>
+
+        <section class="budget-section">
+            <h2 data-i18n-key="section_data_title">데이터 관리</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <div class="input-container">
+                        <button id="export-json-btn" class="btn" data-i18n-key="btn_export">JSON 내보내기</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-container">
+                        <button id="import-json-btn" class="btn" data-i18n-key="btn_import">JSON 가져오기</button>
+                        <input type="file" id="import-json-input" class="form-control" accept=".json" style="display: none;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-container">
+                        <button id="clear-all-data-btn" class="btn btn-danger" data-i18n-key="btn_clear_all_data">모든 데이터 지우기</button>
+                    </div>
                 </div>
             </div>
-        </div>
-       </section>
+        </section>
 
     </main>
     <script src="../scripts/budget.js"></script>
