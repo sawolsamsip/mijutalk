@@ -545,16 +545,17 @@ function applyLanguage(lang) {
     });
 
     // Placeholder 속성 업데이트
+    // DOMContentLoaded에서 할당된 변수들이 null이 아닌지 항상 체크합니다.
     if (grossSalaryInput) grossSalaryInput.placeholder = translations[lang].gross_salary;
+    
+    // 이 부분은 renderCustomList에 의해 동적으로 생성된 요소이므로,
+    // applyLanguage가 호출될 때마다 다시 쿼리해야 합니다.
     document.querySelectorAll('.custom-item-name').forEach(input => {
         input.placeholder = translations[lang].custom_item_name;
     });
     document.querySelectorAll('.custom-item-amount').forEach(input => {
         input.placeholder = translations[lang].custom_item_amount;
     });
-
-    // Summary Display 텍스트 업데이트 (formatCurrency가 이미 언어심볼 사용)
-    updateDisplay(); // 언어가 변경되면 전체 UI를 다시 그려서 숫자 포맷도 업데이트
 }
 
 // 9. 다크 모드 토글
