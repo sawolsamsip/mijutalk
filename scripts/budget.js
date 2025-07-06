@@ -1,18 +1,55 @@
-// 0. 전역 변수 및 DOM 요소 선택자 정의
-const grossSalaryInput = document.getElementById('gross-salary');
-const salaryFrequencySelect = document.getElementById('salary-frequency');
-const defaultItemFrequencySelect = document.getElementById('default-item-frequency');
+// 0. 전역 변수 (초기에는 null 또는 나중에 할당될 수 있도록 let 사용)
+let grossSalaryInput = null;
+let salaryFrequencySelect = null;
+let defaultItemFrequencySelect = null;
 
 // Summary Displays
-const annualSalarySummaryDisplay = document.getElementById('annual-salary-summary-display');
-const grossSalarySummaryDisplay = document.getElementById('gross-salary-summary-display');
-const totalTaxesDisplay = document.getElementById('total-taxes-display');
-const totalPreTaxDisplay = document.getElementById('total-pre-tax-display');
-const totalPostTaxDisplay = document.getElementById('total-post-tax-display');
-const netSalaryDisplay = document.getElementById('net-salary-display');
-const totalExpensesDisplay = document.getElementById('total-expenses-display');
-const remainingBudgetDisplay = document.getElementById('remaining-budget-display');
+let annualSalarySummaryDisplay = null;
+let grossSalarySummaryDisplay = null;
+let totalTaxesDisplay = null;
+let totalPreTaxDisplay = null;
+let totalPostTaxDisplay = null;
+let netSalaryDisplay = null;
+let totalExpensesDisplay = null;
+let remainingBudgetDisplay = null;
 
+// Tax Inputs (객체 내부는 DOMContentLoaded에서 할당)
+let taxInputs = {};
+let preTaxDeductInputs = {};
+let postTaxDeductInputs = {};
+let expenseInputs = {};
+
+// Custom Lists (모두 let으로 변경)
+let customTaxList = null;
+let customPreTaxDeductList = null;
+let customPostTaxDeductList = null;
+let customExpenseList = null;
+
+// Buttons & Toggles (모두 let으로 변경)
+let addTaxBtn = null;
+let addPreTaxDeductBtn = null;
+let addPostTaxDeductBtn = null;
+let addExpenseBtn = null;
+let languageToggleBtn = null;
+let darkmodeToggleBtn = null;
+let budgetRuleSelect = null; // 이것도 DOM 요소이므로 let으로 변경하고 DOMContentLoaded에서 할당합니다.
+let aiReportBtn = null;
+let aiReportBox = null;
+let exportJsonBtn = null;
+let importJsonBtn = null;
+let importJsonInput = null;
+let clearAllDataBtn = null;
+
+// Budget Rule Display Elements (모두 let으로 변경)
+let ruleNeeds = null;
+let actualNeeds = null;
+let ruleWants = null;
+let actualWants = null;
+let ruleSavings = null;
+let actualSavings = null;
+let ruleTotal = null;
+let actualTotal = null;
+let budgetStatus = null;
 // Tax Inputs (ID 확인: HTML과 일치해야 함)
 const taxInputs = {
     federal: document.getElementById('federal-tax'),
@@ -1191,10 +1228,90 @@ function applyBudgetRule(netSalary, totalExpenses, totalTaxes, totalPreTaxDeduct
 
 // 12. 이벤트 리스너 설정
 document.addEventListener('DOMContentLoaded', () => {
-    customTaxList = document.getElementById('custom-tax-list');
-    customPreTaxDeductList = document.getElementById('custom-pre-tax-deduct-list');
-    customPostTaxDeductList = document.getElementById('custom-post-tax-deduct-list');
-    customExpenseList = document.getElementById('custom-expense-list');
+    grossSalaryInput = document.getElementById('salary-gross'); // HTML ID 확인 후 수정
+    salaryFrequencySelect = document.getElementById('salary-frequency-select');
+    defaultItemFrequencySelect = document.getElementById('default-item-frequency-select');
+
+    annualSalarySummaryDisplay = document.getElementById('annual-salary-summary-display');
+    grossSalarySummaryDisplay = document.getElementById('gross-salary-summary-display');
+    totalTaxesDisplay = document.getElementById('total-taxes-display');
+    totalPreTaxDisplay = document.getElementById('total-pre-tax-display');
+    totalPostTaxDisplay = document.getElementById('total-post-tax-display');
+    netSalaryDisplay = document.getElementById('net-salary-display');
+    totalExpensesDisplay = document.getElementById('total-expenses-display');
+    remainingBudgetDisplay = document.getElementById('remaining-budget-display');
+
+    // Tax Inputs 할당 (HTML ID에 맞게 수정)
+    taxInputs = {
+        federal: document.getElementById('tax-federal-1'), // HTML ID 확인
+        state: document.getElementById('tax-state-1'),
+        oasdi: document.getElementById('tax-oasdi-1'),
+        medicare: document.getElementById('tax-medicare-1'),
+        casdi: document.getElementById('tax-casdi-1')
+    };
+
+    // Pre-Tax Deduction Inputs 할당 (HTML ID에 맞게 수정)
+    preTaxDeductInputs = {
+        medical: document.getElementById('deduct-medical-1'),
+        dental: document.getElementById('deduct-dental-1'),
+        vision: document.getElementById('deduct-vision-1'),
+        '401k-trad': document.getElementById('deduct-401k-trad-1')
+    };
+
+    // Post-Tax Deduction Inputs 할당 (HTML ID에 맞게 수정)
+    postTaxDeductInputs = {
+        spp: document.getElementById('deduct-spp-1'),
+        adnd: document.getElementById('deduct-adnd-1'),
+        '401k-roth': document.getElementById('deduct-401k-roth-1'),
+        ltd: document.getElementById('deduct-ltd-1')
+    };
+
+    // Expense Inputs 할당 (HTML ID에 맞게 수정)
+    expenseInputs = {
+        rent: document.getElementById('exp-rent-1'),
+        utilities: document.getElementById('exp-utilities-1'),
+        internet: document.getElementById('exp-internet-1'),
+        phone: document.getElementById('exp-phone-1'),
+        groceries: document.getElementById('exp-groceries-1'),
+        dining: document.getElementById('exp-dining-1'),
+        transport: document.getElementById('exp-transport-1'),
+        shopping: document.getElementById('exp-shopping-1'),
+        health: document.getElementById('exp-health-1'),
+        entertainment: document.getElementById('exp-entertainment-1')
+    };
+
+    // Custom Lists 할당
+    customTaxList = document.getElementById('tax-custom-list'); // HTML ID 'tax-custom-list'
+    customPreTaxDeductList = document.getElementById('pre-tax-custom-list'); // HTML ID 'pre-tax-custom-list'
+    customPostTaxDeductList = document.getElementById('post-tax-custom-list'); // HTML ID 'post-tax-custom-list'
+    customExpenseList = document.getElementById('expenses-custom-list'); // HTML ID 'expenses-custom-list'
+
+    // Buttons & Toggles 할당
+    addTaxBtn = document.querySelector('.add-custom-btn[data-type="tax"]'); // 클래스 선택자 사용
+    addPreTaxDeductBtn = document.querySelector('.add-custom-btn[data-type="pre-tax"]');
+    addPostTaxDeductBtn = document.querySelector('.add-custom-btn[data-type="post-tax"]');
+    addExpenseBtn = document.querySelector('.add-custom-btn[data-type="expense"]');
+    languageToggleBtn = document.getElementById('language-toggle'); // HTML ID 확인
+    darkmodeToggleBtn = document.getElementById('darkmode-toggle'); // HTML ID 확인
+    budgetRuleSelect = document.getElementById('budget-rule-select');
+    aiReportBtn = document.getElementById('ai-report-btn');
+    aiReportBox = document.getElementById('ai-report-box');
+    exportJsonBtn = document.getElementById('export-json-btn');
+    importJsonBtn = document.getElementById('import-json-btn');
+    importJsonInput = document.getElementById('import-json-input');
+    clearAllDataBtn = document.getElementById('clear-all-data-btn');
+
+
+    // Budget Rule Display Elements 할당
+    ruleNeeds = document.getElementById('rule-needs');
+    actualNeeds = document.getElementById('actual-needs');
+    ruleWants = document.getElementById('rule-wants');
+    actualWants = document.getElementById('actual-wants');
+    ruleSavings = document.getElementById('rule-savings');
+    actualSavings = document.getElementById('actual-savings');
+    ruleTotal = document.getElementById('rule-total');
+    actualTotal = document.getElementById('actual-total');
+    budgetStatus = document.getElementById('budget-status');
     
     loadData(); // DOM 로드 후 저장된 데이터 로드
     initializeCharts(); // 차트 초기화 (데이터 로드 후)
