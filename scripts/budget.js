@@ -13,7 +13,7 @@ const netSalaryDisplay = document.getElementById('net-salary-display');
 const totalExpensesDisplay = document.getElementById('total-expenses-display');
 const remainingBudgetDisplay = document.getElementById('remaining-budget-display');
 
-// Tax Inputs
+// Tax Inputs (ID 확인: HTML과 일치해야 함)
 const taxInputs = {
     federal: document.getElementById('federal-tax'),
     state: document.getElementById('state-tax'),
@@ -22,28 +22,30 @@ const taxInputs = {
     casdi: document.getElementById('casdi-tax')
 };
 
-// Pre-Tax Deduction Inputs
+// Pre-Tax Deduction Inputs (ID 확인: HTML과 일치해야 함)
 const preTaxDeductInputs = {
     medical: document.getElementById('medical-deduction'),
     dental: document.getElementById('dental-deduction'),
     vision: document.getElementById('vision-deduction'),
-    fourZeroOneKTrad: document.getElementById('401k-traditional-deduction'), // DOM ID is 401k-traditional-deduction
+    // HTML ID와 JS 변수명 매핑 (DOM ID는 그대로 유지)
+    fourZeroOneKTrad: document.getElementById('401k-traditional-deduction'),
     traditionalIRA: document.getElementById('traditional-ira-deduction'),
     hsa: document.getElementById('hsa-deduction')
 };
 
-// Post-Tax Deduction Inputs
+// Post-Tax Deduction Inputs (ID 확인: HTML과 일치해야 함)
 const postTaxDeductInputs = {
     spp: document.getElementById('spp-deduction'),
     adnd: document.getElementById('adnd-deduction'),
-    fourZeroOneKRoth: document.getElementById('401k-roth-deduction'), // DOM ID is 401k-roth-deduction
+    // HTML ID와 JS 변수명 매핑 (DOM ID는 그대로 유지)
+    fourZeroOneKRoth: document.getElementById('401k-roth-deduction'),
     ltd: document.getElementById('ltd-deduction'),
     rothIRA: document.getElementById('roth-ira-deduction'),
     healthInsurance: document.getElementById('health-insurance-deduction'),
     lifeInsurance: document.getElementById('life-insurance-deduction')
 };
 
-// Expense Inputs
+// Expense Inputs (ID 확인: HTML과 일치해야 함)
 const expenseInputs = {
     rent: document.getElementById('rent-expense'),
     utilities: document.getElementById('utilities-expense'),
@@ -228,7 +230,8 @@ const translations = {
         alert_data_import_success: "Budget data imported successfully!",
         alert_invalid_json: "Invalid JSON file. Please select a valid budget data file.",
         alert_json_parse_error: "Error parsing JSON file: ",
-        confirm_clear_data: "Are you sure you want to clear all saved data? This action cannot be undone."
+        confirm_clear_data: "Are you sure you want to clear all saved data? This action cannot be undone.",
+        alert_data_cleared: "All budget data has been cleared!"
     },
     ko: {
         app_title: "예산 플래너",
@@ -310,7 +313,8 @@ const translations = {
         alert_data_import_success: "예산 데이터를 성공적으로 가져왔습니다!",
         alert_invalid_json: "유효하지 않은 JSON 파일입니다. 올바른 예산 데이터 파일을 선택해주세요.",
         alert_json_parse_error: "JSON 파일 파싱 오류: ",
-        confirm_clear_data: "저장된 모든 데이터를 지우시겠습니까? 이 작업은 되돌릴 수 없습니다."
+        confirm_clear_data: "저장된 모든 데이터를 지우시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+        alert_data_cleared: "모든 예산 데이터가 지워졌습니다!"
     }
 };
 
@@ -429,7 +433,8 @@ function renderCustomList(listElement, items, type) {
 
         nameInput.addEventListener('input', (event) => {
             updateCustomItem(type, item.id, 'name', event.target.value);
-            labelElement.textContent = event.target.value || translations[data.currentLanguage].label_new_item;
+            // Label update needs to happen after rendering the item or by specifically updating it.
+            // For now, it's updated when edit mode is toggled off.
         });
 
         valueInput.addEventListener('input', (event) => {
@@ -499,7 +504,7 @@ function addCustomItem(type) {
 
 // 사용자 정의 항목 제거
 function deleteCustomItem(type, itemId) {
-    const confirmed = confirm(translations[data.currentLanguage].remove_item);
+    const confirmed = confirm(translations[data.currentLanguage].confirm_remove_item || translations[data.currentLanguage].remove_item); // Use more specific confirmation text if available
     if (!confirmed) return;
 
     let targetArray;
@@ -606,8 +611,12 @@ function applyLanguage(lang) {
             } else if (element.tagName === 'OPTION') {
                 element.textContent = translations[data.currentLanguage][key];
             } else if (element.tagName === 'BUTTON' && element.classList.contains('delete-custom-btn')) {
-                element.title = translations[data.currentLanguage].remove_item;
-            } else {
+                element.title = translations[data.currentLanguage].remove_item; // 또는 confirm_remove_item
+            } else if (element.tagName === 'BUTTON' && element.classList.contains('edit-custom-btn')) {
+                // 편집 버튼의 툴팁은 토글 모드에 따라 변경되므로 여기서 직접 설정하지 않습니다.
+                // toggleEditMode 함수에서 처리됩니다.
+            }
+             else {
                 element.textContent = translations[data.currentLanguage][key];
             }
         }
@@ -618,14 +627,21 @@ function applyLanguage(lang) {
     }
 
     // 예산 규칙 섹션 라벨 수동 업데이트 (HTML에 data-i18n-key를 추가하는 것이 더 좋습니다)
-    const needsLabelEl = document.querySelector('.rule-breakdown div:nth-child(1) p:nth-child(1)');
+    // HTML에 `data-i18n-key`를 추가하는 것을 권장하지만, 현재 구조에 맞춰 수동 업데이트
+    const needsLabelEl = document.querySelector('[data-i18n-key="needs_label"]');
     if (needsLabelEl) needsLabelEl.textContent = translations[data.currentLanguage].needs_label + ':';
-    const wantsLabelEl = document.querySelector('.rule-breakdown div:nth-child(2) p:nth-child(1)');
+    const wantsLabelEl = document.querySelector('[data-i18n-key="wants_label"]');
     if (wantsLabelEl) wantsLabelEl.textContent = translations[data.currentLanguage].wants_label + ':';
-    const savingsLabelEl = document.querySelector('.rule-breakdown div:nth-child(3) p:nth-child(1)');
+    const savingsLabelEl = document.querySelector('[data-i18n-key="savings_label"]');
     if (savingsLabelEl) savingsLabelEl.textContent = translations[data.currentLanguage].savings_label + ':';
-    const totalLabelEl = document.querySelector('.rule-breakdown div.total p:nth-child(1)');
+    const totalLabelEl = document.querySelector('[data-i18n-key="label_total_rule_breakdown"]'); // Changed key to be more specific
     if (totalLabelEl) totalLabelEl.textContent = translations[data.currentLanguage].label_total + ':';
+
+    const actualLabelEl = document.querySelector('[data-i18n-key="budget_rule_actual"]');
+    if (actualLabelEl) actualLabelEl.textContent = translations[data.currentLanguage].budget_rule_actual;
+    const statusLabelEl = document.querySelector('[data-i18n-key="budget_rule_status"]');
+    if (statusLabelEl) statusLabelEl.textContent = translations[data.currentLanguage].budget_rule_status;
+
 
     if (aiReportBox) {
         const aiReportPlaceholderP = aiReportBox.querySelector('p');
@@ -649,27 +665,28 @@ function applyDarkMode(enable) {
 
 // 7. 데이터 저장 및 로드
 function saveData() {
-    data.salary.gross = parseFloat(grossSalaryInput.value) || 0;
-    data.salary.frequency = salaryFrequencySelect.value;
-    data.defaultItemFrequency = defaultItemFrequencySelect.value;
-    data.budgetRule = budgetRuleSelect.value;
+    // 모든 입력 필드의 현재 값을 data 객체에 저장
+    if (grossSalaryInput) data.salary.gross = parseFloat(grossSalaryInput.value) || 0;
+    if (salaryFrequencySelect) data.salary.frequency = salaryFrequencySelect.value;
+    if (defaultItemFrequencySelect) data.defaultItemFrequency = defaultItemFrequencySelect.value;
+    if (budgetRuleSelect) data.budgetRule = budgetRuleSelect.value;
 
-    // 고정 입력 필드의 값들을 data 객체에 저장
     for (const key in taxInputs) {
         if (taxInputs[key]) data.taxes[key] = parseFloat(taxInputs[key].value) || 0;
     }
-    // `fourZeroOneKTrad` 등 DOM ID와 data 객체 키 불일치 매핑
-    data.preTaxDeductions['medical'] = parseFloat(preTaxDeductInputs.medical.value) || 0;
-    data.preTaxDeductions['dental'] = parseFloat(preTaxDeductInputs.dental.value) || 0;
-    data.preTaxDeductions['vision'] = parseFloat(preTaxDeductInputs.vision.value) || 0;
-    data.preTaxDeductions['401kTrad'] = parseFloat(preTaxDeductInputs.fourZeroOneKTrad.value) || 0;
+    
+    // DOM ID와 data 객체 키 불일치 매핑 처리
+    if (preTaxDeductInputs.medical) data.preTaxDeductions.medical = parseFloat(preTaxDeductInputs.medical.value) || 0;
+    if (preTaxDeductInputs.dental) data.preTaxDeductions.dental = parseFloat(preTaxDeductInputs.dental.value) || 0;
+    if (preTaxDeductInputs.vision) data.preTaxDeductions.vision = parseFloat(preTaxDeductInputs.vision.value) || 0;
+    if (preTaxDeductInputs.fourZeroOneKTrad) data.preTaxDeductions['401kTrad'] = parseFloat(preTaxDeductInputs.fourZeroOneKTrad.value) || 0;
     if (preTaxDeductInputs.traditionalIRA) data.preTaxDeductions.traditionalIRA = parseFloat(preTaxDeductInputs.traditionalIRA.value) || 0;
     if (preTaxDeductInputs.hsa) data.preTaxDeductions.hsa = parseFloat(preTaxDeductInputs.hsa.value) || 0;
 
-    data.postTaxDeductions['spp'] = parseFloat(postTaxDeductInputs.spp.value) || 0;
-    data.postTaxDeductions['adnd'] = parseFloat(postTaxDeductInputs.adnd.value) || 0;
-    data.postTaxDeductions['401kRoth'] = parseFloat(postTaxDeductInputs.fourZeroOneKRoth.value) || 0;
-    data.postTaxDeductions['ltd'] = parseFloat(postTaxDeductInputs.ltd.value) || 0;
+    if (postTaxDeductInputs.spp) data.postTaxDeductions.spp = parseFloat(postTaxDeductInputs.spp.value) || 0;
+    if (postTaxDeductInputs.adnd) data.postTaxDeductions.adnd = parseFloat(postTaxDeductInputs.adnd.value) || 0;
+    if (postTaxDeductInputs.fourZeroOneKRoth) data.postTaxDeductions['401kRoth'] = parseFloat(postTaxDeductInputs.fourZeroOneKRoth.value) || 0;
+    if (postTaxDeductInputs.ltd) data.postTaxDeductions.ltd = parseFloat(postTaxDeductInputs.ltd.value) || 0;
     if (postTaxDeductInputs.rothIRA) data.postTaxDeductions.rothIRA = parseFloat(postTaxDeductInputs.rothIRA.value) || 0;
     if (postTaxDeductInputs.healthInsurance) data.postTaxDeductions.healthInsurance = parseFloat(postTaxDeductInputs.healthInsurance.value) || 0;
     if (postTaxDeductInputs.lifeInsurance) data.postTaxDeductions.lifeInsurance = parseFloat(postTaxDeductInputs.lifeInsurance.value) || 0;
@@ -684,17 +701,31 @@ function saveData() {
 function loadData() {
     const savedData = localStorage.getItem('budgetAppData');
     if (savedData) {
-        Object.assign(data, JSON.parse(savedData));
+        // 깊은 복사 대신 Object.assign을 사용하여 최상위 속성만 복사하고,
+        // 중첩된 객체는 참조를 유지하면서 속성을 덮어쓰도록 합니다.
+        // 또는 JSON.parse(JSON.stringify(data))를 사용하여 깊은 복사를 할 수 있지만,
+        // 여기서는 데이터 구조가 비교적 고정적이므로 Object.assign으로 충분합니다.
+        const parsedData = JSON.parse(savedData);
+        // 새로운 속성이 추가될 경우를 대비하여 기존 data 객체에 새 속성을 유지하면서 로드된 값을 덮어씁니다.
+        // 이는 data 객체의 기본 구조가 확장될 때 유용합니다.
+        data = { ...data, ...parsedData };
+        data.salary = { ...data.salary, ...parsedData.salary };
+        data.taxes = { ...data.taxes, ...parsedData.taxes };
+        data.preTaxDeductions = { ...data.preTaxDeductions, ...parsedData.preTaxDeductions };
+        data.postTaxDeductions = { ...data.postTaxDeductions, ...parsedData.postTaxDeductions };
+        data.expenses = { ...data.expenses, ...parsedData.expenses };
 
+        // DOM 업데이트
         if (grossSalaryInput) grossSalaryInput.value = data.salary.gross;
         if (salaryFrequencySelect) salaryFrequencySelect.value = data.salary.frequency;
         if (defaultItemFrequencySelect) defaultItemFrequencySelect.value = data.defaultItemFrequency;
 
-        // 고정 입력 필드 로드 및 DOM 업데이트
+        // 고정 입력 필드 로드 및 DOM 업데이트 (null check 강화)
         for (const key in taxInputs) {
             if (taxInputs[key] && typeof data.taxes[key] !== 'undefined') taxInputs[key].value = data.taxes[key];
         }
-        // `fourZeroOneKTrad` 등 DOM ID와 data 객체 키 불일치 매핑
+        
+        // DOM ID와 data 객체 키 매핑 처리
         if (preTaxDeductInputs.medical && typeof data.preTaxDeductions.medical !== 'undefined') preTaxDeductInputs.medical.value = data.preTaxDeductions.medical;
         if (preTaxDeductInputs.dental && typeof data.preTaxDeductions.dental !== 'undefined') preTaxDeductInputs.dental.value = data.preTaxDeductions.dental;
         if (preTaxDeductInputs.vision && typeof data.preTaxDeductions.vision !== 'undefined') preTaxDeductInputs.vision.value = data.preTaxDeductions.vision;
@@ -722,6 +753,7 @@ function loadData() {
         renderCustomList(customPostTaxDeductList, data.postTaxDeductions.custom, 'post-tax');
         renderCustomList(customExpenseList, data.expenses.custom, 'expense');
 
+        // Apply language and dark mode from loaded data
         applyLanguage(data.currentLanguage);
         applyDarkMode(data.isDarkMode);
 
@@ -741,10 +773,10 @@ function loadData() {
         });
 
         // Clear custom lists in DOM
-        customTaxList.innerHTML = '';
-        customPreTaxDeductList.innerHTML = '';
-        customPostTaxDeductList.innerHTML = '';
-        customExpenseList.innerHTML = '';
+        if (customTaxList) customTaxList.innerHTML = '';
+        if (customPreTaxDeductList) customPreTaxDeductList.innerHTML = '';
+        if (customPostTaxDeductList) customPostTaxDeductList.innerHTML = '';
+        if (customExpenseList) customExpenseList.innerHTML = '';
 
         applyLanguage(data.currentLanguage);
         applyDarkMode(data.isDarkMode);
@@ -773,6 +805,14 @@ function initializeCharts() {
             }
         }
     };
+
+    // 기존 차트 인스턴스가 있으면 파괴하고 새로 생성
+    if (taxChartInstance) taxChartInstance.destroy();
+    if (preTaxDeductChartInstance) preTaxDeductChartInstance.destroy();
+    if (postTaxDeductChartInstance) postTaxDeductChartInstance.destroy();
+    if (expensesChartInstance) expensesChartInstance.destroy();
+    if (budgetDistributionChartInstance) budgetDistributionChartInstance.destroy();
+
 
     if (taxCtx) {
         taxChartInstance = new Chart(taxCtx, {
@@ -843,14 +883,14 @@ function updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, tot
                         labelKey = 'label_401k_roth';
                     } else if (key === 'casdi') {
                         labelKey = 'label_ca_sdi';
-                    } else if (key === 'spp') { // SPP for Stock Purchase Plan
+                    } else if (key === 'spp') {
                         labelKey = 'label_spp';
-                    } else if (key === 'adnd') { // AD&D
+                    } else if (key === 'adnd') {
                         labelKey = 'label_adnd';
-                    } else if (key === 'ltd') { // LTD
+                    } else if (key === 'ltd') {
                         labelKey = 'label_ltd';
-                    }
-                    else {
+                    } else {
+                        // 일반적인 경우: key를 snake_case로 변환하여 label_ 접두사 붙임
                         labelKey = `label_${key.replace(/([A-Z])/g, '_$1').toLowerCase()}`;
                     }
                     labels.push(translations[data.currentLanguage][labelKey] || key);
@@ -863,15 +903,22 @@ function updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, tot
 
         // 사용자 정의 항목 처리
         dataSection.custom.forEach(item => {
-            if (item.value > 0 || !excludeZero) {
+            // 사용자 정의 항목의 값은 이미 월별로 저장되어 있다고 가정하거나,
+            // renderCustomList에서 frequency를 고려하여 월별로 변환된 값이 입력 필드에 반영되어야 합니다.
+            // 여기서는 data.expenses.custom에 저장된 값이 월별이라고 가정하고, chartValues.push(item.value)로 처리합니다.
+            // 만약 custom item이 입력 시 주기에 따라 월별로 변환되어 data에 저장되지 않는다면,
+            // getTotalMonthly와 동일하게 convertToMonthly를 적용해야 합니다.
+            // 현재 getTotalMonthly에서 이미 custom item의 frequency를 처리하므로, 여기서는 단순히 item.value를 사용합니다.
+            const itemValueInMonthly = convertToMonthly(item.value, item.frequency || data.defaultItemFrequency);
+            if (itemValueInMonthly > 0 || !excludeZero) {
                 labels.push(item.name);
-                chartValues.push(convertToMonthly(item.value, item.frequency || data.defaultItemFrequency));
+                chartValues.push(itemValueInMonthly);
                 backgroundColors.push(colors[currentColorIndex % colors.length]);
                 currentColorIndex++;
             }
         });
 
-        if (chartValues.every(val => val === 0)) {
+        if (chartValues.every(val => val === 0)) { // 모든 값이 0이면 차트 숨김
             chartInstance.data.labels = [];
             chartInstance.data.datasets[0].data = [];
             chartInstance.data.datasets[0].backgroundColor = [];
@@ -881,7 +928,9 @@ function updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, tot
             chartInstance.data.datasets[0].backgroundColor = backgroundColors;
         }
 
-        chartInstance.options.plugins.legend.labels.color = data.isDarkMode ? '#fff' : '#333';
+        if (chartInstance.options.plugins.legend.labels) {
+            chartInstance.options.plugins.legend.labels.color = data.isDarkMode ? '#fff' : '#333';
+        }
         chartInstance.update();
     };
 
@@ -914,38 +963,42 @@ function updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, tot
         let currentColorIndex = 0;
 
         for (let i = 0; i < budgetData.length; i++) {
-            if (budgetData[i] > 0 || (budgetData[i] < 0 && budgetLabels[i] === translations[data.currentLanguage].label_remaining_budget)) { // Remaining budget can be negative
+            // 남은 예산은 음수일 수 있으므로 0보다 작은 경우에도 포함
+            if (budgetData[i] !== 0) { // 0이 아닌 값만 차트에 포함
                 filteredBudgetLabels.push(budgetLabels[i]);
-                filteredBudgetData.push(Math.abs(budgetData[i])); // Use absolute value for chart display
+                filteredBudgetData.push(Math.abs(budgetData[i])); // 차트 표시는 절대값으로
                 filteredBudgetColors.push(colors[currentColorIndex % colors.length]);
                 currentColorIndex++;
             }
         }
-
-        // Handle case where all values are zero
-        if (filteredBudgetData.length === 0) {
+        
+        // 모든 값이 0인 경우를 대비하여 빈 차트 설정
+        if (filteredBudgetData.length === 0 && budgetDistributionChartInstance) {
             budgetDistributionChartInstance.data.labels = [];
             budgetDistributionChartInstance.data.datasets[0].data = [];
             budgetDistributionChartInstance.data.datasets[0].backgroundColor = [];
-        } else {
+        } else if (budgetDistributionChartInstance) {
             budgetDistributionChartInstance.data.labels = filteredBudgetLabels;
             budgetDistributionChartInstance.data.datasets[0].data = filteredBudgetData;
             budgetDistributionChartInstance.data.datasets[0].backgroundColor = filteredBudgetColors;
         }
-        
-        budgetDistributionChartInstance.options.plugins.legend.labels.color = data.isDarkMode ? '#fff' : '#333';
+
+        if (budgetDistributionChartInstance.options.plugins.legend.labels) {
+            budgetDistributionChartInstance.options.plugins.legend.labels.color = data.isDarkMode ? '#fff' : '#333';
+        }
         budgetDistributionChartInstance.update();
     }
 }
 
 // 9. 디스플레이 업데이트 (계산 및 UI 갱신)
 function updateDisplay() {
-    data.salary.gross = parseFloat(grossSalaryInput.value) || 0;
-    data.salary.frequency = salaryFrequencySelect.value;
-    data.defaultItemFrequency = defaultItemFrequencySelect.value;
-    data.budgetRule = budgetRuleSelect.value;
+    // 모든 입력 필드의 현재 값을 data 객체에 반영 (saveData에서 저장 로직과 중복될 수 있으나,
+    // input 이벤트에서 바로 UI를 업데이트하기 위해 여기서도 값을 반영)
+    if (grossSalaryInput) data.salary.gross = parseFloat(grossSalaryInput.value) || 0;
+    if (salaryFrequencySelect) data.salary.frequency = salaryFrequencySelect.value;
+    if (defaultItemFrequencySelect) data.defaultItemFrequency = defaultItemFrequencySelect.value;
+    if (budgetRuleSelect) data.budgetRule = budgetRuleSelect.value;
 
-    // 고정 입력 필드의 값들을 data 객체에 반영
     for (const key in taxInputs) {
         if (taxInputs[key]) data.taxes[key] = parseFloat(taxInputs[key].value) || 0;
     }
@@ -1096,7 +1149,7 @@ function applyBudgetRule(netSalary, totalExpenses, totalTaxes, totalPreTaxDeduct
 
     // 3. Evaluate budget status
     let statusText = "";
-    let statusColor = "var(--summary-text-color)";
+    let statusColor = "var(--summary-text-color)"; // Default color for 'On Track'
 
     // Check Needs
     if (actualNeeds > ruleNeeds) {
@@ -1107,26 +1160,26 @@ function applyBudgetRule(netSalary, totalExpenses, totalTaxes, totalPreTaxDeduct
     // Check Wants (only if the rule has a Wants component)
     if (rule.wants > 0 && actualWants > ruleWants) {
         statusText += `${translations[data.currentLanguage].wants_label} ${translations[data.currentLanguage].status_over}. `;
-        statusColor = "var(--danger-color)";
+        statusColor = "var(--danger-color)"; // Wants being over sets danger
     }
 
     // Check Savings (if actual savings are less than what the rule recommends)
     // Here we compare the total "savings bucket" (explicit savings + remaining income) against the rule's savings target
     if (finalActualSavings < ruleSavings) {
         statusText += `${translations[data.currentLanguage].savings_label} ${translations[data.currentLanguage].status_under}. `;
-        if (statusColor !== "var(--danger-color)") { // Don't override danger with warning
+        if (statusColor !== "var(--danger-color)") { // Don't override danger with warning, but warning is less severe
             statusColor = "var(--warning-color)";
         }
     }
 
-
+    // Overall deficit check
     if (netSalary - (actualNeeds + actualWants + actualSavingsFromDeductions) < 0) { // If overall spending + explicit savings exceeds net income
         statusText = translations[data.currentLanguage].status_over + " (" + translations[data.currentLanguage].label_deficit + ")";
         statusColor = "var(--danger-color)";
-    } else if (statusText.trim() === "") {
+    } else if (statusText.trim() === "") { // If no specific over/under issues, then it's on track
         statusText = translations[data.currentLanguage].status_ok;
         statusColor = "var(--summary-text-color)";
-    } else {
+    } else { // If there were some issues (e.g., savings under), but not an overall deficit, keep the warning or danger
         if (statusColor !== "var(--danger-color)") {
             statusColor = "var(--warning-color)";
         }
@@ -1253,6 +1306,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 reader.onload = (e) => {
                     try {
                         const importedData = JSON.parse(e.target.result);
+                        // 기본적인 유효성 검사: salary.gross와 taxes 속성이 있는지 확인
                         if (importedData && typeof importedData.salary?.gross !== 'undefined' && importedData.taxes) {
                             localStorage.setItem('budgetAppData', JSON.stringify(importedData));
                             loadData(); // This will also call updateDisplay()
@@ -1276,7 +1330,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (confirm(translations[data.currentLanguage].confirm_clear_data)) {
                 localStorage.removeItem('budgetAppData');
 
-                // data 객체를 초기 상태로 되돌립니다. (초기 정의와 일치하도록 수정)
+                // data 객체를 초기 상태로 되돌립니다.
                 data = {
                     salary: {
                         gross: 0,
@@ -1331,10 +1385,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
 
-                customTaxList.innerHTML = '';
-                customPreTaxDeductList.innerHTML = '';
-                customPostTaxDeductList.innerHTML = '';
-                customExpenseList.innerHTML = '';
+                if (customTaxList) customTaxList.innerHTML = '';
+                if (customPreTaxDeductList) customPreTaxDeductList.innerHTML = '';
+                if (customPostTaxDeductList) customPostTaxDeductList.innerHTML = '';
+                if (customExpenseList) customExpenseList.innerHTML = '';
 
                 applyLanguage(data.currentLanguage); // 기본 언어 다시 적용
                 applyDarkMode(data.isDarkMode); // 기본 다크모드 다시 적용
