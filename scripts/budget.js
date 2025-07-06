@@ -1,57 +1,10 @@
-// budget.js
+// 0. 전역 변수 및 DOM 요소 선택자 정의
+const grossSalaryInput = document.getElementById('gross-salary');
+const salaryFrequencySelect = document.getElementById('salary-frequency');
+const defaultItemFrequencySelect = document.getElementById('default-item-frequency');
 
-// 1. 전역 변수 및 DOM 요소 캐싱
-const grossSalaryInput = document.getElementById('salary-gross');
-const salaryFrequencySelect = document.getElementById('salary-frequency-select');
+// Summary Displays
 const annualSalarySummaryDisplay = document.getElementById('annual-salary-summary-display');
-
-const defaultItemFrequencySelect = document.getElementById('default-item-frequency-select');
-
-// 세금 입력 필드 - HTML ID와 일치하도록 키 이름을 명확히 함
-const taxInputs = {
-    federal: document.getElementById('tax-federal-1'),
-    state: document.getElementById('tax-state-1'),
-    oasdi: document.getElementById('tax-oasdi-1'), // OASDI
-    medicare: document.getElementById('tax-medicare-1'),
-    casdi: document.getElementById('tax-casdi-1') // CA SDI
-};
-
-// 세전 공제 입력 필드 - HTML ID와 일치하도록 키 이름을 명확히 함
-const preTaxDeductInputs = {
-    medical: document.getElementById('deduct-medical-1'),
-    dental: document.getElementById('deduct-dental-1'),
-    vision: document.getElementById('deduct-vision-1'),
-    fourZeroOneKTrad: document.getElementById('deduct-401k-trad-1'), // HTML ID와 일치
-    traditionalIRA: document.getElementById('deduct-traditional-ira-1'), // 추가된 ID
-    hsa: document.getElementById('deduct-hsa-1') // 추가된 ID
-};
-
-// 세후 공제 입력 필드 - HTML ID와 일치하도록 키 이름을 명확히 함
-const postTaxDeductInputs = {
-    spp: document.getElementById('deduct-spp-1'),
-    adnd: document.getElementById('deduct-adnd-1'),
-    fourZeroOneKRoth: document.getElementById('deduct-401k-roth-1'), // HTML ID와 일치
-    ltd: document.getElementById('deduct-ltd-1'),
-    rothIRA: document.getElementById('deduct-roth-ira-1'), // 추가된 ID
-    healthInsurance: document.getElementById('deduct-health-insurance-1'), // 추가된 ID (CSS 변수명과 일치)
-    lifeInsurance: document.getElementById('deduct-life-insurance-1') // 추가된 ID
-};
-
-// 지출 입력 필드
-const expenseInputs = {
-    rent: document.getElementById('exp-rent-1'),
-    utilities: document.getElementById('exp-utilities-1'),
-    internet: document.getElementById('exp-internet-1'),
-    phone: document.getElementById('exp-phone-1'),
-    groceries: document.getElementById('exp-groceries-1'),
-    dining: document.getElementById('exp-dining-1'),
-    transport: document.getElementById('exp-transport-1'),
-    shopping: document.getElementById('exp-shopping-1'),
-    health: document.getElementById('exp-health-1'),
-    entertainment: document.getElementById('exp-entertainment-1')
-};
-
-// 요약 디스플레이 요소
 const grossSalarySummaryDisplay = document.getElementById('gross-salary-summary-display');
 const totalTaxesDisplay = document.getElementById('total-taxes-display');
 const totalPreTaxDisplay = document.getElementById('total-pre-tax-display');
@@ -60,40 +13,95 @@ const netSalaryDisplay = document.getElementById('net-salary-display');
 const totalExpensesDisplay = document.getElementById('total-expenses-display');
 const remainingBudgetDisplay = document.getElementById('remaining-budget-display');
 
-// 커스텀 항목 목록 컨테이너
-const customTaxList = document.getElementById('tax-custom-list');
-const customPreTaxDeductList = document.getElementById('pre-tax-custom-list');
-const customPostTaxDeductList = document.getElementById('post-tax-custom-list');
-const customExpenseList = document.getElementById('expenses-custom-list');
+// Tax Inputs
+const taxInputs = {
+    federal: document.getElementById('federal-tax'),
+    state: document.getElementById('state-tax'),
+    oasdi: document.getElementById('oasdi-tax'),
+    medicare: document.getElementById('medicare-tax'),
+    casdi: document.getElementById('casdi-tax')
+};
 
-// 헤더 컨트롤
-const languageToggleBtn = document.getElementById('language-toggle');
-const darkmodeToggleBtn = document.getElementById('darkmode-toggle');
+// Pre-Tax Deduction Inputs
+const preTaxDeductInputs = {
+    medical: document.getElementById('medical-deduction'),
+    dental: document.getElementById('dental-deduction'),
+    vision: document.getElementById('vision-deduction'),
+    fourZeroOneKTrad: document.getElementById('401k-traditional-deduction'), // DOM ID is 401k-traditional-deduction
+    traditionalIRA: document.getElementById('traditional-ira-deduction'),
+    hsa: document.getElementById('hsa-deduction')
+};
 
-// 데이터 관리 버튼/입력
+// Post-Tax Deduction Inputs
+const postTaxDeductInputs = {
+    spp: document.getElementById('spp-deduction'),
+    adnd: document.getElementById('adnd-deduction'),
+    fourZeroOneKRoth: document.getElementById('401k-roth-deduction'), // DOM ID is 401k-roth-deduction
+    ltd: document.getElementById('ltd-deduction'),
+    rothIRA: document.getElementById('roth-ira-deduction'),
+    healthInsurance: document.getElementById('health-insurance-deduction'),
+    lifeInsurance: document.getElementById('life-insurance-deduction')
+};
+
+// Expense Inputs
+const expenseInputs = {
+    rent: document.getElementById('rent-expense'),
+    utilities: document.getElementById('utilities-expense'),
+    internet: document.getElementById('internet-expense'),
+    phone: document.getElementById('phone-expense'),
+    groceries: document.getElementById('groceries-expense'),
+    dining: document.getElementById('dining-expense'),
+    transport: document.getElementById('transport-expense'),
+    shopping: document.getElementById('shopping-expense'),
+    health: document.getElementById('health-expense'),
+    entertainment: document.getElementById('entertainment-expense')
+};
+
+// Custom Lists
+const customTaxList = document.getElementById('custom-tax-list');
+const customPreTaxDeductList = document.getElementById('custom-pre-tax-deduct-list');
+const customPostTaxDeductList = document.getElementById('custom-post-tax-deduct-list');
+const customExpenseList = document.getElementById('custom-expense-list');
+
+// Buttons & Toggles
+const addTaxBtn = document.getElementById('add-tax-btn');
+const addPreTaxDeductBtn = document.getElementById('add-pre-tax-deduct-btn');
+const addPostTaxDeductBtn = document.getElementById('add-post-tax-deduct-btn');
+const addExpenseBtn = document.getElementById('add-expense-btn');
+const languageToggleBtn = document.getElementById('language-toggle-btn');
+const darkmodeToggleBtn = document.getElementById('darkmode-toggle-btn');
+
+// Data Management Buttons & Inputs
 const exportJsonBtn = document.getElementById('export-json-btn');
 const importJsonBtn = document.getElementById('import-json-btn');
 const importJsonInput = document.getElementById('import-json-input');
 const clearAllDataBtn = document.getElementById('clear-all-data-btn');
 
-// AI 보고서 요소
+// AI Report
 const aiReportBtn = document.getElementById('ai-report-btn');
 const aiReportBox = document.getElementById('ai-report-box');
 
-// 예산 규칙 요소
+// Budget Rule Elements
 const budgetRuleSelect = document.getElementById('budget-rule-select');
-const ruleNeedsDisplay = document.getElementById('rule-needs');
-const ruleWantsDisplay = document.getElementById('rule-wants');
-const ruleSavingsDisplay = document.getElementById('rule-savings');
-const ruleTotalDisplay = document.getElementById('rule-total');
-const actualNeedsDisplay = document.getElementById('actual-needs');
-const actualWantsDisplay = document = document.getElementById('actual-wants');
-const actualSavingsDisplay = document.getElementById('actual-savings');
-const actualTotalDisplay = document.getElementById('actual-total');
-const budgetStatusDisplay = document.getElementById('budget-status');
+const ruleNeedsDisplay = document.getElementById('rule-needs-display');
+const ruleWantsDisplay = document.getElementById('rule-wants-display');
+const ruleSavingsDisplay = document.getElementById('rule-savings-display');
+const ruleTotalDisplay = document.getElementById('rule-total-display');
+const actualNeedsDisplay = document.getElementById('actual-needs-display');
+const actualWantsDisplay = document.getElementById('actual-wants-display');
+const actualSavingsDisplay = document.getElementById('actual-savings-display');
+const actualTotalDisplay = document.getElementById('actual-total-display');
+const budgetStatusDisplay = document.getElementById('budget-status-display');
+
+// Chart Instances
+let taxChartInstance = null;
+let preTaxDeductChartInstance = null;
+let postTaxDeductChartInstance = null;
+let expensesChartInstance = null;
+let budgetDistributionChartInstance = null;
 
 
-// 2. 전역 상태 변수 (data 객체로 통합 및 구조 변경)
+// 1. 데이터 모델
 let data = {
     salary: {
         gross: 0,
@@ -105,245 +113,212 @@ let data = {
         oasdi: 0,
         medicare: 0,
         casdi: 0,
-        custom: [] // [{id: 't-1', name: 'Other Tax', value: 0, frequency: 'monthly'}]
+        custom: []
     },
     preTaxDeductions: {
         medical: 0,
         dental: 0,
         vision: 0,
-        '401kTrad': 0, // '401kTrad'로 키 이름 통일
-        traditionalIRA: 0, // 추가된 키
-        hsa: 0, // 추가된 키
-        custom: [] // [{id: 'ptd-1', name: 'HSA', value: 0, frequency: 'monthly'}]
+        '401kTrad': 0, // Key changed to match data object naming convention
+        traditionalIRA: 0,
+        hsa: 0,
+        custom: []
     },
     postTaxDeductions: {
         spp: 0,
         adnd: 0,
-        '401kRoth': 0, // '401kRoth'로 키 이름 통일
+        '401kRoth': 0, // Key changed to match data object naming convention
         ltd: 0,
-        rothIRA: 0, // 추가된 키
-        healthInsurance: 0, // 추가된 키
-        lifeInsurance: 0, // 추가된 키
-        custom: [] // [{id: 'potd-1', name: 'Life Insurance', value: 0, frequency: 'monthly'}]
+        rothIRA: 0,
+        healthInsurance: 0,
+        lifeInsurance: 0,
+        custom: []
     },
     expenses: {
-        rent: 0,
-        utilities: 0,
-        internet: 0,
-        phone: 0,
-        groceries: 0,
-        dining: 0,
-        transport: 0,
-        shopping: 0,
-        health: 0,
-        entertainment: 0,
-        custom: [] // [{id: 'e-1', name: 'Gym Membership', value: 0, category: 'needs/wants', frequency: 'monthly'}]
+        rent: 0, utilities: 0, internet: 0, phone: 0, groceries: 0, dining: 0, transport: 0,
+        shopping: 0, health: 0, entertainment: 0, custom: []
     },
     defaultItemFrequency: 'monthly',
-    budgetRule: '50-30-20', // 초기 규칙 설정
-    currentLanguage: 'ko', // 언어 설정도 data 객체 안으로
-    isDarkMode: false // 다크 모드 설정도 data 객체 안으로
+    budgetRule: '50-30-20',
+    currentLanguage: 'ko',
+    isDarkMode: false
 };
 
-// Chart.js 인스턴스 (이 부분은 유지합니다.)
-let taxChartInstance;
-let preTaxDeductChartInstance;
-let postTaxDeductChartInstance;
-let expensesChartInstance;
-let budgetDistributionChartInstance;
-
-
-// 3. 번역 객체
+// 2. 다국어 지원을 위한 번역 객체 (translations.js에서 로드된다고 가정)
+// 실제 프로젝트에서는 별도의 translations.js 파일이 있을 것입니다.
+// 여기서는 예시를 위해 일부만 포함합니다.
 const translations = {
     en: {
-        app_title: "Budget Management Tool",
-        section_salary_title: "Monthly Gross Salary",
+        app_title: "Budget Planner",
+        section_income_title: "Income",
         label_gross_salary: "Gross Salary",
         frequency_monthly: "Monthly",
         frequency_annually: "Annually",
         frequency_weekly: "Weekly",
         frequency_bi_weekly: "Bi-Weekly",
-        btn_save: "Save",
-        label_annual_salary: "Annual Gross Salary:",
-        section_default_frequency_title: "Default Item Frequency Setting",
-        label_default_item_frequency: "Default Expense/Deduction Frequency:",
+        label_default_item_frequency: "Default Item Frequency",
+        annual_summary: "Annual Summary:",
+        monthly_gross_salary: "Monthly Gross Salary:",
         section_taxes_title: "Taxes",
-        label_federal_withholding: "Federal Withholding",
+        label_federal_tax: "Federal Tax",
         label_state_tax: "State Tax",
-        label_oasdi: "OASDI",
-        label_medicare: "Medicare",
-        label_ca_sdi: "CA SDI",
-        label_new_item: "New Item", // 추가: 새로운 항목의 기본 이름
-        btn_add_item: "Add Item",
-        btn_edit_item: "Edit Item", // 추가: 편집 버튼 툴팁
-        btn_save_item_changes: "Save Changes", // 추가: 저장 버튼 툴팁
+        label_oasdi_tax: "OASDI Tax",
+        label_medicare_tax: "Medicare Tax",
+        label_ca_sdi: "CA SDI Tax",
+        label_total_taxes: "Total Taxes:",
         section_pre_tax_title: "Pre-Tax Deductions",
-        label_medical_premium: "Medical Premium",
-        label_dental_premium: "Dental Premium",
-        label_vision_premium: "Vision Premium",
-        label_401k_traditional: "401k Traditional",
-        label_traditional_ira: "Traditional IRA", // 추가
-        label_hsa: "HSA", // 추가
+        label_medical: "Medical",
+        label_dental: "Dental",
+        label_vision: "Vision",
+        label_401k_traditional: "401(k) Traditional",
+        label_traditional_ira: "Traditional IRA",
+        label_hsa: "HSA",
+        label_total_pre_tax: "Total Pre-Tax Deductions:",
         section_post_tax_title: "Post-Tax Deductions",
-        label_spp: "Stock Purchase Plan",
+        label_spp: "SPP",
         label_adnd: "AD&D",
-        label_401k_roth: "401k Roth",
-        label_ltd: "Long Term Disability",
-        label_roth_ira: "Roth IRA", // 추가
-        label_health_insurance: "Health Insurance", // 추가
-        label_life_insurance: "Life Insurance", // 추가
-        section_expenses_title: "Expense Management",
-        label_rent_mortgage: "Rent/Mortgage",
+        label_401k_roth: "401(k) Roth",
+        label_ltd: "LTD",
+        label_roth_ira: "Roth IRA",
+        label_health_insurance: "Health Insurance",
+        label_life_insurance: "Life Insurance",
+        label_total_post_tax: "Total Post-Tax Deductions:",
+        label_net_salary: "Net Salary:",
+        section_expenses_title: "Expenses",
+        label_rent: "Rent",
         label_utilities: "Utilities",
         label_internet: "Internet",
-        label_phone: "Phone Bill",
+        label_phone: "Phone",
         label_groceries: "Groceries",
-        label_dining_out: "Dining Out",
-        label_transportation: "Transportation",
+        label_dining: "Dining Out",
+        label_transport: "Transportation",
         label_shopping: "Shopping",
-        label_health_wellness: "Health/Wellness",
+        label_health: "Health",
         label_entertainment: "Entertainment",
-        section_summary_title: "Budget Summary",
-        section_budget_rule_title: "Budget Rule Application (Budget Rules)",
-        label_budget_rule_select: "Select Budget Rule:",
-        rule_50_30_20: "50/30/20 (Needs/Wants/Savings)",
-        rule_70_20_10: "70/20/10 (Needs/Wants/Savings)",
-        rule_80_20: "80/20 (Needs/Savings)",
-        label_total_budget: "Total Budget",
-        label_budget_status: "Budget Status",
-        label_total_taxes: "Total Taxes:",
-        label_total_pre_tax: "Total Pre-Tax Deductions:",
-        label_total_post_tax: "Total Post-Tax Deductions:",
-        label_net_salary: "Net Monthly Salary:",
         label_total_expenses: "Total Expenses:",
         label_remaining_budget: "Remaining Budget:",
-        section_ai_title: "AI Expense Report",
-        btn_ai_report: "Generate AI Report",
-        ai_report_placeholder: "Click 'Generate AI Report' to get insights into your spending habits.",
-        section_data_title: "Data Management",
-        btn_export: "Export JSON",
-        btn_import: "Import JSON",
-        btn_clear_all_data: "Clear All Data",
-        remove_item: "Are you sure you want to remove this item?", // 문장 부호 추가
-        add_item_title: "Add Custom Item",
+        add_item: "Add Item",
+        remove_item: "Remove Item",
+        btn_edit_item: "Edit Item",
+        btn_save_item_changes: "Save Changes",
+        label_new_item: "New Item",
         item_name_placeholder: "Item Name",
-        item_amount_placeholder: "Amount",
-        item_category_label: "Category (for expenses)",
         category_needs: "Needs",
         category_wants: "Wants",
-        alert_json_export_success: "Budget data successfully exported!",
-        alert_invalid_json: "Invalid JSON file format.",
-        alert_json_parse_error: "Error parsing JSON file: ",
-        alert_data_import_success: "Data successfully imported!",
-        confirm_clear_data: "Are you sure you want to clear all saved data? This action cannot be undone.",
-        alert_data_cleared: "All data has been cleared.",
-        // Budget Rule Specific
+        section_budget_rule_title: "Budget Rule",
         needs_label: "Needs",
         wants_label: "Wants",
         savings_label: "Savings",
-        status_over: "Over Budget",
-        status_under: "Under Budget",
+        label_total: "Total",
+        budget_rule_actual: "Actual",
+        budget_rule_status: "Status",
+        status_over: "Over",
+        status_under: "Under",
         status_ok: "On Track",
         label_deficit: "Deficit",
-        label_rule: "Rule",
-        label_actual: "Actual",
-        label_total: "Total"
+        section_chart_title: "Budget Breakdown",
+        section_ai_report_title: "AI Budget Report (Coming Soon)",
+        ai_report_placeholder: "AI Report will be generated here.",
+        btn_generate_report: "Generate Report",
+        data_management_title: "Data Management",
+        btn_export_json: "Export JSON",
+        btn_import_json: "Import JSON",
+        btn_clear_all_data: "Clear All Data",
+        alert_json_export_success: "Budget data exported successfully!",
+        alert_data_import_success: "Budget data imported successfully!",
+        alert_invalid_json: "Invalid JSON file. Please select a valid budget data file.",
+        alert_json_parse_error: "Error parsing JSON file: ",
+        confirm_clear_data: "Are you sure you want to clear all saved data? This action cannot be undone."
     },
     ko: {
-        app_title: "예산 관리 도구",
-        section_salary_title: "월별 총 급여",
+        app_title: "예산 플래너",
+        section_income_title: "수입",
         label_gross_salary: "총 급여",
         frequency_monthly: "월별",
         frequency_annually: "연간",
-        frequency_weekly: "주별",
-        frequency_bi_weekly: "2주별",
-        btn_save: "저장",
-        label_annual_salary: "연간 총 급여:",
-        section_default_frequency_title: "기본 항목 주기 설정",
-        label_default_item_frequency: "기본 지출/공제 주기:",
+        frequency_weekly: "주간",
+        frequency_bi_weekly: "격주",
+        label_default_item_frequency: "항목 기본 주기",
+        annual_summary: "연간 요약:",
+        monthly_gross_salary: "월별 총 급여:",
         section_taxes_title: "세금",
-        label_federal_withholding: "연방 원천징수",
-        label_state_tax: "주 세금",
-        label_oasdi: "OASDI",
-        label_medicare: "메디케어",
-        label_ca_sdi: "CA SDI",
-        label_new_item: "새 항목", // 추가
-        btn_add_item: "항목 추가",
-        btn_edit_item: "항목 편집", // 추가
-        btn_save_item_changes: "변경 사항 저장", // 추가
+        label_federal_tax: "연방세",
+        label_state_tax: "주세",
+        label_oasdi_tax: "OASDI 세금",
+        label_medicare_tax: "메디케어 세금",
+        label_ca_sdi: "CA SDI 세금",
+        label_total_taxes: "총 세금:",
         section_pre_tax_title: "세전 공제",
-        label_medical_premium: "의료 보험료",
-        label_dental_premium: "치과 보험료",
-        label_vision_premium: "시력 보험료",
-        label_401k_traditional: "401k 일반",
-        label_traditional_ira: "일반 IRA", // 추가
-        label_hsa: "HSA", // 추가
+        label_medical: "의료비",
+        label_dental: "치과",
+        label_vision: "시력",
+        label_401k_traditional: "401(k) 전통",
+        label_traditional_ira: "개인 퇴직 연금 (전통)",
+        label_hsa: "HSA",
+        label_total_pre_tax: "총 세전 공제:",
         section_post_tax_title: "세후 공제",
-        label_spp: "주식 구매 계획",
+        label_spp: "SPP",
         label_adnd: "AD&D",
-        label_401k_roth: "401k Roth",
-        label_ltd: "장기 장애",
-        label_roth_ira: "Roth IRA", // 추가
-        label_health_insurance: "건강 보험", // 추가
-        label_life_insurance: "생명 보험", // 추가
-        section_expenses_title: "지출 관리",
-        label_rent_mortgage: "월세/주택담보대출",
+        label_401k_roth: "401(k) 로스",
+        label_ltd: "LTD",
+        label_roth_ira: "개인 퇴직 연금 (로스)",
+        label_health_insurance: "건강 보험",
+        label_life_insurance: "생명 보험",
+        label_total_post_tax: "총 세후 공제:",
+        label_net_salary: "순수입:",
+        section_expenses_title: "지출",
+        label_rent: "월세",
         label_utilities: "공과금",
         label_internet: "인터넷",
-        label_phone: "휴대폰 요금",
+        label_phone: "휴대폰",
         label_groceries: "식료품",
-        label_dining_out: "외식",
-        label_transportation: "교통비",
+        label_dining: "외식",
+        label_transport: "교통비",
         label_shopping: "쇼핑",
-        label_health_wellness: "건강/웰빙",
+        label_health: "건강",
         label_entertainment: "오락",
-        section_summary_title: "예산 요약",
-        section_budget_rule_title: "예산 규칙 적용 (Budget Rules)",
-        label_budget_rule_select: "예산 규칙 선택:",
-        rule_50_30_20: "50/30/20 (필수/원하는 것/저축)",
-        rule_70_20_10: "70/20/10 (필수/원하는 것/저축)",
-        rule_80_20: "80/20 (필수/저축)",
-        label_total_budget: "총 예산",
-        label_budget_status: "예산 상태",
-        label_total_taxes: "총 세금:",
-        label_total_pre_tax: "총 세전 공제액:",
-        label_total_post_tax: "총 세후 공제액:",
-        label_net_salary: "순 월 급여:",
         label_total_expenses: "총 지출:",
         label_remaining_budget: "남은 예산:",
-        section_ai_title: "AI 지출 보고서",
-        btn_ai_report: "AI 보고서 생성",
-        ai_report_placeholder: "\"AI 보고서 생성\"을 클릭하여 지출 습관에 대한 통찰력을 얻으세요.",
-        section_data_title: "데이터 관리",
-        btn_export: "JSON 내보내기",
-        btn_import: "JSON 가져오기",
-        btn_clear_all_data: "모든 데이터 지우기",
-        remove_item: "이 항목을 삭제하시겠습니까?", // 문장 부호 추가
-        add_item_title: "사용자 정의 항목 추가",
+        add_item: "항목 추가",
+        remove_item: "항목 삭제",
+        btn_edit_item: "편집",
+        btn_save_item_changes: "저장",
+        label_new_item: "새 항목",
         item_name_placeholder: "항목 이름",
-        item_amount_placeholder: "금액",
-        item_category_label: "카테고리 (지출용)",
-        category_needs: "필수",
-        category_wants: "원하는 것",
-        alert_json_export_success: "예산 데이터가 성공적으로 내보내졌습니다!",
-        alert_invalid_json: "유효하지 않은 JSON 파일 형식입니다.",
-        alert_json_parse_error: "JSON 파일을 구문 분석하는 중 오류가 발생했습니다: ",
-        alert_data_import_success: "데이터가 성공적으로 가져와졌습니다!",
-        confirm_clear_data: "모든 저장된 데이터를 지우시겠습니까? 이 작업은 되돌릴 수 없습니다.",
-        alert_data_cleared: "모든 데이터가 지워졌습니다.",
-        // Budget Rule Specific
+        category_needs: "필수 지출",
+        category_wants: "선택 지출",
+        section_budget_rule_title: "예산 규칙",
         needs_label: "필수 지출",
-        wants_label: "원하는 지출",
+        wants_label: "선택 지출",
         savings_label: "저축",
-        status_over: "예산 초과",
-        status_under: "예산 미달",
+        label_total: "총계",
+        budget_rule_actual: "실제",
+        budget_rule_status: "상태",
+        status_over: "초과",
+        status_under: "미달",
         status_ok: "양호",
         label_deficit: "적자",
-        label_rule: "규칙",
-        label_actual: "실제",
-        label_total: "총계"
+        section_chart_title: "예산 분석",
+        section_ai_report_title: "AI 예산 보고서 (예정)",
+        ai_report_placeholder: "AI 보고서는 여기에 생성됩니다.",
+        btn_generate_report: "보고서 생성",
+        data_management_title: "데이터 관리",
+        btn_export_json: "JSON 내보내기",
+        btn_import_json: "JSON 가져오기",
+        btn_clear_all_data: "모든 데이터 지우기",
+        alert_json_export_success: "예산 데이터를 성공적으로 내보냈습니다!",
+        alert_data_import_success: "예산 데이터를 성공적으로 가져왔습니다!",
+        alert_invalid_json: "유효하지 않은 JSON 파일입니다. 올바른 예산 데이터 파일을 선택해주세요.",
+        alert_json_parse_error: "JSON 파일 파싱 오류: ",
+        confirm_clear_data: "저장된 모든 데이터를 지우시겠습니까? 이 작업은 되돌릴 수 없습니다."
     }
 };
+
+// 3. 초기화 함수 (동일)
+function initialize() {
+    // 모든 초기화 로직은 loadData()와 DOMContentLoaded에서 처리됩니다.
+    // 여기서는 특별히 할 일이 없습니다.
+}
 
 // 4. 유틸리티 함수
 
@@ -379,7 +354,6 @@ function convertToMonthly(amount, frequency) {
 }
 
 // 모든 입력 필드 및 커스텀 항목의 총액을 월별 기준으로 계산 (데이터 객체 사용하도록 수정)
-// 이 함수는 data 객체로부터 값을 직접 읽어옵니다.
 function getTotalMonthly(sectionData) { // sectionData는 data.taxes, data.expenses 등입니다.
     let total = 0;
     // 고정 입력 필드 처리 (data 객체에 저장된 값은 이미 월별이라고 가정)
@@ -410,47 +384,71 @@ function renderCustomList(listElement, items, type) {
         itemDiv.dataset.itemId = item.id; // 데이터 ID 설정
         itemDiv.dataset.itemType = type; // 데이터 타입 설정
 
+        // item.name이 없는 경우를 대비하여 기본값 설정
+        const itemNameDisplay = item.name || translations[data.currentLanguage].label_new_item;
+
+        // 새로 추가된 항목인지 확인 (ID가 'new-...'로 시작하는 경우)
+        // 또는 이름이 기본 '새 항목'이고 값이 0인 경우를 초기 편집 모드로 간주
+        const isNewOrEmpty = item.name === translations[data.currentLanguage].label_new_item && item.value === 0;
+
         itemDiv.innerHTML = `
-            <label for="${item.id}-name-input" class="custom-item-label" style="display: block;">${item.name || translations[data.currentLanguage].label_new_item}</label>
+            <label for="${item.id}-name-input" class="custom-item-label" style="display: ${isNewOrEmpty ? 'none' : 'block'};">${itemNameDisplay}</label>
             <div class="input-container custom-input-container">
-                <input type="text" id="${item.id}-name-input" class="form-control custom-item-name-input" value="${item.name}" placeholder="${translations[data.currentLanguage].item_name_placeholder}" readonly style="display: none;">
-                <input type="number" id="${item.id}-value-input" class="form-control custom-item-value-input" min="0" value="${item.value}" oninput="updateCustomItem('${type}', '${item.id}', 'value', this.value)" readonly>
-                <select id="${item.id}-frequency-select" class="form-control custom-item-frequency-select" onchange="updateCustomItem('${type}', '${item.id}', 'frequency', this.value)" ${type === 'expense' || type === 'tax' || type === 'pre-tax' || type === 'post-tax' ? '' : 'style="display: none;"'} disabled>
+                <input type="text" id="${item.id}-name-input" class="form-control custom-item-name-input" value="${item.name || ''}" placeholder="${translations[data.currentLanguage].item_name_placeholder}" ${isNewOrEmpty ? '' : 'readonly'}>
+                <input type="number" id="${item.id}-value-input" class="form-control custom-item-value-input" min="0" value="${item.value}" step="0.01" ${isNewOrEmpty ? '' : 'readonly'}>
+                <select id="${item.id}-frequency-select" class="form-control custom-item-frequency-select" ${type === 'expense' || type === 'tax' || type === 'pre-tax' || type === 'post-tax' ? '' : 'style="display: none;"'} ${isNewOrEmpty ? '' : 'disabled'}>
                     <option value="monthly" ${item.frequency === 'monthly' ? 'selected' : ''}>${translations[data.currentLanguage].frequency_monthly}</option>
                     <option value="annually" ${item.frequency === 'annually' ? 'selected' : ''}>${translations[data.currentLanguage].frequency_annually}</option>
                     <option value="weekly" ${item.frequency === 'weekly' ? 'selected' : ''}>${translations[data.currentLanguage].frequency_weekly}</option>
                     <option value="bi-weekly" ${item.frequency === 'bi-weekly' ? 'selected' : ''}>${translations[data.currentLanguage].frequency_bi_weekly}</option>
                 </select>
                 ${type === 'expense' ? `
-                <select id="${item.id}-category-select" class="form-control custom-item-category-select" onchange="updateCustomItem('${type}', '${item.id}', 'category', this.value)" disabled>
+                <select id="${item.id}-category-select" class="form-control custom-item-category-select" ${isNewOrEmpty ? '' : 'disabled'}>
                     <option value="needs" ${item.category === 'needs' ? 'selected' : ''}>${translations[data.currentLanguage].category_needs}</option>
                     <option value="wants" ${item.category === 'wants' ? 'selected' : ''}>${translations[data.currentLanguage].category_wants}</option>
                 </select>` : ''}
-                <button class="icon-btn edit-custom-btn" onclick="toggleEditMode(this, '${type}', '${item.id}')" title="${translations[data.currentLanguage].btn_edit_item}"><i class="ri-pencil-line"></i></button>
+                <button class="icon-btn edit-custom-btn" title="${isNewOrEmpty ? translations[data.currentLanguage].btn_save_item_changes : translations[data.currentLanguage].btn_edit_item}"><i class="${isNewOrEmpty ? 'ri-check-line' : 'ri-pencil-line'}"></i></button>
                 <button class="icon-btn delete-custom-btn" onclick="deleteCustomItem('${type}', '${item.id}')" title="${translations[data.currentLanguage].remove_item}"><i class="ri-close-line"></i></button>
             </div>
         `;
         listElement.appendChild(itemDiv);
 
+        // 새로 추가된 요소들에 이벤트 리스너를 직접 연결
         const nameInput = itemDiv.querySelector(`#${item.id}-name-input`);
+        const valueInput = itemDiv.querySelector(`#${item.id}-value-input`);
+        const frequencySelect = itemDiv.querySelector(`#${item.id}-frequency-select`);
+        const categorySelect = itemDiv.querySelector(`#${item.id}-category-select`); // expense 타입인 경우
+        const editButton = itemDiv.querySelector('.edit-custom-btn');
+        const labelElement = itemDiv.querySelector('.custom-item-label');
+
+        // Add event listener to the edit button (using delegation later, but direct for simplicity here)
+        // For dynamic items, event delegation in DOMContentLoaded is generally better.
+        // However, if renderCustomList replaces all innerHTML, these need to be re-attached.
+        // The DOMContentLoaded section uses delegation for edit/delete, which is robust.
+        // The following direct attachments are for input/change events which need to be specific to the newly rendered elements.
+
         nameInput.addEventListener('input', (event) => {
             updateCustomItem(type, item.id, 'name', event.target.value);
-            itemDiv.querySelector('.custom-item-label').textContent = event.target.value || translations[data.currentLanguage].label_new_item;
+            labelElement.textContent = event.target.value || translations[data.currentLanguage].label_new_item;
         });
 
-        const labelElement = itemDiv.querySelector('.custom-item-label');
-        if (item.name) {
-            labelElement.textContent = item.name;
-            labelElement.style.display = 'block';
-            nameInput.style.display = 'none';
-        } else {
-            labelElement.textContent = translations[data.currentLanguage].label_new_item;
-            labelElement.style.display = 'block';
-            nameInput.style.display = 'none';
+        valueInput.addEventListener('input', (event) => {
+            updateCustomItem(type, item.id, 'value', event.target.value);
+        });
+
+        if (frequencySelect) { // frequencySelect가 존재할 때만 리스너 추가
+            frequencySelect.addEventListener('change', (event) => {
+                updateCustomItem(type, item.id, 'frequency', event.target.value);
+            });
+        }
+
+        if (categorySelect) { // categorySelect가 존재할 때만 리스너 추가
+            categorySelect.addEventListener('change', (event) => {
+                updateCustomItem(type, item.id, 'category', event.target.value);
+            });
         }
     });
 }
-
 
 // 사용자 정의 항목 추가
 function addCustomItem(type) {
@@ -465,7 +463,7 @@ function addCustomItem(type) {
     else if (type === 'post-tax') targetArray = data.postTaxDeductions.custom;
     else if (type === 'expense') {
         targetArray = data.expenses.custom;
-        itemCategory = 'needs';
+        itemCategory = 'needs'; // 지출 항목의 기본 카테고리
     } else {
         console.error("Unknown custom item type:", type);
         return;
@@ -475,7 +473,7 @@ function addCustomItem(type) {
         id: itemId,
         name: itemName,
         value: itemAmount,
-        frequency: data.defaultItemFrequency
+        frequency: data.defaultItemFrequency // 기본 주기를 따름
     };
 
     if (type === 'expense') {
@@ -483,14 +481,25 @@ function addCustomItem(type) {
     }
 
     targetArray.push(newItem);
-    updateDisplay();
-    saveData();
-}
+    updateDisplay(); // updateDisplay를 호출하여 새로운 항목이 DOM에 렌더링되도록 합니다.
+    saveData(); // 데이터를 저장합니다.
 
+    // 새로 추가된 항목의 이름 입력 필드에 포커스 주기
+    setTimeout(() => { // DOM이 업데이트될 시간을 약간 기다립니다.
+        const newItemDiv = document.querySelector(`.custom-item[data-item-id="${itemId}"]`);
+        if (newItemDiv) {
+            const nameInput = newItemDiv.querySelector(`#${itemId}-name-input`);
+            if (nameInput) {
+                nameInput.focus();
+                nameInput.select(); // 텍스트 전체 선택
+            }
+        }
+    }, 0);
+}
 
 // 사용자 정의 항목 제거
 function deleteCustomItem(type, itemId) {
-    const confirmed = confirm(translations[data.currentLanguage].remove_item); // 문장 부호 제거
+    const confirmed = confirm(translations[data.currentLanguage].remove_item);
     if (!confirmed) return;
 
     let targetArray;
@@ -503,7 +512,6 @@ function deleteCustomItem(type, itemId) {
         return;
     }
 
-    // 새로운 배열로 필터링하고 data 객체에 재할당
     const updatedArray = targetArray.filter(item => item.id !== itemId);
 
     if (type === 'tax') data.taxes.custom = updatedArray;
@@ -515,7 +523,6 @@ function deleteCustomItem(type, itemId) {
     saveData();
 }
 
-
 // 새 함수: `toggleEditMode` - 편집 버튼 클릭 시 모드 전환
 function toggleEditMode(button, type, itemId) {
     const itemDiv = button.closest('.custom-item');
@@ -526,30 +533,36 @@ function toggleEditMode(button, type, itemId) {
     const label = itemDiv.querySelector('.custom-item-label');
     const icon = button.querySelector('i');
 
-    if (nameInput.readOnly) { // 현재 읽기 모드 -> 편집 모드로 전환
+    const isEditing = nameInput.readOnly === false; // readOnly 속성으로 현재 편집 모드인지 확인
+
+    if (!isEditing) { // 현재 읽기 모드 -> 편집 모드로 전환
         nameInput.removeAttribute('readonly');
         valueInput.removeAttribute('readonly');
         if (frequencySelect) frequencySelect.removeAttribute('disabled');
         if (categorySelect) categorySelect.removeAttribute('disabled');
 
-        nameInput.focus();
-        icon.className = 'ri-check-line'; // 아이콘을 저장(체크)으로 변경
-        button.title = translations[data.currentLanguage].btn_save_item_changes; // 툴팁 변경 (번역 추가됨)
-        label.style.display = 'none';
         nameInput.style.display = 'block';
+        label.style.display = 'none';
+
+        nameInput.focus();
+        nameInput.select(); // 텍스트 전체 선택
+        icon.className = 'ri-check-line'; // 아이콘을 저장(체크)으로 변경
+        button.title = translations[data.currentLanguage].btn_save_item_changes; // 툴팁 변경
     } else { // 현재 편집 모드 -> 읽기 모드로 전환 (저장)
         nameInput.setAttribute('readonly', 'true');
         valueInput.setAttribute('readonly', 'true');
         if (frequencySelect) frequencySelect.setAttribute('disabled', 'true');
         if (categorySelect) categorySelect.setAttribute('disabled', 'true');
 
+        nameInput.style.display = 'none';
+        label.style.display = 'block';
+        label.textContent = nameInput.value || translations[data.currentLanguage].label_new_item; // 라벨 업데이트
+
         icon.className = 'ri-pencil-line'; // 아이콘을 편집(연필)으로 변경
         button.title = translations[data.currentLanguage].btn_edit_item; // 툴팁 변경
-        label.style.display = 'block';
-        nameInput.style.display = 'none';
-        label.textContent = nameInput.value || translations[data.currentLanguage].label_new_item;
-        updateDisplay(); // 변경된 값으로 화면 업데이트
-        saveData(); // 변경사항 저장
+
+        // saveData() 호출. updateDisplay()는 updateCustomItem에서 이미 호출됩니다.
+        saveData();
     }
 }
 
@@ -579,7 +592,6 @@ function updateCustomItem(type, itemId, field, newValue) {
     }
     updateDisplay(); // 데이터 변경 후 화면 업데이트 (저장은 toggleEditMode에서 일괄 처리)
 }
-
 
 // 5. 언어 적용
 function applyLanguage(lang) {
@@ -622,7 +634,7 @@ function applyLanguage(lang) {
         }
     }
 
-    updateDisplay();
+    updateDisplay(); // 언어 변경 시 사용자 정의 항목의 기본 이름 (새 항목)도 다시 렌더링되도록
 }
 
 // 6. 다크 모드 적용
@@ -632,7 +644,7 @@ function applyDarkMode(enable) {
     if (darkmodeToggleBtn) {
         darkmodeToggleBtn.innerHTML = data.isDarkMode ? '<i class="ri-sun-line"></i>' : '<i class="ri-moon-line"></i>';
     }
-    updateDisplay();
+    updateDisplay(); // 차트 색상 업데이트를 위해 updateDisplay 호출
 }
 
 // 7. 데이터 저장 및 로드
@@ -704,6 +716,7 @@ function loadData() {
 
         if (budgetRuleSelect) budgetRuleSelect.value = data.budgetRule;
 
+        // Custom lists need to be re-rendered to reflect loaded data
         renderCustomList(customTaxList, data.taxes.custom, 'tax');
         renderCustomList(customPreTaxDeductList, data.preTaxDeductions.custom, 'pre-tax');
         renderCustomList(customPostTaxDeductList, data.postTaxDeductions.custom, 'post-tax');
@@ -712,9 +725,10 @@ function loadData() {
         applyLanguage(data.currentLanguage);
         applyDarkMode(data.isDarkMode);
 
-        updateDisplay();
+        updateDisplay(); // Ensures all calculations and UI are up-to-date
     } else {
         // 저장된 데이터가 없는 경우, DOM 요소를 0으로 초기화
+        // data 객체는 이미 초기값으로 설정되어 있으므로, DOM에 반영만 하면 됨
         if (grossSalaryInput) grossSalaryInput.value = 0;
         if (salaryFrequencySelect) salaryFrequencySelect.value = data.salary.frequency;
         if (defaultItemFrequencySelect) defaultItemFrequencySelect.value = data.defaultItemFrequency;
@@ -726,6 +740,7 @@ function loadData() {
             }
         });
 
+        // Clear custom lists in DOM
         customTaxList.innerHTML = '';
         customPreTaxDeductList.innerHTML = '';
         customPostTaxDeductList.innerHTML = '';
@@ -736,6 +751,7 @@ function loadData() {
         updateDisplay();
     }
 }
+
 
 // 8. 차트 관리 (Chart.js)
 function initializeCharts() {
@@ -1047,7 +1063,7 @@ function applyBudgetRule(netSalary, totalExpenses, totalTaxes, totalPreTaxDeduct
 
     // 사용자 정의 지출 항목들에서 'category' 기반 분류
     data.expenses.custom.forEach(item => {
-        const monthlyAmount = convertToMonthly(item.value, item.frequency);
+        const monthlyAmount = convertToMonthly(item.value, item.frequency || data.defaultItemFrequency);
         if (item.category === 'needs') {
             actualNeeds += monthlyAmount;
         } else if (item.category === 'wants') {
@@ -1320,8 +1336,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 customPostTaxDeductList.innerHTML = '';
                 customExpenseList.innerHTML = '';
 
-                applyLanguage(data.currentLanguage);
-                applyDarkMode(data.isDarkMode);
+                applyLanguage(data.currentLanguage); // 기본 언어 다시 적용
+                applyDarkMode(data.isDarkMode); // 기본 다크모드 다시 적용
 
                 updateDisplay();
                 alert(translations[data.currentLanguage].alert_data_cleared);
