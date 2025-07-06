@@ -688,8 +688,10 @@ function updateCharts() {
     if (taxChartInstance) {
         taxChartInstance.destroy();
     }
-    taxChartInstance = createChart('taxesChart', translations[data.currentLanguage].chart_taxes, combinedTaxAmounts, combinedTaxLabels, taxColors);
-
+    if (taxChartInstance) {
+        taxChartInstance.destroy();
+    }
+    taxChartInstance = createChart('tax-chart', translations[data.currentLanguage].chart_taxes_title, taxAmounts, taxLabels, taxColors);
     // Pre-Tax Deductions Chart
     const preTaxLabels = Object.keys(data.preTaxDeductions)
         .filter(key => key !== 'custom' && data.preTaxDeductions[key] > 0)
