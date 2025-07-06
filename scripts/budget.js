@@ -14,6 +14,7 @@ let taxChartInstance, preTaxDeductChartInstance, postTaxDeductChartInstance, exp
 const data = {
     grossSalary: 0,
     salaryFrequency: 'monthly',
+    currency: 'USD', // 화폐 단위를 USD로 고정
     frequencies: {
         tax: 'monthly',
         preTax: 'monthly',
@@ -29,7 +30,7 @@ const data = {
     isDarkMode: false
 };
 
-// 2. 언어별 텍스트 (기존과 동일, 일부 키 추가)
+// 2. 언어별 텍스트
 const translations = {
     en: {
         app_title: 'Budget Management Tool', section_salary_title: 'Gross Salary', label_gross_salary: 'Gross Salary', frequency_monthly: 'Monthly', frequency_annually: 'Annual', frequency_weekly: 'Weekly', frequency_bi_weekly: 'Bi-Weekly',
@@ -44,7 +45,7 @@ const translations = {
         rule_80_20: '80/20 (Needs/Savings)', needs_label: 'Needs', label_rule: 'Rule', label_actual: 'Actual', wants_label: 'Wants', savings_label: 'Savings', label_total_budget: 'Total Budget',
         label_budget_status: 'Budget Status:', section_ai_title: 'AI Expense Report', btn_ai_report: 'Generate AI Report', ai_report_placeholder: 'Click "Generate AI Report" for insights on your spending habits.',
         section_data_title: 'Data Management', btn_export: 'Export JSON', btn_import: 'Import JSON', btn_clear_all_data: 'Clear All Data',
-        custom_item_name: 'Item Name', custom_item_amount: 'Amount', remove: 'Remove', currency_symbol: '$', alert_data_saved: 'Data saved successfully!', alert_data_loaded: 'Data loaded successfully!',
+        custom_item_name: 'Item Name', custom_item_amount: 'Amount', remove: 'Remove', alert_data_saved: 'Data saved successfully!', alert_data_loaded: 'Data loaded successfully!',
         alert_data_cleared: 'All data cleared!', confirm_clear_data: 'Are you sure you want to clear all data?', confirm_import_data: 'This will overwrite existing data. Continue?', invalid_json: 'Invalid JSON file.',
         chart_taxes: 'Taxes Distribution', chart_pre_tax: 'Pre-Tax Deductions', chart_post_tax: 'Post-Tax Deductions', chart_expenses: 'Expenses Distribution', chart_budget_distribution: 'Overall Budget Distribution',
         chart_labels_taxes: 'Taxes', chart_labels_pre_tax_deductions: 'Pre-Tax', chart_labels_post_tax_deductions: 'Post-Tax', chart_labels_expenses: 'Expenses', chart_labels_remaining_budget: 'Remaining',
@@ -63,7 +64,7 @@ const translations = {
         rule_80_20: '80/20 (필수/저축)', needs_label: '필수 지출', label_rule: '규칙', label_actual: '실제', wants_label: '선택 지출', savings_label: '저축', label_total_budget: '총 예산',
         label_budget_status: '예산 상태:', section_ai_title: 'AI 지출 보고서', btn_ai_report: 'AI 보고서 생성', ai_report_placeholder: '"AI 보고서 생성"을 클릭하여 지출 습관에 대한 통찰력을 얻으세요.',
         section_data_title: '데이터 관리', btn_export: 'JSON 내보내기', btn_import: 'JSON 가져오기', btn_clear_all_data: '모든 데이터 지우기',
-        custom_item_name: '항목 이름', custom_item_amount: '금액', remove: '삭제', currency_symbol: '₩', alert_data_saved: '데이터가 성공적으로 저장되었습니다!', alert_data_loaded: '데이터가 성공적으로 로드되었습니다!',
+        custom_item_name: '항목 이름', custom_item_amount: '금액', remove: '삭제', alert_data_saved: '데이터가 성공적으로 저장되었습니다!', alert_data_loaded: '데이터가 성공적으로 로드되었습니다!',
         alert_data_cleared: '모든 데이터가 지워졌습니다!', confirm_clear_data: '정말 모든 데이터를 지우시겠습니까?', confirm_import_data: '기존 데이터를 덮어씁니다. 계속하시겠습니까?', invalid_json: '유효하지 않은 JSON 파일입니다.',
         chart_taxes: '세금 분배', chart_pre_tax: '세전 공제 분배', chart_post_tax: '세후 공제 분배', chart_expenses: '지출 분배', chart_budget_distribution: '전체 예산 분배',
         chart_labels_taxes: '세금', chart_labels_pre_tax_deductions: '세전 공제', chart_labels_post_tax_deductions: '세후 공제', chart_labels_expenses: '지출', chart_labels_remaining_budget: '남은 예산',
@@ -109,8 +110,13 @@ function calculateBudget() {
 // 4. UI 업데이트 & 렌더링
 function formatCurrency(amount) {
     const lang = data.currentLanguage === 'ko' ? 'ko-KR' : 'en-US';
-    const currency = data.currentLanguage === 'ko' ? 'KRW' : 'USD';
-    return new Intl.NumberFormat(lang, { style: 'currency', currency: currency, minimumFractionDigits: 0 }).format(amount);
+    const currency = data.currency; // 고정된 화폐 단위 사용
+
+    return new Intl.NumberFormat(lang, {
+        style: 'currency',
+        currency: currency,
+        minimumFractionDigits: 2
+    }).format(amount);
 }
 
 function updateDisplay() {
@@ -237,7 +243,7 @@ function applyLanguage() {
             else element.textContent = translation;
         }
     });
-    updateDisplay(); // 언어 변경 후 모든 텍스트를 다시 렌더링
+    updateDisplay();
 }
 
 function applyDarkMode() {
@@ -321,7 +327,7 @@ function updateCharts() {
         let labels = [], amounts = [];
         for(const key in items) {
             if(key !== 'custom' && items[key] > 0) {
-                labels.push(translations[lang][key.replace(/-\d$/, '')] || key);
+                labels.push(translations[lang][`label_${key.replace(/-/g, '_')}`] || key);
                 amounts.push(convertToAnnual(items[key], sectionFrequency));
             }
         }
@@ -336,7 +342,7 @@ function updateCharts() {
     
     const taxData = extractChartData(data.taxes, data.taxes.custom, data.frequencies.tax);
     taxChartInstance = createOrUpdateChart(taxChartInstance, 'tax-chart', translations[lang].chart_taxes, taxData.amounts, taxData.labels);
-    // ... 다른 차트들도 유사하게 업데이트 ...
+
     const preTaxData = extractChartData(data.preTaxDeductions, data.preTaxDeductions.custom, data.frequencies.preTax);
     preTaxDeductChartInstance = createOrUpdateChart(preTaxDeductChartInstance, 'pre-tax-deduct-chart', translations[lang].chart_pre_tax, preTaxData.amounts, preTaxData.labels);
 
