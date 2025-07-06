@@ -1,6 +1,6 @@
 // budget.js
 
-// 1. 전역 변수 및 DOM 요소 캐싱
+// 1. 전역 변수 및 DOM 요소 캐싱 (기존과 동일하거나 일부 수정)
 const grossSalaryInput = document.getElementById('salary-gross');
 const salaryFrequencySelect = document.getElementById('salary-frequency-select');
 const annualSalarySummaryDisplay = document.getElementById('annual-salary-summary-display');
@@ -55,10 +55,10 @@ const netSalaryDisplay = document.getElementById('net-salary-display');
 const totalExpensesDisplay = document.getElementById('total-expenses-display');
 const remainingBudgetDisplay = document.getElementById('remaining-budget-display');
 
-// 커스텀 항목 목록 컨테이너
+// 커스텀 항목 목록 컨테이너 (이전과 동일)
 const customTaxList = document.getElementById('tax-custom-list');
 const customPreTaxDeductList = document.getElementById('pre-tax-custom-list');
-const customPostTaxDeductList = document.getElementById('post-tax-custom-list');
+const customPostTaxDeductList = document('post-tax-custom-list');
 const customExpenseList = document.getElementById('expenses-custom-list');
 
 // 헤더 컨트롤
@@ -88,26 +88,72 @@ const actualTotalDisplay = document.getElementById('actual-total');
 const budgetStatusDisplay = document.getElementById('budget-status');
 
 
-// 2. 전역 상태 변수
-let currentSalaryFrequency = 'monthly'; // 기본값
-let defaultItemFrequency = 'monthly'; // 기본값
-let currentLanguage = 'ko'; // 기본 언어
-let isDarkMode = false; // 기본 다크 모드 상태
+// 2. 전역 상태 변수 (data 객체로 통합 및 구조 변경)
+let data = {
+    salary: {
+        gross: 0,
+        frequency: 'monthly'
+    },
+    taxes: {
+        federal: 0,
+        state: 0,
+        oasdi: 0,
+        medicare: 0,
+        casdi: 0,
+        custom: [] // [{id: 't-1', name: 'Other Tax', value: 0}]
+    },
+    preTaxDeductions: {
+        medical: 0,
+        dental: 0,
+        vision: 0,
+        '401kTrad': 0, // '401kTrad'로 키 이름 통일
+        custom: [] // [{id: 'ptd-1', name: 'HSA', value: 0}]
+    },
+    postTaxDeductions: {
+        spp: 0,
+        adnd: 0,
+        '401kRoth': 0, // '401kRoth'로 키 이름 통일
+        ltd: 0,
+        custom: [] // [{id: 'potd-1', name: 'Life Insurance', value: 0}]
+    },
+    expenses: {
+        rent: 0,
+        utilities: 0,
+        internet: 0,
+        phone: 0,
+        groceries: 0,
+        dining: 0,
+        transport: 0,
+        shopping: 0,
+        health: 0,
+        entertainment: 0,
+        custom: [] // [{id: 'e-1', name: 'Gym Membership', value: 0, category: 'needs/wants'}]
+    },
+    defaultItemFrequency: 'monthly',
+    budgetRule: '50-30-20', // 초기 규칙 설정
+    currentLanguage: 'ko', // 언어 설정도 data 객체 안으로
+    isDarkMode: false // 다크 모드 설정도 data 객체 안으로
+};
 
-// 사용자 정의 항목 배열
-let customTaxes = [];
-let customPreTaxDeductions = [];
-let customPostTaxDeductions = [];
-let customExpenses = [];
+// 기존의 개별 전역 배열 변수들은 이제 필요 없으므로 제거합니다.
+// let currentSalaryFrequency = 'monthly';
+// let defaultItemFrequency = 'monthly';
+// let currentLanguage = 'ko';
+// let isDarkMode = false;
+// let customTaxes = [];
+// let customPreTaxDeductions = [];
+// let customPostTaxDeductions = [];
+// let customExpenses = [];
 
-// Chart.js 인스턴스
+// Chart.js 인스턴스 (이 부분은 유지합니다.)
 let taxChartInstance;
 let preTaxDeductChartInstance;
 let postTaxDeductChartInstance;
 let expensesChartInstance;
 let budgetDistributionChartInstance;
 
-// 3. 번역 객체 (더 많은 번역 키 추가)
+
+// 3. 번역 객체 (기존과 동일)
 const translations = {
     en: {
         app_title: "Budget Management Tool",
@@ -150,12 +196,12 @@ const translations = {
         label_health_wellness: "Health/Wellness",
         label_entertainment: "Entertainment",
         section_summary_title: "Budget Summary",
-        section_budget_rule_title: "Budget Rule Application (Budget Rules)", 
-        label_budget_rule_select: "Select Budget Rule:", 
-        rule_50_30_20: "50/30/20 (Needs/Wants/Savings)", 
-        rule_70_20_10: "70/20/10 (Needs/Wants/Savings)", 
-        rule_80_20: "80/20 (Needs/Savings)", 
-        label_total_budget: "Total Budget", 
+        section_budget_rule_title: "Budget Rule Application (Budget Rules)",
+        label_budget_rule_select: "Select Budget Rule:",
+        rule_50_30_20: "50/30/20 (Needs/Wants/Savings)",
+        rule_70_20_10: "70/20/10 (Needs/Wants/Savings)",
+        rule_80_20: "80/20 (Needs/Savings)",
+        label_total_budget: "Total Budget",
         label_budget_status: "Budget Status",
         label_total_taxes: "Total Taxes:",
         label_total_pre_tax: "Total Pre-Tax Deductions:",
@@ -236,12 +282,12 @@ const translations = {
         label_health_wellness: "건강/웰빙",
         label_entertainment: "오락",
         section_summary_title: "예산 요약",
-        section_budget_rule_title: "예산 규칙 적용 (Budget Rules)", 
-        label_budget_rule_select: "예산 규칙 선택:", 
-        rule_50_30_20: "50/30/20 (필수/원하는 것/저축)", 
-        rule_70_20_10: "70/20/10 (필수/원하는 것/저축)", 
+        section_budget_rule_title: "예산 규칙 적용 (Budget Rules)",
+        label_budget_rule_select: "예산 규칙 선택:",
+        rule_50_30_20: "50/30/20 (필수/원하는 것/저축)",
+        rule_70_20_10: "70/20/10 (필수/원하는 것/저축)",
         rule_80_20: "80/20 (필수/저축)",
-        label_total_budget: "총 예산", 
+        label_total_budget: "총 예산",
         label_budget_status: "예산 상태",
         label_total_taxes: "총 세금:",
         label_total_pre_tax: "총 세전 공제액:",
@@ -285,7 +331,7 @@ const translations = {
 
 // 4. 유틸리티 함수
 
-// 통화 형식 지정
+// 통화 형식 지정 (변경 없음)
 function formatCurrency(amount) {
     const locale = navigator.language || 'en-US';
     return new Intl.NumberFormat(locale, {
@@ -297,7 +343,7 @@ function formatCurrency(amount) {
 }
 
 /**
- * 주어진 금액을 입력된 주기로부터 월별 기준으로 변환합니다.
+ * 주어진 금액을 입력된 주기로부터 월별 기준으로 변환합니다. (변경 없음)
  * @param {number} amount 변환할 금액
  * @param {string} frequency 금액의 주기 ('monthly', 'annually', 'weekly', 'bi-weekly')
  * @returns {number} 월별로 변환된 금액
@@ -316,138 +362,271 @@ function convertToMonthly(amount, frequency) {
     }
 }
 
-// 모든 입력 필드 및 커스텀 항목의 총액을 월별 기준으로 계산
-function getTotalMonthly(inputs, customItems) {
+// 모든 입력 필드 및 커스텀 항목의 총액을 월별 기준으로 계산 (데이터 객체 사용하도록 수정)
+// 이 함수는 data 객체로부터 값을 직접 읽어옵니다.
+function getTotalMonthly(sectionData, sectionKey) { // sectionData는 data.taxes, data.expenses 등입니다.
     let total = 0;
     // 고정 입력 필드 처리
-    for (const key in inputs) {
-        if (inputs[key]) {
-            const value = parseFloat(inputs[key].value) || 0;
-            // HTML data-frequency 속성에서 주기 가져오기, 없으면 defaultItemFrequency 사용
-            const frequency = inputs[key].dataset.frequency || defaultItemFrequency;
-            total += convertToMonthly(value, frequency);
+    for (const key in sectionData) {
+        if (key !== 'custom') { // 'custom' 배열은 따로 처리
+            const value = parseFloat(sectionData[key]) || 0;
+            // 고정 입력 필드는 이제 data 객체에 저장된 값입니다. 주기는 기본값을 사용합니다.
+            // 필요하다면, 각 고정 항목별 주기를 data 객체에 추가하여 관리할 수 있습니다.
+            // 현재는 defaultItemFrequency를 따르거나, 특정 항목은 고정 주기로 간주합니다.
+            // 여기서는 모든 고정 항목이 'monthly'라고 가정하거나, data.defaultItemFrequency를 따릅니다.
+            // HTML input 필드에 dataset.frequency가 있었다면, loadData에서 data 객체로 로드할 때 해당 정보를 data 객체에 저장해야 합니다.
+            // 지금은 HTML에 직접 data-frequency가 없으므로, 여기서 월별로 간주하거나 defaultItemFrequency를 따릅니다.
+            // 일단 'monthly'로 간주하고, 나중에 필요하면 data 객체에 frequency를 추가하는 방향으로 논의합니다.
+            // 또는, 고정 입력 필드는 항상 월별 값을 받는다고 가정합니다.
+            total += value;
         }
     }
     // 사용자 정의 항목 처리
-    customItems.forEach(item => {
-        // 사용자 정의 항목은 이미 frequency 속성을 가짐
-        total += convertToMonthly(item.amount, item.frequency);
+    // 각 커스텀 항목은 이제 frequency 속성을 가집니다.
+    sectionData.custom.forEach(item => {
+        total += convertToMonthly(item.value, item.frequency || data.defaultItemFrequency); // item.value로 변경
     });
     return total;
 }
 
 
-// 사용자 정의 항목 렌더링
+// 사용자 정의 항목 렌더링 (이제 편집 가능한 형태로 렌더링)
+// 이 함수는 DOM을 업데이트하는 역할만 합니다. 실제 데이터는 data 객체에서 관리됩니다.
 function renderCustomList(listElement, items, type) {
     if (!listElement) {
         console.warn(`renderCustomList: List element not found for type ${type}`);
         return;
     }
     listElement.innerHTML = ''; // 기존 목록 초기화
-    items.forEach((item, index) => {
+
+    items.forEach(item => {
         const itemDiv = document.createElement('div');
-        itemDiv.classList.add('custom-item');
+        itemDiv.className = 'form-group custom-item';
+        itemDiv.dataset.itemId = item.id; // 데이터 ID 설정
+        itemDiv.dataset.itemType = type; // 데이터 타입 설정
+
+        // item.name과 item.value를 초기값으로 설정
         itemDiv.innerHTML = `
-            <span>${item.name} (${formatCurrency(item.amount)})</span>
-            <button class="remove-btn icon-btn" data-index="${index}" data-type="${type}" aria-label="${translations[currentLanguage].remove_item}">
-                <i class="ri-close-line"></i>
-            </button>
+            <label for="${item.id}-name-input" class="custom-item-label" style="display: block;">${item.name || translations[data.currentLanguage].label_new_item}</label>
+            <div class="input-container custom-input-container">
+                <input type="text" id="${item.id}-name-input" class="form-control custom-item-name-input" value="${item.name}" placeholder="${translations[data.currentLanguage].item_name_placeholder}" readonly style="display: none;">
+                <input type="number" id="${item.id}-value-input" class="form-control custom-item-value-input" min="0" value="${item.value}" oninput="updateCustomItem('${type}', '${item.id}', 'value', this.value)" readonly>
+                <select id="${item.id}-frequency-select" class="form-control custom-item-frequency-select" onchange="updateCustomItem('${type}', '${item.id}', 'frequency', this.value)" ${item.id.startsWith('e-') ? '' : 'style="display: none;"'} disabled>
+                    <option value="monthly" ${item.frequency === 'monthly' ? 'selected' : ''}>${translations[data.currentLanguage].frequency_monthly}</option>
+                    <option value="annually" ${item.frequency === 'annually' ? 'selected' : ''}>${translations[data.currentLanguage].frequency_annually}</option>
+                    <option value="weekly" ${item.frequency === 'weekly' ? 'selected' : ''}>${translations[data.currentLanguage].frequency_weekly}</option>
+                    <option value="bi-weekly" ${item.frequency === 'bi-weekly' ? 'selected' : ''}>${translations[data.currentLanguage].frequency_bi_weekly}</option>
+                </select>
+                ${type === 'expense' ? `
+                <select id="${item.id}-category-select" class="form-control custom-item-category-select" onchange="updateCustomItem('${type}', '${item.id}', 'category', this.value)" disabled>
+                    <option value="needs" ${item.category === 'needs' ? 'selected' : ''}>${translations[data.currentLanguage].category_needs}</option>
+                    <option value="wants" ${item.category === 'wants' ? 'selected' : ''}>${translations[data.currentLanguage].category_wants}</option>
+                </select>` : ''}
+                <button class="icon-btn edit-custom-btn" onclick="toggleEditMode(this, '${type}', '${item.id}')" title="${translations[data.currentLanguage].btn_edit_item}"><i class="ri-pencil-line"></i></button>
+                <button class="icon-btn delete-custom-btn" onclick="deleteCustomItem('${type}', '${item.id}')" title="${translations[data.currentLanguage].remove_item}"><i class="ri-close-line"></i></button>
+            </div>
         `;
         listElement.appendChild(itemDiv);
+
+        // 새 항목의 입력 필드에 이벤트 리스너 추가 (이름 입력 필드가 보이지 않을 때도 데이터는 업데이트되어야 함)
+        const nameInput = itemDiv.querySelector(`#${item.id}-name-input`);
+        nameInput.addEventListener('input', (event) => {
+            updateCustomItem(type, item.id, 'name', event.target.value);
+            itemDiv.querySelector('.custom-item-label').textContent = event.target.value || translations[data.currentLanguage].label_new_item;
+        });
+
+        // 초기 상태에서 레이블은 보이고, 이름 입력 필드는 숨김
+        const labelElement = itemDiv.querySelector('.custom-item-label');
+        if (item.name) {
+            labelElement.textContent = item.name;
+            labelElement.style.display = 'block';
+            nameInput.style.display = 'none';
+        } else {
+            labelElement.textContent = translations[data.currentLanguage].label_new_item;
+            labelElement.style.display = 'block';
+            nameInput.style.display = 'none';
+        }
     });
 }
 
-// 사용자 정의 항목 추가
-function addCustomItem(array, type) {
-    const itemName = prompt(translations[currentLanguage].add_item_title + " - " + translations[currentLanguage].item_name_placeholder);
-    if (!itemName) return; // 사용자가 취소함
 
-    const itemAmountStr = prompt(translations[currentLanguage].add_item_title + " - " + translations[currentLanguage].item_amount_placeholder);
-    const itemAmount = parseFloat(itemAmountStr);
+// 사용자 정의 항목 추가 (data 객체에 맞춰 수정)
+function addCustomItem(type) {
+    const itemName = translations[data.currentLanguage].label_new_item; // 기본 이름
+    const itemAmount = 0; // 기본 금액
+    const itemId = `${type}-${Date.now()}`; // 고유 ID 생성
 
-    if (isNaN(itemAmount) || itemAmount <= 0) {
-        alert("유효한 금액을 입력해주세요.");
+    let targetArray;
+    let itemCategory = '';
+    if (type === 'tax') targetArray = data.taxes.custom;
+    else if (type === 'pre-tax') targetArray = data.preTaxDeductions.custom;
+    else if (type === 'post-tax') targetArray = data.postTaxDeductions.custom;
+    else if (type === 'expense') {
+        targetArray = data.expenses.custom;
+        itemCategory = 'needs'; // 지출의 경우 기본 카테고리
+    } else {
+        console.error("Unknown custom item type:", type);
         return;
     }
 
-    let itemCategory = '';
+    const newItem = {
+        id: itemId,
+        name: itemName,
+        value: itemAmount, // amount 대신 value로 통일
+        frequency: data.defaultItemFrequency // 기본 주기는 defaultItemFrequency
+    };
+
     if (type === 'expense') {
-        const categoryPrompt = prompt(`${translations[currentLanguage].item_category_label}: (${translations[currentLanguage].category_needs}/${translations[currentLanguage].category_wants})`, translations[currentLanguage].category_needs);
-        if (categoryPrompt && (categoryPrompt.toLowerCase() === translations[currentLanguage].category_needs.toLowerCase() || categoryPrompt.toLowerCase() === translations[currentLanguage].category_wants.toLowerCase())) {
-            itemCategory = categoryPrompt.toLowerCase() === translations[currentLanguage].category_needs.toLowerCase() ? 'needs' : 'wants';
-        } else {
-            itemCategory = 'needs'; // 기본값
-        }
+        newItem.category = itemCategory;
     }
 
-    // 새롭게 추가되는 항목에 defaultItemFrequency 적용
-    array.push({ name: itemName, amount: itemAmount, category: itemCategory, frequency: defaultItemFrequency });
-    updateDisplay();
-    saveData();
+    targetArray.push(newItem);
+    updateDisplay(); // 항목 추가 후 화면 업데이트 및 재렌더링
+    saveData(); // 데이터 저장
 }
 
 
-// 사용자 정의 항목 제거
-function removeCustomItem(array, index) {
-    array.splice(index, 1);
-    updateDisplay();
-    saveData();
+// 사용자 정의 항목 제거 (data 객체에 맞춰 수정)
+function deleteCustomItem(type, itemId) {
+    const confirmed = confirm(translations[data.currentLanguage].remove_item + "?");
+    if (!confirmed) return;
+
+    let targetArray;
+    if (type === 'tax') targetArray = data.taxes.custom;
+    else if (type === 'pre-tax') targetArray = data.preTaxDeductions.custom;
+    else if (type === 'post-tax') targetArray = data.postTaxDeductions.custom;
+    else if (type === 'expense') targetArray = data.expenses.custom;
+    else {
+        console.error("Unknown custom item type for deletion:", type);
+        return;
+    }
+
+    const initialLength = targetArray.length;
+    targetArray = targetArray.filter(item => item.id !== itemId);
+
+    // Filter 후 data 객체의 해당 배열을 업데이트합니다.
+    if (type === 'tax') data.taxes.custom = targetArray;
+    else if (type === 'pre-tax') data.preTaxDeductions.custom = targetArray;
+    else if (type === 'post-tax') data.postTaxDeductions.custom = targetArray;
+    else if (type === 'expense') data.expenses.custom = targetArray;
+
+    updateDisplay(); // 항목 삭제 후 화면 업데이트
+    saveData(); // 데이터 저장
 }
 
-// 5. 언어 적용
+
+// 새 함수: `toggleEditMode` - 편집 버튼 클릭 시 모드 전환
+function toggleEditMode(button, type, itemId) {
+    const itemDiv = button.closest('.custom-item');
+    const nameInput = itemDiv.querySelector('.custom-item-name-input');
+    const valueInput = itemDiv.querySelector('.custom-item-value-input');
+    const frequencySelect = itemDiv.querySelector('.custom-item-frequency-select');
+    const categorySelect = itemDiv.querySelector('.custom-item-category-select');
+    const label = itemDiv.querySelector('.custom-item-label');
+    const icon = button.querySelector('i');
+
+    if (nameInput.readOnly) { // 현재 읽기 모드 -> 편집 모드로 전환
+        nameInput.removeAttribute('readonly');
+        valueInput.removeAttribute('readonly');
+        if (frequencySelect) frequencySelect.removeAttribute('disabled');
+        if (categorySelect) categorySelect.removeAttribute('disabled');
+
+        nameInput.focus(); // 이름 입력 필드에 포커스
+        icon.className = 'ri-check-line'; // 아이콘을 저장(체크)으로 변경
+        button.title = translations[data.currentLanguage].btn_save_item_changes || "Save Changes"; // 툴팁 변경 (번역 추가 필요)
+        label.style.display = 'none'; // 레이블 숨기기
+        nameInput.style.display = 'block'; // 입력 필드 보이기
+    } else { // 현재 편집 모드 -> 읽기 모드로 전환 (저장)
+        nameInput.setAttribute('readonly', 'true');
+        valueInput.setAttribute('readonly', 'true');
+        if (frequencySelect) frequencySelect.setAttribute('disabled', 'true');
+        if (categorySelect) categorySelect.setAttribute('disabled', 'true');
+
+        icon.className = 'ri-pencil-line'; // 아이콘을 편집(연필)으로 변경
+        button.title = translations[data.currentLanguage].btn_edit_item || "Edit Item"; // 툴팁 변경
+        label.style.display = 'block'; // 레이블 보이기
+        nameInput.style.display = 'none'; // 입력 필드 숨기기
+        label.textContent = nameInput.value || translations[data.currentLanguage].label_new_item; // 레이블 업데이트
+        updateDisplay(); // 변경된 값으로 화면 업데이트
+        saveData(); // 변경사항 저장
+    }
+}
+
+// 새 함수: `updateCustomItem` - 사용자 정의 항목의 이름 또는 값 업데이트
+function updateCustomItem(type, itemId, field, newValue) {
+    let targetArray;
+    if (type === 'tax') targetArray = data.taxes.custom;
+    else if (type === 'pre-tax') targetArray = data.preTaxDeductions.custom;
+    else if (type === 'post-tax') targetArray = data.postTaxDeductions.custom;
+    else if (type === 'expense') targetArray = data.expenses.custom;
+    else {
+        console.error("Unknown custom item type for update:", type);
+        return;
+    }
+
+    const itemToUpdate = targetArray.find(item => item.id === itemId);
+    if (itemToUpdate) {
+        if (field === 'name') {
+            itemToUpdate.name = newValue;
+        } else if (field === 'value') { // amount 대신 value로 통일
+            itemToUpdate.value = parseFloat(newValue) || 0;
+        } else if (field === 'frequency') {
+            itemToUpdate.frequency = newValue;
+        } else if (field === 'category') {
+            itemToUpdate.category = newValue;
+        }
+    }
+    updateDisplay(); // 데이터 변경 후 화면 업데이트 (저장은 toggleEditMode에서 일괄 처리)
+}
+
+
+// 5. 언어 적용 (data.currentLanguage 사용하도록 수정)
 function applyLanguage(lang) {
-    currentLanguage = lang;
+    data.currentLanguage = lang; // 전역 변수 대신 data.currentLanguage 사용
     document.documentElement.lang = lang; // HTML lang 속성 변경
 
     // 모든 번역 가능한 요소 업데이트
     document.querySelectorAll('[data-i18n-key]').forEach(element => {
         const key = element.dataset.i18nKey;
-        if (translations[currentLanguage][key]) {
+        if (translations[data.currentLanguage][key]) {
             if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-                element.placeholder = translations[currentLanguage][key];
+                element.placeholder = translations[data.currentLanguage][key];
             } else if (element.tagName === 'OPTION') {
-                element.textContent = translations[currentLanguage][key];
-            } else {
-                element.textContent = translations[currentLanguage][key];
+                // 옵션 텍스트는 해당 key가 translations에 있어야 함 (예: frequency_monthly)
+                element.textContent = translations[data.currentLanguage][key];
+            } else if (element.tagName === 'BUTTON' && element.classList.contains('edit-custom-btn')) {
+                 // edit/save button title
+                 // 이 부분은 toggleEditMode에서 처리하므로 여기서 변경할 필요가 없습니다.
+            } else if (element.tagName === 'BUTTON' && element.classList.contains('delete-custom-btn')) {
+                 // delete button title
+                 element.title = translations[data.currentLanguage].remove_item;
+            }
+            else {
+                element.textContent = translations[data.currentLanguage][key];
             }
         }
     });
 
     // 헤더 토글 버튼 텍스트 업데이트
     if (languageToggleBtn) {
-        languageToggleBtn.textContent = currentLanguage === 'ko' ? 'EN' : 'KO';
+        languageToggleBtn.textContent = data.currentLanguage === 'ko' ? 'EN' : 'KO';
     }
 
-    // 예산 규칙 섹션 라벨 수동 업데이트 (data-i18n-key가 아닌 직접 텍스트 변경이 필요할 수 있음)
-    // HTML에 직접 data-i18n-key를 추가하면 이 부분은 필요 없어집니다.
-    // 현재 HTML에는 <p>필수 지출 (Needs):</p> 와 같이 직접 텍스트가 들어가 있어, 해당 텍스트를 업데이트해야 함.
-    // 만약 <p data-i18n-key="needs_label"></p> 와 같이 HTML을 수정하면 위 루프에서 자동 처리됨.
-    // 현재 HTML 구조에 맞춰 아래와 같이 직접 업데이트하거나, HTML을 수정하는 것을 추천합니다.
-    // (이전 답변에서 말씀드렸듯이 data-i18n-key를 사용하는 것이 더 좋음)
+    // 예산 규칙 섹션 라벨 수동 업데이트 (data-i18n-key를 HTML에 추가하는 것을 강력히 권장)
     const needsLabelEl = document.querySelector('.rule-breakdown div:nth-child(1) p:nth-child(1)');
-    if(needsLabelEl) needsLabelEl.textContent = translations[currentLanguage].needs_label + ':';
+    if(needsLabelEl) needsLabelEl.textContent = translations[data.currentLanguage].needs_label + ':';
     const wantsLabelEl = document.querySelector('.rule-breakdown div:nth-child(2) p:nth-child(1)');
-    if(wantsLabelEl) wantsLabelEl.textContent = translations[currentLanguage].wants_label + ':';
+    if(wantsLabelEl) wantsLabelEl.textContent = translations[data.currentLanguage].wants_label + ':';
     const savingsLabelEl = document.querySelector('.rule-breakdown div:nth-child(3) p:nth-child(1)');
-    if(savingsLabelEl) savingsLabelEl.textContent = translations[currentLanguage].savings_label + ':';
+    if(savingsLabelEl) savingsLabelEl.textContent = translations[data.currentLanguage].savings_label + ':';
     const totalLabelEl = document.querySelector('.rule-breakdown div.total p:nth-child(1)');
-    if(totalLabelEl) totalLabelEl.textContent = translations[currentLanguage].label_total + ':';
-
-    // '규칙' 및 '실제' 라벨 업데이트
-    // 이 부분은 기존 HTML에 따라 조정될 수 있습니다.
-    // 예: <span data-i18n-key="label_rule"></span>
-    document.querySelectorAll('.rule-breakdown .rule-value').forEach(span => {
-        // Assume the structure is <p>LABEL: <span class="rule-value">VALUE</span></p>
-        // Or consider modifying HTML to directly add data-i18n-key to the p tags
-        // For now, no change needed here if the data-i18n-key is on the parent p tag for Rule/Actual
-    });
-
+    if(totalLabelEl) totalLabelEl.textContent = translations[data.currentLanguage].label_total + ':';
 
     // AI 보고서 플레이스홀더 텍스트 업데이트
     if (aiReportBox) {
         const aiReportPlaceholderP = aiReportBox.querySelector('p');
         if (aiReportPlaceholderP) {
-            aiReportPlaceholderP.textContent = translations[currentLanguage].ai_report_placeholder;
+            aiReportPlaceholderP.textContent = translations[data.currentLanguage].ai_report_placeholder;
         }
     }
 
@@ -455,59 +634,45 @@ function applyLanguage(lang) {
     updateDisplay();
 }
 
-// 6. 다크 모드 적용
+// 6. 다크 모드 적용 (data.isDarkMode 사용하도록 수정)
 function applyDarkMode(enable) {
-    isDarkMode = enable;
-    document.body.classList.toggle('dark-mode', isDarkMode);
+    data.isDarkMode = enable; // 전역 변수 대신 data.isDarkMode 사용
+    document.body.classList.toggle('dark-mode', data.isDarkMode);
     if (darkmodeToggleBtn) {
-        darkmodeToggleBtn.innerHTML = isDarkMode ? '<i class="ri-sun-line"></i>' : '<i class="ri-moon-line"></i>';
+        darkmodeToggleBtn.innerHTML = data.isDarkMode ? '<i class="ri-sun-line"></i>' : '<i class="ri-moon-line"></i>';
     }
     // 차트 색상 업데이트를 위해 updateDisplay() 호출 (내부에서 updateCharts 호출)
-    updateDisplay(); 
+    updateDisplay();
 }
 
-// 7. 데이터 저장 및 로드
+// 7. 데이터 저장 및 로드 (data 객체에 맞춰 전체 로직 변경)
 function saveData() {
-    const data = {
-        grossSalaryInput: grossSalaryInput ? grossSalaryInput.value : 0,
-        currentSalaryFrequency: currentSalaryFrequency,
-        defaultItemFrequency: defaultItemFrequencySelect ? defaultItemFrequencySelect.value : 'monthly',
-        taxInputs: {},
-        preTaxDeductInputs: {},
-        postTaxDeductInputs: {},
-        expenseInputs: {},
-        customTaxes: customTaxes,
-        customPreTaxDeductions: customPreTaxDeductions,
-        customPostTaxDeductions: customPostTaxDeductions,
-        customExpenses: customExpenses,
-        currentLanguage: currentLanguage,
-        isDarkMode: isDarkMode,
-        selectedBudgetRule: budgetRuleSelect ? budgetRuleSelect.value : '50-30-20', // 선택된 예산 규칙 저장
-        // 각 고정 입력 필드의 frequency도 저장
-        taxInputFrequencies: {},
-        preTaxDeductInputFrequencies: {},
-        postTaxDeductInputFrequencies: {},
-        expenseInputFrequencies: {}
-    };
+    // data 객체는 이미 최신 상태를 유지하고 있으므로, 별도의 객체를 다시 만들 필요 없음
+    // 단, DOM에서 직접 가져와야 하는 값들은 data 객체에 반영해야 함
+    data.salary.gross = parseFloat(grossSalaryInput.value) || 0;
+    data.salary.frequency = salaryFrequencySelect.value;
+    data.defaultItemFrequency = defaultItemFrequencySelect.value;
+    data.budgetRule = budgetRuleSelect.value;
 
-    const inputGroups = [
-        { inputs: taxInputs, frequencies: data.taxInputFrequencies },
-        { inputs: preTaxDeductInputs, frequencies: data.preTaxDeductInputFrequencies },
-        { inputs: postTaxDeductInputs, frequencies: data.postTaxDeductInputFrequencies },
-        { inputs: expenseInputs, frequencies: data.expenseInputFrequencies }
-    ];
+    // 고정 입력 필드의 값들을 data 객체에 저장
+    for (const key in taxInputs) {
+        if (taxInputs[key]) data.taxes[key] = parseFloat(taxInputs[key].value) || 0;
+    }
+    for (const key in preTaxDeductInputs) {
+        // 'fourZeroOneKTrad' -> '401kTrad'로 변환
+        const dataKey = key === 'fourZeroOneKTrad' ? '401kTrad' : key;
+        if (preTaxDeductInputs[key]) data.preTaxDeductions[dataKey] = parseFloat(preTaxDeductInputs[key].value) || 0;
+    }
+    for (const key in postTaxDeductInputs) {
+        // 'fourZeroOneKRoth' -> '401kRoth'로 변환
+        const dataKey = key === 'fourZeroOneKRoth' ? '401kRoth' : key;
+        if (postTaxDeductInputs[key]) data.postTaxDeductions[dataKey] = parseFloat(postTaxDeductInputs[key].value) || 0;
+    }
+    for (const key in expenseInputs) {
+        if (expenseInputs[key]) data.expenses[key] = parseFloat(expenseInputs[key].value) || 0;
+    }
 
-    inputGroups.forEach(group => {
-        for (const key in group.inputs) {
-            if (group.inputs[key]) {
-                data[group.inputs === taxInputs ? 'taxInputs' : 
-                     group.inputs === preTaxDeductInputs ? 'preTaxDeductInputs' :
-                     group.inputs === postTaxDeductInputs ? 'postTaxDeductInputs' :
-                     'expenseInputs'][key] = group.inputs[key].value;
-                group.frequencies[key] = group.inputs[key].dataset.frequency || 'monthly'; // frequency 저장
-            }
-        }
-    });
+    // custom 배열은 이미 updateCustomItem, addCustomItem, deleteCustomItem에서 data 객체를 직접 수정하므로 따로 처리할 필요 없음
 
     localStorage.setItem('budgetAppData', JSON.stringify(data));
 }
@@ -515,84 +680,74 @@ function saveData() {
 function loadData() {
     const savedData = localStorage.getItem('budgetAppData');
     if (savedData) {
-        const data = JSON.parse(savedData);
+        // 기존 data 객체를 저장된 데이터로 덮어씁니다.
+        // 이전에 data 객체를 정의한 곳에서 초기값을 설정했지만, 여기서는 저장된 값으로 완전히 대체합니다.
+        // 단, JSON.parse 시 함수 등은 제외되므로, 필요한 경우 재초기화 필요.
+        Object.assign(data, JSON.parse(savedData));
 
-        if (grossSalaryInput && data.grossSalaryInput) grossSalaryInput.value = data.grossSalaryInput;
-        if (data.currentSalaryFrequency) currentSalaryFrequency = data.currentSalaryFrequency;
-        if (salaryFrequencySelect) salaryFrequencySelect.value = currentSalaryFrequency;
-        if (defaultItemFrequencySelect && data.defaultItemFrequency) defaultItemFrequencySelect.value = data.defaultItemFrequency;
-        if (data.defaultItemFrequency) defaultItemFrequency = data.defaultItemFrequency;
+        // DOM 요소에 저장된 값 로드
+        if (grossSalaryInput) grossSalaryInput.value = data.salary.gross;
+        if (salaryFrequencySelect) salaryFrequencySelect.value = data.salary.frequency;
+        if (defaultItemFrequencySelect) defaultItemFrequencySelect.value = data.defaultItemFrequency;
 
+        // 고정 입력 필드 로드
+        for (const key in taxInputs) {
+            if (taxInputs[key] && typeof data.taxes[key] !== 'undefined') taxInputs[key].value = data.taxes[key];
+        }
+        for (const key in preTaxDeductInputs) {
+            const dataKey = key === 'fourZeroOneKTrad' ? '401kTrad' : key;
+            if (preTaxDeductInputs[key] && typeof data.preTaxDeductions[dataKey] !== 'undefined') preTaxDeductInputs[key].value = data.preTaxDeductions[dataKey];
+        }
+        for (const key in postTaxDeductInputs) {
+            const dataKey = key === 'fourZeroOneKRoth' ? '401kRoth' : key;
+            if (postTaxDeductInputs[key] && typeof data.postTaxDeductions[dataKey] !== 'undefined') postTaxDeductInputs[key].value = data.postTaxDeductions[dataKey];
+        }
+        for (const key in expenseInputs) {
+            if (expenseInputs[key] && typeof data.expenses[key] !== 'undefined') expenseInputs[key].value = data.expenses[key];
+        }
 
-        const inputGroups = [
-            { inputs: taxInputs, frequencies: data.taxInputFrequencies },
-            { inputs: preTaxDeductInputs, frequencies: data.preTaxDeductInputFrequencies },
-            { inputs: postTaxDeductInputs, frequencies: data.postTaxDeductInputFrequencies },
-            { inputs: expenseInputs, frequencies: data.expenseInputFrequencies }
-        ];
+        // 예산 규칙 로드
+        if (budgetRuleSelect) budgetRuleSelect.value = data.budgetRule;
 
-        inputGroups.forEach(group => {
-            for (const key in group.inputs) {
-                if (group.inputs[key] && data[group.inputs === taxInputs ? 'taxInputs' : 
-                                             group.inputs === preTaxDeductInputs ? 'preTaxDeductInputs' :
-                                             group.inputs === postTaxDeductInputs ? 'postTaxDeductInputs' :
-                                             'expenseInputs'][key]) {
-                    group.inputs[key].value = data[group.inputs === taxInputs ? 'taxInputs' : 
-                                                 group.inputs === preTaxDeductInputs ? 'preTaxDeductInputs' :
-                                                 group.inputs === postTaxDeductInputs ? 'postTaxDeductInputs' :
-                                                 'expenseInputs'][key];
-                    // data-frequency 로드
-                    if (group.frequencies && group.frequencies[key]) {
-                        group.inputs[key].dataset.frequency = group.frequencies[key];
-                    }
-                }
+        // 커스텀 항목 렌더링 (재렌더링)
+        renderCustomList(customTaxList, data.taxes.custom, 'tax');
+        renderCustomList(customPreTaxDeductList, data.preTaxDeductions.custom, 'pre-tax');
+        renderCustomList(customPostTaxDeductList, data.postTaxDeductions.custom, 'post-tax');
+        renderCustomList(customExpenseList, data.expenses.custom, 'expense');
+
+        // 언어 및 다크 모드 적용
+        applyLanguage(data.currentLanguage);
+        applyDarkMode(data.isDarkMode);
+
+        updateDisplay(); // 데이터 로드 후 화면 업데이트
+    } else {
+        // 저장된 데이터가 없는 경우, data 객체의 초기값 사용
+        // DOM 요소는 0으로 초기화
+        if (grossSalaryInput) grossSalaryInput.value = 0;
+        if (salaryFrequencySelect) salaryFrequencySelect.value = data.salary.frequency;
+        if (defaultItemFrequencySelect) defaultItemFrequencySelect.value = data.defaultItemFrequency;
+        if (budgetRuleSelect) budgetRuleSelect.value = data.budgetRule;
+
+        // 고정 입력 필드 0으로 초기화
+        [taxInputs, preTaxDeductInputs, postTaxDeductInputs, expenseInputs].forEach(inputsGroup => {
+            for (const key in inputsGroup) {
+                if (inputsGroup[key]) inputsGroup[key].value = 0;
             }
         });
 
-        customTaxes = data.customTaxes || [];
-        customPreTaxDeductions = data.customPreTaxDeductions || [];
-        customPostTaxDeductions = data.customPostTaxDeductions || [];
-        customExpenses = data.customExpenses || [];
+        // 커스텀 리스트 DOM 비우기
+        customTaxList.innerHTML = '';
+        customPreTaxDeductList.innerHTML = '';
+        customPostTaxDeductList.innerHTML = '';
+        customExpenseList.innerHTML = '';
 
-        if (data.currentLanguage) applyLanguage(data.currentLanguage);
-        if (typeof data.isDarkMode !== 'undefined') applyDarkMode(data.isDarkMode);
-
-        if (budgetRuleSelect && data.selectedBudgetRule) {
-            budgetRuleSelect.value = data.selectedBudgetRule;
-        }
-
-        updateDisplay();
-    } else {
-        // 데이터가 없는 경우 초기 상태 설정 및 디스플레이 업데이트
-        if (grossSalaryInput) grossSalaryInput.value = 0;
-        if (salaryFrequencySelect) salaryFrequencySelect.value = 'monthly';
-        if (defaultItemFrequencySelect) defaultItemFrequencySelect.value = 'monthly';
-        currentSalaryFrequency = 'monthly';
-        defaultItemFrequency = 'monthly';
-        currentLanguage = 'ko';
-        isDarkMode = false;
-
-        // 고정 입력 필드의 data-frequency 초기화
-        const allInputFields = [...Object.values(taxInputs), ...Object.values(preTaxDeductInputs), 
-                                ...Object.values(postTaxDeductInputs), ...Object.values(expenseInputs)];
-        allInputFields.forEach(input => {
-            if (input) input.dataset.frequency = 'monthly'; // 기본값을 'monthly'로 설정
-            if (input) input.value = 0; // 값도 0으로 초기화
-        });
-
-
-        customTaxes = [];
-        customPreTaxDeductions = [];
-        customPostTaxDeductions = [];
-        customExpenses = [];
-
-        applyLanguage(currentLanguage); // 언어 초기 적용
-        applyDarkMode(isDarkMode); // 다크 모드 초기 적용
-        updateDisplay();
+        applyLanguage(data.currentLanguage); // data.currentLanguage의 초기값 적용
+        applyDarkMode(data.isDarkMode); // data.isDarkMode의 초기값 적용
+        updateDisplay(); // 초기 상태 반영
     }
 }
 
-// 8. 차트 관리 (Chart.js)
+// 8. 차트 관리 (Chart.js) (data 객체와 연동되도록 수정)
 function initializeCharts() {
     const taxCtx = document.getElementById('tax-chart')?.getContext('2d');
     const preTaxCtx = document.getElementById('pre-tax-deduct-chart')?.getContext('2d');
@@ -607,7 +762,7 @@ function initializeCharts() {
             legend: {
                 position: 'top',
                 labels: {
-                    color: isDarkMode ? '#fff' : '#333'
+                    color: data.isDarkMode ? '#fff' : '#333' // data.isDarkMode 사용
                 }
             }
         }
@@ -643,13 +798,14 @@ function initializeCharts() {
     }
     if (budgetDistributionCtx) {
         budgetDistributionChartInstance = new Chart(budgetDistributionCtx, {
-            type: 'doughnut', // 총 예산 분포는 도넛 차트가 좋을 수 있음
+            type: 'doughnut',
             data: { labels: [], datasets: [{ data: [], backgroundColor: [] }] },
             options: chartOptions
         });
     }
 }
 
+// updateCharts 함수 수정: 이제 data 객체에서 값을 가져오고, custom 항목 처리 개선
 function updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, totalPreTaxDeductions, totalPostTaxDeductions) {
     const defaultColors = [
         '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#E7E9ED', '#A0B0C0', '#C0A0B0', '#B0C0A0'
@@ -657,113 +813,86 @@ function updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, tot
     const darkColors = [
         '#E0567A', '#2A8CD9', '#E6B830', '#3FAAAA', '#8040E0', '#E08020', '#C0C2C4', '#8090A0', '#A08090', '#90A080'
     ];
-    const colors = isDarkMode ? darkColors : defaultColors;
+    const colors = data.isDarkMode ? darkColors : defaultColors; // data.isDarkMode 사용
 
     // Helper to update individual chart
-    const updateChartData = (chartInstance, inputs, customItems, titlePrefix = '', excludeZero = true) => {
+    const updateChartData = (chartInstance, dataSection, titlePrefix = '', excludeZero = true) => {
         if (!chartInstance) return;
 
         let labels = [];
-        let data = [];
+        let chartValues = []; // Chart.js에 전달할 실제 값 (월별 환산 완료)
         let backgroundColors = [];
         let currentColorIndex = 0;
 
-        // Add fixed inputs (using their current value, which is assumed to be monthly equivalent from updateDisplay)
-        for (const key in inputs) {
-            if (inputs[key] && parseFloat(inputs[key].value) > 0) {
-                // Here, we assume inputs[key].value is already the monthly equivalent
-                labels.push(translations[currentLanguage][`label_${key.replace(/([A-Z])/g, '_$1').toLowerCase()}`] || key);
-                data.push(parseFloat(inputs[key].value));
-                backgroundColors.push(colors[currentColorIndex % colors.length]);
-                currentColorIndex++;
+        // 고정 입력 필드 처리
+        for (const key in dataSection) {
+            if (key !== 'custom') { // 'custom' 배열은 따로 처리
+                const value = parseFloat(dataSection[key]) || 0; // data 객체의 값
+                if (value > 0 || !excludeZero) {
+                    let labelKey;
+                    if (titlePrefix === translations[data.currentLanguage].section_taxes_title) {
+                        labelKey = `label_${key.replace(/([A-Z])/g, '_$1').toLowerCase()}`;
+                    } else if (titlePrefix === translations[data.currentLanguage].section_pre_tax_title) {
+                        labelKey = `label_${key.replace('401kTrad', '401k_traditional').replace(/([A-Z])/g, '_$1').toLowerCase()}`;
+                    } else if (titlePrefix === translations[data.currentLanguage].section_post_tax_title) {
+                        labelKey = `label_${key.replace('401kRoth', '401k_roth').replace(/([A-Z])/g, '_$1').toLowerCase()}`;
+                    } else if (titlePrefix === translations[data.currentLanguage].section_expenses_title) {
+                        labelKey = `label_${key.replace(/([A-Z])/g, '_$1').toLowerCase()}`;
+                    }
+
+                    labels.push(translations[data.currentLanguage][labelKey] || key);
+                    chartValues.push(value); // 이미 월별로 data 객체에 저장되어 있다고 가정
+                    backgroundColors.push(colors[currentColorIndex % colors.length]);
+                    currentColorIndex++;
+                }
             }
         }
 
-        // Add custom items (using their current value, which is assumed to be monthly equivalent from updateDisplay)
-        customItems.forEach(item => {
-            if (item.amount > 0) {
+        // 사용자 정의 항목 처리
+        dataSection.custom.forEach(item => {
+            if (item.value > 0 || !excludeZero) { // item.amount 대신 item.value 사용
                 labels.push(item.name);
-                data.push(item.amount);
+                chartValues.push(convertToMonthly(item.value, item.frequency || data.defaultItemFrequency)); // custom items는 여기서 월별 변환
                 backgroundColors.push(colors[currentColorIndex % colors.length]);
                 currentColorIndex++;
             }
         });
 
-        // Remove zero values if excludeZero is true
-        if (excludeZero) {
-            const filteredData = [];
-            const filteredLabels = [];
-            const filteredColors = [];
-            for(let i = 0; i < data.length; i++) {
-                if (data[i] > 0) {
-                    filteredData.push(data[i]);
-                    filteredLabels.push(labels[i]);
-                    filteredColors.push(backgroundColors[i]);
-                }
-            }
-            labels = filteredLabels;
-            data = filteredData;
-            backgroundColors = filteredColors;
-        }
-
         // If no data, clear chart
-        if (data.every(val => val === 0)) {
+        if (chartValues.every(val => val === 0)) { // 변경된 변수명 사용
             chartInstance.data.labels = [];
             chartInstance.data.datasets[0].data = [];
             chartInstance.data.datasets[0].backgroundColor = [];
         } else {
             chartInstance.data.labels = labels;
-            chartInstance.data.datasets[0].data = data;
+            chartInstance.data.datasets[0].data = chartValues; // 변경된 변수명 사용
             chartInstance.data.datasets[0].backgroundColor = backgroundColors;
         }
 
-
         // Update legend label color based on dark mode
-        chartInstance.options.plugins.legend.labels.color = isDarkMode ? '#fff' : '#333';
+        chartInstance.options.plugins.legend.labels.color = data.isDarkMode ? '#fff' : '#333'; // data.isDarkMode 사용
         chartInstance.update();
     };
 
-    // Update individual charts
-    // Note: totalTaxes, totalPreTaxDeductions, totalPostTaxDeductions, totalExpenses passed here
-    // are already the SUM of monthly converted values from updateDisplay().
-    // So, we need to pass the *individual monthly converted values* to updateChartData.
-    // To do this, we re-calculate or pass the monthly values of each input here.
-    
-    // It's simpler to just pass the raw inputs and let updateChartData handle conversion for its display
-    // BUT the getTotalMonthly function is more robust for overall sums.
-    // For individual charts, Chart.js needs the actual values that make up the total.
-    // So, updateChartData should also use convertToMonthly.
-    
-    // REVISED: updateChartData should be passed the raw input objects and custom arrays.
-    // It will then convert individual amounts to monthly for chart display.
-
-    // Helper to get raw input values for chart display (to convert inside updateChartData)
-    const getRawInputValues = (inputs) => {
-        const raw = {};
-        for(const key in inputs) {
-            if(inputs[key]) raw[key] = parseFloat(inputs[key].value) || 0;
-        }
-        return raw;
-    };
-
-    updateChartData(taxChartInstance, taxInputs, customTaxes, translations[currentLanguage].section_taxes_title);
-    updateChartData(preTaxDeductChartInstance, preTaxDeductInputs, customPreTaxDeductions, translations[currentLanguage].section_pre_tax_title);
-    updateChartData(postTaxDeductChartInstance, postTaxDeductInputs, customPostTaxDeductions, translations[currentLanguage].section_post_tax_title);
-    updateChartData(expensesChartInstance, expenseInputs, customExpenses, translations[currentLanguage].section_expenses_title);
+    // Update individual charts using data object sections
+    updateChartData(taxChartInstance, data.taxes, translations[data.currentLanguage].section_taxes_title);
+    updateChartData(preTaxDeductChartInstance, data.preTaxDeductions, translations[data.currentLanguage].section_pre_tax_title);
+    updateChartData(postTaxDeductChartInstance, data.postTaxDeductions, translations[data.currentLanguage].section_post_tax_title);
+    updateChartData(expensesChartInstance, data.expenses, translations[data.currentLanguage].section_expenses_title);
 
 
     // Update budget distribution chart (Doughnut chart)
     if (budgetDistributionChartInstance) {
         const budgetLabels = [
-            translations[currentLanguage].label_total_taxes,
-            translations[currentLanguage].label_total_pre_tax,
-            translations[currentLanguage].label_total_post_tax,
-            translations[currentLanguage].label_total_expenses,
-            translations[currentLanguage].label_remaining_budget
+            translations[data.currentLanguage].label_total_taxes,
+            translations[data.currentLanguage].label_total_pre_tax,
+            translations[data.currentLanguage].label_total_post_tax,
+            translations[data.currentLanguage].label_total_expenses,
+            translations[data.currentLanguage].label_remaining_budget
         ];
 
         const budgetData = [
-            totalTaxes, // These are already monthly sums
+            totalTaxes, // These are already monthly sums from updateDisplay
             totalPreTaxDeductions, // These are already monthly sums
             totalPostTaxDeductions, // These are already monthly sums
             totalExpenses, // These are already monthly sums
@@ -788,59 +917,67 @@ function updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, tot
         budgetDistributionChartInstance.data.labels = filteredBudgetLabels;
         budgetDistributionChartInstance.data.datasets[0].data = filteredBudgetData;
         budgetDistributionChartInstance.data.datasets[0].backgroundColor = filteredBudgetColors;
-        budgetDistributionChartInstance.options.plugins.legend.labels.color = isDarkMode ? '#fff' : '#333';
+        budgetDistributionChartInstance.options.plugins.legend.labels.color = data.isDarkMode ? '#fff' : '#333'; // data.isDarkMode 사용
         budgetDistributionChartInstance.update();
     }
 }
 
-
 // 9. 디스플레이 업데이트 (계산 및 UI 갱신)
 function updateDisplay() {
-    let grossSalaryInputVal = parseFloat(grossSalaryInput.value) || 0;
-    let monthlyGrossSalaryForCalculation = grossSalaryInputVal; // 실제 계산에 사용될 월별 급여
+    // 1. DOM에서 최신 값을 읽어와 `data` 객체에 반영
+    data.salary.gross = parseFloat(grossSalaryInput.value) || 0;
+    data.salary.frequency = salaryFrequencySelect.value;
+    data.defaultItemFrequency = defaultItemFrequencySelect.value;
+    data.budgetRule = budgetRuleSelect.value; // 예산 규칙도 data 객체에 저장
 
-    // 선택된 급여 주기에 따라 연간 급여 조정 및 월별 계산 기준 급여 설정
-    switch (currentSalaryFrequency) {
-        case 'annually':
-            annualSalarySummaryDisplay.textContent = formatCurrency(grossSalaryInputVal); // 연간 그대로 표시
-            monthlyGrossSalaryForCalculation = grossSalaryInputVal / 12; // 월별로 변환하여 계산에 사용
-            break;
-        case 'monthly':
-            annualSalarySummaryDisplay.textContent = formatCurrency(grossSalaryInputVal * 12); // 월별 * 12하여 연간 표시
-            // monthlyGrossSalaryForCalculation은 이미 월별이므로 그대로 사용
-            break;
-        case 'weekly':
-            annualSalarySummaryDisplay.textContent = formatCurrency(grossSalaryInputVal * 52);
-            monthlyGrossSalaryForCalculation = grossSalaryInputVal * (52 / 12); // 주 52회 / 12개월 = 월별 주 수
-            break;
-        case 'bi-weekly':
-            annualSalarySummaryDisplay.textContent = formatCurrency(grossSalaryInputVal * 26);
-            monthlyGrossSalaryForCalculation = grossSalaryInputVal * (26 / 12); // 격주 26회 / 12개월 = 월별 격주 수
-            break;
+    // 고정 입력 필드의 값들을 data 객체에 반영
+    // taxInputs, preTaxDeductInputs, postTaxDeductInputs, expenseInputs는 DOM 요소 객체입니다.
+    // data.taxes, data.preTaxDeductions 등은 계산에 사용될 숫자 값들을 저장하는 data 객체 내의 섹션입니다.
+    // 따라서 이 둘을 동기화해야 합니다.
+    for (const key in taxInputs) {
+        if (taxInputs[key]) data.taxes[key] = parseFloat(taxInputs[key].value) || 0;
+    }
+    // 401kTrad와 같은 특수 키는 data 객체와 DOM 객체 간의 매핑 필요
+    if (preTaxDeductInputs.fourZeroOneKTrad) data.preTaxDeductions['401kTrad'] = parseFloat(preTaxDeductInputs.fourZeroOneKTrad.value) || 0;
+    if (preTaxDeductInputs.traditionalIRA) data.preTaxDeductions.traditionalIRA = parseFloat(preTaxDeductInputs.traditionalIRA.value) || 0;
+    if (preTaxDeductInputs.hsa) data.preTaxDeductions.hsa = parseFloat(preTaxDeductInputs.hsa.value) || 0;
+    if (postTaxDeductInputs.fourZeroOneKRoth) data.postTaxDeductions['401kRoth'] = parseFloat(postTaxDeductInputs.fourZeroOneKRoth.value) || 0;
+    if (postTaxDeductInputs.rothIRA) data.postTaxDeductions.rothIRA = parseFloat(postTaxDeductInputs.rothIRA.value) || 0;
+    // 나머지 expenseInputs도 유사하게 동기화 (HTML id와 data 키가 1:1 매핑된다고 가정)
+    for (const key in expenseInputs) {
+        if (expenseInputs[key]) data.expenses[key] = parseFloat(expenseInputs[key].value) || 0;
     }
 
-    // 커스텀 항목 렌더링
-    renderCustomList(customTaxList, customTaxes, 'tax');
-    renderCustomList(customPreTaxDeductList, customPreTaxDeductions, 'pre-tax');
-    renderCustomList(customPostTaxDeductList, customPostTaxDeductions, 'post-tax');
-    renderCustomList(customExpenseList, customExpenses, 'expense');
 
-    // 총계 계산 (이제 모든 getTotal 함수가 getTotalMonthly로 변경됨)
-    const totalTaxes = getTotalMonthly(taxInputs, customTaxes);
-    const totalPreTaxDeductions = getTotalMonthly(preTaxDeductInputs, customPreTaxDeductions);
-    const totalPostTaxDeductions = getTotalMonthly(postTaxDeductInputs, customPostTaxDeductions);
-    const totalExpenses = getTotalMonthly(expenseInputs, customExpenses); // Fixed expenses + custom expenses
+    // 2. 급여 관련 계산
+    let monthlyGrossSalaryForCalculation = convertToMonthly(data.salary.gross, data.salary.frequency);
+
+    // Summary Display 업데이트 (연간)
+    // 연간 급여는 월별 계산용 급여를 다시 12배하여 표시합니다.
+    if (annualSalarySummaryDisplay) annualSalarySummaryDisplay.textContent = formatCurrency(monthlyGrossSalaryForCalculation * 12);
+    if (grossSalarySummaryDisplay) grossSalarySummaryDisplay.textContent = formatCurrency(monthlyGrossSalaryForCalculation); // 월별 총 급여 표시
+
+
+    // 3. 커스텀 항목 렌더링 (data 객체에서 읽어오도록 변경)
+    renderCustomList(customTaxList, data.taxes.custom, 'tax');
+    renderCustomList(customPreTaxDeductList, data.preTaxDeductions.custom, 'pre-tax');
+    renderCustomList(customPostTaxDeductList, data.postTaxDeductions.custom, 'post-tax');
+    renderCustomList(customExpenseList, data.expenses.custom, 'expense');
+
+    // 4. 총계 계산 (이제 모든 getTotalMonthly가 data 객체 섹션을 직접 받음)
+    // getTotalMonthly는 이제 'data.taxes'와 같이 객체 자체를 인자로 받습니다.
+    const totalTaxes = getTotalMonthly(data.taxes);
+    const totalPreTaxDeductions = getTotalMonthly(data.preTaxDeductions);
+    const totalPostTaxDeductions = getTotalMonthly(data.postTaxDeductions);
+    const totalExpenses = getTotalMonthly(data.expenses); // data.expenses 객체 전체를 전달
+
     const totalDeductions = totalTaxes + totalPreTaxDeductions + totalPostTaxDeductions;
-
 
     // 순 급여 계산 (Gross - All Deductions)
     const netSalary = monthlyGrossSalaryForCalculation - totalTaxes - totalPreTaxDeductions - totalPostTaxDeductions;
-
     const remainingBudget = netSalary - totalExpenses;
 
-
-    // UI 업데이트
-    if (grossSalarySummaryDisplay) grossSalarySummaryDisplay.textContent = formatCurrency(monthlyGrossSalaryForCalculation); // 월별 총 급여 표시
+    // 5. UI 업데이트
     if (totalTaxesDisplay) totalTaxesDisplay.textContent = formatCurrency(totalTaxes);
     if (totalPreTaxDisplay) totalPreTaxDisplay.textContent = formatCurrency(totalPreTaxDeductions);
     if (totalPostTaxDisplay) totalPostTaxDisplay.textContent = formatCurrency(totalPostTaxDeductions);
@@ -848,24 +985,28 @@ function updateDisplay() {
     if (totalExpensesDisplay) totalExpensesDisplay.textContent = formatCurrency(totalExpenses);
     if (remainingBudgetDisplay) remainingBudgetDisplay.textContent = formatCurrency(remainingBudget);
 
-    // 예산 규칙 적용
-    applyBudgetRule(monthlyGrossSalaryForCalculation, totalExpenses, netSalary, totalDeductions); // 월별 급여 기준 적용
+    // 6. 예산 규칙 적용 (monthlyGrossSalaryForCalculation 대신 netSalary를 기반으로 규칙 적용)
+    // 일반적으로 50/30/20 규칙은 세후 순소득(netSalary)에 적용됩니다.
+    applyBudgetRule(netSalary, totalExpenses, totalTaxes, totalPreTaxDeductions, totalPostTaxDeductions); // 인자 수정
 
-    // 차트 업데이트
+
+    // 7. 차트 업데이트
     updateCharts(totalTaxes, totalExpenses, netSalary, remainingBudget, totalPreTaxDeductions, totalPostTaxDeductions);
 
-    saveData(); // 데이터 변경 시마다 저장
+    // 8. 데이터 저장
+    saveData();
 }
 
-// 10. 예산 규칙 정의
+// 10. 예산 규칙 정의 (변경 없음)
 const BUDGET_RULES = {
     "50-30-20": { needs: 0.5, wants: 0.3, savings: 0.2 },
     "70-20-10": { needs: 0.7, wants: 0.2, savings: 0.1 },
     "80-20": { needs: 0.8, wants: 0.0, savings: 0.2 } // 80/20 rule often implies 0 wants
 };
 
-// 11. 예산 규칙 적용 함수
-function applyBudgetRule(grossIncome, totalExpenses, netSalary, totalDeductions) {
+// 11. 예산 규칙 적용 함수 (data 객체 사용 및 인자 조정)
+// applyBudgetRule(netSalary, totalExpenses, totalTaxes, totalPreTaxDeductions, totalPostTaxDeductions)
+function applyBudgetRule(netSalary, totalExpenses, totalTaxes, totalPreTaxDeductions, totalPostTaxDeductions) {
     // Null checks for display elements
     if (!ruleNeedsDisplay || !ruleWantsDisplay || !ruleSavingsDisplay || !ruleTotalDisplay ||
         !actualNeedsDisplay || !actualWantsDisplay || !actualSavingsDisplay || !actualTotalDisplay || !budgetStatusDisplay) {
@@ -873,7 +1014,7 @@ function applyBudgetRule(grossIncome, totalExpenses, netSalary, totalDeductions)
         return; // Exit if essential elements are missing
     }
 
-    const selectedRule = budgetRuleSelect.value;
+    const selectedRule = data.budgetRule; // data.budgetRule 사용
     const rule = BUDGET_RULES[selectedRule];
 
     if (!rule) {
@@ -889,12 +1030,12 @@ function applyBudgetRule(grossIncome, totalExpenses, netSalary, totalDeductions)
         return;
     }
 
-    // 1. Calculate budget based on the rule (based on gross income for rule calculation)
-    // 여기서 grossIncome은 이미 월별로 변환된 값입니다.
-    const ruleNeeds = grossIncome * rule.needs;
-    const ruleWants = grossIncome * rule.wants;
-    const ruleSavings = grossIncome * rule.savings;
-    const ruleTotal = ruleNeeds + ruleWants + ruleSavings; // Should ideally be grossIncome
+    // 1. Calculate budget based on the rule (based on net salary for rule calculation)
+    // 여기서 netSalary는 이미 월별로 변환된 값입니다.
+    const ruleNeeds = netSalary * rule.needs;
+    const ruleWants = netSalary * rule.wants;
+    const ruleSavings = netSalary * rule.savings;
+    const ruleTotal = ruleNeeds + ruleWants + ruleSavings; // Should ideally sum up to netSalary
 
     ruleNeedsDisplay.textContent = formatCurrency(ruleNeeds);
     ruleWantsDisplay.textContent = formatCurrency(ruleWants);
@@ -904,23 +1045,24 @@ function applyBudgetRule(grossIncome, totalExpenses, netSalary, totalDeductions)
     // 2. Calculate actual spending based on user inputs
     let actualNeeds = 0;
     let actualWants = 0;
-    
-    // 고정 지출 항목들에서 needs와 wants 분류 (월별 변환된 값 사용)
-    actualNeeds += convertToMonthly(parseFloat(expenseInputs.rent?.value) || 0, expenseInputs.rent?.dataset.frequency || 'monthly');
-    actualNeeds += convertToMonthly(parseFloat(expenseInputs.utilities?.value) || 0, expenseInputs.utilities?.dataset.frequency || 'monthly');
-    actualNeeds += convertToMonthly(parseFloat(expenseInputs.internet?.value) || 0, expenseInputs.internet?.dataset.frequency || 'monthly');
-    actualNeeds += convertToMonthly(parseFloat(expenseInputs.phone?.value) || 0, expenseInputs.phone?.dataset.frequency || 'monthly');
-    actualNeeds += convertToMonthly(parseFloat(expenseInputs.groceries?.value) || 0, expenseInputs.groceries?.dataset.frequency || 'monthly');
-    actualNeeds += convertToMonthly(parseFloat(expenseInputs.transport?.value) || 0, expenseInputs.transport?.dataset.frequency || 'monthly');
-    actualNeeds += convertToMonthly(parseFloat(expenseInputs.health?.value) || 0, expenseInputs.health?.dataset.frequency || 'monthly');
 
-    actualWants += convertToMonthly(parseFloat(expenseInputs.dining?.value) || 0, expenseInputs.dining?.dataset.frequency || 'monthly');
-    actualWants += convertToMonthly(parseFloat(expenseInputs.shopping?.value) || 0, expenseInputs.shopping?.dataset.frequency || 'monthly');
-    actualWants += convertToMonthly(parseFloat(expenseInputs.entertainment?.value) || 0, expenseInputs.entertainment?.dataset.frequency || 'monthly');
+    // 고정 지출 항목들에서 needs와 wants 분류 (data.expenses에서 값 가져오기)
+    // data.expenses에 저장된 값은 이미 월별입니다.
+    actualNeeds += data.expenses.rent || 0;
+    actualNeeds += data.expenses.utilities || 0;
+    actualNeeds += data.expenses.internet || 0;
+    actualNeeds += data.expenses.phone || 0;
+    actualNeeds += data.expenses.groceries || 0;
+    actualNeeds += data.expenses.transport || 0;
+    actualNeeds += data.expenses.health || 0;
 
-    // 사용자 정의 지출 항목들에서 'category' 기반 분류 (월별 변환된 값 사용)
-    customExpenses.forEach(item => {
-        const monthlyAmount = convertToMonthly(item.amount, item.frequency);
+    actualWants += data.expenses.dining || 0;
+    actualWants += data.expenses.shopping || 0;
+    actualWants += data.expenses.entertainment || 0;
+
+    // 사용자 정의 지출 항목들에서 'category' 기반 분류 (data.expenses.custom에서 값 가져오기)
+    data.expenses.custom.forEach(item => { // data.expenses.custom 사용
+        const monthlyAmount = convertToMonthly(item.value, item.frequency); // item.amount 대신 item.value
         if (item.category === 'needs') {
             actualNeeds += monthlyAmount;
         } else if (item.category === 'wants') {
@@ -930,14 +1072,18 @@ function applyBudgetRule(grossIncome, totalExpenses, netSalary, totalDeductions)
         }
     });
 
-    // Actual Savings: Net salary minus all expenses (needs + wants)
-    const actualSavings = netSalary - (actualNeeds + actualWants);
+    // Actual Savings: Net salary minus all expenses (needs + wants) and also accounting for explicit savings within deductions
+    // Actual savings should be (net salary) - (actual needs) - (actual wants)
+    // Plus any savings explicitly defined in pre-tax or post-tax deductions (e.g., 401k, IRA if considered savings)
+    // For simplicity, let's assume 'savings' in 50/30/20 means disposable income not spent on needs/wants.
+    // If you want to include 401k/IRA as 'actual savings', you would add them here.
+    const actualSavings = netSalary - (actualNeeds + actualWants); // 현재는 순수 남은 금액만 고려
 
     actualNeedsDisplay.textContent = formatCurrency(actualNeeds);
     actualWantsDisplay.textContent = formatCurrency(actualWants);
     actualSavingsDisplay.textContent = formatCurrency(actualSavings);
 
-    actualTotalDisplay.textContent = formatCurrency(netSalary); // Changed to netSalary for actual total
+    actualTotalDisplay.textContent = formatCurrency(actualNeeds + actualWants + actualSavings); // 총 지출 + 총 저축 = 순급여
 
     // 3. Evaluate budget status
     let statusText = "";
@@ -945,28 +1091,29 @@ function applyBudgetRule(grossIncome, totalExpenses, netSalary, totalDeductions)
 
     // Check Needs
     if (actualNeeds > ruleNeeds) {
-        statusText += `${translations[currentLanguage].needs_label} ${translations[currentLanguage].status_over}. `;
+        statusText += `${translations[data.currentLanguage].needs_label} ${translations[data.currentLanguage].status_over}. `;
         statusColor = "var(--danger-color)";
     }
 
     // Check Wants (only if the rule has a Wants component)
     if (rule.wants > 0 && actualWants > ruleWants) {
-        statusText += `${translations[currentLanguage].wants_label} ${translations[currentLanguage].status_over}. `;
+        statusText += `${translations[data.currentLanguage].wants_label} ${translations[data.currentLanguage].status_over}. `;
         statusColor = "var(--danger-color)";
     }
 
-    // Check Savings
+    // Check Savings (if actual savings are less than what the rule recommends)
     if (actualSavings < ruleSavings) {
-        statusText += `${translations[currentLanguage].savings_label} ${translations[currentLanguage].status_under}. `;
+        statusText += `${translations[data.currentLanguage].savings_label} ${translations[data.currentLanguage].status_under}. `;
         statusColor = "var(--danger-color)";
     }
 
     // Overall deficit check: if net salary minus total actual expenses is negative
-    if (netSalary - (actualNeeds + actualWants) < 0) {
-        statusText = translations[currentLanguage].status_over + " (" + translations[currentLanguage].label_deficit + ")";
+    // This check is slightly redundant with actualSavings < 0, but good for clarity.
+    if (actualNeeds + actualWants > netSalary) { // Total expenses exceed net salary
+        statusText = translations[data.currentLanguage].status_over + " (" + translations[data.currentLanguage].label_deficit + ")";
         statusColor = "var(--danger-color)";
     } else if (statusText.trim() === "") { // If no specific issues found above
-        statusText = translations[currentLanguage].status_ok;
+        statusText = translations[data.currentLanguage].status_ok;
         statusColor = "var(--summary-text-color)";
     } else { // If there are specific warnings but no overall deficit
         // Keep the warnings and set color to warning if not already danger
@@ -979,12 +1126,16 @@ function applyBudgetRule(grossIncome, totalExpenses, netSalary, totalDeductions)
     budgetStatusDisplay.style.color = statusColor;
 }
 
-// 12. 이벤트 리스너 설정
+// 12. 이벤트 리스너 설정 (data 객체 사용하도록 수정)
 document.addEventListener('DOMContentLoaded', () => {
     loadData(); // DOM 로드 후 저장된 데이터 로드
 
     initializeCharts(); // 차트 초기화 (데이터 로드 후)
-    updateDisplay(); // 초기 UI 업데이트
+    // updateDisplay()는 loadData() 내부에서 이미 호출됩니다.
+    // 하지만 DOMContentLoaded 시점에 최초 한 번 더 호출하는 것은 안정성을 높일 수 있습니다.
+    // loadData()가 데이터를 로드하고 DOM에 반영한 후 updateDisplay()를 호출합니다.
+    // 따라서 여기서 한 번 더 호출할 필요는 없습니다. (주석 처리 또는 제거)
+    // updateDisplay(); // 초기 UI 업데이트
 
     // 급여 양식 입력 변경 시
     if (grossSalaryInput) {
@@ -992,7 +1143,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (salaryFrequencySelect) {
         salaryFrequencySelect.addEventListener('change', (e) => {
-            currentSalaryFrequency = e.target.value;
+            data.salary.frequency = e.target.value; // data 객체 업데이트
             updateDisplay();
         });
     }
@@ -1000,81 +1151,90 @@ document.addEventListener('DOMContentLoaded', () => {
     // 기본 항목 주기 변경 시
     if (defaultItemFrequencySelect) {
         defaultItemFrequencySelect.addEventListener('change', (e) => {
-            defaultItemFrequency = e.target.value;
-            // 모든 고정 입력 필드의 data-frequency 업데이트
-            const allInputFields = [...Object.values(taxInputs), ...Object.values(preTaxDeductInputs), 
-                                    ...Object.values(postTaxDeductInputs), ...Object.values(expenseInputs)];
-            allInputFields.forEach(input => {
-                if (input) {
-                    input.dataset.frequency = defaultItemFrequency;
-                }
-            });
+            data.defaultItemFrequency = e.target.value; // data 객체 업데이트
+            // 모든 고정 입력 필드의 data.xxx.key 값을 업데이트할 필요는 없습니다.
+            // data.defaultItemFrequency는 오직 새로운 사용자 정의 항목을 추가할 때의 기본 주기를 결정하거나,
+            // convertToMonthly 함수에서 주기가 명시되지 않은 경우 사용됩니다.
+            // 고정 입력 필드의 값은 이제 data 객체에 월별 값으로 직접 저장되고 관리되므로,
+            // 이 이벤트를 통해 고정 입력 필드의 dataset.frequency를 변경할 필요는 없습니다.
+            // 만약 고정 입력 필드도 각각 주기를 가질 수 있다면, 그 주기를 data 객체에 저장해야 합니다.
+            // 현재는 고정 입력 필드는 월별 값이거나 defaultItemFrequency를 따르지 않는다고 가정합니다.
+            // 만약 고정 입력 필드의 주기도 변경하고 싶다면, loadData와 saveData에 해당 로직을 추가하고
+            // 여기서 해당 input의 dataset.frequency를 업데이트해야 합니다.
             updateDisplay(); // 변경된 주기를 반영하여 UI 업데이트
-            saveData(); // 기본 주기 및 변경된 input frequencies 저장
+            saveData(); // 기본 주기 저장
         });
     }
 
-    // 고정 입력 필드 변경 시
+    // 고정 입력 필드 변경 시 (이제 data 객체에 직접 반영)
     const allInputGroups = [taxInputs, preTaxDeductInputs, postTaxDeductInputs, expenseInputs];
     allInputGroups.forEach(group => {
         for (const key in group) {
             if (group[key]) {
-                group[key].addEventListener('input', updateDisplay);
+                group[key].addEventListener('input', (e) => {
+                    const value = parseFloat(e.target.value) || 0;
+                    // HTML input의 name 속성 또는 id를 이용하여 data 객체의 올바른 위치에 저장
+                    // 여기서는 taxInputs, preTaxDeductInputs 등의 객체 키와 data 객체 키가 일치한다고 가정
+                    // 특수 케이스 (401kTrad 등)는 별도 처리
+                    if (group === taxInputs) data.taxes[key] = value;
+                    else if (group === preTaxDeductInputs) {
+                        const dataKey = key === 'fourZeroOneKTrad' ? '401kTrad' : key;
+                        data.preTaxDeductions[dataKey] = value;
+                    }
+                    else if (group === postTaxDeductInputs) {
+                        const dataKey = key === 'fourZeroOneKRoth' ? '401kRoth' : key;
+                        data.postTaxDeductions[dataKey] = value;
+                    }
+                    else if (group === expenseInputs) data.expenses[key] = value;
+                    updateDisplay();
+                });
             }
         }
     });
 
-    // 커스텀 항목 추가 버튼
+    // 커스텀 항목 추가 버튼 (addCustomItem 함수가 type 문자열만 받도록 변경되었음)
     document.querySelectorAll('.add-custom-btn').forEach(button => {
         button.addEventListener('click', (e) => {
             const type = e.target.dataset.type;
-            switch (type) {
-                case 'tax':
-                    addCustomItem(customTaxes, 'tax');
-                    break;
-                case 'pre-tax':
-                    addCustomItem(customPreTaxDeductions, 'pre-tax');
-                    break;
-                case 'post-tax':
-                    addCustomItem(customPostTaxDeductions, 'post-tax');
-                    break;
-                case 'expense':
-                    addCustomItem(customExpenses, 'expense');
-                    break;
-            }
+            addCustomItem(type); // type 문자열만 전달
         });
     });
 
-    // Custom Item Remove Buttons (Event Delegation)
+    // Custom Item Delete Buttons (Event Delegation)
+    // deleteCustomItem 함수가 type과 itemId를 받도록 변경되었으므로, event delegation 로직도 수정해야 합니다.
+    // renderCustomList에서 삭제 버튼에 `deleteCustomItem('${type}', '${item.id}')` 형태로 이미 onclick이 붙어 있으므로,
+    // 이 DOMContentLoaded 이벤트 리스너는 필요 없을 수 있습니다.
+    // 하지만, 만약 onclick이 동적으로 추가되는 것이 아니라면, 여기서 이벤트 위임을 통해 처리하는 것이 좋습니다.
+    // 현재 `renderCustomList`에서 직접 `onclick`을 사용하므로, 이 섹션은 중복되거나 삭제 가능합니다.
+    // 여기서는 기존 코드를 따라 이벤트 위임 방식으로 유지하되, `itemId`를 사용하도록 수정합니다.
     document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('remove-btn') || e.target.closest('.remove-btn')) {
-            const btn = e.target.closest('.remove-btn');
-            const index = parseInt(btn.dataset.index);
-            const type = btn.dataset.type;
+        // delete-custom-btn 클래스를 확인
+        if (e.target.classList.contains('delete-custom-btn') || e.target.closest('.delete-custom-btn')) {
+            const btn = e.target.closest('.delete-custom-btn');
+            const itemDiv = btn.closest('.custom-item');
+            const type = itemDiv.dataset.itemType; // itemDiv에서 type 가져오기
+            const itemId = itemDiv.dataset.itemId; // itemDiv에서 itemId 가져오기
 
-            if (confirm(translations[currentLanguage].remove_item + '?')) {
-                switch (type) {
-                    case 'tax':
-                        removeCustomItem(customTaxes, index);
-                        break;
-                    case 'pre-tax':
-                        removeCustomItem(customPreTaxDeductions, index);
-                        break;
-                    case 'post-tax':
-                        removeCustomItem(customPostTaxDeductions, index);
-                        break;
-                    case 'expense':
-                        removeCustomItem(customExpenses, index);
-                        break;
-                }
-            }
+            // deleteCustomItem 함수는 이미 confirm을 포함하므로 여기서 다시 confirm 할 필요 없습니다.
+            deleteCustomItem(type, itemId);
         }
     });
+    // Custom Item Edit Buttons (Event Delegation)
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('edit-custom-btn') || e.target.closest('.edit-custom-btn')) {
+            const btn = e.target.closest('.edit-custom-btn');
+            const itemDiv = btn.closest('.custom-item');
+            const type = itemDiv.dataset.itemType;
+            const itemId = itemDiv.dataset.itemId;
+            toggleEditMode(btn, type, itemId);
+        }
+    });
+
 
     // Language Toggle
     if (languageToggleBtn) {
         languageToggleBtn.addEventListener('click', () => {
-            const newLang = currentLanguage === 'ko' ? 'en' : 'ko';
+            const newLang = data.currentLanguage === 'ko' ? 'en' : 'ko'; // data.currentLanguage 사용
             applyLanguage(newLang);
             saveData();
         });
@@ -1083,55 +1243,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Dark Mode Toggle
     if (darkmodeToggleBtn) {
         darkmodeToggleBtn.addEventListener('click', () => {
-            applyDarkMode(!isDarkMode);
+            applyDarkMode(!data.isDarkMode); // data.isDarkMode 사용
             saveData();
         });
     }
 
-    // Data Management: Export JSON
+    // Data Management: Export JSON (data 객체 사용)
     if (exportJsonBtn) {
         exportJsonBtn.addEventListener('click', () => {
-            const data = {
-                grossSalaryInput: grossSalaryInput.value,
-                currentSalaryFrequency: currentSalaryFrequency,
-                defaultItemFrequency: defaultItemFrequencySelect ? defaultItemFrequencySelect.value : 'monthly',
-                taxInputs: {},
-                preTaxDeductInputs: {},
-                postTaxDeductInputs: {},
-                expenseInputs: {},
-                customTaxes: customTaxes,
-                customPreTaxDeductions: customPreTaxDeductions,
-                customPostTaxDeductions: customPostTaxDeductions,
-                customExpenses: customExpenses,
-                currentLanguage: currentLanguage,
-                isDarkMode: isDarkMode,
-                selectedBudgetRule: budgetRuleSelect ? budgetRuleSelect.value : '50-30-20',
-                taxInputFrequencies: {},
-                preTaxDeductInputFrequencies: {},
-                postTaxDeductInputFrequencies: {},
-                expenseInputFrequencies: {}
-            };
-
-            const inputGroups = [
-                { inputs: taxInputs, frequencies: data.taxInputFrequencies },
-                { inputs: preTaxDeductInputs, frequencies: data.preTaxDeductInputFrequencies },
-                { inputs: postTaxDeductInputs, frequencies: data.postTaxDeductInputFrequencies },
-                { inputs: expenseInputs, frequencies: data.expenseInputFrequencies }
-            ];
-
-            inputGroups.forEach(group => {
-                for (const key in group.inputs) {
-                    if (group.inputs[key]) {
-                        data[group.inputs === taxInputs ? 'taxInputs' : 
-                             group.inputs === preTaxDeductInputs ? 'preTaxDeductInputs' :
-                             group.inputs === postTaxDeductInputs ? 'postTaxDeductInputs' :
-                             'expenseInputs'][key] = group.inputs[key].value;
-                        group.frequencies[key] = group.inputs[key].dataset.frequency || 'monthly'; // frequency 저장
-                    }
-                }
-            });
-
-            const jsonData = JSON.stringify(data, null, 2);
+            // saveData() 함수를 호출하여 data 객체의 최신 상태를 확보합니다.
+            // data 객체는 이미 전역으로 존재하며 최신 상태를 유지하므로,
+            // 여기서 별도의 `data` 객체를 생성할 필요 없이 전역 `data` 객체를 사용합니다.
+            saveData(); // 항상 최신 상태를 저장
+            const jsonData = JSON.stringify(data, null, 2); // 전역 data 객체 사용
             const blob = new Blob([jsonData], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -1141,11 +1265,11 @@ document.addEventListener('DOMContentLoaded', () => {
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            alert(translations[currentLanguage].alert_json_export_success);
+            alert(translations[data.currentLanguage].alert_json_export_success); // data.currentLanguage 사용
         });
     }
 
-    // Data Management: Import JSON
+    // Data Management: Import JSON (data 객체 사용)
     if (importJsonBtn && importJsonInput) {
         importJsonBtn.addEventListener('click', () => {
             importJsonInput.click();
@@ -1158,15 +1282,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 reader.onload = (e) => {
                     try {
                         const importedData = JSON.parse(e.target.result);
-                        if (importedData && typeof importedData.grossSalaryInput !== 'undefined' && importedData.taxInputs) {
+                        // 불러온 데이터의 유효성을 간단히 검사
+                        // data 객체 구조에 맞는지 확인
+                        if (importedData && typeof importedData.salary?.gross !== 'undefined' && importedData.taxes) {
+                            // localStorage에 직접 저장 (loadData에서 파싱하고 적용하도록)
                             localStorage.setItem('budgetAppData', JSON.stringify(importedData));
                             loadData(); // 데이터 로드 및 UI 업데이트
-                            alert(translations[currentLanguage].alert_data_import_success);
+                            alert(translations[data.currentLanguage].alert_data_import_success); // data.currentLanguage 사용
                         } else {
-                            alert(translations[currentLanguage].alert_invalid_json);
+                            alert(translations[data.currentLanguage].alert_invalid_json); // data.currentLanguage 사용
                         }
                     } catch (error) {
-                        alert(translations[currentLanguage].alert_json_parse_error + error.message);
+                        alert(translations[data.currentLanguage].alert_json_parse_error + error.message); // data.currentLanguage 사용
                         console.error('Error parsing JSON:', error);
                     }
                 };
@@ -1175,35 +1302,62 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Data Management: Clear All Data
+    // Data Management: Clear All Data (data 객체 사용)
     if (clearAllDataBtn) {
         clearAllDataBtn.addEventListener('click', () => {
-            if (confirm(translations[currentLanguage].confirm_clear_data)) {
+            if (confirm(translations[data.currentLanguage].confirm_clear_data)) { // data.currentLanguage 사용
                 localStorage.removeItem('budgetAppData');
-                
-                // 모든 입력 필드 초기화 및 data-frequency 재설정
-                const allInputFields = [...Object.values(taxInputs), ...Object.values(preTaxDeductInputs), 
-                                        ...Object.values(postTaxDeductInputs), ...Object.values(expenseInputs)];
-                allInputFields.forEach(input => {
-                    if (input) {
-                        input.value = 0;
-                        input.dataset.frequency = 'monthly'; // 초기화 시 기본 주기로 설정
+
+                // data 객체를 초기 상태로 되돌립니다.
+                // 전역 `data` 객체의 초기 정의를 여기에 반영합니다.
+                // 아니면 페이지를 새로고침하여 초기 상태로 만드는 것이 더 간단하고 안전합니다.
+                // 여기서는 수동 초기화를 선택합니다.
+                data.salary = {
+                    gross: 0,
+                    frequency: 'monthly'
+                };
+                data.defaultItemFrequency = 'monthly';
+                data.taxes = {
+                    federal: 0, state: 0, socialSecurity: 0, medicare: 0, custom: []
+                };
+                data.preTaxDeductions = {
+                    '401kTrad': 0, traditionalIRA: 0, hsa: 0, custom: []
+                };
+                data.postTaxDeductions = {
+                    '401kRoth': 0, rothIRA: 0, healthInsurance: 0, lifeInsurance: 0, custom: []
+                };
+                data.expenses = {
+                    rent: 0, utilities: 0, internet: 0, phone: 0, groceries: 0, transport: 0, health: 0,
+                    dining: 0, shopping: 0, entertainment: 0, custom: []
+                };
+                data.currentLanguage = 'ko';
+                data.isDarkMode = false;
+                data.budgetRule = '50-30-20';
+
+                // DOM 요소도 초기값으로 재설정 (data 객체와 동기화)
+                if (grossSalaryInput) grossSalaryInput.value = data.salary.gross;
+                if (salaryFrequencySelect) salaryFrequencySelect.value = data.salary.frequency;
+                if (defaultItemFrequencySelect) defaultItemFrequencySelect.value = data.defaultItemFrequency;
+                if (budgetRuleSelect) budgetRuleSelect.value = data.budgetRule;
+
+                // 고정 입력 필드 0으로 초기화
+                [taxInputs, preTaxDeductInputs, postTaxDeductInputs, expenseInputs].forEach(inputsGroup => {
+                    for (const key in inputsGroup) {
+                        if (inputsGroup[key]) inputsGroup[key].value = 0;
                     }
                 });
-                if (grossSalaryInput) grossSalaryInput.value = 0;
-                if (salaryFrequencySelect) salaryFrequencySelect.value = 'monthly';
-                if (defaultItemFrequencySelect) defaultItemFrequencySelect.value = 'monthly';
-                currentSalaryFrequency = 'monthly';
-                defaultItemFrequency = 'monthly';
 
+                // 커스텀 리스트 DOM 비우기
+                customTaxList.innerHTML = '';
+                customPreTaxDeductList.innerHTML = '';
+                customPostTaxDeductList.innerHTML = '';
+                customExpenseList.innerHTML = '';
 
-                customTaxes = [];
-                customPreTaxDeductions = [];
-                customPostTaxDeductions = [];
-                customExpenses = [];
+                applyLanguage(data.currentLanguage); // data.currentLanguage 초기 적용
+                applyDarkMode(data.isDarkMode);     // data.isDarkMode 초기 적용
 
                 updateDisplay(); // UI 다시 그리기
-                alert(translations[currentLanguage].alert_data_cleared);
+                alert(translations[data.currentLanguage].alert_data_cleared); // data.currentLanguage 사용
             }
         });
     }
@@ -1211,13 +1365,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // AI Report Generation (Placeholder for actual AI integration)
     if (aiReportBtn && aiReportBox) {
         aiReportBtn.addEventListener('click', () => {
-            aiReportBox.innerHTML = `<p>${translations[currentLanguage].ai_report_placeholder}</p>`;
+            aiReportBox.innerHTML = `<p>${translations[data.currentLanguage].ai_report_placeholder}</p>`; // data.currentLanguage 사용
         });
     }
 
     // Budget Rule Select Listener
     if (budgetRuleSelect) {
         budgetRuleSelect.addEventListener("change", () => {
+            data.budgetRule = budgetRuleSelect.value; // data 객체 업데이트
             updateDisplay();
         });
     }
