@@ -26,7 +26,7 @@
                     <div class="input-container salary-input-container">
                         <select id="salary-frequency-select" class="form-control">
                             <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
-                            <option value="annually" data-i18n-key="frequency_annually">연간</option>
+                            <option value="annual" data-i18n-key="frequency_annually">연간</option>
                             <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
                             <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
                         </select>
@@ -34,37 +34,19 @@
                     </div>
                 </div>
                 <p class="annual-salary-summary"><span data-i18n-key="label_annual_salary">연간 총 급여:</span> <span id="annual-salary-summary-display">$0.00</span></p>
-                <button type="submit" class="btn" data-i18n-key="btn_save" onclick="event.preventDefault(); saveData(); alert(translations[data.currentLanguage].alert_data_saved);">저장</button>
             </form>
-        </section>
-
-        <section class="budget-section">
-            <h2 data-i18n-key="section_default_frequency_title">기본 항목 주기 설정</h2>
-            <div class="form-group">
-                <label for="default-item-frequency-select" data-i18n-key="label_default_frequency">기본 지출/항목 주기:</label>
-                <div class="input-container">
-                    <select id="default-item-frequency-select" class="form-control">
-                        <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
-                        <option value="annually" data-i18n-key="frequency_annually">연간</option>
-                        <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
-                        <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
-                    </select>
-                </div>
-            </div>
         </section>
 
         <section class="budget-section">
             <h2 data-i18n-key="section_taxes_title">세금</h2>
             <div class="form-group">
                 <label for="tax-frequency-select" data-i18n-key="label_frequency">세금 주기:</label>
-                <div class="input-container">
-                    <select id="tax-frequency-select" class="form-control">
-                        <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
-                        <option value="annually" data-i18n-key="frequency_annually">연간</option>
-                        <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
-                        <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
-                    </select>
-                </div>
+                <select id="tax-frequency-select" class="form-control">
+                    <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
+                    <option value="annual" data-i18n-key="frequency_annually">연간</option>
+                    <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
+                    <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
+                </select>
             </div>
             <div class="form-grid">
                 <div class="form-group">
@@ -97,6 +79,15 @@
 
         <section class="budget-section">
             <h2 data-i18n-key="section_pre_tax_title">세전 공제</h2>
+            <div class="form-group">
+                <label for="pre-tax-frequency-select" data-i18n-key="label_frequency">세전 공제 주기:</label>
+                <select id="pre-tax-frequency-select" class="form-control">
+                    <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
+                    <option value="annual" data-i18n-key="frequency_annually">연간</option>
+                    <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
+                    <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
+                </select>
+            </div>
             <div class="form-grid">
                 <div class="form-group">
                     <label for="deduct-medical-1" data-i18n-key="label_medical_premium">의료 보험료</label>
@@ -124,6 +115,15 @@
 
         <section class="budget-section">
             <h2 data-i18n-key="section_post_tax_title">세후 공제</h2>
+            <div class="form-group">
+                <label for="post-tax-frequency-select" data-i18n-key="label_frequency">세후 공제 주기:</label>
+                <select id="post-tax-frequency-select" class="form-control">
+                    <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
+                    <option value="annual" data-i18n-key="frequency_annually">연간</option>
+                    <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
+                    <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
+                </select>
+            </div>
             <div class="form-grid">
                 <div class="form-group">
                     <label for="deduct-spp-1" data-i18n-key="label_spp">주식 구매 계획</label>
@@ -151,6 +151,15 @@
 
         <section class="budget-section">
             <h2 data-i18n-key="section_expenses_title">지출 관리</h2>
+            <div class="form-group">
+                <label for="expense-frequency-select" data-i18n-key="label_frequency">지출 주기:</label>
+                <select id="expense-frequency-select" class="form-control">
+                    <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
+                    <option value="annual" data-i18n-key="frequency_annually">연간</option>
+                    <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
+                    <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
+                </select>
+            </div>
             <div class="form-grid">
                 <div class="form-group">
                     <label for="exp-rent-1" data-i18n-key="label_rent_mortgage">월세/주택담보대출</label>
@@ -230,37 +239,34 @@
             </div>
             <div class="summary-results rule-breakdown">
                 <div class="breakdown-item">
-                    <p><span data-i18n-key="needs_label">필수 지출 (Needs)</span>:</p>
+                    <p><span data-i18n-key="needs_label">필수 지출 (Needs)</span></p>
                     <p><span data-i18n-key="label_rule">규칙</span>: <span id="rule-needs-display">$0.00</span></p>
                     <p><span data-i18n-key="label_actual">실제</span>: <span id="actual-needs-display">$0.00</span></p>
                 </div>
                 <div class="breakdown-item">
-                    <p><span data-i18n-key="wants_label">원하는 지출 (Wants)</span>:</p>
+                    <p><span data-i18n-key="wants_label">원하는 지출 (Wants)</span></p>
                     <p><span data-i18n-key="label_rule">규칙</span>: <span id="rule-wants-display">$0.00</span></p>
                     <p><span data-i18n-key="label_actual">실제</span>: <span id="actual-wants-display">$0.00</span></p>
                 </div>
                 <div class="breakdown-item">
-                    <p><span data-i18n-key="savings_label">저축 (Savings)</span>:</p>
+                    <p><span data-i18n-key="savings_label">저축 (Savings)</span></p>
                     <p><span data-i18n-key="label_rule">규칙</span>: <span id="rule-savings-display">$0.00</span></p>
                     <p><span data-i18n-key="label_actual">실제</span>: <span id="actual-savings-display">$0.00</span></p>
                 </div>
                 <div class="breakdown-item total">
-                    <p><span data-i18n-key="label_total_budget">총 예산</span>:</p>
+                    <p><span data-i18n-key="label_total_budget">총 예산</span></p>
                     <p><span data-i18n-key="label_rule">규칙</span>: <span id="rule-total-display">$0.00</span></p>
                     <p><span data-i18n-key="label_actual">실제</span>: <span id="actual-total-display">$0.00</span></p>
                 </div>
                 <div class="breakdown-item status">
-                    <p><span data-i18n-key="label_budget_status">예산 상태</span>:</p>
-                    <p><span id="budget-status-display"></span></p>
+                    <p><span data-i18n-key="label_budget_status">예산 상태</span>: <span id="budget-status-display"></span></p>
                 </div>
             </div>
         </section>
 
         <section class="budget-section">
             <h2 data-i18n-key="section_ai_title">AI 지출 보고서</h2>
-            <div class="form-group">
-                <button id="ai-report-btn" class="btn" data-i18n-key="btn_ai_report">AI 보고서 생성</button>
-            </div>
+            <button id="ai-report-btn" class="btn" data-i18n-key="btn_ai_report">AI 보고서 생성</button>
             <div id="ai-report-box" class="ai-report-box">
                 <p data-i18n-key="ai_report_placeholder">"AI 보고서 생성"을 클릭하여 지출 습관에 대한 통찰력을 얻으세요.</p>
             </div>
@@ -268,17 +274,11 @@
 
         <section class="budget-section">
             <h2 data-i18n-key="section_data_title">데이터 관리</h2>
-            <div class="form-grid">
-                <div class="form-group">
-                    <button id="export-json-btn" class="btn" data-i18n-key="btn_export">JSON 내보내기</button>
-                </div>
-                <div class="form-group">
-                    <button id="import-json-btn" class="btn" data-i18n-key="btn_import">JSON 가져오기</button>
-                    <input type="file" id="import-json-input" accept=".json" style="display: none;">
-                </div>
-                <div class="form-group">
-                    <button id="clear-all-data-btn" class="btn btn-danger" data-i18n-key="btn_clear_all_data">모든 데이터 지우기</button>
-                </div>
+            <div class="form-grid data-actions">
+                <button id="export-json-btn" class="btn" data-i18n-key="btn_export">JSON 내보내기</button>
+                <button id="import-json-btn" class="btn" data-i18n-key="btn_import">JSON 가져오기</button>
+                <input type="file" id="import-json-input" accept=".json" style="display: none;">
+                <button id="clear-all-data-btn" class="btn btn-danger" data-i18n-key="btn_clear_all_data">모든 데이터 지우기</button>
             </div>
         </section>
     </main>
