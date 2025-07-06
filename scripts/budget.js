@@ -781,7 +781,10 @@ function updateCharts() {
     if (budgetDistributionChartInstance) {
         budgetDistributionChartInstance.destroy();
     }
-    budgetDistributionChartInstance = createChart('budgetDistributionChart', translations[data.currentLanguage].chart_budget_distribution, overallAmounts, overallLabels, overallColors);
+    if (budgetDistributionChartInstance) {
+    budgetDistributionChartInstance.destroy();
+}
+budgetDistributionChartInstance = createChart('budget-distribution-chart', translations[data.currentLanguage].chart_budget_distribution, overallAmounts, overallLabels, overallColors);
 }
 
 // 12. 예산 규칙 적용 함수
