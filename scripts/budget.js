@@ -109,19 +109,15 @@ function calculateBudget() {
 
 // 4. UI 업데이트 & 렌더링
 function formatCurrency(amount) {
-    // 숫자 서식(쉼표 등)은 언어 설정에 맞추고, 통화 기호는 '$'로 고정합니다.
     const lang = data.currentLanguage === 'ko' ? 'ko-KR' : 'en-US';
-    
     const numberPart = new Intl.NumberFormat(lang, {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
     }).format(amount);
-
     return `$${numberPart}`;
 }
 
 function updateDisplay() {
-    // 1. UI에서 데이터 객체로 값 업데이트
     data.grossSalary = parseFloat(grossSalaryInput.value) || 0;
     data.salaryFrequency = salaryFrequencySelect.value;
     data.budgetRule = budgetRuleSelect.value;
@@ -136,10 +132,8 @@ function updateDisplay() {
     Object.keys(postTaxDeductInputs).forEach(key => data.postTaxDeductions[key] = parseFloat(postTaxDeductInputs[key].value) || 0);
     Object.keys(expenseInputs).forEach(key => data.expenses[key] = parseFloat(expenseInputs[key].value) || 0);
 
-    // 2. 계산 실행
     const { annualGrossSalary, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, netSalary, totalAnnualExpenses, remainingBudget } = calculateBudget();
 
-    // 3. 계산 결과를 UI에 표시
     annualSalarySummaryDisplay.textContent = formatCurrency(annualGrossSalary);
     grossSalarySummaryDisplay.textContent = formatCurrency(annualGrossSalary);
     totalTaxesDisplay.textContent = formatCurrency(totalAnnualTaxes);
@@ -151,7 +145,6 @@ function updateDisplay() {
     remainingBudgetDisplay.textContent = formatCurrency(remainingBudget);
     remainingBudgetDisplay.className = remainingBudget > 0 ? 'positive' : remainingBudget < 0 ? 'negative' : 'balanced';
 
-    // 4. 나머지 UI 요소들 업데이트
     renderAllCustomLists();
     applyBudgetRule(netSalary, totalAnnualExpenses);
     updateBudgetStatus(remainingBudget);
@@ -183,9 +176,21 @@ function renderCustomList(listElement, customItems, type) {
         </li>
     `).join('');
 
-    listElement.querySelectorAll('.custom-item-name, .custom-item-amount, .custom-item-frequency').forEach(el => el.addEventListener('input', handleCustomItemChange));
-    listElement.querySelectorAll('.remove-btn').forEach(button => button.addEventListener('click', removeCustomItem));
+    // ✨ 중요: 항목 이름(텍스트)은 'change' 이벤트를 사용해 입력이 끝났을 때만 업데이트합니다.
+    listElement.querySelectorAll('.custom-item-name').forEach(el => {
+        el.addEventListener('change', handleCustomItemChange);
+    });
+    
+    // 금액과 주기는 'input' 이벤트를 사용해 즉시 업데이트합니다.
+    listElement.querySelectorAll('.custom-item-amount, .custom-item-frequency').forEach(el => {
+        el.addEventListener('input', handleCustomItemChange);
+    });
+
+    listElement.querySelectorAll('.remove-btn').forEach(button => {
+        button.addEventListener('click', removeCustomItem);
+    });
 }
+
 
 function updateBudgetStatus(remainingBudget) {
     if (!budgetStatusDisplay) return;
@@ -328,9 +333,7 @@ function updateCharts() {
         let labels = [], amounts = [];
         for(const key in items) {
             if(key !== 'custom' && items[key] > 0) {
-                // HTML id에서 숫자 제거 (예: 'tax-federal-1' -> 'tax-federal')
                 const cleanKey = key.replace(/-\d$/, ''); 
-                // 번역 키 형식으로 변환 (예: 'tax-federal' -> 'label_tax_federal')
                 const translationKey = `label_${cleanKey.replace(/-/g, '_')}`;
                 labels.push(translations[lang][translationKey] || key);
                 amounts.push(convertToAnnual(items[key], sectionFrequency));
