@@ -8,7 +8,7 @@ let customTaxList, customPreTaxDeductList, customPostTaxDeductList, customExpens
 let languageToggleBtn, darkmodeToggleBtn;
 let exportJsonBtn, importJsonBtn, importJsonInput, clearAllDataBtn;
 let aiReportBtn, aiReportBox;
-let budgetRuleSelect, budgetRuleBreakdown; // ✨ 변수 변경
+let budgetRuleSelect, budgetRuleBreakdown;
 let taxChartInstance, preTaxDeductChartInstance, postTaxDeductChartInstance, expensesChartInstance, budgetDistributionChartInstance;
 
 // 1. 초기 데이터
@@ -32,15 +32,16 @@ const data = {
     isDarkMode: false
 };
 
-// 2. 언어별 텍스트 (✨ 예산 규칙 관련 키 추가/수정)
+// 2. 언어별 텍스트
 const translations = {
     en: {
-        rule_50_30_20_title: '50/30/20 Rule',
-        rule_70_20_10_title: '70/20/10 Rule',
-        rule_80_20_title: '80/20 Rule',
+        rule_50_30_20_title: '50/30/20 Rule (Needs/Wants/Savings)',
+        rule_70_20_10_title: '70/20/10 Rule (Spending/Savings/Debt)',
+        rule_80_20_title: '80/20 Rule (Spending/Savings)',
         rule_category_needs: 'Needs',
         rule_category_wants: 'Wants',
-        rule_category_savings: 'Savings/Debt',
+        rule_category_savings: 'Savings',
+        rule_category_savings_debt: 'Savings & Debt',
         rule_category_spending: 'Spending',
         rule_category_debt: 'Debt Repayment',
         rule_actual_vs_goal: 'Actual vs. Goal',
@@ -63,12 +64,13 @@ const translations = {
         budget_status_surplus: 'You have a budget surplus!', budget_status_deficit: 'You have a budget deficit!', budget_status_balanced: 'Your budget is balanced!',
     },
     ko: {
-        rule_50_30_20_title: '50/30/20 규칙',
-        rule_70_20_10_title: '70/20/10 규칙',
-        rule_80_20_title: '80/20 규칙',
+        rule_50_30_20_title: '50/30/20 규칙 (필수/선택/저축)',
+        rule_70_20_10_title: '70/20/10 규칙 (생활비/저축/부채)',
+        rule_80_20_title: '80/20 규칙 (지출/저축)',
         rule_category_needs: '필수 지출',
         rule_category_wants: '선택 지출',
-        rule_category_savings: '저축/부채',
+        rule_category_savings: '저축',
+        rule_category_savings_debt: '저축 & 부채',
         rule_category_spending: '생활비',
         rule_category_debt: '부채 상환',
         rule_actual_vs_goal: '실제 vs. 목표',
@@ -179,8 +181,7 @@ function updateDisplay() {
     remainingBudgetDisplay.className = periodicRemaining > 0 ? 'positive' : periodicRemaining < 0 ? 'negative' : 'balanced';
 
     renderAllCustomLists();
-    applyBudgetRule(); // ✨ 인자 없이 호출
-    updateBudgetStatus(remainingBudget);
+    applyBudgetRule();
     updateCharts();
     saveData();
 }
@@ -222,9 +223,6 @@ function renderCustomList(listElement, customItems, type) {
     });
 }
 
-function updateBudgetStatus(remainingBudget) {
-    // 이 기능은 이제 예산 규칙 섹션으로 통합되었습니다.
-}
 
 // 5. 커스텀 항목 핸들러
 function addCustomItem(event) {
@@ -391,48 +389,52 @@ function updateCharts() {
     budgetDistributionChartInstance = createOrUpdateChart(budgetDistributionChartInstance, 'budget-distribution-chart', translations[lang].chart_budget_distribution, filteredAmounts, filteredLabels);
 }
 
-
 // ✨✨✨ 9. 새로운 예산 규칙 함수들 ✨✨✨
-
-function categorizeExpenses() {
+function categorizeAll() {
+    const expenseFrequency = data.frequencies.expense;
+    
+    // 지출 분류
     const needsKeys = ['rent', 'utilities', 'internet', 'phone', 'groceries', 'transport', 'health'];
     const wantsKeys = ['dining', 'shopping', 'entertainment'];
-    
     let totalNeeds = 0;
     let totalWants = 0;
-    let totalDebt = 0;
-
-    const expenseFrequency = data.frequencies.expense;
-
-    // 기본 지출 분류
+    
     for (const key in data.expenses) {
         if (key === 'custom') continue;
         const amount = convertToAnnual(data.expenses[key], expenseFrequency);
-        if (needsKeys.includes(key)) {
-            totalNeeds += amount;
-        } else if (wantsKeys.includes(key)) {
-            totalWants += amount;
-        }
+        if (needsKeys.includes(key)) totalNeeds += amount;
+        else if (wantsKeys.includes(key)) totalWants += amount;
     }
 
-    // 커스텀 지출 분류
+    // 은퇴 저축 분류
+    let retirementSavings = 0;
+    retirementSavings += convertToAnnual(data.preTaxDeductions['401k-trad'] || 0, data.frequencies.preTax);
+    retirementSavings += convertToAnnual(data.postTaxDeductions['401k-roth'] || 0, data.frequencies.postTax);
+    
+    // 커스텀 항목들 분류 (저축, 부채, 기타)
+    let debtRepayment = 0;
+    let otherSavings = 0;
+    const debtKeywords = ['debt', 'loan', 'mortgage', 'payment', '부채', '대출', '상환', '카드값', '모기지'];
+    const savingsKeywords = ['saving', 'emergency', 'travel', 'house', '저축', '비상금', '여행', '주택'];
+
     data.expenses.custom.forEach(item => {
         const amount = convertToAnnual(item.amount, item.frequency);
         const nameLower = item.name.toLowerCase();
-        if (nameLower.includes('debt') || nameLower.includes('부채')) {
-            totalDebt += amount;
+        if (debtKeywords.some(kw => nameLower.includes(kw))) {
+            debtRepayment += amount;
+        } else if (savingsKeywords.some(kw => nameLower.includes(kw))) {
+            otherSavings += amount;
         } else {
-            // 커스텀 항목은 기본적으로 'Wants'로 분류
-            totalWants += amount;
+            totalWants += amount; // 분류 안되면 선택 지출로
         }
     });
 
-    return { totalNeeds, totalWants, totalDebt };
+    return { totalNeeds, totalWants, retirementSavings, otherSavings, debtRepayment };
 }
 
 function applyBudgetRule() {
     const { netSalary, remainingBudget } = calculateBudget();
-    const { totalNeeds, totalWants, totalDebt } = categorizeExpenses();
+    const { totalNeeds, totalWants, retirementSavings, otherSavings, debtRepayment } = categorizeAll();
     const lang = data.currentLanguage;
     const summaryFreq = data.summaryFrequency;
     
@@ -440,23 +442,28 @@ function applyBudgetRule() {
     
     switch (data.budgetRule) {
         case '50-30-20':
+            const actualSavingsAndDebt = retirementSavings + otherSavings + debtRepayment + Math.max(0, remainingBudget);
             breakdown = [
                 { label: translations[lang].rule_category_needs, goal: netSalary * 0.5, actual: totalNeeds },
                 { label: translations[lang].rule_category_wants, goal: netSalary * 0.3, actual: totalWants },
-                { label: translations[lang].rule_category_savings, goal: netSalary * 0.2, actual: remainingBudget + totalWants - totalWants /* Hack to just get remaining */ }
+                { label: translations[lang].rule_category_savings_debt, goal: netSalary * 0.2, actual: actualSavingsAndDebt }
             ];
             break;
         case '70-20-10':
+            const actualSpending70 = totalNeeds + totalWants;
+            const actualSavings20 = retirementSavings + otherSavings + Math.max(0, remainingBudget);
             breakdown = [
-                { label: translations[lang].rule_category_spending, goal: netSalary * 0.7, actual: totalNeeds + totalWants },
-                { label: translations[lang].rule_category_savings, goal: netSalary * 0.2, actual: remainingBudget + totalDebt },
-                { label: translations[lang].rule_category_debt, goal: netSalary * 0.1, actual: totalDebt }
+                { label: translations[lang].rule_category_spending, goal: netSalary * 0.7, actual: actualSpending70 },
+                { label: translations[lang].rule_category_savings, goal: netSalary * 0.2, actual: actualSavings20 },
+                { label: translations[lang].rule_category_debt, goal: netSalary * 0.1, actual: debtRepayment }
             ];
             break;
         case '80-20':
+            const actualSpending80 = totalNeeds + totalWants + debtRepayment;
+            const actualSavings80_20 = retirementSavings + otherSavings + Math.max(0, remainingBudget);
             breakdown = [
-                { label: translations[lang].rule_category_spending, goal: netSalary * 0.8, actual: totalNeeds + totalWants + totalDebt },
-                { label: translations[lang].rule_category_savings, goal: netSalary * 0.2, actual: remainingBudget }
+                { label: translations[lang].rule_category_spending, goal: netSalary * 0.8, actual: actualSpending80 },
+                { label: translations[lang].rule_category_savings, goal: netSalary * 0.2, actual: actualSavings80_20 }
             ];
             break;
     }
@@ -466,7 +473,6 @@ function applyBudgetRule() {
 
 function renderBudgetRule(breakdown, frequency) {
     if (!budgetRuleBreakdown) return;
-    const lang = data.currentLanguage;
 
     budgetRuleBreakdown.innerHTML = breakdown.map(item => {
         const periodicActual = convertFromAnnual(item.actual, frequency);
@@ -533,7 +539,7 @@ document.addEventListener('DOMContentLoaded', () => {
     aiReportBox = document.getElementById('ai-report-box');
     
     budgetRuleSelect = document.getElementById('budget-rule-select');
-    budgetRuleBreakdown = document.getElementById('budget-rule-breakdown'); // ✨ 요소 할당
+    budgetRuleBreakdown = document.getElementById('budget-rule-breakdown');
 
     // 이벤트 리스너
     document.querySelectorAll('input[type="number"], select').forEach(el => el.addEventListener('input', updateDisplay));
