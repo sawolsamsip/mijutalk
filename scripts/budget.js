@@ -1,21 +1,21 @@
 // 0. 전역 변수
 let grossSalaryInput, salaryFrequencySelect;
 let taxFrequencySelect, preTaxFrequencySelect, postTaxFrequencySelect, expenseFrequencySelect;
-let summaryFrequencySelect; // ✨ 요약 주기 선택 변수 추가
+let summaryFrequencySelect; 
 let annualSalarySummaryDisplay, grossSalarySummaryDisplay, totalTaxesDisplay, totalPreTaxDisplay, totalPostTaxDisplay, netSalaryDisplay, totalExpensesDisplay, remainingBudgetDisplay;
 const taxInputs = {}, preTaxDeductInputs = {}, postTaxDeductInputs = {}, expenseInputs = {};
 let customTaxList, customPreTaxDeductList, customPostTaxDeductList, customExpenseList;
 let languageToggleBtn, darkmodeToggleBtn;
 let exportJsonBtn, importJsonBtn, importJsonInput, clearAllDataBtn;
 let aiReportBtn, aiReportBox;
-let budgetRuleSelect, ruleNeedsDisplay, ruleWantsDisplay, ruleSavingsDisplay, ruleTotalDisplay, actualNeedsDisplay, actualWantsDisplay, actualSavingsDisplay, actualTotalDisplay, budgetStatusDisplay;
+let budgetRuleSelect, budgetRuleBreakdown; // ✨ 변수 변경
 let taxChartInstance, preTaxDeductChartInstance, postTaxDeductChartInstance, expensesChartInstance, budgetDistributionChartInstance;
 
 // 1. 초기 데이터
 const data = {
     grossSalary: 0,
     salaryFrequency: 'monthly',
-    summaryFrequency: 'monthly', // ✨ 요약 주기 데이터 추가
+    summaryFrequency: 'monthly', 
     currency: 'USD', 
     frequencies: {
         tax: 'monthly',
@@ -32,9 +32,18 @@ const data = {
     isDarkMode: false
 };
 
-// 2. 언어별 텍스트 (✨ label_summary_frequency 추가)
+// 2. 언어별 텍스트 (✨ 예산 규칙 관련 키 추가/수정)
 const translations = {
     en: {
+        rule_50_30_20_title: '50/30/20 Rule',
+        rule_70_20_10_title: '70/20/10 Rule',
+        rule_80_20_title: '80/20 Rule',
+        rule_category_needs: 'Needs',
+        rule_category_wants: 'Wants',
+        rule_category_savings: 'Savings/Debt',
+        rule_category_spending: 'Spending',
+        rule_category_debt: 'Debt Repayment',
+        rule_actual_vs_goal: 'Actual vs. Goal',
         label_summary_frequency: 'Summary Frequency:',
         app_title: 'Budget Management Tool', section_salary_title: 'Gross Salary', label_gross_salary: 'Gross Salary', frequency_monthly: 'Monthly', frequency_annually: 'Annual', frequency_weekly: 'Weekly', frequency_bi_weekly: 'Bi-Weekly',
         label_annual_salary: 'Annual Gross Salary:', btn_save: 'Save', section_default_frequency_title: 'Default Item Frequency', label_default_frequency: 'Default Expense/Item Frequency:', section_taxes_title: 'Taxes',
@@ -44,9 +53,8 @@ const translations = {
         label_rent_mortgage: 'Rent/Mortgage', label_utilities: 'Utilities', label_internet: 'Internet', label_phone: 'Phone Bill', label_groceries: 'Groceries', label_dining_out: 'Dining Out',
         label_transportation: 'Transportation', label_shopping: 'Shopping', label_health_wellness: 'Health/Wellness', label_entertainment: 'Entertainment', section_summary_title: 'Budget Summary',
         label_total_taxes: 'Total Taxes:', label_total_pre_tax: 'Total Pre-Tax:', label_total_post_tax: 'Total Post-Tax:', label_net_salary: 'Net Salary:', label_total_expenses: 'Total Expenses:', label_remaining_budget: 'Remaining Budget:',
-        section_budget_rule_title: 'Budget Rules', label_budget_rule_select: 'Select Budget Rule:', rule_50_30_20: '50/30/20 (Needs/Wants/Savings)', rule_70_20_10: '70/20/10 (Needs/Wants/Savings)',
-        rule_80_20: '80/20 (Needs/Savings)', needs_label: 'Needs', label_rule: 'Rule', label_actual: 'Actual', wants_label: 'Wants', savings_label: 'Savings', label_total_budget: 'Total Budget',
-        label_budget_status: 'Budget Status:', section_ai_title: 'AI Expense Report', btn_ai_report: 'Generate AI Report', ai_report_placeholder: 'Click "Generate AI Report" for insights on your spending habits.',
+        section_budget_rule_title: 'Budget Rule Application', label_budget_rule_select: 'Select Budget Rule:',
+        section_ai_title: 'AI Expense Report', btn_ai_report: 'Generate AI Report', ai_report_placeholder: 'Click "Generate AI Report" for insights on your spending habits.',
         section_data_title: 'Data Management', btn_export: 'Export JSON', btn_import: 'Import JSON', btn_clear_all_data: 'Clear All Data',
         custom_item_name: 'Item Name', custom_item_amount: 'Amount', remove: 'Remove', alert_data_saved: 'Data saved successfully!', alert_data_loaded: 'Data loaded successfully!',
         alert_data_cleared: 'All data cleared!', confirm_clear_data: 'Are you sure you want to clear all data?', confirm_import_data: 'This will overwrite existing data. Continue?', invalid_json: 'Invalid JSON file.',
@@ -55,6 +63,15 @@ const translations = {
         budget_status_surplus: 'You have a budget surplus!', budget_status_deficit: 'You have a budget deficit!', budget_status_balanced: 'Your budget is balanced!',
     },
     ko: {
+        rule_50_30_20_title: '50/30/20 규칙',
+        rule_70_20_10_title: '70/20/10 규칙',
+        rule_80_20_title: '80/20 규칙',
+        rule_category_needs: '필수 지출',
+        rule_category_wants: '선택 지출',
+        rule_category_savings: '저축/부채',
+        rule_category_spending: '생활비',
+        rule_category_debt: '부채 상환',
+        rule_actual_vs_goal: '실제 vs. 목표',
         label_summary_frequency: '요약 주기:',
         app_title: '예산 관리 도구', section_salary_title: '총 급여', label_gross_salary: '총 급여', frequency_monthly: '월별', frequency_annually: '연간', frequency_weekly: '주별', frequency_bi_weekly: '2주별',
         label_annual_salary: '연간 총 급여:', btn_save: '저장', section_default_frequency_title: '기본 항목 주기 설정', label_default_frequency: '기본 지출/항목 주기:', section_taxes_title: '세금',
@@ -64,9 +81,8 @@ const translations = {
         label_rent_mortgage: '월세/주택담보대출', label_utilities: '공과금', label_internet: '인터넷', label_phone: '휴대폰 요금', label_groceries: '식료품', label_dining_out: '외식',
         label_transportation: '교통비', label_shopping: '쇼핑', label_health_wellness: '건강/웰빙', label_entertainment: '오락', section_summary_title: '예산 요약',
         label_total_taxes: '총 세금:', label_total_pre_tax: '총 세전 공제액:', label_total_post_tax: '총 세후 공제액:', label_net_salary: '순 급여:', label_total_expenses: '총 지출:', label_remaining_budget: '남은 예산:',
-        section_budget_rule_title: '예산 규칙 적용', label_budget_rule_select: '예산 규칙 선택:', rule_50_30_20: '50/30/20 (필수/선택/저축)', rule_70_20_10: '70/20/10 (필수/선택/저축)',
-        rule_80_20: '80/20 (필수/저축)', needs_label: '필수 지출', label_rule: '규칙', label_actual: '실제', wants_label: '선택 지출', savings_label: '저축', label_total_budget: '총 예산',
-        label_budget_status: '예산 상태:', section_ai_title: 'AI 지출 보고서', btn_ai_report: 'AI 보고서 생성', ai_report_placeholder: '"AI 보고서 생성"을 클릭하여 지출 습관에 대한 통찰력을 얻으세요.',
+        section_budget_rule_title: '예산 규칙 적용', label_budget_rule_select: '예산 규칙 선택:',
+        section_ai_title: 'AI 지출 보고서', btn_ai_report: 'AI 보고서 생성', ai_report_placeholder: '"AI 보고서 생성"을 클릭하여 지출 습관에 대한 통찰력을 얻으세요.',
         section_data_title: '데이터 관리', btn_export: 'JSON 내보내기', btn_import: 'JSON 가져오기', btn_clear_all_data: '모든 데이터 지우기',
         custom_item_name: '항목 이름', custom_item_amount: '금액', remove: '삭제', alert_data_saved: '데이터가 성공적으로 저장되었습니다!', alert_data_loaded: '데이터가 성공적으로 로드되었습니다!',
         alert_data_cleared: '모든 데이터가 지워졌습니다!', confirm_clear_data: '정말 모든 데이터를 지우시겠습니까?', confirm_import_data: '기존 데이터를 덮어씁니다. 계속하시겠습니까?', invalid_json: '유효하지 않은 JSON 파일입니다.',
@@ -87,7 +103,6 @@ function convertToAnnual(amount, frequency) {
     }
 }
 
-// ✨ 연간 금액을 다른 주기로 변환하는 함수 추가
 function convertFromAnnual(annualAmount, frequency) {
     switch (frequency) {
         case 'monthly': return annualAmount / 12;
@@ -134,7 +149,7 @@ function formatCurrency(amount) {
 function updateDisplay() {
     data.grossSalary = parseFloat(grossSalaryInput.value) || 0;
     data.salaryFrequency = salaryFrequencySelect.value;
-    data.summaryFrequency = summaryFrequencySelect.value; // ✨ 요약 주기 값 읽기
+    data.summaryFrequency = summaryFrequencySelect.value;
     data.budgetRule = budgetRuleSelect.value;
     data.frequencies = {
         tax: taxFrequencySelect.value,
@@ -149,10 +164,9 @@ function updateDisplay() {
 
     const { annualGrossSalary, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, netSalary, totalAnnualExpenses, remainingBudget } = calculateBudget();
 
-    const summaryFreq = data.summaryFrequency; // ✨ 선택된 요약 주기
+    const summaryFreq = data.summaryFrequency; 
 
-    // ✨ 요약 금액 표시 전, 선택된 주기에 맞게 변환
-    annualSalarySummaryDisplay.textContent = formatCurrency(annualGrossSalary); // 연간 총급여는 항상 연간으로 표시
+    annualSalarySummaryDisplay.textContent = formatCurrency(annualGrossSalary);
     grossSalarySummaryDisplay.textContent = formatCurrency(convertFromAnnual(annualGrossSalary, summaryFreq));
     totalTaxesDisplay.textContent = formatCurrency(convertFromAnnual(totalAnnualTaxes, summaryFreq));
     totalPreTaxDisplay.textContent = formatCurrency(convertFromAnnual(totalAnnualPreTaxDeductions, summaryFreq));
@@ -165,7 +179,7 @@ function updateDisplay() {
     remainingBudgetDisplay.className = periodicRemaining > 0 ? 'positive' : periodicRemaining < 0 ? 'negative' : 'balanced';
 
     renderAllCustomLists();
-    applyBudgetRule(netSalary, totalAnnualExpenses);
+    applyBudgetRule(); // ✨ 인자 없이 호출
     updateBudgetStatus(remainingBudget);
     updateCharts();
     saveData();
@@ -209,18 +223,7 @@ function renderCustomList(listElement, customItems, type) {
 }
 
 function updateBudgetStatus(remainingBudget) {
-    if (!budgetStatusDisplay) return;
-    const lang = data.currentLanguage;
-    if (remainingBudget > 0) {
-        budgetStatusDisplay.textContent = translations[lang].budget_status_surplus;
-        budgetStatusDisplay.className = 'status-surplus';
-    } else if (remainingBudget < 0) {
-        budgetStatusDisplay.textContent = translations[lang].budget_status_deficit;
-        budgetStatusDisplay.className = 'status-deficit';
-    } else {
-        budgetStatusDisplay.textContent = translations[lang].budget_status_balanced;
-        budgetStatusDisplay.className = 'status-balanced';
-    }
+    // 이 기능은 이제 예산 규칙 섹션으로 통합되었습니다.
 }
 
 // 5. 커스텀 항목 핸들러
@@ -288,14 +291,13 @@ function loadData() {
     const savedData = localStorage.getItem('budgetData');
     if (savedData) {
         const parsedData = JSON.parse(savedData);
-        // 이전 버전 데이터와의 호환성을 위해 || 연산자 사용
         Object.assign(data, parsedData);
         data.summaryFrequency = parsedData.summaryFrequency || 'monthly'; 
     }
 
     grossSalaryInput.value = data.grossSalary;
     salaryFrequencySelect.value = data.salaryFrequency;
-    summaryFrequencySelect.value = data.summaryFrequency; // ✨ 로드된 값 적용
+    summaryFrequencySelect.value = data.summaryFrequency;
     budgetRuleSelect.value = data.budgetRule;
     taxFrequencySelect.value = data.frequencies.tax;
     preTaxFrequencySelect.value = data.frequencies.preTax;
@@ -390,21 +392,106 @@ function updateCharts() {
 }
 
 
-// 9. 예산 규칙
-function applyBudgetRule(netSalary, totalAnnualExpenses) {
-    const rules = { '50-30-20': [0.5, 0.3, 0.2], '70-20-10': [0.7, 0.2, 0.1], '80-20': [0.8, 0, 0.2] };
-    const [needs, wants, savings] = rules[data.budgetRule] || rules['50-30-20'];
+// ✨✨✨ 9. 새로운 예산 규칙 함수들 ✨✨✨
 
-    ruleNeedsDisplay.textContent = formatCurrency(netSalary * needs);
-    ruleWantsDisplay.textContent = formatCurrency(netSalary * wants);
-    ruleSavingsDisplay.textContent = formatCurrency(netSalary * savings);
-    ruleTotalDisplay.textContent = formatCurrency(netSalary);
+function categorizeExpenses() {
+    const needsKeys = ['rent', 'utilities', 'internet', 'phone', 'groceries', 'transport', 'health'];
+    const wantsKeys = ['dining', 'shopping', 'entertainment'];
     
-    actualNeedsDisplay.textContent = formatCurrency(totalAnnualExpenses);
-    actualWantsDisplay.textContent = formatCurrency(0);
-    actualSavingsDisplay.textContent = formatCurrency(netSalary - totalAnnualExpenses);
-    actualTotalDisplay.textContent = formatCurrency(netSalary);
+    let totalNeeds = 0;
+    let totalWants = 0;
+    let totalDebt = 0;
+
+    const expenseFrequency = data.frequencies.expense;
+
+    // 기본 지출 분류
+    for (const key in data.expenses) {
+        if (key === 'custom') continue;
+        const amount = convertToAnnual(data.expenses[key], expenseFrequency);
+        if (needsKeys.includes(key)) {
+            totalNeeds += amount;
+        } else if (wantsKeys.includes(key)) {
+            totalWants += amount;
+        }
+    }
+
+    // 커스텀 지출 분류
+    data.expenses.custom.forEach(item => {
+        const amount = convertToAnnual(item.amount, item.frequency);
+        const nameLower = item.name.toLowerCase();
+        if (nameLower.includes('debt') || nameLower.includes('부채')) {
+            totalDebt += amount;
+        } else {
+            // 커스텀 항목은 기본적으로 'Wants'로 분류
+            totalWants += amount;
+        }
+    });
+
+    return { totalNeeds, totalWants, totalDebt };
 }
+
+function applyBudgetRule() {
+    const { netSalary, remainingBudget } = calculateBudget();
+    const { totalNeeds, totalWants, totalDebt } = categorizeExpenses();
+    const lang = data.currentLanguage;
+    const summaryFreq = data.summaryFrequency;
+    
+    let breakdown = [];
+    
+    switch (data.budgetRule) {
+        case '50-30-20':
+            breakdown = [
+                { label: translations[lang].rule_category_needs, goal: netSalary * 0.5, actual: totalNeeds },
+                { label: translations[lang].rule_category_wants, goal: netSalary * 0.3, actual: totalWants },
+                { label: translations[lang].rule_category_savings, goal: netSalary * 0.2, actual: remainingBudget + totalWants - totalWants /* Hack to just get remaining */ }
+            ];
+            break;
+        case '70-20-10':
+            breakdown = [
+                { label: translations[lang].rule_category_spending, goal: netSalary * 0.7, actual: totalNeeds + totalWants },
+                { label: translations[lang].rule_category_savings, goal: netSalary * 0.2, actual: remainingBudget + totalDebt },
+                { label: translations[lang].rule_category_debt, goal: netSalary * 0.1, actual: totalDebt }
+            ];
+            break;
+        case '80-20':
+            breakdown = [
+                { label: translations[lang].rule_category_spending, goal: netSalary * 0.8, actual: totalNeeds + totalWants + totalDebt },
+                { label: translations[lang].rule_category_savings, goal: netSalary * 0.2, actual: remainingBudget }
+            ];
+            break;
+    }
+
+    renderBudgetRule(breakdown, summaryFreq);
+}
+
+function renderBudgetRule(breakdown, frequency) {
+    if (!budgetRuleBreakdown) return;
+    const lang = data.currentLanguage;
+
+    budgetRuleBreakdown.innerHTML = breakdown.map(item => {
+        const periodicActual = convertFromAnnual(item.actual, frequency);
+        const periodicGoal = convertFromAnnual(item.goal, frequency);
+        const percentage = periodicGoal > 0 ? (periodicActual / periodicGoal) * 100 : 0;
+        const isOverBudget = periodicActual > periodicGoal;
+
+        return `
+            <div class="rule-progress-bar-container">
+                <div class="rule-progress-bar-labels">
+                    <span class="rule-category-label">${item.label}</span>
+                    <span class="rule-amount-label">
+                        ${formatCurrency(periodicActual)} / ${formatCurrency(periodicGoal)}
+                    </span>
+                </div>
+                <div class="rule-progress-bar">
+                    <div class="rule-progress-bar-inner ${isOverBudget ? 'over-budget' : ''}" style="width: ${Math.min(percentage, 100)}%;">
+                        ${Math.round(percentage)}%
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
 
 // 10. 초기화
 document.addEventListener('DOMContentLoaded', () => {
@@ -415,7 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
     preTaxFrequencySelect = document.getElementById('pre-tax-frequency-select');
     postTaxFrequencySelect = document.getElementById('post-tax-frequency-select');
     expenseFrequencySelect = document.getElementById('expense-frequency-select');
-    summaryFrequencySelect = document.getElementById('summary-frequency-select'); // ✨ 요소 할당
+    summaryFrequencySelect = document.getElementById('summary-frequency-select');
     
     annualSalarySummaryDisplay = document.getElementById('annual-salary-summary-display');
     grossSalarySummaryDisplay = document.getElementById('gross-salary-summary-display');
@@ -446,15 +533,7 @@ document.addEventListener('DOMContentLoaded', () => {
     aiReportBox = document.getElementById('ai-report-box');
     
     budgetRuleSelect = document.getElementById('budget-rule-select');
-    ruleNeedsDisplay = document.getElementById('rule-needs-display');
-    ruleWantsDisplay = document.getElementById('rule-wants-display');
-    ruleSavingsDisplay = document.getElementById('rule-savings-display');
-    ruleTotalDisplay = document.getElementById('rule-total-display');
-    actualNeedsDisplay = document.getElementById('actual-needs-display');
-    actualWantsDisplay = document.getElementById('actual-wants-display');
-    actualSavingsDisplay = document.getElementById('actual-savings-display');
-    actualTotalDisplay = document.getElementById('actual-total-display');
-    budgetStatusDisplay = document.getElementById('budget-status-display');
+    budgetRuleBreakdown = document.getElementById('budget-rule-breakdown'); // ✨ 요소 할당
 
     // 이벤트 리스너
     document.querySelectorAll('input[type="number"], select').forEach(el => el.addEventListener('input', updateDisplay));
