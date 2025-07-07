@@ -176,13 +176,13 @@ function renderCustomList(listElement, customItems, type) {
         </li>
     `).join('');
 
-    // ✨ 중요: 항목 이름(텍스트)은 'change' 이벤트를 사용해 입력이 끝났을 때만 업데이트합니다.
-    listElement.querySelectorAll('.custom-item-name').forEach(el => {
+    // ✨ 중요: 이름과 금액(텍스트, 숫자)은 'change' 이벤트를 사용해 입력이 끝났을 때만 업데이트합니다.
+    listElement.querySelectorAll('.custom-item-name, .custom-item-amount').forEach(el => {
         el.addEventListener('change', handleCustomItemChange);
     });
     
-    // 금액과 주기는 'input' 이벤트를 사용해 즉시 업데이트합니다.
-    listElement.querySelectorAll('.custom-item-amount, .custom-item-frequency').forEach(el => {
+    // 주기(드롭다운)는 'input' 이벤트를 사용해 즉시 업데이트합니다.
+    listElement.querySelectorAll('.custom-item-frequency').forEach(el => {
         el.addEventListener('input', handleCustomItemChange);
     });
 
@@ -190,7 +190,6 @@ function renderCustomList(listElement, customItems, type) {
         button.addEventListener('click', removeCustomItem);
     });
 }
-
 
 function updateBudgetStatus(remainingBudget) {
     if (!budgetStatusDisplay) return;
