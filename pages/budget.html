@@ -240,42 +240,17 @@
         </section>
 
         <section class="budget-section">
-            <h2 data-i18n-key="section_budget_rule_title">예산 규칙 적용 (Budget Rules)</h2>
+            <h2 data-i18n-key="section_budget_rule_title">예산 규칙 적용</h2>
             <div class="form-group">
                 <label for="budget-rule-select" data-i18n-key="label_budget_rule_select">예산 규칙 선택:</label>
-                <div class="input-container">
-                    <select id="budget-rule-select" class="form-control rule-select">
-                        <option value="50-30-20" data-i18n-key="rule_50_30_20">50/30/20 (필수/원하는 것/저축)</option>
-                        <option value="70-20-10" data-i18n-key="rule_70_20_10">70/20/10 (필수/원하는 것/저축)</option>
-                        <option value="80-20" data-i18n-key="rule_80_20">80/20 (필수/저축)</option>
-                    </select>
-                </div>
+                <select id="budget-rule-select" class="form-control rule-select">
+                    <option value="50-30-20" data-i18n-key="rule_50_30_20_title">50/30/20 규칙</option>
+                    <option value="70-20-10" data-i18n-key="rule_70_20_10_title">70/20/10 규칙</option>
+                    <option value="80-20" data-i18n-key="rule_80_20_title">80/20 규칙</option>
+                </select>
             </div>
-            <div class="summary-results rule-breakdown">
-                <div class="breakdown-item">
-                    <p><span data-i18n-key="needs_label">필수 지출 (Needs)</span></p>
-                    <p><span data-i18n-key="label_rule">규칙</span>: <span id="rule-needs-display">$0.00</span></p>
-                    <p><span data-i18n-key="label_actual">실제</span>: <span id="actual-needs-display">$0.00</span></p>
+            <div id="budget-rule-breakdown">
                 </div>
-                <div class="breakdown-item">
-                    <p><span data-i18n-key="wants_label">원하는 지출 (Wants)</span></p>
-                    <p><span data-i18n-key="label_rule">규칙</span>: <span id="rule-wants-display">$0.00</span></p>
-                    <p><span data-i18n-key="label_actual">실제</span>: <span id="actual-wants-display">$0.00</span></p>
-                </div>
-                <div class="breakdown-item">
-                    <p><span data-i18n-key="savings_label">저축 (Savings)</span></p>
-                    <p><span data-i18n-key="label_rule">규칙</span>: <span id="rule-savings-display">$0.00</span></p>
-                    <p><span data-i18n-key="label_actual">실제</span>: <span id="actual-savings-display">$0.00</span></p>
-                </div>
-                <div class="breakdown-item total">
-                    <p><span data-i18n-key="label_total_budget">총 예산</span></p>
-                    <p><span data-i18n-key="label_rule">규칙</span>: <span id="rule-total-display">$0.00</span></p>
-                    <p><span data-i18n-key="label_actual">실제</span>: <span id="actual-total-display">$0.00</span></p>
-                </div>
-                <div class="breakdown-item status">
-                    <p><span data-i18n-key="label_budget_status">예산 상태</span>: <span id="budget-status-display"></span></p>
-                </div>
-            </div>
         </section>
 
         <section class="budget-section">
