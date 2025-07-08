@@ -11,18 +11,13 @@ let aiReportBtn, aiReportBox;
 let budgetRuleSelect, budgetRuleBreakdown;
 let taxChartInstance, preTaxDeductChartInstance, postTaxDeductChartInstance, expensesChartInstance, budgetDistributionChartInstance;
 
-// 1. 초기 데이터
+// 1. 초기 데이터 및 분류 정의
 const data = {
     grossSalary: 0,
     salaryFrequency: 'monthly',
     summaryFrequency: 'monthly', 
     currency: 'USD', 
-    frequencies: {
-        tax: 'monthly',
-        preTax: 'monthly',
-        postTax: 'monthly',
-        expense: 'monthly'
-    },
+    frequencies: { tax: 'monthly', preTax: 'monthly', postTax: 'monthly', expense: 'monthly' },
     taxes: { federal: 0, state: 0, oasdi: 0, medicare: 0, casdi: 0, custom: [] },
     preTaxDeductions: { medical: 0, dental: 0, vision: 0, '401k-trad': 0, custom: [] },
     postTaxDeductions: { spp: 0, adnd: 0, '401k-roth': 0, ltd: 0, custom: [] },
@@ -32,65 +27,49 @@ const data = {
     isDarkMode: false
 };
 
+const ITEM_CATEGORIES = {
+    'tax-federal-1': 'fixed', 'tax-state-1': 'fixed', 'tax-oasdi-1': 'fixed', 'tax-medicare-1': 'fixed', 'tax-casdi-1': 'fixed',
+    'deduct-medical-1': 'needs', 'deduct-dental-1': 'needs', 'deduct-vision-1': 'needs', 'deduct-ltd-1': 'needs', 'deduct-adnd-1': 'needs',
+    'deduct-401k-trad-1': 'savings', 'deduct-401k-roth-1': 'savings', 'deduct-spp-1': 'savings',
+    'exp-rent-1': 'needs', 'exp-utilities-1': 'needs', 'exp-internet-1': 'needs', 'exp-phone-1': 'needs', 'exp-groceries-1': 'needs', 'exp-transport-1': 'needs', 'exp-health-1': 'needs',
+    'exp-dining-1': 'wants', 'exp-shopping-1': 'wants', 'exp-entertainment-1': 'wants'
+};
+
 // 2. 언어별 텍스트
 const translations = {
     en: {
-        rule_50_30_20_title: '50/30/20 Rule (Needs/Wants/Savings)',
-        rule_70_20_10_title: '70/20/10 Rule (Spending/Savings/Debt)',
-        rule_80_20_title: '80/20 Rule (Spending/Savings)',
-        rule_category_needs: 'Needs',
-        rule_category_wants: 'Wants',
-        rule_category_savings: 'Savings',
-        rule_category_savings_debt: 'Savings & Debt',
-        rule_category_spending: 'Spending',
-        rule_category_debt: 'Debt Repayment',
-        rule_actual_vs_goal: 'Actual vs. Goal',
-        label_summary_frequency: 'Summary Frequency:',
-        app_title: 'Budget Management Tool', section_salary_title: 'Gross Salary', label_gross_salary: 'Gross Salary', frequency_monthly: 'Monthly', frequency_annually: 'Annual', frequency_weekly: 'Weekly', frequency_bi_weekly: 'Bi-Weekly',
-        label_annual_salary: 'Annual Gross Salary:', btn_save: 'Save', section_default_frequency_title: 'Default Item Frequency', label_default_frequency: 'Default Expense/Item Frequency:', section_taxes_title: 'Taxes',
-        label_frequency: 'Frequency:', label_federal_withholding: 'Federal Withholding', label_state_tax: 'State Tax', label_oasdi: 'OASDI', label_medicare: 'Medicare', label_ca_sdi: 'CA SDI', btn_add_item: 'Add Item',
+        tag_needs: 'Needs', tag_wants: 'Wants', tag_savings: 'Savings', tag_debt: 'Debt', tag_fixed: 'Fixed',
+        rule_50_30_20_title: '50/30/20 Rule (Needs/Wants/Savings)', rule_70_20_10_title: '70/20/10 Rule (Spending/Savings/Debt)', rule_80_20_title: '80/20 Rule (Spending/Savings)',
+        rule_category_needs: 'Needs', rule_category_wants: 'Wants', rule_category_savings: 'Savings', rule_category_savings_debt: 'Savings & Debt', rule_category_spending: 'Spending', rule_category_debt: 'Debt Repayment', rule_category_surplus: 'Surplus (Unallocated)',
+        label_summary_frequency: 'Summary Frequency:', app_title: 'Budget Management Tool', section_salary_title: 'Gross Salary', label_gross_salary: 'Gross Salary', frequency_monthly: 'Monthly', frequency_annually: 'Annual', frequency_weekly: 'Weekly', frequency_bi_weekly: 'Bi-Weekly',
+        label_annual_salary: 'Annual Gross Salary:', section_taxes_title: 'Taxes', label_frequency: 'Frequency:', label_federal_withholding: 'Federal Withholding', label_state_tax: 'State Tax', label_oasdi: 'OASDI', label_medicare: 'Medicare', label_ca_sdi: 'CA SDI', btn_add_item: 'Add Item',
         section_pre_tax_title: 'Pre-Tax Deductions', label_medical_premium: 'Medical Premium', label_dental_premium: 'Dental Premium', label_vision_premium: 'Vision Premium', label_401k_traditional: '401k Traditional',
         section_post_tax_title: 'Post-Tax Deductions', label_spp: 'SPP', label_adnd: 'AD&D', label_401k_roth: '401k Roth', label_ltd: 'LTD', section_expenses_title: 'Expense Management',
         label_rent_mortgage: 'Rent/Mortgage', label_utilities: 'Utilities', label_internet: 'Internet', label_phone: 'Phone Bill', label_groceries: 'Groceries', label_dining_out: 'Dining Out',
         label_transportation: 'Transportation', label_shopping: 'Shopping', label_health_wellness: 'Health/Wellness', label_entertainment: 'Entertainment', section_summary_title: 'Budget Summary',
         label_total_taxes: 'Total Taxes:', label_total_pre_tax: 'Total Pre-Tax:', label_total_post_tax: 'Total Post-Tax:', label_net_salary: 'Net Salary:', label_total_expenses: 'Total Expenses:', label_remaining_budget: 'Remaining Budget:',
-        section_budget_rule_title: 'Budget Rule Application', label_budget_rule_select: 'Select Budget Rule:',
-        section_ai_title: 'AI Expense Report', btn_ai_report: 'Generate AI Report', ai_report_placeholder: 'Click "Generate AI Report" for insights on your spending habits.',
+        section_budget_rule_title: 'Budget Rule Application', label_budget_rule_select: 'Select Budget Rule:', section_ai_title: 'AI Expense Report', btn_ai_report: 'Generate AI Report', ai_report_placeholder: 'Click "Generate AI Report" for insights on your spending habits.',
         section_data_title: 'Data Management', btn_export: 'Export JSON', btn_import: 'Import JSON', btn_clear_all_data: 'Clear All Data',
-        custom_item_name: 'Item Name', custom_item_amount: 'Amount', remove: 'Remove', alert_data_saved: 'Data saved successfully!', alert_data_loaded: 'Data loaded successfully!',
-        alert_data_cleared: 'All data cleared!', confirm_clear_data: 'Are you sure you want to clear all data?', confirm_import_data: 'This will overwrite existing data. Continue?', invalid_json: 'Invalid JSON file.',
+        custom_item_name: 'Item Name', custom_item_amount: 'Amount', remove: 'Remove', confirm_clear_data: 'Are you sure you want to clear all data?', confirm_import_data: 'This will overwrite existing data. Continue?', invalid_json: 'Invalid JSON file.',
         chart_taxes: 'Taxes Distribution', chart_pre_tax: 'Pre-Tax Deductions', chart_post_tax: 'Post-Tax Deductions', chart_expenses: 'Expenses Distribution', chart_budget_distribution: 'Overall Budget Distribution',
         chart_labels_taxes: 'Taxes', chart_labels_pre_tax_deductions: 'Pre-Tax', chart_labels_post_tax_deductions: 'Post-Tax', chart_labels_expenses: 'Expenses', chart_labels_remaining_budget: 'Remaining',
-        budget_status_surplus: 'You have a budget surplus!', budget_status_deficit: 'You have a budget deficit!', budget_status_balanced: 'Your budget is balanced!',
     },
     ko: {
-        rule_50_30_20_title: '50/30/20 규칙 (필수/선택/저축)',
-        rule_70_20_10_title: '70/20/10 규칙 (생활비/저축/부채)',
-        rule_80_20_title: '80/20 규칙 (지출/저축)',
-        rule_category_needs: '필수 지출',
-        rule_category_wants: '선택 지출',
-        rule_category_savings: '저축',
-        rule_category_savings_debt: '저축 & 부채',
-        rule_category_spending: '생활비',
-        rule_category_debt: '부채 상환',
-        rule_actual_vs_goal: '실제 vs. 목표',
-        label_summary_frequency: '요약 주기:',
-        app_title: '예산 관리 도구', section_salary_title: '총 급여', label_gross_salary: '총 급여', frequency_monthly: '월별', frequency_annually: '연간', frequency_weekly: '주별', frequency_bi_weekly: '2주별',
-        label_annual_salary: '연간 총 급여:', btn_save: '저장', section_default_frequency_title: '기본 항목 주기 설정', label_default_frequency: '기본 지출/항목 주기:', section_taxes_title: '세금',
-        label_frequency: '주기:', label_federal_withholding: '연방 원천징수', label_state_tax: '주 세금', label_oasdi: 'OASDI', label_medicare: '메디케어', label_ca_sdi: 'CA SDI', btn_add_item: '항목 추가',
+        tag_needs: '필수', tag_wants: '선택', tag_savings: '저축', tag_debt: '부채', tag_fixed: '고정',
+        rule_50_30_20_title: '50/30/20 규칙 (필수/선택/저축)', rule_70_20_10_title: '70/20/10 규칙 (생활비/저축/부채)', rule_80_20_title: '80/20 규칙 (지출/저축)',
+        rule_category_needs: '필수 지출', rule_category_wants: '선택 지출', rule_category_savings: '저축', rule_category_savings_debt: '저축 & 부채', rule_category_spending: '생활비', rule_category_debt: '부채 상환', rule_category_surplus: '잉여금 (미배정)',
+        label_summary_frequency: '요약 주기:', app_title: '예산 관리 도구', section_salary_title: '총 급여', label_gross_salary: '총 급여', frequency_monthly: '월별', frequency_annually: '연간', frequency_weekly: '주별', frequency_bi_weekly: '2주별',
+        label_annual_salary: '연간 총 급여:', section_taxes_title: '세금', label_frequency: '주기:', label_federal_withholding: '연방 원천징수', label_state_tax: '주 세금', label_oasdi: 'OASDI', label_medicare: '메디케어', label_ca_sdi: 'CA SDI', btn_add_item: '항목 추가',
         section_pre_tax_title: '세전 공제', label_medical_premium: '의료 보험료', label_dental_premium: '치과 보험료', label_vision_premium: '시력 보험료', label_401k_traditional: '401k 일반',
         section_post_tax_title: '세후 공제', label_spp: '주식 구매 계획', label_adnd: 'AD&D', label_401k_roth: '401k Roth', label_ltd: '장기 장애', section_expenses_title: '지출 관리',
         label_rent_mortgage: '월세/주택담보대출', label_utilities: '공과금', label_internet: '인터넷', label_phone: '휴대폰 요금', label_groceries: '식료품', label_dining_out: '외식',
         label_transportation: '교통비', label_shopping: '쇼핑', label_health_wellness: '건강/웰빙', label_entertainment: '오락', section_summary_title: '예산 요약',
         label_total_taxes: '총 세금:', label_total_pre_tax: '총 세전 공제액:', label_total_post_tax: '총 세후 공제액:', label_net_salary: '순 급여:', label_total_expenses: '총 지출:', label_remaining_budget: '남은 예산:',
-        section_budget_rule_title: '예산 규칙 적용', label_budget_rule_select: '예산 규칙 선택:',
-        section_ai_title: 'AI 지출 보고서', btn_ai_report: 'AI 보고서 생성', ai_report_placeholder: '"AI 보고서 생성"을 클릭하여 지출 습관에 대한 통찰력을 얻으세요.',
+        section_budget_rule_title: '예산 규칙 적용', label_budget_rule_select: '예산 규칙 선택:', section_ai_title: 'AI 지출 보고서', btn_ai_report: 'AI 보고서 생성', ai_report_placeholder: '"AI 보고서 생성"을 클릭하여 지출 습관에 대한 통찰력을 얻으세요.',
         section_data_title: '데이터 관리', btn_export: 'JSON 내보내기', btn_import: 'JSON 가져오기', btn_clear_all_data: '모든 데이터 지우기',
-        custom_item_name: '항목 이름', custom_item_amount: '금액', remove: '삭제', alert_data_saved: '데이터가 성공적으로 저장되었습니다!', alert_data_loaded: '데이터가 성공적으로 로드되었습니다!',
-        alert_data_cleared: '모든 데이터가 지워졌습니다!', confirm_clear_data: '정말 모든 데이터를 지우시겠습니까?', confirm_import_data: '기존 데이터를 덮어씁니다. 계속하시겠습니까?', invalid_json: '유효하지 않은 JSON 파일입니다.',
+        custom_item_name: '항목 이름', custom_item_amount: '금액', remove: '삭제', confirm_clear_data: '정말 모든 데이터를 지우시겠습니까?', confirm_import_data: '기존 데이터를 덮어씁니다. 계속하시겠습니까?', invalid_json: '유효하지 않은 JSON 파일입니다.',
         chart_taxes: '세금 분배', chart_pre_tax: '세전 공제 분배', chart_post_tax: '세후 공제 분배', chart_expenses: '지출 분배', chart_budget_distribution: '전체 예산 분배',
-        chart_labels_taxes: '세금', chart_labels_pre_tax_deductions: '세전 공제', chart_labels_post_tax_deductions: '세후 공제', chart_labels_expenses: '지출', chart_labels_remaining_budget: '남은 예산',
-        budget_status_surplus: '예산 흑자입니다!', budget_status_deficit: '예산 적자입니다!', budget_status_balanced: '예산이 균형을 이룹니다!',
+        chart_labels_taxes: '세금', chart_labels_pre_tax_deductions: 'Pre-Tax', chart_labels_post_tax_deductions: 'Post-Tax', chart_labels_expenses: '지출', chart_labels_remaining_budget: '남은 예산',
     }
 };
 
@@ -165,7 +144,6 @@ function updateDisplay() {
     Object.keys(expenseInputs).forEach(key => data.expenses[key] = parseFloat(expenseInputs[key].value) || 0);
 
     const { annualGrossSalary, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, netSalary, totalAnnualExpenses, remainingBudget } = calculateBudget();
-
     const summaryFreq = data.summaryFrequency; 
 
     annualSalarySummaryDisplay.textContent = formatCurrency(annualGrossSalary);
@@ -183,6 +161,7 @@ function updateDisplay() {
     renderAllCustomLists();
     applyBudgetRule();
     updateCharts();
+    renderCategoryTags();
     saveData();
 }
 
@@ -210,19 +189,23 @@ function renderCustomList(listElement, customItems, type) {
         </li>
     `).join('');
 
-    listElement.querySelectorAll('.custom-item-name, .custom-item-amount').forEach(el => {
-        el.addEventListener('change', handleCustomItemChange);
-    });
-    
-    listElement.querySelectorAll('.custom-item-frequency').forEach(el => {
-        el.addEventListener('input', handleCustomItemChange);
-    });
-
-    listElement.querySelectorAll('.remove-btn').forEach(button => {
-        button.addEventListener('click', removeCustomItem);
-    });
+    listElement.querySelectorAll('.custom-item-name, .custom-item-amount').forEach(el => el.addEventListener('change', handleCustomItemChange));
+    listElement.querySelectorAll('.custom-item-frequency').forEach(el => el.addEventListener('input', handleCustomItemChange));
+    listElement.querySelectorAll('.remove-btn').forEach(button => button.addEventListener('click', removeCustomItem));
 }
 
+function renderCategoryTags() {
+    const lang = data.currentLanguage;
+    document.querySelectorAll('.form-group[data-item-id]').forEach(group => {
+        const itemId = group.dataset.itemId;
+        const category = ITEM_CATEGORIES[itemId];
+        const tagElement = group.querySelector('.category-tag');
+        if (category && tagElement) {
+            tagElement.textContent = translations[lang][`tag_${category}`] || '';
+            tagElement.className = `category-tag ${category}`;
+        }
+    });
+}
 
 // 5. 커스텀 항목 핸들러
 function addCustomItem(event) {
@@ -389,52 +372,53 @@ function updateCharts() {
     budgetDistributionChartInstance = createOrUpdateChart(budgetDistributionChartInstance, 'budget-distribution-chart', translations[lang].chart_budget_distribution, filteredAmounts, filteredLabels);
 }
 
-// ✨✨✨ 9. 새로운 예산 규칙 함수들 ✨✨✨
+// 9. 예산 규칙 함수들
 function categorizeAll() {
-    const expenseFrequency = data.frequencies.expense;
+    let totals = { needs: 0, wants: 0, savings: 0, debt: 0 };
     
-    // 지출 분류
-    const needsKeys = ['rent', 'utilities', 'internet', 'phone', 'groceries', 'transport', 'health'];
-    const wantsKeys = ['dining', 'shopping', 'entertainment'];
-    let totalNeeds = 0;
-    let totalWants = 0;
-    
-    for (const key in data.expenses) {
-        if (key === 'custom') continue;
-        const amount = convertToAnnual(data.expenses[key], expenseFrequency);
-        if (needsKeys.includes(key)) totalNeeds += amount;
-        else if (wantsKeys.includes(key)) totalWants += amount;
+    // 세전/세후 공제 항목 분류
+    const allDeductions = { ...data.preTaxDeductions, ...data.postTaxDeductions };
+    const deductFrequencies = { ...data.frequencies, ...data.frequencies };
+    for (const key in allDeductions) {
+        if(key === 'custom') continue;
+        const category = ITEM_CATEGORIES[`deduct-${key}-1`] || ITEM_CATEGORIES[`deduct-${key.replace('_', '-')}-1`];
+        if (category && totals.hasOwnProperty(category)) {
+            const freq = key.startsWith('401k') ? data.frequencies.preTax : data.frequencies.postTax;
+            totals[category] += convertToAnnual(allDeductions[key], freq);
+        }
     }
 
-    // 은퇴 저축 분류
-    let retirementSavings = 0;
-    retirementSavings += convertToAnnual(data.preTaxDeductions['401k-trad'] || 0, data.frequencies.preTax);
-    retirementSavings += convertToAnnual(data.postTaxDeductions['401k-roth'] || 0, data.frequencies.postTax);
-    
-    // 커스텀 항목들 분류 (저축, 부채, 기타)
-    let debtRepayment = 0;
-    let otherSavings = 0;
-    const debtKeywords = ['debt', 'loan', 'mortgage', 'payment', '부채', '대출', '상환', '카드값', '모기지'];
-    const savingsKeywords = ['saving', 'emergency', 'travel', 'house', '저축', '비상금', '여행', '주택'];
+    // 지출 항목 분류
+    for (const key in data.expenses) {
+        if(key === 'custom') continue;
+        const category = ITEM_CATEGORIES[`exp-${key}-1`];
+        if (category && totals.hasOwnProperty(category)) {
+            totals[category] += convertToAnnual(data.expenses[key], data.frequencies.expense);
+        }
+    }
 
-    data.expenses.custom.forEach(item => {
+    // 커스텀 항목 분류 (저축, 부채, 기타)
+    const debtKeywords = ['debt', 'loan', 'mortgage', 'payment', '부채', '대출', '상환', '카드값', '모기지'];
+    const savingsKeywords = ['saving', 'emergency', 'travel', 'house', '저축', '비상금', '여행', '주택', 'ira'];
+
+    [...data.expenses.custom, ...data.preTaxDeductions.custom, ...data.postTaxDeductions.custom].forEach(item => {
         const amount = convertToAnnual(item.amount, item.frequency);
         const nameLower = item.name.toLowerCase();
         if (debtKeywords.some(kw => nameLower.includes(kw))) {
-            debtRepayment += amount;
+            totals.debt += amount;
         } else if (savingsKeywords.some(kw => nameLower.includes(kw))) {
-            otherSavings += amount;
+            totals.savings += amount;
         } else {
-            totalWants += amount; // 분류 안되면 선택 지출로
+            totals.wants += amount; // 분류 안되면 선택 지출로
         }
     });
 
-    return { totalNeeds, totalWants, retirementSavings, otherSavings, debtRepayment };
+    return totals;
 }
 
 function applyBudgetRule() {
     const { netSalary, remainingBudget } = calculateBudget();
-    const { totalNeeds, totalWants, retirementSavings, otherSavings, debtRepayment } = categorizeAll();
+    const totals = categorizeAll();
     const lang = data.currentLanguage;
     const summaryFreq = data.summaryFrequency;
     
@@ -442,39 +426,35 @@ function applyBudgetRule() {
     
     switch (data.budgetRule) {
         case '50-30-20':
-            const actualSavingsAndDebt = retirementSavings + otherSavings + debtRepayment + Math.max(0, remainingBudget);
             breakdown = [
-                { label: translations[lang].rule_category_needs, goal: netSalary * 0.5, actual: totalNeeds },
-                { label: translations[lang].rule_category_wants, goal: netSalary * 0.3, actual: totalWants },
-                { label: translations[lang].rule_category_savings_debt, goal: netSalary * 0.2, actual: actualSavingsAndDebt }
+                { label: translations[lang].rule_category_needs, goal: netSalary * 0.5, actual: totals.needs },
+                { label: translations[lang].rule_category_wants, goal: netSalary * 0.3, actual: totals.wants },
+                { label: translations[lang].rule_category_savings_debt, goal: netSalary * 0.2, actual: totals.savings + totals.debt }
             ];
             break;
         case '70-20-10':
-            const actualSpending70 = totalNeeds + totalWants;
-            const actualSavings20 = retirementSavings + otherSavings + Math.max(0, remainingBudget);
             breakdown = [
-                { label: translations[lang].rule_category_spending, goal: netSalary * 0.7, actual: actualSpending70 },
-                { label: translations[lang].rule_category_savings, goal: netSalary * 0.2, actual: actualSavings20 },
-                { label: translations[lang].rule_category_debt, goal: netSalary * 0.1, actual: debtRepayment }
+                { label: translations[lang].rule_category_spending, goal: netSalary * 0.7, actual: totals.needs + totals.wants },
+                { label: translations[lang].rule_category_savings, goal: netSalary * 0.2, actual: totals.savings },
+                { label: translations[lang].rule_category_debt, goal: netSalary * 0.1, actual: totals.debt }
             ];
             break;
         case '80-20':
-            const actualSpending80 = totalNeeds + totalWants + debtRepayment;
-            const actualSavings80_20 = retirementSavings + otherSavings + Math.max(0, remainingBudget);
             breakdown = [
-                { label: translations[lang].rule_category_spending, goal: netSalary * 0.8, actual: actualSpending80 },
-                { label: translations[lang].rule_category_savings, goal: netSalary * 0.2, actual: actualSavings80_20 }
+                { label: translations[lang].rule_category_spending, goal: netSalary * 0.8, actual: totals.needs + totals.wants + totals.debt },
+                { label: translations[lang].rule_category_savings, goal: netSalary * 0.2, actual: totals.savings }
             ];
             break;
     }
 
-    renderBudgetRule(breakdown, summaryFreq);
+    renderBudgetRule(breakdown, remainingBudget, summaryFreq);
 }
 
-function renderBudgetRule(breakdown, frequency) {
+function renderBudgetRule(breakdown, remaining, frequency) {
     if (!budgetRuleBreakdown) return;
+    const lang = data.currentLanguage;
 
-    budgetRuleBreakdown.innerHTML = breakdown.map(item => {
+    let html = breakdown.map(item => {
         const periodicActual = convertFromAnnual(item.actual, frequency);
         const periodicGoal = convertFromAnnual(item.goal, frequency);
         const percentage = periodicGoal > 0 ? (periodicActual / periodicGoal) * 100 : 0;
@@ -484,20 +464,27 @@ function renderBudgetRule(breakdown, frequency) {
             <div class="rule-progress-bar-container">
                 <div class="rule-progress-bar-labels">
                     <span class="rule-category-label">${item.label}</span>
-                    <span class="rule-amount-label">
-                        ${formatCurrency(periodicActual)} / ${formatCurrency(periodicGoal)}
-                    </span>
+                    <span class="rule-amount-label">${formatCurrency(periodicActual)} / ${formatCurrency(periodicGoal)}</span>
                 </div>
                 <div class="rule-progress-bar">
-                    <div class="rule-progress-bar-inner ${isOverBudget ? 'over-budget' : ''}" style="width: ${Math.min(percentage, 100)}%;">
+                    <div class="rule-progress-bar-inner ${isOverBudget ? 'over-budget' : ''}" style="width: ${Math.min(percentage, 100)}%;" title="${Math.round(percentage)}%">
                         ${Math.round(percentage)}%
                     </div>
                 </div>
             </div>
         `;
     }).join('');
-}
+    
+    if (remaining > 0) {
+        html += `
+            <div class="surplus-container">
+                <span class="surplus-label">${translations[lang].rule_category_surplus}: ${formatCurrency(convertFromAnnual(remaining, frequency))}</span>
+            </div>
+        `;
+    }
 
+    budgetRuleBreakdown.innerHTML = html;
+}
 
 // 10. 초기화
 document.addEventListener('DOMContentLoaded', () => {
@@ -573,7 +560,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (confirm(translations[data.currentLanguage].confirm_import_data)) {
                         Object.assign(data, JSON.parse(e.target.result));
                         loadData();
-                        alert(translations[data.currentLanguage].alert_data_loaded);
                     }
                 } catch (error) { alert(translations[data.currentLanguage].invalid_json); }
             };
