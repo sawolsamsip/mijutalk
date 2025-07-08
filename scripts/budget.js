@@ -96,34 +96,39 @@ function convertFromAnnual(annualAmount, frequency) {
     }
 }
 
-function calculateTotalForSection(items, customItems) {
+// ✨✨✨ calculateTotalForSection 함수 수정 ✨✨✨
+function calculateTotalForSection(items, customItems, freqKey) {
     let total = 0;
-    const sectionName = Object.keys(data).find(key => data[key] === items);
-    const freq = data.frequencies[sectionName === 'preTaxDeductions' ? 'preTax' : sectionName === 'postTaxDeductions' ? 'postTax' : sectionName];
+    const freq = data.frequencies[freqKey]; // freqKey를 직접 받아 사용
     
     for (const key in items) {
         if (key !== 'custom' && typeof items[key] === 'number') {
             total += convertToAnnual(items[key], freq);
         }
     }
-    total += customItems.reduce((sum, item) => sum + convertToAnnual(item.amount, item.frequency), 0);
+    if (customItems) {
+        total += customItems.reduce((sum, item) => sum + convertToAnnual(item.amount, item.frequency), 0);
+    }
     return total;
 }
 
+// ✨✨✨ calculateBudget 함수 수정 ✨✨✨
 function calculateBudget() {
     const annualGrossSalary = convertToAnnual(data.grossSalary, data.salaryFrequency);
-    const totalAnnualTaxes = calculateTotalForSection(data.taxes, data.taxes.custom);
-    const totalAnnualPreTaxDeductions = calculateTotalForSection(data.preTaxDeductions, data.preTaxDeductions.custom);
-    const totalAnnualPostTaxDeductions = calculateTotalForSection(data.postTaxDeductions, data.postTaxDeductions.custom);
+    // 각 섹션의 주기를 명확하게 전달하여 계산
+    const totalAnnualTaxes = calculateTotalForSection(data.taxes, data.taxes.custom, 'tax');
+    const totalAnnualPreTaxDeductions = calculateTotalForSection(data.preTaxDeductions, data.preTaxDeductions.custom, 'preTax');
+    const totalAnnualPostTaxDeductions = calculateTotalForSection(data.postTaxDeductions, data.postTaxDeductions.custom, 'postTax');
     
     const { needs, wants, savings, debt } = categorizeAll();
-    const totalAnnualExpenses = needs + wants;
+    const totalAnnualExpenses = needs + wants; // 총 지출은 Needs와 Wants의 합
 
     const netSalary = annualGrossSalary - totalAnnualTaxes - totalAnnualPreTaxDeductions - totalAnnualPostTaxDeductions;
-    const remainingBudget = netSalary - (totalAnnualExpenses + savings + debt);
+    const remainingBudget = netSalary - (totalAnnualExpenses + savings + debt); // 잉여금은 순수익에서 모든 지출, 저축, 부채를 뺀 금액
 
     return { annualGrossSalary, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, netSalary, totalAnnualExpenses, remainingBudget };
 }
+
 
 // 4. UI 업데이트 & 렌더링
 function formatCurrency(amount) {
@@ -148,7 +153,7 @@ function updateDisplay() {
     ['taxes', 'preTaxDeductions', 'postTaxDeductions', 'expenses'].forEach(section => {
         const inputs = section === 'taxes' ? taxInputs : section === 'preTaxDeductions' ? preTaxDeductInputs : section === 'postTaxDeductions' ? postTaxDeductInputs : expenseInputs;
         Object.keys(inputs).forEach(key => {
-            data[section][key] = parseFloat(inputs[key].value) || 0;
+            if(data[section]) data[section][key] = parseFloat(inputs[key].value) || 0;
         });
     });
 
@@ -168,7 +173,8 @@ function updateDisplay() {
     remainingBudgetDisplay.className = periodicRemaining > 0 ? 'positive' : periodicRemaining < 0 ? 'negative' : 'balanced';
 
     renderAllCustomLists();
-    applyBudgetRule();
+    const breakdownData = applyBudgetRule();
+    renderBudgetRule(breakdownData, remainingBudget, summaryFreq);
     updateCharts();
     renderCategoryTags();
     saveData();
@@ -194,9 +200,9 @@ function renderCustomList(listElement, customItems, type) {
                 <option value="debt" ${item.category === 'debt' ? 'selected' : ''}>${translations[lang].tag_debt}</option>
             </select>
         ` : '';
-
+        const gridStyle = isTax ? '2fr 1fr 1fr auto' : '2fr 1fr 1fr 1fr auto';
         return `
-            <li class="custom-list-item" style="grid-template-columns: ${isTax ? '2fr 1fr 1fr auto' : '2fr 1fr 1fr 1fr auto'};">
+            <li class="custom-list-item" style="grid-template-columns: ${gridStyle};">
                 <input type="text" value="${item.name}" placeholder="${translations[lang].custom_item_name}" class="custom-item-name form-control" data-index="${index}" data-type="${type}">
                 <input type="number" value="${item.amount}" placeholder="${translations[lang].custom_item_amount}" class="custom-item-amount form-control" data-index="${index}" data-type="${type}">
                 <select class="custom-item-frequency form-control" data-index="${index}" data-type="${type}">
@@ -261,7 +267,7 @@ function removeCustomItem(event) {
     updateDisplay();
 }
 
-// 6. 언어 & 테마 (이전과 동일)
+// 6. 언어 & 테마
 function applyLanguage() {
     const lang = data.currentLanguage;
     document.documentElement.lang = lang;
@@ -289,7 +295,7 @@ function applyDarkMode() {
     }
 }
 
-// 7. 데이터 관리 (이전과 동일)
+// 7. 데이터 관리
 function saveData() {
     localStorage.setItem('budgetData', JSON.stringify(data));
 }
@@ -298,8 +304,7 @@ function loadData() {
     const savedData = localStorage.getItem('budgetData');
     if (savedData) {
         const parsedData = JSON.parse(savedData);
-        // Ensure custom items have a category property for backwards compatibility
-        ['preTaxDeductions', 'postTaxDeductions', 'expenses'].forEach(section => {
+        ['preTaxDeductions', 'postTaxDeductions', 'expenses', 'taxes'].forEach(section => {
             if (parsedData[section] && parsedData[section].custom) {
                 parsedData[section].custom.forEach(item => {
                     if (!item.category) item.category = 'wants';
@@ -328,7 +333,7 @@ function loadData() {
     applyLanguage();
 }
 
-// 8. 차트 (이전과 동일)
+// 8. 차트
 function createOrUpdateChart(instance, canvasId, label, dataValues, labels) {
     const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#E7E9ED', '#8AC926', '#A1C935'];
     const ctx = document.getElementById(canvasId);
@@ -365,9 +370,7 @@ function createOrUpdateChart(instance, canvasId, label, dataValues, labels) {
 }
 
 function updateCharts() {
-    const { totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, remainingBudget } = calculateBudget();
-    const { needs, wants, savings, debt } = categorizeAll();
-    const totalAnnualExpenses = needs + wants + savings + debt;
+    const { totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses, remainingBudget } = calculateBudget();
     const lang = data.currentLanguage;
 
     const extractChartData = (items, customItems, sectionKey) => {
@@ -412,24 +415,25 @@ function updateCharts() {
 
 // 9. 예산 규칙 & AI 보고서
 function categorizeAll() {
-    let totals = { needs: 0, wants: 0, savings: 0, debt: 0, fixed: 0 };
+    let totals = { needs: 0, wants: 0, savings: 0, debt: 0 };
 
     const processSection = (sectionName) => {
         const sectionData = data[sectionName];
-        const freqKey = sectionName === 'preTaxDeductions' ? 'preTax' : sectionName === 'postTaxDeductions' ? 'postTax' : sectionName;
-        const freq = data.frequencies[freqKey];
-        const itemPrefix = sectionName === 'preTaxDeductions' || sectionName === 'postTaxDeductions' ? 'deduct' : 'exp';
+        if (!sectionData) return;
 
-        // Process default items
+        const freqKeyMap = { 'preTaxDeductions': 'preTax', 'postTaxDeductions': 'postTax', 'expenses': 'expense' };
+        const freqKey = freqKeyMap[sectionName];
+        const itemPrefix = sectionName.includes('Deduct') ? 'deduct' : 'exp';
+
         for (const key in sectionData) {
             if (key === 'custom') continue;
             const itemId = `${itemPrefix}-${key.replace(/_/g, '-')}-1`;
             const category = ITEM_CATEGORIES[itemId];
             if (category && totals.hasOwnProperty(category)) {
-                totals[category] += convertToAnnual(sectionData[key], freq);
+                totals[category] += convertToAnnual(sectionData[key], data.frequencies[freqKey]);
             }
         }
-        // Process custom items
+        
         if (sectionData.custom) {
             sectionData.custom.forEach(item => {
                 const category = item.category || 'wants';
@@ -440,19 +444,17 @@ function categorizeAll() {
         }
     };
     
-    processSection('preTaxDeductions');
-    processSection('postTaxDeductions');
-    processSection('expenses');
+    ['preTaxDeductions', 'postTaxDeductions', 'expenses'].forEach(processSection);
     
     return totals;
 }
 
+
+// ✨✨✨ applyBudgetRule 함수 수정 ✨✨✨
 function applyBudgetRule() {
-    const { netSalary, remainingBudget } = calculateBudget();
+    const { netSalary } = calculateBudget();
     const totals = categorizeAll();
     const lang = data.currentLanguage;
-    const summaryFreq = data.summaryFrequency;
-    
     let breakdown = [];
     
     switch (data.budgetRule) {
@@ -477,8 +479,7 @@ function applyBudgetRule() {
             ];
             break;
     }
-
-    renderBudgetRule(breakdown, remainingBudget, summaryFreq);
+    return breakdown; // 이제 breakdown 배열을 반환
 }
 
 function renderBudgetRule(breakdown, remaining, frequency) {
@@ -517,19 +518,23 @@ function renderBudgetRule(breakdown, remaining, frequency) {
     budgetRuleBreakdown.innerHTML = html;
 }
 
+// ✨✨✨ generateAiReport 함수 수정 ✨✨✨
 function generateAiReport() {
     const { netSalary, remainingBudget } = calculateBudget();
     const totals = categorizeAll();
     const lang = data.currentLanguage;
-    const summaryFreq = data.summaryFrequency;
-    const breakdown = applyBudgetRule(true); // Get breakdown data without rendering
+    const breakdown = applyBudgetRule(); // 이제 정상적으로 breakdown 배열을 받음
 
     let insights = [];
     
     // Insight 1: Largest spending category
-    const spendingCats = { [translations[lang].rule_category_needs]: totals.needs, [translations[lang].rule_category_wants]: totals.wants, [translations[lang].rule_category_debt]: totals.debt };
-    const largestCat = Object.keys(spendingCats).reduce((a, b) => spendingCats[a] > spendingCats[b] ? a : b);
-    if (spendingCats[largestCat] > 0) {
+    const spendingCats = { 
+        [translations[lang].rule_category_needs]: totals.needs, 
+        [translations[lang].rule_category_wants]: totals.wants, 
+        [translations[lang].rule_category_debt]: totals.debt 
+    };
+    if (Object.values(spendingCats).some(v => v > 0)) {
+        const largestCat = Object.keys(spendingCats).reduce((a, b) => spendingCats[a] > spendingCats[b] ? a : b);
         insights.push(`${translations[lang].ai_report_spending_habit} <strong>${largestCat}</strong>.`);
     }
 
