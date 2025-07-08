@@ -53,6 +53,7 @@ const translations = {
         custom_item_name: 'Item Name', custom_item_amount: 'Amount', custom_item_category: 'Category', remove: 'Remove', confirm_clear_data: 'Are you sure you want to clear all data?', confirm_import_data: 'This will overwrite existing data. Continue?', invalid_json: 'Invalid JSON file.',
         chart_taxes: 'Taxes Distribution', chart_pre_tax: 'Pre-Tax Deductions', chart_post_tax: 'Post-Tax Deductions', chart_expenses: 'Expenses Distribution', chart_budget_distribution: 'Overall Budget Distribution',
         chart_labels_taxes: 'Taxes', chart_labels_pre_tax_deductions: 'Pre-Tax', chart_labels_post_tax_deductions: 'Post-Tax', chart_labels_expenses: 'Expenses', chart_labels_remaining_budget: 'Remaining',
+        ai_report_title: 'Your Financial Snapshot:', ai_report_spending_habit: 'Your largest spending category is', ai_report_on_track: 'You are on track with your budget rule.', ai_report_over_spending: 'You are overspending in the following categories:', ai_report_positive_savings: 'Great job on saving!', ai_report_negative_savings: 'Consider increasing your savings.', ai_report_surplus_tip: 'You have a surplus! Consider allocating it to your savings or paying off debt.'
     },
     ko: {
         tag_needs: '필수', tag_wants: '선택', tag_savings: '저축', tag_debt: '부채', tag_fixed: '고정',
@@ -68,8 +69,9 @@ const translations = {
         section_budget_rule_title: '예산 규칙 적용', label_budget_rule_select: '예산 규칙 선택:', section_ai_title: 'AI 지출 보고서', btn_ai_report: 'AI 보고서 생성', ai_report_placeholder: '"AI 보고서 생성"을 클릭하여 지출 습관에 대한 통찰력을 얻으세요.',
         section_data_title: '데이터 관리', btn_export: 'JSON 내보내기', btn_import: 'JSON 가져오기', btn_clear_all_data: '모든 데이터 지우기',
         custom_item_name: '항목 이름', custom_item_amount: '금액', custom_item_category: '카테고리', remove: '삭제', confirm_clear_data: '정말 모든 데이터를 지우시겠습니까?', confirm_import_data: '기존 데이터를 덮어씁니다. 계속하시겠습니까?', invalid_json: '유효하지 않은 JSON 파일입니다.',
-        chart_taxes: '세금 분배', chart_pre_tax: '세전 공제 분배', chart_post_tax: '세후 공제 분배', chart_expenses: '지출 분배', chart_budget_distribution: '전체 예산 분배',
+        chart_taxes: 'Taxes Distribution', chart_pre_tax: 'Pre-Tax Deductions', chart_post_tax: 'Post-Tax Deductions', chart_expenses: 'Expenses Distribution', chart_budget_distribution: 'Overall Budget Distribution',
         chart_labels_taxes: 'Taxes', chart_labels_pre_tax_deductions: 'Pre-Tax', chart_labels_post_tax_deductions: 'Post-Tax', chart_labels_expenses: 'Expenses', chart_labels_remaining_budget: 'Remaining',
+        ai_report_title: '나의 금융 스냅샷:', ai_report_spending_habit: '가장 큰 지출 항목은', ai_report_on_track: '예산 규칙을 잘 지키고 있습니다.', ai_report_over_spending: '다음 항목에서 예산을 초과하고 있습니다:', ai_report_positive_savings: '훌륭한 저축 습관입니다!', ai_report_negative_savings: '저축액을 늘리는 것을 고려해 보세요.', ai_report_surplus_tip: '잉여금이 있습니다! 저축을 늘리거나 부채를 상환하는 데 사용해 보세요.'
     }
 };
 
@@ -85,6 +87,7 @@ function convertToAnnual(amount, frequency) {
 }
 
 function convertFromAnnual(annualAmount, frequency) {
+    annualAmount = parseFloat(annualAmount) || 0;
     switch (frequency) {
         case 'monthly': return annualAmount / 12;
         case 'bi-weekly': return annualAmount / 26;
@@ -95,13 +98,15 @@ function convertFromAnnual(annualAmount, frequency) {
 
 function calculateTotalForSection(items, customItems) {
     let total = 0;
-    const freq = data.frequencies[items === data.taxes ? 'tax' : items === data.preTaxDeductions ? 'preTax' : items === data.postTaxDeductions ? 'postTax' : 'expense'];
+    const sectionName = Object.keys(data).find(key => data[key] === items);
+    const freq = data.frequencies[sectionName === 'preTaxDeductions' ? 'preTax' : sectionName === 'postTaxDeductions' ? 'postTax' : sectionName];
+    
     for (const key in items) {
-        if (key !== 'custom') {
+        if (key !== 'custom' && typeof items[key] === 'number') {
             total += convertToAnnual(items[key], freq);
         }
     }
-    total += customItems.reduce((sum, item) => sum + convertToAnnual(item.amount, item.frequency || 'monthly'), 0);
+    total += customItems.reduce((sum, item) => sum + convertToAnnual(item.amount, item.frequency), 0);
     return total;
 }
 
@@ -111,18 +116,18 @@ function calculateBudget() {
     const totalAnnualPreTaxDeductions = calculateTotalForSection(data.preTaxDeductions, data.preTaxDeductions.custom);
     const totalAnnualPostTaxDeductions = calculateTotalForSection(data.postTaxDeductions, data.postTaxDeductions.custom);
     
-    // 지출은 저축/부채를 제외하고 계산
-    const { totalNeeds, totalWants } = categorizeAll();
-    const totalAnnualExpenses = totalNeeds + totalWants;
+    const { needs, wants, savings, debt } = categorizeAll();
+    const totalAnnualExpenses = needs + wants;
 
     const netSalary = annualGrossSalary - totalAnnualTaxes - totalAnnualPreTaxDeductions - totalAnnualPostTaxDeductions;
-    const remainingBudget = netSalary - (totalAnnualExpenses + categorizeAll().savings + categorizeAll().debt);
+    const remainingBudget = netSalary - (totalAnnualExpenses + savings + debt);
 
     return { annualGrossSalary, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, netSalary, totalAnnualExpenses, remainingBudget };
 }
 
 // 4. UI 업데이트 & 렌더링
 function formatCurrency(amount) {
+    amount = parseFloat(amount) || 0;
     const lang = data.currentLanguage === 'ko' ? 'ko-KR' : 'en-US';
     const numberPart = new Intl.NumberFormat(lang, {
         minimumFractionDigits: 2,
@@ -132,27 +137,24 @@ function formatCurrency(amount) {
 }
 
 function updateDisplay() {
-    // UI에서 데이터 객체로 값 업데이트
     data.grossSalary = parseFloat(grossSalaryInput.value) || 0;
     data.salaryFrequency = salaryFrequencySelect.value;
     data.summaryFrequency = summaryFrequencySelect.value;
     data.budgetRule = budgetRuleSelect.value;
     data.frequencies = {
-        tax: taxFrequencySelect.value,
-        preTax: preTaxFrequencySelect.value,
-        postTax: postTaxFrequencySelect.value,
-        expense: expenseFrequencySelect.value,
+        tax: taxFrequencySelect.value, preTax: preTaxFrequencySelect.value,
+        postTax: postTaxFrequencySelect.value, expense: expenseFrequencySelect.value,
     };
-    Object.keys(taxInputs).forEach(key => data.taxes[key] = parseFloat(taxInputs[key].value) || 0);
-    Object.keys(preTaxDeductInputs).forEach(key => data.preTaxDeductions[key] = parseFloat(preTaxDeductInputs[key].value) || 0);
-    Object.keys(postTaxDeductInputs).forEach(key => data.postTaxDeductions[key] = parseFloat(postTaxDeductInputs[key].value) || 0);
-    Object.keys(expenseInputs).forEach(key => data.expenses[key] = parseFloat(expenseInputs[key].value) || 0);
+    ['taxes', 'preTaxDeductions', 'postTaxDeductions', 'expenses'].forEach(section => {
+        const inputs = section === 'taxes' ? taxInputs : section === 'preTaxDeductions' ? preTaxDeductInputs : section === 'postTaxDeductions' ? postTaxDeductInputs : expenseInputs;
+        Object.keys(inputs).forEach(key => {
+            data[section][key] = parseFloat(inputs[key].value) || 0;
+        });
+    });
 
-    // 계산 실행
     const { annualGrossSalary, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, netSalary, totalAnnualExpenses, remainingBudget } = calculateBudget();
     const summaryFreq = data.summaryFrequency; 
 
-    // 계산 결과 UI에 표시
     annualSalarySummaryDisplay.textContent = formatCurrency(annualGrossSalary);
     grossSalarySummaryDisplay.textContent = formatCurrency(convertFromAnnual(annualGrossSalary, summaryFreq));
     totalTaxesDisplay.textContent = formatCurrency(convertFromAnnual(totalAnnualTaxes, summaryFreq));
@@ -165,7 +167,6 @@ function updateDisplay() {
     remainingBudgetDisplay.textContent = formatCurrency(periodicRemaining);
     remainingBudgetDisplay.className = periodicRemaining > 0 ? 'positive' : periodicRemaining < 0 ? 'negative' : 'balanced';
 
-    // 나머지 UI 업데이트
     renderAllCustomLists();
     applyBudgetRule();
     updateCharts();
@@ -180,13 +181,12 @@ function renderAllCustomLists() {
     renderCustomList(customExpenseList, data.expenses.custom, 'expense');
 }
 
-// ✨✨✨ renderCustomList 함수 수정 ✨✨✨
 function renderCustomList(listElement, customItems, type) {
     if (!listElement) return;
     const lang = data.currentLanguage;
     listElement.innerHTML = customItems.map((item, index) => {
-        // 'tax' 타입은 카테고리 선택을 보여주지 않음
-        const categoryDropdown = type !== 'tax' ? `
+        const isTax = type === 'tax';
+        const categoryDropdown = !isTax ? `
             <select class="custom-item-category form-control" data-index="${index}" data-type="${type}">
                 <option value="wants" ${item.category === 'wants' ? 'selected' : ''}>${translations[lang].tag_wants}</option>
                 <option value="needs" ${item.category === 'needs' ? 'selected' : ''}>${translations[lang].tag_needs}</option>
@@ -196,7 +196,7 @@ function renderCustomList(listElement, customItems, type) {
         ` : '';
 
         return `
-            <li class="custom-list-item">
+            <li class="custom-list-item" style="grid-template-columns: ${isTax ? '2fr 1fr 1fr auto' : '2fr 1fr 1fr 1fr auto'};">
                 <input type="text" value="${item.name}" placeholder="${translations[lang].custom_item_name}" class="custom-item-name form-control" data-index="${index}" data-type="${type}">
                 <input type="number" value="${item.amount}" placeholder="${translations[lang].custom_item_amount}" class="custom-item-amount form-control" data-index="${index}" data-type="${type}">
                 <select class="custom-item-frequency form-control" data-index="${index}" data-type="${type}">
@@ -237,7 +237,6 @@ function addCustomItem(event) {
     const type = event.target.dataset.type;
     const targetMap = { 'tax': data.taxes, 'pre-tax': data.preTaxDeductions, 'post-tax': data.postTaxDeductions, 'expense': data.expenses };
     if (targetMap[type]) {
-        // ✨ category 기본값 'wants'로 추가
         targetMap[type].custom.push({ name: '', amount: 0, frequency: 'monthly', category: 'wants' });
         updateDisplay();
     }
@@ -251,7 +250,7 @@ function handleCustomItemChange(event) {
     if (event.target.classList.contains('custom-item-name')) item.name = event.target.value;
     else if (event.target.classList.contains('custom-item-amount')) item.amount = parseFloat(event.target.value) || 0;
     else if (event.target.classList.contains('custom-item-frequency')) item.frequency = event.target.value;
-    else if (event.target.classList.contains('custom-item-category')) item.category = event.target.value; // ✨ 카테고리 변경 핸들링
+    else if (event.target.classList.contains('custom-item-category')) item.category = event.target.value;
     updateDisplay();
 }
 
@@ -262,8 +261,7 @@ function removeCustomItem(event) {
     updateDisplay();
 }
 
-// ... (이하 6. 언어&테마, 7. 데이터관리, 8. 차트 함수는 이전과 동일)
-// 6. 언어 & 테마
+// 6. 언어 & 테마 (이전과 동일)
 function applyLanguage() {
     const lang = data.currentLanguage;
     document.documentElement.lang = lang;
@@ -291,7 +289,7 @@ function applyDarkMode() {
     }
 }
 
-// 7. 데이터 관리
+// 7. 데이터 관리 (이전과 동일)
 function saveData() {
     localStorage.setItem('budgetData', JSON.stringify(data));
 }
@@ -300,6 +298,14 @@ function loadData() {
     const savedData = localStorage.getItem('budgetData');
     if (savedData) {
         const parsedData = JSON.parse(savedData);
+        // Ensure custom items have a category property for backwards compatibility
+        ['preTaxDeductions', 'postTaxDeductions', 'expenses'].forEach(section => {
+            if (parsedData[section] && parsedData[section].custom) {
+                parsedData[section].custom.forEach(item => {
+                    if (!item.category) item.category = 'wants';
+                });
+            }
+        });
         Object.assign(data, parsedData);
         data.summaryFrequency = parsedData.summaryFrequency || 'monthly'; 
     }
@@ -322,7 +328,7 @@ function loadData() {
     applyLanguage();
 }
 
-// 8. 차트
+// 8. 차트 (이전과 동일)
 function createOrUpdateChart(instance, canvasId, label, dataValues, labels) {
     const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#E7E9ED', '#8AC926', '#A1C935'];
     const ctx = document.getElementById(canvasId);
@@ -360,8 +366,8 @@ function createOrUpdateChart(instance, canvasId, label, dataValues, labels) {
 
 function updateCharts() {
     const { totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, remainingBudget } = calculateBudget();
-    const { totalNeeds, totalWants, savings, debt } = categorizeAll();
-    const totalAnnualExpenses = totalNeeds + totalWants + savings + debt;
+    const { needs, wants, savings, debt } = categorizeAll();
+    const totalAnnualExpenses = needs + wants + savings + debt;
     const lang = data.currentLanguage;
 
     const extractChartData = (items, customItems, sectionKey) => {
@@ -404,32 +410,39 @@ function updateCharts() {
 }
 
 
-// ✨✨✨ 9. 새로운 예산 규칙 함수들 ✨✨✨
+// 9. 예산 규칙 & AI 보고서
 function categorizeAll() {
     let totals = { needs: 0, wants: 0, savings: 0, debt: 0, fixed: 0 };
 
-    const processItems = (items, type) => {
-        // 기본 항목
-        for (const key in items) {
+    const processSection = (sectionName) => {
+        const sectionData = data[sectionName];
+        const freqKey = sectionName === 'preTaxDeductions' ? 'preTax' : sectionName === 'postTaxDeductions' ? 'postTax' : sectionName;
+        const freq = data.frequencies[freqKey];
+        const itemPrefix = sectionName === 'preTaxDeductions' || sectionName === 'postTaxDeductions' ? 'deduct' : 'exp';
+
+        // Process default items
+        for (const key in sectionData) {
             if (key === 'custom') continue;
-            const itemId = `${type}-${key}-1`;
+            const itemId = `${itemPrefix}-${key.replace(/_/g, '-')}-1`;
             const category = ITEM_CATEGORIES[itemId];
             if (category && totals.hasOwnProperty(category)) {
-                totals[category] += convertToAnnual(items[key], data.frequencies[type === 'exp' ? 'expense' : type === 'deduct' ? 'preTax' : type]);
+                totals[category] += convertToAnnual(sectionData[key], freq);
             }
         }
-        // 커스텀 항목
-        items.custom.forEach(item => {
-            const category = item.category || 'wants'; // 기본값은 wants
-            if (totals.hasOwnProperty(category)) {
-                totals[category] += convertToAnnual(item.amount, item.frequency);
-            }
-        });
+        // Process custom items
+        if (sectionData.custom) {
+            sectionData.custom.forEach(item => {
+                const category = item.category || 'wants';
+                if (totals.hasOwnProperty(category)) {
+                    totals[category] += convertToAnnual(item.amount, item.frequency);
+                }
+            });
+        }
     };
     
-    processItems(data.preTaxDeductions, 'deduct');
-    processItems(data.postTaxDeductions, 'deduct');
-    processItems(data.expenses, 'exp');
+    processSection('preTaxDeductions');
+    processSection('postTaxDeductions');
+    processSection('expenses');
     
     return totals;
 }
@@ -502,6 +515,49 @@ function renderBudgetRule(breakdown, remaining, frequency) {
     }
 
     budgetRuleBreakdown.innerHTML = html;
+}
+
+function generateAiReport() {
+    const { netSalary, remainingBudget } = calculateBudget();
+    const totals = categorizeAll();
+    const lang = data.currentLanguage;
+    const summaryFreq = data.summaryFrequency;
+    const breakdown = applyBudgetRule(true); // Get breakdown data without rendering
+
+    let insights = [];
+    
+    // Insight 1: Largest spending category
+    const spendingCats = { [translations[lang].rule_category_needs]: totals.needs, [translations[lang].rule_category_wants]: totals.wants, [translations[lang].rule_category_debt]: totals.debt };
+    const largestCat = Object.keys(spendingCats).reduce((a, b) => spendingCats[a] > spendingCats[b] ? a : b);
+    if (spendingCats[largestCat] > 0) {
+        insights.push(`${translations[lang].ai_report_spending_habit} <strong>${largestCat}</strong>.`);
+    }
+
+    // Insight 2: Rule Adherence
+    const overspending = breakdown.filter(item => item.actual > item.goal);
+    if (overspending.length > 0) {
+        insights.push(`${translations[lang].ai_report_over_spending} ${overspending.map(item => `<strong>${item.label}</strong>`).join(', ')}.`);
+    } else if (netSalary > 0) {
+        insights.push(translations[lang].ai_report_on_track);
+    }
+
+    // Insight 3: Savings Check
+    if (totals.savings > 0) {
+        insights.push(translations[lang].ai_report_positive_savings);
+    } else if (netSalary > 0) {
+        insights.push(translations[lang].ai_report_negative_savings);
+    }
+    
+    // Insight 4: Surplus Usage
+    if (remainingBudget > 0) {
+        insights.push(translations[lang].ai_report_surplus_tip);
+    }
+
+    if (insights.length > 0) {
+        aiReportBox.innerHTML = `<strong>${translations[lang].ai_report_title}</strong><ul>${insights.map(i => `<li>${i}</li>`).join('')}</ul>`;
+    } else {
+        aiReportBox.innerHTML = `<p>${translations[lang].ai_report_placeholder}</p>`;
+    }
 }
 
 
@@ -591,9 +647,8 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.reload();
         }
     });
-    aiReportBtn.addEventListener('click', () => {
-        aiReportBox.innerHTML = `<p>${translations[data.currentLanguage].ai_report_placeholder}</p>`;
-    });
+    
+    aiReportBtn.addEventListener('click', generateAiReport);
 
     // 초기 로드
     loadData();
