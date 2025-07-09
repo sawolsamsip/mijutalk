@@ -222,7 +222,7 @@ header h1 {
 
 .custom-list-item {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr auto; /* Category column */
+    /* grid-template-columns is set by JS now */
     gap: 10px;
     align-items: center;
 }
