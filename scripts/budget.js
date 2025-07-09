@@ -133,12 +133,8 @@ function calculateBudget() {
 function formatCurrency(amount) {
     amount = parseFloat(amount) || 0;
     const currency = data.currency;
-    const exchangeRate = 1300;
-
-    if (currency === 'KRW') {
-        amount *= exchangeRate;
-    }
     
+    // ✨✨✨ 환율 계산 로직 제거 ✨✨✨
     const symbol = currency === 'KRW' ? '₩' : '$';
     const locale = currency === 'KRW' ? 'ko-KR' : 'en-US';
 
