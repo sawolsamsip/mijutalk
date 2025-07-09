@@ -87,6 +87,7 @@ header {
 header h1 {
     margin: 0;
     font-size: 1.8em;
+    white-space: nowrap; /* Prevent title from wrapping unnecessarily */
 }
 
 .header-controls {
@@ -132,6 +133,7 @@ header h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap; /* Allow wrapping for tags on small screens */
 }
 
 .input-container {
@@ -222,11 +224,13 @@ header h1 {
 
 .custom-list-item {
     display: grid;
-    /* grid-template-columns is set by JS now */
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
     gap: 10px;
     align-items: center;
 }
-
+.custom-list-item.tax-item {
+    grid-template-columns: 2fr 1fr 1fr auto;
+}
 
 .add-custom-btn {
     margin-top: 10px;
@@ -242,36 +246,14 @@ header h1 {
     border-top: 1px solid var(--input-border-color);
 }
 
-.summary-results p {
-    margin: 0;
-    font-weight: 500;
-}
-
-.summary-results span {
-    font-weight: bold;
-    text-align: right;
-}
-
+.summary-results p { margin: 0; font-weight: 500; }
+.summary-results span { font-weight: bold; text-align: right; }
 #remaining-budget-display.positive { color: var(--positive-color); }
 #remaining-budget-display.negative { color: var(--negative-color); }
 #remaining-budget-display.balanced { color: var(--balanced-color); }
-
-.annual-salary-summary {
-    margin-top: 15px;
-    font-size: 1.1em;
-    font-weight: bold;
-    color: var(--summary-text-color);
-    text-align: right;
-}
-
-#salary-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-#salary-form .btn {
-    align-self: flex-end;
-}
+.annual-salary-summary { margin-top: 15px; font-size: 1.1em; font-weight: bold; color: var(--summary-text-color); text-align: right; }
+#salary-form { display: flex; flex-direction: column; gap: 15px; }
+#salary-form .btn { align-self: flex-end; }
 
 /* Chart Container */
 .chart-container {
@@ -296,107 +278,117 @@ header h1 {
     justify-content: flex-start;
     text-align: left;
 }
-
-.ai-report-box ul {
-    padding-left: 20px;
-    margin: 0;
-}
+.ai-report-box ul { padding-left: 20px; margin: 0; }
 
 /* Data Actions */
-.data-actions {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-}
+.data-actions { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
 
 /* Category Tag Styles */
-.category-tag {
-    font-size: 0.75em;
-    font-weight: 500;
-    padding: 3px 8px;
-    border-radius: 12px;
-    text-align: center;
-}
+.category-tag { font-size: 0.75em; font-weight: 500; padding: 3px 8px; border-radius: 12px; text-align: center; }
 .category-tag.needs { background-color: var(--tag-needs-bg); color: var(--tag-needs-text); }
 .category-tag.wants { background-color: var(--tag-wants-bg); color: var(--tag-wants-text); }
 .category-tag.savings { background-color: var(--tag-savings-bg); color: var(--tag-savings-text); }
 .category-tag.debt { background-color: var(--tag-debt-bg); color: var(--tag-debt-text); }
 .category-tag.fixed { background-color: var(--tag-fixed-bg); color: var(--tag-fixed-text); }
 
-
 /* Budget Rule Styles */
-#budget-rule-breakdown {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    margin-top: 20px;
-}
+#budget-rule-breakdown { display: flex; flex-direction: column; gap: 20px; margin-top: 20px; }
+.rule-progress-bar-container { display: flex; flex-direction: column; }
+.rule-progress-bar-labels { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95em; }
+.rule-category-label { font-weight: bold; color: var(--accent-color); }
+.rule-amount-label { font-weight: 500; }
+.rule-progress-bar { width: 100%; background-color: var(--input-border-color); border-radius: 5px; height: 20px; overflow: hidden; }
+.rule-progress-bar-inner { height: 100%; width: 0; background-color: var(--positive-color); border-radius: 5px; transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out; text-align: center; color: white; font-size: 0.8em; line-height: 20px; white-space: nowrap; overflow: hidden; }
+.rule-progress-bar-inner.over-budget { background-color: var(--negative-color); }
+.surplus-container { margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--input-border-color); text-align: center; }
+.surplus-label { font-size: 1.1em; font-weight: bold; color: var(--surplus-color); }
 
-.rule-progress-bar-container {
-    display: flex;
-    flex-direction: column;
-}
-
-.rule-progress-bar-labels {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 8px;
-    font-size: 0.95em;
-}
-
-.rule-category-label {
-    font-weight: bold;
-    color: var(--accent-color);
-}
-
-.rule-amount-label {
-    font-weight: 500;
-}
-
-.rule-progress-bar {
-    width: 100%;
-    background-color: var(--input-border-color);
-    border-radius: 5px;
-    height: 20px;
-    overflow: hidden;
-}
-
-.rule-progress-bar-inner {
-    height: 100%;
-    width: 0; /* JS will set this */
-    background-color: var(--positive-color);
-    border-radius: 5px;
-    transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out;
-    text-align: center;
-    color: white;
-    font-size: 0.8em;
-    line-height: 20px;
-    white-space: nowrap;
-    overflow: hidden;
-}
-
-.rule-progress-bar-inner.over-budget {
-    background-color: var(--negative-color);
-}
-
-.surplus-container {
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px dashed var(--input-border-color);
-    text-align: center;
-}
-
-.surplus-label {
-    font-size: 1.1em;
-    font-weight: bold;
-    color: var(--surplus-color);
-}
-
-
-/* Responsive Design */
+/* ✨✨✨ 모바일 반응형 디자인 수정 및 개선 ✨✨✨ */
 @media (max-width: 768px) {
+    /* 1. 제목 폰트 크기 조정 */
+    header h1 {
+        font-size: 1.4em;
+    }
+
+    /* 2. 일반 폼 그리드 -> 세로 정렬 */
     .form-grid {
         grid-template-columns: 1fr;
     }
+
+    /* 3. 커스텀 항목 -> 세로 정렬 */
     .custom-list-item {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+        border-bottom: 1px solid var(--input-border-color);
+        padding-bottom: 15px;
+    }
+    .custom-list-item .form-control {
+        width: 100%;
+    }
+    .custom-list-item .remove-btn {
+        align-self: flex-end;
+        margin-top: 5px;
+    }
+
+    /* 4. 예산 규칙 바 그래프 글자 크기 조정 */
+    .rule-progress-bar-labels {
+        font-size: 0.9em;
+    }
+    .rule-progress-bar-inner {
+        font-size: 0.75em;
+    }
+
+    /* 5. 카테고리 태그 위치 조정 */
+    .form-group label {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    .form-group label .category-tag {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.2em; /* 더 작은 화면에서 더 작게 */
+    }
+    
+    .budget-section {
+        padding: 15px;
+    }
+
+    .salary-input-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .salary-input-container select,
+    .salary-input-container input {
+        max-width: 100%;
+    }
+
+    /* 데이터 관리 버튼들 세로 정렬 */
+    .data-actions {
         grid-template-columns: 1fr;
+    }
+}
+
+/* 인쇄 시 불필요한 요소 숨기기 */
+@media print {
+    header, .add-custom-btn, .data-actions, #ai-report-btn, .custom-list-item .remove-btn {
+        display: none;
+    }
+    .budget-section {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        margin-bottom: 15px;
+    }
+    .container {
+        padding: 0;
+        margin: 0;
+        max-width: 100%;
     }
 }
