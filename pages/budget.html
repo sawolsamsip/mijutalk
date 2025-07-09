@@ -10,12 +10,10 @@
     <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicons/favicon-16x16.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicons/favicon-32x32.png">
     <link rel="apple-touch-icon" sizes="180x180" href="../assets/favicons/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="../assets/favicons/android-chrome-192x192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="../assets/favicons/android-chrome-512x512.png">
 </head>
 <body>
     <header>
-        <h1 data-i18n-key="app_title">예산 관리 도구</h1>
+        <h1 data-i18n-key="app_title">Budget Management Tool</h1>
         <div class="header-controls">
             <button id="currency-toggle" class="icon-btn">₩</button>
             <button id="language-toggle" class="icon-btn">EN</button>
@@ -25,171 +23,171 @@
 
     <main class="container">
         <section class="budget-section">
-            <h2 data-i18n-key="section_salary_title">총 급여</h2>
+            <h2 data-i18n-key="section_salary_title">Gross Salary</h2>
             <form id="salary-form">
                 <div class="form-group">
-                    <label for="salary-gross" data-i18n-key="label_gross_salary">총 급여</label>
+                    <label for="salary-gross" data-i18n-key="label_gross_salary">Gross Salary</label>
                     <div class="input-container salary-input-container">
                         <select id="salary-frequency-select" class="form-control">
-                            <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
-                            <option value="annual" data-i18n-key="frequency_annually">연간</option>
-                            <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
-                            <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
+                            <option value="monthly" data-i18n-key="frequency_monthly">Monthly</option>
+                            <option value="annual" data-i18n-key="frequency_annually">Annual</option>
+                            <option value="weekly" data-i18n-key="frequency_weekly">Weekly</option>
+                            <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">Bi-Weekly</option>
                         </select>
                         <input type="number" id="salary-gross" class="form-control" placeholder="0.00" value="0" min="0">
                     </div>
                 </div>
-                <p class="annual-salary-summary"><span data-i18n-key="label_annual_salary">연간 총 급여:</span> <span id="annual-salary-summary-display">$0.00</span></p>
+                <p class="annual-salary-summary"><span data-i18n-key="label_annual_salary">Annual Gross Salary:</span> <span id="annual-salary-summary-display">$0.00</span></p>
             </form>
         </section>
 
         <section class="budget-section">
-            <h2 data-i18n-key="section_taxes_title">세금</h2>
+            <h2 data-i18n-key="section_taxes_title">Taxes</h2>
             <div class="form-group">
-                <label for="tax-frequency-select" data-i18n-key="label_frequency">세금 주기:</label>
+                <label for="tax-frequency-select" data-i18n-key="label_frequency">Frequency:</label>
                 <select id="tax-frequency-select" class="form-control">
-                    <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
-                    <option value="annual" data-i18n-key="frequency_annually">연간</option>
-                    <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
-                    <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
+                     <option value="monthly" data-i18n-key="frequency_monthly">Monthly</option>
+                     <option value="annual" data-i18n-key="frequency_annually">Annual</option>
+                     <option value="weekly" data-i18n-key="frequency_weekly">Weekly</option>
+                     <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">Bi-Weekly</option>
                 </select>
             </div>
             <div class="form-grid">
-                <div class="form-group" data-item-id="tax-federal-1"><label><span data-i18n-key="label_federal_withholding">연방 원천징수</span><span class="category-tag"></span></label><input type="number" id="tax-federal-1" class="form-control" min="0" value="0"></div>
-                <div class="form-group" data-item-id="tax-state-1"><label><span data-i18n-key="label_state_tax">주 세금</span><span class="category-tag"></span></label><input type="number" id="tax-state-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="tax-federal-1"><label><span data-i18n-key="label_federal_withholding">Federal Withholding</span><span class="category-tag"></span></label><input type="number" id="tax-federal-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="tax-state-1"><label><span data-i18n-key="label_state_tax">State Tax</span><span class="category-tag"></span></label><input type="number" id="tax-state-1" class="form-control" min="0" value="0"></div>
                 <div class="form-group" data-item-id="tax-oasdi-1"><label><span data-i18n-key="label_oasdi">OASDI</span><span class="category-tag"></span></label><input type="number" id="tax-oasdi-1" class="form-control" min="0" value="0"></div>
-                <div class="form-group" data-item-id="tax-medicare-1"><label><span data-i18n-key="label_medicare">메디케어</span><span class="category-tag"></span></label><input type="number" id="tax-medicare-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="tax-medicare-1"><label><span data-i18n-key="label_medicare">Medicare</span><span class="category-tag"></span></label><input type="number" id="tax-medicare-1" class="form-control" min="0" value="0"></div>
                 <div class="form-group" data-item-id="tax-casdi-1"><label><span data-i18n-key="label_ca_sdi">CA SDI</span><span class="category-tag"></span></label><input type="number" id="tax-casdi-1" class="form-control" min="0" value="0"></div>
             </div>
             <div class="custom-list" id="tax-custom-list"></div>
-            <button class="btn add-custom-btn" data-type="tax" data-i18n-key="btn_add_item">항목 추가</button>
+            <button class="btn add-custom-btn" data-type="tax" data-i18n-key="btn_add_item">Add Item</button>
             <div class="chart-container"><canvas id="tax-chart"></canvas></div>
         </section>
 
         <section class="budget-section">
-            <h2 data-i18n-key="section_pre_tax_title">세전 공제</h2>
+            <h2 data-i18n-key="section_pre_tax_title">Pre-Tax Deductions</h2>
             <div class="form-group">
-                <label for="pre-tax-frequency-select" data-i18n-key="label_frequency">세전 공제 주기:</label>
+                <label for="pre-tax-frequency-select" data-i18n-key="label_frequency">Frequency:</label>
                 <select id="pre-tax-frequency-select" class="form-control">
-                    <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
-                    <option value="annual" data-i18n-key="frequency_annually">연간</option>
-                    <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
-                    <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
+                    <option value="monthly" data-i18n-key="frequency_monthly">Monthly</option>
+                    <option value="annual" data-i18n-key="frequency_annually">Annual</option>
+                    <option value="weekly" data-i18n-key="frequency_weekly">Weekly</option>
+                    <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">Bi-Weekly</option>
                 </select>
             </div>
             <div class="form-grid">
-                <div class="form-group" data-item-id="deduct-medical-1"><label><span data-i18n-key="label_medical_premium">의료 보험료</span><span class="category-tag"></span></label><input type="number" id="deduct-medical-1" class="form-control" min="0" value="0"></div>
-                <div class="form-group" data-item-id="deduct-dental-1"><label><span data-i18n-key="label_dental_premium">치과 보험료</span><span class="category-tag"></span></label><input type="number" id="deduct-dental-1" class="form-control" min="0" value="0"></div>
-                <div class="form-group" data-item-id="deduct-vision-1"><label><span data-i18n-key="label_vision_premium">시력 보험료</span><span class="category-tag"></span></label><input type="number" id="deduct-vision-1" class="form-control" min="0" value="0"></div>
-                <div class="form-group" data-item-id="deduct-401k-trad-1"><label><span data-i18n-key="label_401k_traditional">401k 일반</span><span class="category-tag"></span></label><input type="number" id="deduct-401k-trad-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="deduct-medical-1"><label><span data-i18n-key="label_medical_premium">Medical Premium</span><span class="category-tag"></span></label><input type="number" id="deduct-medical-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="deduct-dental-1"><label><span data-i18n-key="label_dental_premium">Dental Premium</span><span class="category-tag"></span></label><input type="number" id="deduct-dental-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="deduct-vision-1"><label><span data-i18n-key="label_vision_premium">Vision Premium</span><span class="category-tag"></span></label><input type="number" id="deduct-vision-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="deduct-401k-trad-1"><label><span data-i18n-key="label_401k_traditional">401k Traditional</span><span class="category-tag"></span></label><input type="number" id="deduct-401k-trad-1" class="form-control" min="0" value="0"></div>
             </div>
             <div class="custom-list" id="pre-tax-custom-list"></div>
-            <button class="btn add-custom-btn" data-type="pre-tax" data-i18n-key="btn_add_item">항목 추가</button>
+            <button class="btn add-custom-btn" data-type="pre-tax" data-i18n-key="btn_add_item">Add Item</button>
             <div class="chart-container"><canvas id="pre-tax-deduct-chart"></canvas></div>
         </section>
 
         <section class="budget-section">
-            <h2 data-i18n-key="section_post_tax_title">세후 공제</h2>
+            <h2 data-i18n-key="section_post_tax_title">Post-Tax Deductions</h2>
             <div class="form-group">
-                <label for="post-tax-frequency-select" data-i18n-key="label_frequency">세후 공제 주기:</label>
+                <label for="post-tax-frequency-select" data-i18n-key="label_frequency">Frequency:</label>
                 <select id="post-tax-frequency-select" class="form-control">
-                    <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
-                    <option value="annual" data-i18n-key="frequency_annually">연간</option>
-                    <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
-                    <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
+                    <option value="monthly" data-i18n-key="frequency_monthly">Monthly</option>
+                    <option value="annual" data-i18n-key="frequency_annually">Annual</option>
+                    <option value="weekly" data-i18n-key="frequency_weekly">Weekly</option>
+                    <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">Bi-Weekly</option>
                 </select>
             </div>
             <div class="form-grid">
-                <div class="form-group" data-item-id="deduct-spp-1"><label><span data-i18n-key="label_spp">주식 구매 계획</span><span class="category-tag"></span></label><input type="number" id="deduct-spp-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="deduct-spp-1"><label><span data-i18n-key="label_spp">SPP</span><span class="category-tag"></span></label><input type="number" id="deduct-spp-1" class="form-control" min="0" value="0"></div>
                 <div class="form-group" data-item-id="deduct-adnd-1"><label><span data-i18n-key="label_adnd">AD&D</span><span class="category-tag"></span></label><input type="number" id="deduct-adnd-1" class="form-control" min="0" value="0"></div>
                 <div class="form-group" data-item-id="deduct-401k-roth-1"><label><span data-i18n-key="label_401k_roth">401k Roth</span><span class="category-tag"></span></label><input type="number" id="deduct-401k-roth-1" class="form-control" min="0" value="0"></div>
-                <div class="form-group" data-item-id="deduct-ltd-1"><label><span data-i18n-key="label_ltd">장기 장애</span><span class="category-tag"></span></label><input type="number" id="deduct-ltd-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="deduct-ltd-1"><label><span data-i18n-key="label_ltd">LTD</span><span class="category-tag"></span></label><input type="number" id="deduct-ltd-1" class="form-control" min="0" value="0"></div>
             </div>
             <div class="custom-list" id="post-tax-custom-list"></div>
-            <button class="btn add-custom-btn" data-type="post-tax" data-i18n-key="btn_add_item">항목 추가</button>
+            <button class="btn add-custom-btn" data-type="post-tax" data-i18n-key="btn_add_item">Add Item</button>
             <div class="chart-container"><canvas id="post-tax-deduct-chart"></canvas></div>
         </section>
 
         <section class="budget-section">
-            <h2 data-i18n-key="section_expenses_title">지출 관리</h2>
+            <h2 data-i18n-key="section_expenses_title">Expense Management</h2>
             <div class="form-group">
-                <label for="expense-frequency-select" data-i18n-key="label_frequency">지출 주기:</label>
+                <label for="expense-frequency-select" data-i18n-key="label_frequency">Frequency:</label>
                 <select id="expense-frequency-select" class="form-control">
-                    <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
-                    <option value="annual" data-i18n-key="frequency_annually">연간</option>
-                    <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
-                    <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
+                     <option value="monthly" data-i18n-key="frequency_monthly">Monthly</option>
+                     <option value="annual" data-i18n-key="frequency_annually">Annual</option>
+                     <option value="weekly" data-i18n-key="frequency_weekly">Weekly</option>
+                     <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">Bi-Weekly</option>
                 </select>
             </div>
             <div class="form-grid">
-                <div class="form-group" data-item-id="exp-rent-1"><label><span data-i18n-key="label_rent_mortgage">월세/주택담보대출</span><span class="category-tag"></span></label><input type="number" id="exp-rent-1" class="form-control" min="0" value="0"></div>
-                <div class="form-group" data-item-id="exp-utilities-1"><label><span data-i18n-key="label_utilities">공과금</span><span class="category-tag"></span></label><input type="number" id="exp-utilities-1" class="form-control" min="0" value="0"></div>
-                <div class="form-group" data-item-id="exp-internet-1"><label><span data-i18n-key="label_internet">인터넷</span><span class="category-tag"></span></label><input type="number" id="exp-internet-1" class="form-control" min="0" value="0"></div>
-                <div class="form-group" data-item-id="exp-phone-1"><label><span data-i18n-key="label_phone">휴대폰 요금</span><span class="category-tag"></span></label><input type="number" id="exp-phone-1" class="form-control" min="0" value="0"></div>
-                <div class="form-group" data-item-id="exp-groceries-1"><label><span data-i18n-key="label_groceries">식료품</span><span class="category-tag"></span></label><input type="number" id="exp-groceries-1" class="form-control" min="0" value="0"></div>
-                <div class="form-group" data-item-id="exp-dining-1"><label><span data-i18n-key="label_dining_out">외식</span><span class="category-tag"></span></label><input type="number" id="exp-dining-1" class="form-control" min="0" value="0"></div>
-                <div class="form-group" data-item-id="exp-transport-1"><label><span data-i18n-key="label_transportation">교통비</span><span class="category-tag"></span></label><input type="number" id="exp-transport-1" class="form-control" min="0" value="0"></div>
-                <div class="form-group" data-item-id="exp-shopping-1"><label><span data-i18n-key="label_shopping">쇼핑</span><span class="category-tag"></span></label><input type="number" id="exp-shopping-1" class="form-control" min="0" value="0"></div>
-                <div class="form-group" data-item-id="exp-health-1"><label><span data-i18n-key="label_health_wellness">건강/웰빙</span><span class="category-tag"></span></label><input type="number" id="exp-health-1" class="form-control" min="0" value="0"></div>
-                <div class="form-group" data-item-id="exp-entertainment-1"><label><span data-i18n-key="label_entertainment">오락</span><span class="category-tag"></span></label><input type="number" id="exp-entertainment-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-rent-1"><label><span data-i18n-key="label_rent_mortgage">Rent/Mortgage</span><span class="category-tag"></span></label><input type="number" id="exp-rent-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-utilities-1"><label><span data-i18n-key="label_utilities">Utilities</span><span class="category-tag"></span></label><input type="number" id="exp-utilities-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-internet-1"><label><span data-i18n-key="label_internet">Internet</span><span class="category-tag"></span></label><input type="number" id="exp-internet-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-phone-1"><label><span data-i18n-key="label_phone">Phone Bill</span><span class="category-tag"></span></label><input type="number" id="exp-phone-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-groceries-1"><label><span data-i18n-key="label_groceries">Groceries</span><span class="category-tag"></span></label><input type="number" id="exp-groceries-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-dining-1"><label><span data-i18n-key="label_dining_out">Dining Out</span><span class="category-tag"></span></label><input type="number" id="exp-dining-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-transport-1"><label><span data-i18n-key="label_transportation">Transportation</span><span class="category-tag"></span></label><input type="number" id="exp-transport-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-shopping-1"><label><span data-i18n-key="label_shopping">Shopping</span><span class="category-tag"></span></label><input type="number" id="exp-shopping-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-health-1"><label><span data-i18n-key="label_health_wellness">Health/Wellness</span><span class="category-tag"></span></label><input type="number" id="exp-health-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-entertainment-1"><label><span data-i18n-key="label_entertainment">Entertainment</span><span class="category-tag"></span></label><input type="number" id="exp-entertainment-1" class="form-control" min="0" value="0"></div>
             </div>
             <div class="custom-list" id="expenses-custom-list"></div>
-            <button class="btn add-custom-btn" data-type="expense" data-i18n-key="btn_add_item">항목 추가</button>
+            <button class="btn add-custom-btn" data-type="expense" data-i18n-key="btn_add_item">Add Item</button>
             <div class="chart-container"><canvas id="expenses-chart"></canvas></div>
         </section>
 
         <section class="budget-section">
-            <h2 data-i18n-key="section_summary_title">예산 요약</h2>
+            <h2 data-i18n-key="section_summary_title">Budget Summary</h2>
             <div class="form-group">
-                <label for="summary-frequency-select" data-i18n-key="label_summary_frequency">요약 주기:</label>
+                <label for="summary-frequency-select" data-i18n-key="label_summary_frequency">Summary Frequency:</label>
                 <select id="summary-frequency-select" class="form-control">
-                    <option value="monthly" data-i18n-key="frequency_monthly">월별</option>
-                    <option value="annual" data-i18n-key="frequency_annually">연간</option>
-                    <option value="weekly" data-i18n-key="frequency_weekly">주별</option>
-                    <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">2주별</option>
+                    <option value="monthly" data-i18n-key="frequency_monthly">Monthly</option>
+                    <option value="annual" data-i18n-key="frequency_annually">Annual</option>
+                    <option value="weekly" data-i18n-key="frequency_weekly">Weekly</option>
+                    <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">Bi-Weekly</option>
                 </select>
             </div>
             <div class="summary-results">
-                <p data-i18n-key="label_gross_salary">총 급여:</p> <span id="gross-salary-summary-display">$0.00</span>
-                <p data-i18n-key="label_total_taxes">총 세금:</p> <span id="total-taxes-display">$0.00</span>
-                <p data-i18n-key="label_total_pre_tax">총 세전 공제액:</p> <span id="total-pre-tax-display">$0.00</span>
-                <p data-i18n-key="label_total_post_tax">총 세후 공제액:</p> <span id="total-post-tax-display">$0.00</span>
-                <p data-i18n-key="label_net_salary">순 급여:</p> <span id="net-salary-display">$0.00</span>
-                <p data-i18n-key="label_total_expenses">총 지출:</p> <span id="total-expenses-display">$0.00</span>
-                <p data-i18n-key="label_remaining_budget">남은 예산:</p> <span id="remaining-budget-display">$0.00</span>
+                <p data-i18n-key="label_gross_salary">Gross Salary:</p> <span id="gross-salary-summary-display">$0.00</span>
+                <p data-i18n-key="label_total_taxes">Total Taxes:</p> <span id="total-taxes-display">$0.00</span>
+                <p data-i18n-key="label_total_pre_tax">Total Pre-Tax:</p> <span id="total-pre-tax-display">$0.00</span>
+                <p data-i18n-key="label_total_post_tax">Total Post-Tax:</p> <span id="total-post-tax-display">$0.00</span>
+                <p data-i18n-key="label_net_salary">Net Salary:</p> <span id="net-salary-display">$0.00</span>
+                <p data-i18n-key="label_total_expenses">Total Expenses:</p> <span id="total-expenses-display">$0.00</span>
+                <p data-i18n-key="label_remaining_budget">Remaining Budget:</p> <span id="remaining-budget-display">$0.00</span>
             </div>
             <div class="chart-container"><canvas id="budget-distribution-chart"></canvas></div>
         </section>
 
         <section class="budget-section">
-            <h2 data-i18n-key="section_budget_rule_title">예산 규칙 적용</h2>
+            <h2 data-i18n-key="section_budget_rule_title">Budget Rule Application</h2>
             <div class="form-group">
-                <label for="budget-rule-select" data-i18n-key="label_budget_rule_select">예산 규칙 선택:</label>
+                <label for="budget-rule-select" data-i18n-key="label_budget_rule_select">Select Budget Rule:</label>
                 <select id="budget-rule-select" class="form-control rule-select">
-                    <option value="50-30-20" data-i18n-key="rule_50_30_20_title">50/30/20 규칙</option>
-                    <option value="70-20-10" data-i18n-key="rule_70_20_10_title">70/20/10 규칙</option>
-                    <option value="80-20" data-i18n-key="rule_80_20_title">80/20 규칙</option>
+                    <option value="50-30-20" data-i18n-key="rule_50_30_20_title">50/30/20 Rule</option>
+                    <option value="70-20-10" data-i18n-key="rule_70_20_10_title">70/20/10 Rule</option>
+                    <option value="80-20" data-i18n-key="rule_80_20_title">80/20 Rule</option>
                 </select>
             </div>
             <div id="budget-rule-breakdown"></div>
         </section>
 
         <section class="budget-section">
-            <h2 data-i18n-key="section_ai_title">AI 지출 보고서</h2>
-            <button id="ai-report-btn" class="btn" data-i18n-key="btn_ai_report">AI 보고서 생성</button>
-            <div id="ai-report-box" class="ai-report-box"><p data-i18n-key="ai_report_placeholder">"AI 보고서 생성"을 클릭하여 지출 습관에 대한 통찰력을 얻으세요.</p></div>
+            <h2 data-i18n-key="section_ai_title">AI Expense Report</h2>
+            <button id="ai-report-btn" class="btn" data-i18n-key="btn_ai_report">Generate AI Report</button>
+            <div id="ai-report-box" class="ai-report-box"><p data-i18n-key="ai_report_placeholder">Click "Generate AI Report" for insights on your spending habits.</p></div>
         </section>
 
         <section class="budget-section">
-            <h2 data-i18n-key="section_data_title">데이터 관리</h2>
+            <h2 data-i18n-key="section_data_title">Data Management</h2>
             <div class="form-grid data-actions">
-                <button id="export-json-btn" class="btn" data-i18n-key="btn_export">JSON 내보내기</button>
-                <button id="import-json-btn" class="btn" data-i18n-key="btn_import">JSON 가져오기</button>
+                <button id="export-json-btn" class="btn" data-i18n-key="btn_export">Export JSON</button>
+                <button id="import-json-btn" class="btn" data-i18n-key="btn_import">Import JSON</button>
                 <input type="file" id="import-json-input" accept=".json" style="display: none;">
-                <button id="clear-all-data-btn" class="btn btn-danger" data-i18n-key="btn_clear_all_data">모든 데이터 지우기</button>
-                <button id="print-btn" class="btn" data-i18n-key="btn_print">인쇄</button>
-                <button id="email-btn" class="btn" data-i18n-key="btn_email">이메일</button>
-                <button id="share-btn" class="btn" data-i18n-key="btn_share">공유</button>
+                <button id="clear-all-data-btn" class="btn btn-danger" data-i18n-key="btn_clear_all_data">Clear All Data</button>
+                <button id="print-btn" class="btn" data-i18n-key="btn_print">Print</button>
+                <button id="email-btn" class="btn" data-i18n-key="btn_email">Email</button>
+                <button id="share-btn" class="btn" data-i18n-key="btn_share">Share</button>
             </div>
         </section>
     </main>
