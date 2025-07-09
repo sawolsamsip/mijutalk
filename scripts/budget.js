@@ -227,7 +227,8 @@ function renderCustomList(listElement, customItems, type) {
         `;
     }).join('');
 
-    listElement.querySelectorAll('.custom-item-name, .custom-item-amount, .custom-item-frequency, .custom-item-category').forEach(el => el.addEventListener('input', handleCustomItemChange));
+    // ✨✨✨ 이벤트 리스너 수정 ✨✨✨
+    listElement.querySelectorAll('.custom-item-name, .custom-item-amount, .custom-item-frequency, .custom-item-category').forEach(el => el.addEventListener('change', handleCustomItemChange));
     listElement.querySelectorAll('.remove-btn').forEach(button => button.addEventListener('click', removeCustomItem));
 }
 
@@ -347,7 +348,7 @@ function loadData() {
     populateUiFromData();
 }
 
-// ✨✨✨ 8. 차트 (버그 수정) ✨✨✨
+// 8. 차트
 function createOrUpdateChart(instance, canvasId, label, dataValues, labels) {
     const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#E7E9ED', '#8AC926', '#A1C935'];
     const ctx = document.getElementById(canvasId);
@@ -408,7 +409,6 @@ function updateCharts() {
         return { labels, amounts };
     };
     
-    // 데이터 전달 방식 수정
     const taxData = extractChartData(data.taxes, data.taxes.custom, 'tax');
     taxChartInstance = createOrUpdateChart(taxChartInstance, 'tax-chart', translations[lang].chart_taxes, taxData.amounts, taxData.labels);
 
@@ -593,7 +593,8 @@ document.addEventListener('DOMContentLoaded', () => {
     budgetRuleSelect = document.getElementById('budget-rule-select');
     budgetRuleBreakdown = document.getElementById('budget-rule-breakdown');
 
-    document.querySelectorAll('input[type="number"], select').forEach(el => el.addEventListener('input', updateDisplay));
+    // ✨✨✨ 이벤트 리스너 수정 ✨✨✨
+    document.querySelectorAll('input[type="number"], select').forEach(el => el.addEventListener('change', updateDisplay));
     document.querySelectorAll('.add-custom-btn').forEach(btn => btn.addEventListener('click', addCustomItem));
     
     languageToggleBtn.addEventListener('click', () => {
