@@ -5,8 +5,8 @@ let summaryFrequencySelect;
 let annualSalarySummaryDisplay, grossSalarySummaryDisplay, totalTaxesDisplay, totalPreTaxDisplay, totalPostTaxDisplay, netSalaryDisplay, totalExpensesDisplay, remainingBudgetDisplay;
 const taxInputs = {}, preTaxDeductInputs = {}, postTaxDeductInputs = {}, expenseInputs = {};
 let customTaxList, customPreTaxDeductList, customPostTaxDeductList, customExpenseList;
-let languageToggleBtn, darkmodeToggleBtn;
-let exportJsonBtn, importJsonBtn, importJsonInput, clearAllDataBtn;
+let languageToggleBtn, darkmodeToggleBtn, currencyToggleBtn; // currencyToggleBtn 추가
+let exportJsonBtn, importJsonBtn, importJsonInput, clearAllDataBtn, printBtn, emailBtn, shareBtn; // 신규 버튼 추가
 let aiReportBtn, aiReportBox;
 let budgetRuleSelect, budgetRuleBreakdown;
 let taxChartInstance, preTaxDeductChartInstance, postTaxDeductChartInstance, expensesChartInstance, budgetDistributionChartInstance;
@@ -16,7 +16,7 @@ const data = {
     grossSalary: 0,
     salaryFrequency: 'monthly',
     summaryFrequency: 'monthly', 
-    currency: 'USD', 
+    currency: 'USD', // 통화 데이터 추가
     frequencies: { tax: 'monthly', preTax: 'monthly', postTax: 'monthly', expense: 'monthly' },
     taxes: { federal: 0, state: 0, oasdi: 0, medicare: 0, casdi: 0, custom: [] },
     preTaxDeductions: { medical: 0, dental: 0, vision: 0, '401k-trad': 0, custom: [] },
@@ -35,9 +35,11 @@ const ITEM_CATEGORIES = {
     'exp-dining-1': 'wants', 'exp-shopping-1': 'wants', 'exp-entertainment-1': 'wants'
 };
 
-// 2. 언어별 텍스트
+// 2. 언어별 텍스트 (신규 버튼 및 통화 관련 키 추가)
 const translations = {
     en: {
+        currency_symbol: '$', currency_code: 'USD',
+        btn_print: 'Print', btn_email: 'Email', btn_share: 'Share',
         tag_needs: 'Needs', tag_wants: 'Wants', tag_savings: 'Savings', tag_debt: 'Debt', tag_fixed: 'Fixed',
         rule_50_30_20_title: '50/30/20 Rule (Needs/Wants/Savings)', rule_70_20_10_title: '70/20/10 Rule (Spending/Savings/Debt)', rule_80_20_title: '80/20 Rule (Spending/Savings)',
         rule_category_needs: 'Needs', rule_category_wants: 'Wants', rule_category_savings: 'Savings', rule_category_savings_debt: 'Savings & Debt', rule_category_spending: 'Spending', rule_category_debt: 'Debt Repayment', rule_category_surplus: 'Surplus (Unallocated)',
@@ -50,12 +52,14 @@ const translations = {
         label_total_taxes: 'Total Taxes:', label_total_pre_tax: 'Total Pre-Tax:', label_total_post_tax: 'Total Post-Tax:', label_net_salary: 'Net Salary:', label_total_expenses: 'Total Expenses:', label_remaining_budget: 'Remaining Budget:',
         section_budget_rule_title: 'Budget Rule Application', label_budget_rule_select: 'Select Budget Rule:', section_ai_title: 'AI Expense Report', btn_ai_report: 'Generate AI Report', ai_report_placeholder: 'Click "Generate AI Report" for insights on your spending habits.',
         section_data_title: 'Data Management', btn_export: 'Export JSON', btn_import: 'Import JSON', btn_clear_all_data: 'Clear All Data',
-        custom_item_name: 'Item Name', custom_item_amount: 'Amount', custom_item_category: 'Category', remove: 'Remove', confirm_clear_data: 'Are you sure you want to clear all data?', confirm_import_data: 'This will overwrite existing data. Continue?', invalid_json: 'Invalid JSON file.',
+        custom_item_name: 'Item Name', custom_item_amount: 'Amount', custom_item_category: 'Category', remove: 'Remove', confirm_clear_data: 'Are you sure you want to clear all data?', confirm_import_data: 'This will overwrite existing data. Continue?', invalid_json: 'Invalid JSON file.', alert_data_loaded: "Data loaded successfully!",
         chart_taxes: 'Taxes Distribution', chart_pre_tax: 'Pre-Tax Deductions', chart_post_tax: 'Post-Tax Deductions', chart_expenses: 'Expenses Distribution', chart_budget_distribution: 'Overall Budget Distribution',
         chart_labels_taxes: 'Taxes', chart_labels_pre_tax_deductions: 'Pre-Tax', chart_labels_post_tax_deductions: 'Post-Tax', chart_labels_expenses: 'Expenses', chart_labels_remaining_budget: 'Remaining',
         ai_report_title: 'Your Financial Snapshot:', ai_report_spending_habit: 'Your largest spending category is', ai_report_on_track: 'You are on track with your budget rule.', ai_report_over_spending: 'You are overspending in the following categories:', ai_report_positive_savings: 'Great job on saving!', ai_report_negative_savings: 'Consider increasing your savings.', ai_report_surplus_tip: 'You have a surplus! Consider allocating it to your savings or paying off debt.'
     },
     ko: {
+        currency_symbol: '₩', currency_code: 'KRW',
+        btn_print: '인쇄', btn_email: '이메일', btn_share: '공유',
         tag_needs: '필수', tag_wants: '선택', tag_savings: '저축', tag_debt: '부채', tag_fixed: '고정',
         rule_50_30_20_title: '50/30/20 규칙 (필수/선택/저축)', rule_70_20_10_title: '70/20/10 규칙 (생활비/저축/부채)', rule_80_20_title: '80/20 규칙 (지출/저축)',
         rule_category_needs: '필수 지출', rule_category_wants: '선택 지출', rule_category_savings: '저축', rule_category_savings_debt: '저축 & 부채', rule_category_spending: '생활비', rule_category_debt: '부채 상환', rule_category_surplus: '잉여금 (미배정)',
@@ -68,7 +72,7 @@ const translations = {
         label_total_taxes: '총 세금:', label_total_pre_tax: '총 세전 공제액:', label_total_post_tax: '총 세후 공제액:', label_net_salary: '순 급여:', label_total_expenses: '총 지출:', label_remaining_budget: '남은 예산:',
         section_budget_rule_title: '예산 규칙 적용', label_budget_rule_select: '예산 규칙 선택:', section_ai_title: 'AI 지출 보고서', btn_ai_report: 'AI 보고서 생성', ai_report_placeholder: '"AI 보고서 생성"을 클릭하여 지출 습관에 대한 통찰력을 얻으세요.',
         section_data_title: '데이터 관리', btn_export: 'JSON 내보내기', btn_import: 'JSON 가져오기', btn_clear_all_data: '모든 데이터 지우기',
-        custom_item_name: '항목 이름', custom_item_amount: '금액', custom_item_category: '카테고리', remove: '삭제', confirm_clear_data: '정말 모든 데이터를 지우시겠습니까?', confirm_import_data: '기존 데이터를 덮어씁니다. 계속하시겠습니까?', invalid_json: '유효하지 않은 JSON 파일입니다.',
+        custom_item_name: '항목 이름', custom_item_amount: '금액', custom_item_category: '카테고리', remove: '삭제', confirm_clear_data: '정말 모든 데이터를 지우시겠습니까?', confirm_import_data: '기존 데이터를 덮어씁니다. 계속하시겠습니까?', invalid_json: '유효하지 않은 JSON 파일입니다.', alert_data_loaded: "데이터를 성공적으로 가져왔습니다!",
         chart_taxes: 'Taxes Distribution', chart_pre_tax: 'Pre-Tax Deductions', chart_post_tax: 'Post-Tax Deductions', chart_expenses: 'Expenses Distribution', chart_budget_distribution: 'Overall Budget Distribution',
         chart_labels_taxes: 'Taxes', chart_labels_pre_tax_deductions: 'Pre-Tax', chart_labels_post_tax_deductions: 'Post-Tax', chart_labels_expenses: 'Expenses', chart_labels_remaining_budget: 'Remaining',
         ai_report_title: '나의 금융 스냅샷:', ai_report_spending_habit: '가장 큰 지출 항목은', ai_report_on_track: '예산 규칙을 잘 지키고 있습니다.', ai_report_over_spending: '다음 항목에서 예산을 초과하고 있습니다:', ai_report_positive_savings: '훌륭한 저축 습관입니다!', ai_report_negative_savings: '저축액을 늘리는 것을 고려해 보세요.', ai_report_surplus_tip: '잉여금이 있습니다! 저축을 늘리거나 부채를 상환하는 데 사용해 보세요.'
@@ -92,15 +96,13 @@ function convertFromAnnual(annualAmount, frequency) {
         case 'monthly': return annualAmount / 12;
         case 'bi-weekly': return annualAmount / 26;
         case 'weekly': return annualAmount / 52;
-        default: return annualAmount; // 'annual'
+        default: return annualAmount;
     }
 }
 
-// ✨✨✨ calculateTotalForSection 함수 수정 ✨✨✨
 function calculateTotalForSection(items, customItems, freqKey) {
     let total = 0;
-    const freq = data.frequencies[freqKey]; // freqKey를 직접 받아 사용
-    
+    const freq = data.frequencies[freqKey];
     for (const key in items) {
         if (key !== 'custom' && typeof items[key] === 'number') {
             total += convertToAnnual(items[key], freq);
@@ -112,34 +114,43 @@ function calculateTotalForSection(items, customItems, freqKey) {
     return total;
 }
 
-// ✨✨✨ calculateBudget 함수 수정 ✨✨✨
 function calculateBudget() {
     const annualGrossSalary = convertToAnnual(data.grossSalary, data.salaryFrequency);
-    // 각 섹션의 주기를 명확하게 전달하여 계산
     const totalAnnualTaxes = calculateTotalForSection(data.taxes, data.taxes.custom, 'tax');
     const totalAnnualPreTaxDeductions = calculateTotalForSection(data.preTaxDeductions, data.preTaxDeductions.custom, 'preTax');
     const totalAnnualPostTaxDeductions = calculateTotalForSection(data.postTaxDeductions, data.postTaxDeductions.custom, 'postTax');
     
     const { needs, wants, savings, debt } = categorizeAll();
-    const totalAnnualExpenses = needs + wants; // 총 지출은 Needs와 Wants의 합
+    const totalAnnualExpenses = needs + wants;
 
     const netSalary = annualGrossSalary - totalAnnualTaxes - totalAnnualPreTaxDeductions - totalAnnualPostTaxDeductions;
-    const remainingBudget = netSalary - (totalAnnualExpenses + savings + debt); // 잉여금은 순수익에서 모든 지출, 저축, 부채를 뺀 금액
+    const remainingBudget = netSalary - (totalAnnualExpenses + savings + debt);
 
     return { annualGrossSalary, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, netSalary, totalAnnualExpenses, remainingBudget };
 }
 
-
 // 4. UI 업데이트 & 렌더링
 function formatCurrency(amount) {
     amount = parseFloat(amount) || 0;
-    const lang = data.currentLanguage === 'ko' ? 'ko-KR' : 'en-US';
-    const numberPart = new Intl.NumberFormat(lang, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
+    const lang = data.currentLanguage;
+    const currency = data.currency;
+    const exchangeRate = 1300; // 1 USD = 1300 KRW
+
+    if (currency === 'KRW') {
+        amount *= exchangeRate;
+    }
+    
+    const symbol = currency === 'KRW' ? '₩' : '$';
+    const locale = currency === 'KRW' ? 'ko-KR' : 'en-US';
+
+    const numberPart = new Intl.NumberFormat(locale, {
+        minimumFractionDigits: currency === 'KRW' ? 0 : 2,
+        maximumFractionDigits: currency === 'KRW' ? 0 : 2,
     }).format(amount);
-    return `$${numberPart}`;
+
+    return `${symbol}${numberPart}`;
 }
+
 
 function updateDisplay() {
     data.grossSalary = parseFloat(grossSalaryInput.value) || 0;
@@ -217,8 +228,7 @@ function renderCustomList(listElement, customItems, type) {
         `;
     }).join('');
 
-    listElement.querySelectorAll('.custom-item-name, .custom-item-amount').forEach(el => el.addEventListener('change', handleCustomItemChange));
-    listElement.querySelectorAll('.custom-item-frequency, .custom-item-category').forEach(el => el.addEventListener('input', handleCustomItemChange));
+    listElement.querySelectorAll('.custom-item-name, .custom-item-amount, .custom-item-frequency, .custom-item-category').forEach(el => el.addEventListener('input', handleCustomItemChange));
     listElement.querySelectorAll('.remove-btn').forEach(button => button.addEventListener('click', removeCustomItem));
 }
 
@@ -253,11 +263,13 @@ function handleCustomItemChange(event) {
     const targetMap = { 'tax': data.taxes, 'pre-tax': data.preTaxDeductions, 'post-tax': data.postTaxDeductions, 'expense': data.expenses };
     const item = targetMap[type].custom[parseInt(index)];
 
-    if (event.target.classList.contains('custom-item-name')) item.name = event.target.value;
-    else if (event.target.classList.contains('custom-item-amount')) item.amount = parseFloat(event.target.value) || 0;
-    else if (event.target.classList.contains('custom-item-frequency')) item.frequency = event.target.value;
-    else if (event.target.classList.contains('custom-item-category')) item.category = event.target.value;
-    updateDisplay();
+    if(item) {
+        if (event.target.classList.contains('custom-item-name')) item.name = event.target.value;
+        else if (event.target.classList.contains('custom-item-amount')) item.amount = parseFloat(event.target.value) || 0;
+        else if (event.target.classList.contains('custom-item-frequency')) item.frequency = event.target.value;
+        else if (event.target.classList.contains('custom-item-category')) item.category = event.target.value;
+        updateDisplay();
+    }
 }
 
 function removeCustomItem(event) {
@@ -272,6 +284,7 @@ function applyLanguage() {
     const lang = data.currentLanguage;
     document.documentElement.lang = lang;
     languageToggleBtn.textContent = lang === 'ko' ? 'EN' : 'KO';
+    currencyToggleBtn.textContent = data.currency === 'USD' ? '₩' : '$';
     
     document.querySelectorAll('[data-i18n-key]').forEach(element => {
         const key = element.dataset.i18nKey;
@@ -300,21 +313,8 @@ function saveData() {
     localStorage.setItem('budgetData', JSON.stringify(data));
 }
 
-function loadData() {
-    const savedData = localStorage.getItem('budgetData');
-    if (savedData) {
-        const parsedData = JSON.parse(savedData);
-        ['preTaxDeductions', 'postTaxDeductions', 'expenses', 'taxes'].forEach(section => {
-            if (parsedData[section] && parsedData[section].custom) {
-                parsedData[section].custom.forEach(item => {
-                    if (!item.category) item.category = 'wants';
-                });
-            }
-        });
-        Object.assign(data, parsedData);
-        data.summaryFrequency = parsedData.summaryFrequency || 'monthly'; 
-    }
-
+// ✨✨✨ loadData 및 UI 갱신 로직 수정 ✨✨✨
+function populateUiFromData() {
     grossSalaryInput.value = data.grossSalary;
     salaryFrequencySelect.value = data.salaryFrequency;
     summaryFrequencySelect.value = data.summaryFrequency;
@@ -330,7 +330,24 @@ function loadData() {
     Object.keys(expenseInputs).forEach(key => expenseInputs[key].value = data.expenses[key] || 0);
     
     applyDarkMode();
-    applyLanguage();
+    applyLanguage(); // This will trigger updateDisplay()
+}
+
+function loadData() {
+    const savedData = localStorage.getItem('budgetData');
+    if (savedData) {
+        const parsedData = JSON.parse(savedData);
+        // Backward compatibility for new category field
+        ['preTaxDeductions', 'postTaxDeductions', 'expenses', 'taxes'].forEach(section => {
+            if (parsedData[section] && parsedData[section].custom) {
+                parsedData[section].custom.forEach(item => {
+                    if (!item.category) item.category = 'wants';
+                });
+            }
+        });
+        Object.assign(data, parsedData);
+    }
+    populateUiFromData();
 }
 
 // 8. 차트
@@ -361,10 +378,7 @@ function createOrUpdateChart(instance, canvasId, label, dataValues, labels) {
         data: chartData,
         options: {
             responsive: true, maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'top' },
-                title: { display: true, text: label }
-            }
+            plugins: { legend: { position: 'top' }, title: { display: true, text: label } }
         }
     });
 }
@@ -376,35 +390,32 @@ function updateCharts() {
     const extractChartData = (items, customItems, sectionKey) => {
         let labels = [], amounts = [];
         const freq = data.frequencies[sectionKey];
-        for(const key in items) {
-            if(key !== 'custom' && items[key] > 0) {
-                const cleanKey = key.replace(/-\d$/, ''); 
-                const translationKey = `label_${cleanKey.replace(/-/g, '_')}`;
-                labels.push(translations[lang][translationKey] || key);
-                amounts.push(convertToAnnual(items[key], freq));
+        if (items) {
+            for(const key in items) {
+                if(key !== 'custom' && items[key] > 0) {
+                    const cleanKey = key.replace(/-\d$/, ''); 
+                    const translationKey = `label_${cleanKey.replace(/-/g, '_')}`;
+                    labels.push(translations[lang][translationKey] || key);
+                    amounts.push(convertToAnnual(items[key], freq));
+                }
             }
         }
-        customItems.forEach(item => {
-            if(item.amount > 0) {
-                labels.push(item.name);
-                amounts.push(convertToAnnual(item.amount, item.frequency));
-            }
-        });
+        if (customItems) {
+            customItems.forEach(item => {
+                if(item.amount > 0) {
+                    labels.push(item.name);
+                    amounts.push(convertToAnnual(item.amount, item.frequency));
+                }
+            });
+        }
         return { labels, amounts };
     };
     
-    const taxData = extractChartData(data.taxes, data.taxes.custom, 'tax');
-    taxChartInstance = createOrUpdateChart(taxChartInstance, 'tax-chart', translations[lang].chart_taxes, taxData.amounts, taxData.labels);
-
-    const preTaxData = extractChartData(data.preTaxDeductions, data.preTaxDeductions.custom, 'preTax');
-    preTaxDeductChartInstance = createOrUpdateChart(preTaxDeductChartInstance, 'pre-tax-deduct-chart', translations[lang].chart_pre_tax, preTaxData.amounts, preTaxData.labels);
-
-    const postTaxData = extractChartData(data.postTaxDeductions, data.postTaxDeductions.custom, 'postTax');
-    postTaxDeductChartInstance = createOrUpdateChart(postTaxDeductChartInstance, 'post-tax-deduct-chart', translations[lang].chart_post_tax, postTaxData.amounts, postTaxData.labels);
-
-    const expenseData = extractChartData(data.expenses, data.expenses.custom, 'expense');
-    expensesChartInstance = createOrUpdateChart(expensesChartInstance, 'expenses-chart', translations[lang].chart_expenses, expenseData.amounts, expenseData.labels);
-
+    taxChartInstance = createOrUpdateChart(taxChartInstance, 'tax-chart', translations[lang].chart_taxes, ...Object.values(extractChartData(data.taxes, data.taxes.custom, 'tax')));
+    preTaxDeductChartInstance = createOrUpdateChart(preTaxDeductChartInstance, 'pre-tax-deduct-chart', translations[lang].chart_pre_tax, ...Object.values(extractChartData(data.preTaxDeductions, data.preTaxDeductions.custom, 'preTax')));
+    postTaxDeductChartInstance = createOrUpdateChart(postTaxDeductChartInstance, 'post-tax-deduct-chart', translations[lang].chart_post_tax, ...Object.values(extractChartData(data.postTaxDeductions, data.postTaxDeductions.custom, 'postTax')));
+    expensesChartInstance = createOrUpdateChart(expensesChartInstance, 'expenses-chart', translations[lang].chart_expenses, ...Object.values(extractChartData(data.expenses, data.expenses.custom, 'expense')));
+    
     const overallData = [totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses, Math.max(0, remainingBudget)];
     const overallLabels = [translations[lang].chart_labels_taxes, translations[lang].chart_labels_pre_tax_deductions, translations[lang].chart_labels_post_tax_deductions, translations[lang].chart_labels_expenses, translations[lang].chart_labels_remaining_budget];
     const filteredAmounts = overallData.filter(v => v > 0);
@@ -416,15 +427,12 @@ function updateCharts() {
 // 9. 예산 규칙 & AI 보고서
 function categorizeAll() {
     let totals = { needs: 0, wants: 0, savings: 0, debt: 0 };
-
     const processSection = (sectionName) => {
         const sectionData = data[sectionName];
         if (!sectionData) return;
-
         const freqKeyMap = { 'preTaxDeductions': 'preTax', 'postTaxDeductions': 'postTax', 'expenses': 'expense' };
         const freqKey = freqKeyMap[sectionName];
         const itemPrefix = sectionName.includes('Deduct') ? 'deduct' : 'exp';
-
         for (const key in sectionData) {
             if (key === 'custom') continue;
             const itemId = `${itemPrefix}-${key.replace(/_/g, '-')}-1`;
@@ -433,7 +441,6 @@ function categorizeAll() {
                 totals[category] += convertToAnnual(sectionData[key], data.frequencies[freqKey]);
             }
         }
-        
         if (sectionData.custom) {
             sectionData.custom.forEach(item => {
                 const category = item.category || 'wants';
@@ -443,20 +450,15 @@ function categorizeAll() {
             });
         }
     };
-    
     ['preTaxDeductions', 'postTaxDeductions', 'expenses'].forEach(processSection);
-    
     return totals;
 }
 
-
-// ✨✨✨ applyBudgetRule 함수 수정 ✨✨✨
 function applyBudgetRule() {
     const { netSalary } = calculateBudget();
     const totals = categorizeAll();
     const lang = data.currentLanguage;
     let breakdown = [];
-    
     switch (data.budgetRule) {
         case '50-30-20':
             breakdown = [
@@ -479,19 +481,17 @@ function applyBudgetRule() {
             ];
             break;
     }
-    return breakdown; // 이제 breakdown 배열을 반환
+    return breakdown;
 }
 
 function renderBudgetRule(breakdown, remaining, frequency) {
-    if (!budgetRuleBreakdown) return;
+    if (!budgetRuleBreakdown || !breakdown) return;
     const lang = data.currentLanguage;
-
     let html = breakdown.map(item => {
         const periodicActual = convertFromAnnual(item.actual, frequency);
         const periodicGoal = convertFromAnnual(item.goal, frequency);
         const percentage = periodicGoal > 0 ? (periodicActual / periodicGoal) * 100 : 0;
         const isOverBudget = periodicActual > periodicGoal;
-
         return `
             <div class="rule-progress-bar-container">
                 <div class="rule-progress-bar-labels">
@@ -506,7 +506,6 @@ function renderBudgetRule(breakdown, remaining, frequency) {
             </div>
         `;
     }).join('');
-    
     if (remaining > 0) {
         html += `
             <div class="surplus-container">
@@ -514,50 +513,34 @@ function renderBudgetRule(breakdown, remaining, frequency) {
             </div>
         `;
     }
-
     budgetRuleBreakdown.innerHTML = html;
 }
 
-// ✨✨✨ generateAiReport 함수 수정 ✨✨✨
 function generateAiReport() {
     const { netSalary, remainingBudget } = calculateBudget();
     const totals = categorizeAll();
     const lang = data.currentLanguage;
-    const breakdown = applyBudgetRule(); // 이제 정상적으로 breakdown 배열을 받음
-
+    const breakdown = applyBudgetRule();
     let insights = [];
-    
-    // Insight 1: Largest spending category
-    const spendingCats = { 
-        [translations[lang].rule_category_needs]: totals.needs, 
-        [translations[lang].rule_category_wants]: totals.wants, 
-        [translations[lang].rule_category_debt]: totals.debt 
-    };
+    const spendingCats = { [translations[lang].rule_category_needs]: totals.needs, [translations[lang].rule_category_wants]: totals.wants, [translations[lang].rule_category_debt]: totals.debt };
     if (Object.values(spendingCats).some(v => v > 0)) {
         const largestCat = Object.keys(spendingCats).reduce((a, b) => spendingCats[a] > spendingCats[b] ? a : b);
         insights.push(`${translations[lang].ai_report_spending_habit} <strong>${largestCat}</strong>.`);
     }
-
-    // Insight 2: Rule Adherence
     const overspending = breakdown.filter(item => item.actual > item.goal);
     if (overspending.length > 0) {
         insights.push(`${translations[lang].ai_report_over_spending} ${overspending.map(item => `<strong>${item.label}</strong>`).join(', ')}.`);
     } else if (netSalary > 0) {
         insights.push(translations[lang].ai_report_on_track);
     }
-
-    // Insight 3: Savings Check
     if (totals.savings > 0) {
         insights.push(translations[lang].ai_report_positive_savings);
     } else if (netSalary > 0) {
         insights.push(translations[lang].ai_report_negative_savings);
     }
-    
-    // Insight 4: Surplus Usage
     if (remainingBudget > 0) {
         insights.push(translations[lang].ai_report_surplus_tip);
     }
-
     if (insights.length > 0) {
         aiReportBox.innerHTML = `<strong>${translations[lang].ai_report_title}</strong><ul>${insights.map(i => `<li>${i}</li>`).join('')}</ul>`;
     } else {
@@ -565,10 +548,8 @@ function generateAiReport() {
     }
 }
 
-
 // 10. 초기화
 document.addEventListener('DOMContentLoaded', () => {
-    // 요소 할당
     grossSalaryInput = document.getElementById('salary-gross');
     salaryFrequencySelect = document.getElementById('salary-frequency-select');
     taxFrequencySelect = document.getElementById('tax-frequency-select');
@@ -576,7 +557,6 @@ document.addEventListener('DOMContentLoaded', () => {
     postTaxFrequencySelect = document.getElementById('post-tax-frequency-select');
     expenseFrequencySelect = document.getElementById('expense-frequency-select');
     summaryFrequencySelect = document.getElementById('summary-frequency-select');
-    
     annualSalarySummaryDisplay = document.getElementById('annual-salary-summary-display');
     grossSalarySummaryDisplay = document.getElementById('gross-salary-summary-display');
     totalTaxesDisplay = document.getElementById('total-taxes-display');
@@ -585,30 +565,29 @@ document.addEventListener('DOMContentLoaded', () => {
     netSalaryDisplay = document.getElementById('net-salary-display');
     totalExpensesDisplay = document.getElementById('total-expenses-display');
     remainingBudgetDisplay = document.getElementById('remaining-budget-display');
-    
     Object.assign(taxInputs, { federal: document.getElementById('tax-federal-1'), state: document.getElementById('tax-state-1'), oasdi: document.getElementById('tax-oasdi-1'), medicare: document.getElementById('tax-medicare-1'), casdi: document.getElementById('tax-casdi-1') });
     Object.assign(preTaxDeductInputs, { medical: document.getElementById('deduct-medical-1'), dental: document.getElementById('deduct-dental-1'), vision: document.getElementById('deduct-vision-1'), '401k-trad': document.getElementById('deduct-401k-trad-1') });
     Object.assign(postTaxDeductInputs, { spp: document.getElementById('deduct-spp-1'), adnd: document.getElementById('deduct-adnd-1'), '401k-roth': document.getElementById('deduct-401k-roth-1'), ltd: document.getElementById('deduct-ltd-1') });
     Object.assign(expenseInputs, { rent: document.getElementById('exp-rent-1'), utilities: document.getElementById('exp-utilities-1'), internet: document.getElementById('exp-internet-1'), phone: document.getElementById('exp-phone-1'), groceries: document.getElementById('exp-groceries-1'), dining: document.getElementById('exp-dining-1'), transport: document.getElementById('exp-transport-1'), shopping: document.getElementById('exp-shopping-1'), health: document.getElementById('exp-health-1'), entertainment: document.getElementById('exp-entertainment-1') });
-    
     customTaxList = document.getElementById('tax-custom-list');
     customPreTaxDeductList = document.getElementById('pre-tax-custom-list');
     customPostTaxDeductList = document.getElementById('post-tax-custom-list');
     customExpenseList = document.getElementById('expenses-custom-list');
-    
     languageToggleBtn = document.getElementById('language-toggle');
     darkmodeToggleBtn = document.getElementById('darkmode-toggle');
+    currencyToggleBtn = document.getElementById('currency-toggle');
     exportJsonBtn = document.getElementById('export-json-btn');
     importJsonBtn = document.getElementById('import-json-btn');
     importJsonInput = document.getElementById('import-json-input');
     clearAllDataBtn = document.getElementById('clear-all-data-btn');
+    printBtn = document.getElementById('print-btn');
+    emailBtn = document.getElementById('email-btn');
+    shareBtn = document.getElementById('share-btn');
     aiReportBtn = document.getElementById('ai-report-btn');
     aiReportBox = document.getElementById('ai-report-box');
-    
     budgetRuleSelect = document.getElementById('budget-rule-select');
     budgetRuleBreakdown = document.getElementById('budget-rule-breakdown');
 
-    // 이벤트 리스너
     document.querySelectorAll('input[type="number"], select').forEach(el => el.addEventListener('input', updateDisplay));
     document.querySelectorAll('.add-custom-btn').forEach(btn => btn.addEventListener('click', addCustomItem));
     
@@ -620,6 +599,10 @@ document.addEventListener('DOMContentLoaded', () => {
         data.isDarkMode = !data.isDarkMode;
         applyDarkMode();
         saveData();
+    });
+    currencyToggleBtn.addEventListener('click', () => {
+        data.currency = data.currency === 'USD' ? 'KRW' : 'USD';
+        applyLanguage();
     });
 
     exportJsonBtn.addEventListener('click', () => {
@@ -638,12 +621,15 @@ document.addEventListener('DOMContentLoaded', () => {
             reader.onload = (e) => {
                 try {
                     if (confirm(translations[data.currentLanguage].confirm_import_data)) {
-                        Object.assign(data, JSON.parse(e.target.result));
-                        loadData();
+                        const importedData = JSON.parse(e.target.result);
+                        Object.assign(data, importedData);
+                        populateUiFromData();
+                        alert(translations[data.currentLanguage].alert_data_loaded);
                     }
                 } catch (error) { alert(translations[data.currentLanguage].invalid_json); }
             };
             reader.readAsText(file);
+            event.target.value = ''; // Reset file input
         }
     });
     clearAllDataBtn.addEventListener('click', () => {
@@ -653,8 +639,39 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
+    printBtn.addEventListener('click', () => window.print());
+    emailBtn.addEventListener('click', () => {
+        const { netSalary, totalAnnualExpenses, remainingBudget } = calculateBudget();
+        const summaryFreq = data.summaryFrequency;
+        const subject = "My Budget Summary";
+        const body = `Here is my budget summary:\n\n` +
+            `Net Income: ${formatCurrency(convertFromAnnual(netSalary, summaryFreq))}\n` +
+            `Total Expenses: ${formatCurrency(convertFromAnnual(totalAnnualExpenses, summaryFreq))}\n` +
+            `Remaining: ${formatCurrency(convertFromAnnual(remainingBudget, summaryFreq))}\n`;
+        window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    });
+    shareBtn.addEventListener('click', async () => {
+        const { netSalary, totalAnnualExpenses, remainingBudget } = calculateBudget();
+        const summaryFreq = data.summaryFrequency;
+        const shareData = {
+            title: 'My Budget Summary',
+            text: `Here is my budget summary:\n` +
+                `Net Income: ${formatCurrency(convertFromAnnual(netSalary, summaryFreq))}\n` +
+                `Total Expenses: ${formatCurrency(convertFromAnnual(totalAnnualExpenses, summaryFreq))}\n` +
+                `Remaining: ${formatCurrency(convertFromAnnual(remainingBudget, summaryFreq))}\n`,
+        };
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+            } else {
+                alert("Share feature is not supported in this browser.");
+            }
+        } catch (err) {
+            console.error("Share failed:", err);
+        }
+    });
+    
     aiReportBtn.addEventListener('click', generateAiReport);
 
-    // 초기 로드
     loadData();
 });
