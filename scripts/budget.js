@@ -163,7 +163,7 @@ function updateDisplay() {
     ['taxes', 'preTaxDeductions', 'postTaxDeductions', 'expenses'].forEach(section => {
         const inputs = section === 'taxes' ? taxInputs : section === 'preTaxDeductions' ? preTaxDeductInputs : section === 'postTaxDeductions' ? postTaxDeductInputs : expenseInputs;
         Object.keys(inputs).forEach(key => {
-            if(data[section]) data[section][key] = parseFloat(inputs[key].value) || 0;
+            if(data[section] && inputs[key]) data[section][key] = parseFloat(inputs[key].value) || 0;
         });
     });
 
@@ -210,9 +210,9 @@ function renderCustomList(listElement, customItems, type) {
                 <option value="debt" ${item.category === 'debt' ? 'selected' : ''}>${translations[lang].tag_debt}</option>
             </select>
         ` : '';
-        const gridStyle = isTax ? '2fr 1fr 1fr auto' : '2fr 1fr 1fr 1fr auto';
+        
         return `
-            <li class="custom-list-item" style="grid-template-columns: ${gridStyle};">
+            <div class="custom-list-item ${isTax ? 'tax-item' : ''}">
                 <input type="text" value="${item.name}" placeholder="${translations[lang].custom_item_name}" class="custom-item-name form-control" data-index="${index}" data-type="${type}">
                 <input type="number" value="${item.amount}" placeholder="${translations[lang].custom_item_amount}" class="custom-item-amount form-control" data-index="${index}" data-type="${type}">
                 <select class="custom-item-frequency form-control" data-index="${index}" data-type="${type}">
@@ -223,11 +223,10 @@ function renderCustomList(listElement, customItems, type) {
                 </select>
                 ${categoryDropdown}
                 <button class="remove-btn btn btn-danger" data-index="${index}" data-type="${type}">${translations[lang].remove}</button>
-            </li>
+            </div>
         `;
     }).join('');
 
-    // ✨✨✨ 이벤트 리스너 수정 ✨✨✨
     listElement.querySelectorAll('.custom-item-name, .custom-item-amount, .custom-item-frequency, .custom-item-category').forEach(el => el.addEventListener('change', handleCustomItemChange));
     listElement.querySelectorAll('.remove-btn').forEach(button => button.addEventListener('click', removeCustomItem));
 }
@@ -288,8 +287,8 @@ function applyLanguage() {
     
     document.querySelectorAll('[data-i18n-key]').forEach(element => {
         const key = element.dataset.i18nKey;
-        const translation = translations[lang][key];
-        if (translation) {
+        if (translations[lang] && translations[lang][key]) {
+            const translation = translations[lang][key];
             if (element.placeholder !== undefined) element.placeholder = translation;
             else element.textContent = translation;
         }
@@ -323,10 +322,10 @@ function populateUiFromData() {
     postTaxFrequencySelect.value = data.frequencies.postTax;
     expenseFrequencySelect.value = data.frequencies.expense;
 
-    Object.keys(taxInputs).forEach(key => taxInputs[key].value = data.taxes[key] || 0);
-    Object.keys(preTaxDeductInputs).forEach(key => preTaxDeductInputs[key].value = data.preTaxDeductions[key] || 0);
-    Object.keys(postTaxDeductInputs).forEach(key => postTaxDeductInputs[key].value = data.postTaxDeductions[key] || 0);
-    Object.keys(expenseInputs).forEach(key => expenseInputs[key].value = data.expenses[key] || 0);
+    Object.keys(taxInputs).forEach(key => { if(taxInputs[key]) taxInputs[key].value = data.taxes[key] || 0});
+    Object.keys(preTaxDeductInputs).forEach(key => { if(preTaxDeductInputs[key]) preTaxDeductInputs[key].value = data.preTaxDeductions[key] || 0});
+    Object.keys(postTaxDeductInputs).forEach(key => { if(postTaxDeductInputs[key]) postTaxDeductInputs[key].value = data.postTaxDeductions[key] || 0});
+    Object.keys(expenseInputs).forEach(key => { if(expenseInputs[key]) expenseInputs[key].value = data.expenses[key] || 0});
     
     applyDarkMode();
     applyLanguage();
@@ -350,7 +349,7 @@ function loadData() {
 
 // 8. 차트
 function createOrUpdateChart(instance, canvasId, label, dataValues, labels) {
-    const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#E7E9ED', '#8AC926', '#A1C935'];
+    const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#E7E9ED', '#8AC926', '#A1C935', '#2a9d8f', '#e9c46a', '#f4a261', '#e76f51'];
     const ctx = document.getElementById(canvasId);
     if (!ctx) return instance;
 
@@ -359,7 +358,7 @@ function createOrUpdateChart(instance, canvasId, label, dataValues, labels) {
         datasets: [{
             label: label,
             data: dataValues,
-            backgroundColor: colors.slice(0, dataValues.length),
+            backgroundColor: colors,
             hoverOffset: 4
         }]
     };
@@ -593,7 +592,6 @@ document.addEventListener('DOMContentLoaded', () => {
     budgetRuleSelect = document.getElementById('budget-rule-select');
     budgetRuleBreakdown = document.getElementById('budget-rule-breakdown');
 
-    // ✨✨✨ 이벤트 리스너 수정 ✨✨✨
     document.querySelectorAll('input[type="number"], select').forEach(el => el.addEventListener('change', updateDisplay));
     document.querySelectorAll('.add-custom-btn').forEach(btn => btn.addEventListener('click', addCustomItem));
     
