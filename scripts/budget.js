@@ -5,8 +5,8 @@ let summaryFrequencySelect;
 let annualSalarySummaryDisplay, grossSalarySummaryDisplay, totalTaxesDisplay, totalPreTaxDisplay, totalPostTaxDisplay, netSalaryDisplay, totalExpensesDisplay, remainingBudgetDisplay;
 const taxInputs = {}, preTaxDeductInputs = {}, postTaxDeductInputs = {}, expenseInputs = {};
 let customTaxList, customPreTaxDeductList, customPostTaxDeductList, customExpenseList;
-let languageToggleBtn, darkmodeToggleBtn, currencyToggleBtn; // currencyToggleBtn 추가
-let exportJsonBtn, importJsonBtn, importJsonInput, clearAllDataBtn, printBtn, emailBtn, shareBtn; // 신규 버튼 추가
+let languageToggleBtn, darkmodeToggleBtn, currencyToggleBtn;
+let exportJsonBtn, importJsonBtn, importJsonInput, clearAllDataBtn, printBtn, emailBtn, shareBtn;
 let aiReportBtn, aiReportBox;
 let budgetRuleSelect, budgetRuleBreakdown;
 let taxChartInstance, preTaxDeductChartInstance, postTaxDeductChartInstance, expensesChartInstance, budgetDistributionChartInstance;
@@ -16,7 +16,7 @@ const data = {
     grossSalary: 0,
     salaryFrequency: 'monthly',
     summaryFrequency: 'monthly', 
-    currency: 'USD', // 통화 데이터 추가
+    currency: 'USD',
     frequencies: { tax: 'monthly', preTax: 'monthly', postTax: 'monthly', expense: 'monthly' },
     taxes: { federal: 0, state: 0, oasdi: 0, medicare: 0, casdi: 0, custom: [] },
     preTaxDeductions: { medical: 0, dental: 0, vision: 0, '401k-trad': 0, custom: [] },
@@ -35,7 +35,7 @@ const ITEM_CATEGORIES = {
     'exp-dining-1': 'wants', 'exp-shopping-1': 'wants', 'exp-entertainment-1': 'wants'
 };
 
-// 2. 언어별 텍스트 (신규 버튼 및 통화 관련 키 추가)
+// 2. 언어별 텍스트
 const translations = {
     en: {
         currency_symbol: '$', currency_code: 'USD',
@@ -132,9 +132,8 @@ function calculateBudget() {
 // 4. UI 업데이트 & 렌더링
 function formatCurrency(amount) {
     amount = parseFloat(amount) || 0;
-    const lang = data.currentLanguage;
     const currency = data.currency;
-    const exchangeRate = 1300; // 1 USD = 1300 KRW
+    const exchangeRate = 1300;
 
     if (currency === 'KRW') {
         amount *= exchangeRate;
@@ -313,7 +312,6 @@ function saveData() {
     localStorage.setItem('budgetData', JSON.stringify(data));
 }
 
-// ✨✨✨ loadData 및 UI 갱신 로직 수정 ✨✨✨
 function populateUiFromData() {
     grossSalaryInput.value = data.grossSalary;
     salaryFrequencySelect.value = data.salaryFrequency;
@@ -330,14 +328,13 @@ function populateUiFromData() {
     Object.keys(expenseInputs).forEach(key => expenseInputs[key].value = data.expenses[key] || 0);
     
     applyDarkMode();
-    applyLanguage(); // This will trigger updateDisplay()
+    applyLanguage();
 }
 
 function loadData() {
     const savedData = localStorage.getItem('budgetData');
     if (savedData) {
         const parsedData = JSON.parse(savedData);
-        // Backward compatibility for new category field
         ['preTaxDeductions', 'postTaxDeductions', 'expenses', 'taxes'].forEach(section => {
             if (parsedData[section] && parsedData[section].custom) {
                 parsedData[section].custom.forEach(item => {
@@ -350,7 +347,7 @@ function loadData() {
     populateUiFromData();
 }
 
-// 8. 차트
+// ✨✨✨ 8. 차트 (버그 수정) ✨✨✨
 function createOrUpdateChart(instance, canvasId, label, dataValues, labels) {
     const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#E7E9ED', '#8AC926', '#A1C935'];
     const ctx = document.getElementById(canvasId);
@@ -411,10 +408,18 @@ function updateCharts() {
         return { labels, amounts };
     };
     
-    taxChartInstance = createOrUpdateChart(taxChartInstance, 'tax-chart', translations[lang].chart_taxes, ...Object.values(extractChartData(data.taxes, data.taxes.custom, 'tax')));
-    preTaxDeductChartInstance = createOrUpdateChart(preTaxDeductChartInstance, 'pre-tax-deduct-chart', translations[lang].chart_pre_tax, ...Object.values(extractChartData(data.preTaxDeductions, data.preTaxDeductions.custom, 'preTax')));
-    postTaxDeductChartInstance = createOrUpdateChart(postTaxDeductChartInstance, 'post-tax-deduct-chart', translations[lang].chart_post_tax, ...Object.values(extractChartData(data.postTaxDeductions, data.postTaxDeductions.custom, 'postTax')));
-    expensesChartInstance = createOrUpdateChart(expensesChartInstance, 'expenses-chart', translations[lang].chart_expenses, ...Object.values(extractChartData(data.expenses, data.expenses.custom, 'expense')));
+    // 데이터 전달 방식 수정
+    const taxData = extractChartData(data.taxes, data.taxes.custom, 'tax');
+    taxChartInstance = createOrUpdateChart(taxChartInstance, 'tax-chart', translations[lang].chart_taxes, taxData.amounts, taxData.labels);
+
+    const preTaxData = extractChartData(data.preTaxDeductions, data.preTaxDeductions.custom, 'preTax');
+    preTaxDeductChartInstance = createOrUpdateChart(preTaxDeductChartInstance, 'pre-tax-deduct-chart', translations[lang].chart_pre_tax, preTaxData.amounts, preTaxData.labels);
+
+    const postTaxData = extractChartData(data.postTaxDeductions, data.postTaxDeductions.custom, 'postTax');
+    postTaxDeductChartInstance = createOrUpdateChart(postTaxDeductChartInstance, 'post-tax-deduct-chart', translations[lang].chart_post_tax, postTaxData.amounts, postTaxData.labels);
+    
+    const expenseData = extractChartData(data.expenses, data.expenses.custom, 'expense');
+    expensesChartInstance = createOrUpdateChart(expensesChartInstance, 'expenses-chart', translations[lang].chart_expenses, expenseData.amounts, expenseData.labels);
     
     const overallData = [totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses, Math.max(0, remainingBudget)];
     const overallLabels = [translations[lang].chart_labels_taxes, translations[lang].chart_labels_pre_tax_deductions, translations[lang].chart_labels_post_tax_deductions, translations[lang].chart_labels_expenses, translations[lang].chart_labels_remaining_budget];
@@ -629,7 +634,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } catch (error) { alert(translations[data.currentLanguage].invalid_json); }
             };
             reader.readAsText(file);
-            event.target.value = ''; // Reset file input
+            event.target.value = '';
         }
     });
     clearAllDataBtn.addEventListener('click', () => {
