@@ -1,209 +1,606 @@
-/* Variables for colors (Light Mode by default) */
-:root {
-    --bg-color: #f9fbfd;
-    --card-bg-color: #ffffff;
-    --text-color: #3f4254;
-    --header-bg-color: #5d78ff;
-    --header-text-color: #ffffff;
-    --button-bg-color: #5d78ff;
-    --button-text-color: #ffffff;
-    --input-border-color: #e4e6ef;
-    --input-focus-border-color: #5d78ff;
-    --summary-text-color: #1abc9c;
-    --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    --border-radius: 8px;
-    --accent-color: #5d78ff;
-    --danger-color: #f64e60;
-    --positive-color: #1abc9c;
-    --negative-color: #f64e60;
-    --balanced-color: #5d78ff;
-    --primary-dark-color: #4968e6;
-    --tag-needs-bg: #e1f0ff;
-    --tag-needs-text: #3699ff;
-    --tag-wants-bg: #fff4e1;
-    --tag-wants-text: #ffa800;
-    --tag-savings-bg: #e8fff3;
-    --tag-savings-text: #1bc5bd;
-    --tag-debt-bg: #ffe2e5;
-    --tag-debt-text: #f64e60;
-    --tag-fixed-bg: #f3f6f9;
-    --tag-fixed-text: #898b9a;
-    --surplus-color: #20c997;
+// 0. 전역 변수
+let grossSalaryInput, salaryFrequencySelect;
+let taxFrequencySelect, preTaxFrequencySelect, postTaxFrequencySelect, expenseFrequencySelect;
+let summaryFrequencySelect;
+let annualSalarySummaryDisplay, grossSalarySummaryDisplay, totalTaxesDisplay, totalPreTaxDisplay, totalPostTaxDisplay, netSalaryDisplay, totalExpensesDisplay, remainingBudgetDisplay;
+const taxInputs = {}, preTaxDeductInputs = {}, postTaxDeductInputs = {}, expenseInputs = {};
+let customIncomeList, customTaxList, customPreTaxDeductList, customPostTaxDeductList, customExpenseList;
+let languageToggleBtn, darkmodeToggleBtn, currencyToggleBtn;
+let exportJsonBtn, importJsonBtn, importJsonInput, clearAllDataBtn, printBtn, emailBtn, shareBtn;
+let aiReportBtn, aiReportBox;
+let budgetRuleSelect, budgetRuleBreakdown;
+let taxChartInstance, preTaxDeductChartInstance, postTaxDeductChartInstance, expensesChartInstance, budgetDistributionChartInstance;
+let modalContainer, modalTitle, modalList, modalCloseBtn;
+
+// 1. 초기 데이터 및 분류 정의
+const data = {
+    grossSalary: 0,
+    salaryFrequency: 'monthly',
+    customIncomes: [],
+    summaryFrequency: 'monthly',
+    currency: 'USD',
+    frequencies: { tax: 'monthly', preTax: 'monthly', postTax: 'monthly', expense: 'monthly' },
+    taxes: { federal: 0, state: 0, oasdi: 0, medicare: 0, casdi: 0, custom: [] },
+    preTaxDeductions: { medical: 0, dental: 0, vision: 0, '401k-trad': 0, custom: [] },
+    postTaxDeductions: { spp: 0, adnd: 0, '401k-roth': 0, ltd: 0, custom: [] },
+    expenses: { rent: 0, utilities: 0, internet: 0, phone: 0, groceries: 0, dining: 0, transport: 0, shopping: 0, health: 0, entertainment: 0, custom: [] },
+    budgetRule: '50-30-20',
+    currentLanguage: 'ko',
+    isDarkMode: false
+};
+
+const ITEM_CATEGORIES = {
+    'tax-federal-1': 'fixed', 'tax-state-1': 'fixed', 'tax-oasdi-1': 'fixed', 'tax-medicare-1': 'fixed', 'tax-casdi-1': 'fixed',
+    'deduct-medical-1': 'needs', 'deduct-dental-1': 'needs', 'deduct-vision-1': 'needs', 'deduct-ltd-1': 'needs', 'deduct-adnd-1': 'needs',
+    'deduct-401k-trad-1': 'savings', 'deduct-401k-roth-1': 'savings', 'deduct-spp-1': 'savings',
+    'exp-rent-1': 'needs', 'exp-utilities-1': 'needs', 'exp-internet-1': 'needs', 'exp-phone-1': 'needs', 'exp-groceries-1': 'needs', 'exp-transport-1': 'needs', 'exp-health-1': 'needs',
+    'exp-dining-1': 'wants', 'exp-shopping-1': 'wants', 'exp-entertainment-1': 'wants'
+};
+
+// 2. 언어별 텍스트
+const translations = {
+    en: {
+        btn_add_income: 'Add Income', label_base_salary: 'Base Salary',
+        modal_title_needs: 'Needs Items', modal_title_wants: 'Wants Items', modal_title_savings: 'Savings & Debt Items', modal_title_spending: 'Spending Items', modal_title_debt: 'Debt Items',
+        currency_symbol: '$', currency_code: 'USD', btn_print: 'Print', btn_email: 'Email', btn_share: 'Share', tag_needs: 'Needs', tag_wants: 'Wants', tag_savings: 'Savings', tag_debt: 'Debt', tag_fixed: 'Fixed',
+        rule_50_30_20_title: '50/30/20 Rule (Needs/Wants/Savings)', rule_70_20_10_title: '70/20/10 Rule (Spending/Savings/Debt)', rule_80_20_title: '80/20 Rule (Spending/Savings)',
+        rule_category_needs: 'Needs', rule_category_wants: 'Wants', rule_category_savings: 'Savings', rule_category_savings_debt: 'Savings & Debt', rule_category_spending: 'Spending', rule_category_debt: 'Debt Repayment', rule_category_surplus: 'Surplus (Unallocated)',
+        label_summary_frequency: 'Summary Frequency:', app_title: 'Budget Management Tool', section_salary_title: 'Gross Salary', label_gross_salary: 'Gross Salary', frequency_monthly: 'Monthly', frequency_annually: 'Annual', frequency_weekly: 'Weekly', frequency_bi_weekly: 'Bi-Weekly',
+        label_annual_salary: 'Annual Gross Salary:', section_taxes_title: 'Taxes', label_frequency: 'Frequency:', label_federal_withholding: 'Federal Withholding', label_state_tax: 'State Tax', label_oasdi: 'OASDI', label_medicare: 'Medicare', label_ca_sdi: 'CA SDI', btn_add_item: 'Add Item',
+        section_pre_tax_title: 'Pre-Tax Deductions', label_medical_premium: 'Medical Premium', label_dental_premium: 'Dental Premium', label_vision_premium: 'Vision Premium', label_401k_traditional: '401k Traditional',
+        section_post_tax_title: 'Post-Tax Deductions', label_spp: 'SPP', label_adnd: 'AD&D', label_401k_roth: '401k Roth', label_ltd: 'LTD', section_expenses_title: 'Expense Management',
+        label_rent_mortgage: 'Rent/Mortgage', label_utilities: 'Utilities', label_internet: 'Internet', label_phone: 'Phone Bill', label_groceries: 'Groceries', label_dining_out: 'Dining Out',
+        label_transportation: 'Transportation', label_shopping: 'Shopping', label_health_wellness: 'Health/Wellness', label_entertainment: 'Entertainment', section_summary_title: 'Budget Summary',
+        label_total_taxes: 'Total Taxes:', label_total_pre_tax: 'Total Pre-Tax:', label_total_post_tax: 'Total Post-Tax:', label_net_salary: 'Net Salary:', label_total_expenses: 'Total Expenses:', label_remaining_budget: 'Remaining Budget:',
+        section_budget_rule_title: 'Budget Rule Application', label_budget_rule_select: 'Select Budget Rule:', section_ai_title: 'AI Expense Report', btn_ai_report: 'Generate AI Report', ai_report_placeholder: 'Click "Generate AI Report" for insights on your spending habits.',
+        section_data_title: 'Data Management', btn_export: 'Export JSON', btn_import: 'Import JSON', btn_clear_all_data: 'Clear All Data',
+        custom_item_name: 'Item Name', custom_income_name: 'Income Name', custom_item_amount: 'Amount', custom_item_category: 'Category', remove: 'Remove', confirm_clear_data: 'Are you sure you want to clear all data?', confirm_import_data: 'This will overwrite existing data. Continue?', invalid_json: 'Invalid JSON file.', alert_data_loaded: "Data loaded successfully!",
+        chart_taxes: 'Taxes Distribution', chart_pre_tax: 'Pre-Tax Deductions', chart_post_tax: 'Post-Tax Deductions', chart_expenses: 'Expenses Distribution', chart_budget_distribution: 'Overall Budget Distribution',
+        chart_labels_taxes: 'Taxes', chart_labels_pre_tax_deductions: 'Pre-Tax', chart_labels_post_tax_deductions: 'Post-Tax', chart_labels_expenses: 'Expenses', chart_labels_remaining_budget: 'Remaining',
+        ai_report_title: 'Your Financial Snapshot:', ai_report_spending_habit: 'Your largest spending category is', ai_report_on_track: 'You are on track with your budget rule.', ai_report_over_spending: 'You are overspending in the following categories:', ai_report_positive_savings: 'Great job on saving!', ai_report_negative_savings: 'Consider increasing your savings.', ai_report_surplus_tip: 'You have a surplus! Consider allocating it to your savings or paying off debt.'
+    },
+    ko: {
+        btn_add_income: '수입 추가', label_base_salary: '기본 급여',
+        modal_title_needs: '필수 지출 항목', modal_title_wants: '선택 지출 항목', modal_title_savings: '저축 & 부채 항목', modal_title_spending: '소비 항목', modal_title_debt: '부채 항목',
+        currency_symbol: '₩', currency_code: 'KRW', btn_print: '인쇄', btn_email: '이메일', btn_share: '공유', tag_needs: '필수', tag_wants: '선택', tag_savings: '저축', tag_debt: '부채', tag_fixed: '고정',
+        rule_50_30_20_title: '50/30/20 규칙 (필수/선택/저축)', rule_70_20_10_title: '70/20/10 규칙 (생활비/저축/부채)', rule_80_20_title: '80/20 규칙 (지출/저축)',
+        rule_category_needs: '필수 지출', rule_category_wants: '선택 지출', rule_category_savings: '저축', rule_category_savings_debt: '저축 & 부채', rule_category_spending: '생활비', rule_category_debt: '부채 상환', rule_category_surplus: '잉여금 (미배정)',
+        label_summary_frequency: '요약 주기:', app_title: '예산 관리 도구', section_salary_title: '총 급여', label_gross_salary: '총 급여', frequency_monthly: '월별', frequency_annually: '연간', frequency_weekly: '주별', frequency_bi_weekly: '2주별',
+        label_annual_salary: '연간 총 급여:', section_taxes_title: '세금', label_frequency: '주기:', label_federal_withholding: '연방 원천징수', label_state_tax: '주 세금', label_oasdi: 'OASDI', label_medicare: '메디케어', label_ca_sdi: 'CA SDI', btn_add_item: '항목 추가',
+        section_pre_tax_title: '세전 공제', label_medical_premium: '의료 보험료', label_dental_premium: '치과 보험료', label_vision_premium: '시력 보험료', label_401k_traditional: '401k 일반',
+        section_post_tax_title: '세후 공제', label_spp: '주식 구매 계획', label_adnd: 'AD&D', label_401k_roth: '401k Roth', label_ltd: '장기 장애', section_expenses_title: '지출 관리',
+        label_rent_mortgage: '월세/주택담보대출', label_utilities: '공과금', label_internet: '인터넷', label_phone: '휴대폰 요금', label_groceries: '식료품', label_dining_out: '외식',
+        label_transportation: '교통비', label_shopping: '쇼핑', label_health_wellness: '건강/웰빙', label_entertainment: '오락', section_summary_title: '예산 요약',
+        label_total_taxes: '총 세금:', label_total_pre_tax: '총 세전 공제액:', label_total_post_tax: '총 세후 공제액:', label_net_salary: '순 급여:', label_total_expenses: '총 지출:', label_remaining_budget: '남은 예산:',
+        section_budget_rule_title: '예산 규칙 적용', label_budget_rule_select: '예산 규칙 선택:', section_ai_title: 'AI 지출 보고서', btn_ai_report: 'AI 보고서 생성', ai_report_placeholder: '"AI 보고서 생성"을 클릭하여 지출 습관에 대한 통찰력을 얻으세요.',
+        section_data_title: '데이터 관리', btn_export: 'JSON 내보내기', btn_import: 'JSON 가져오기', btn_clear_all_data: '모든 데이터 지우기',
+        custom_item_name: '항목 이름', custom_income_name: '수입 이름', custom_item_amount: '금액', custom_item_category: '카테고리', remove: '삭제', confirm_clear_data: '정말 모든 데이터를 지우시겠습니까?', confirm_import_data: '기존 데이터를 덮어씁니다. 계속하시겠습니까?', invalid_json: '유효하지 않은 JSON 파일입니다.', alert_data_loaded: "데이터를 성공적으로 가져왔습니다!",
+        chart_taxes: 'Taxes Distribution', chart_pre_tax: 'Pre-Tax Deductions', chart_post_tax: 'Post-Tax Deductions', chart_expenses: 'Expenses Distribution', chart_budget_distribution: 'Overall Budget Distribution',
+        chart_labels_taxes: 'Taxes', chart_labels_pre_tax_deductions: 'Pre-Tax', chart_labels_post_tax_deductions: 'Post-Tax', chart_labels_expenses: 'Expenses', chart_labels_remaining_budget: 'Remaining',
+        ai_report_title: '나의 금융 스냅샷:', ai_report_spending_habit: '가장 큰 지출 항목은', ai_report_on_track: '예산 규칙을 잘 지키고 있습니다.', ai_report_over_spending: '다음 항목에서 예산을 초과하고 있습니다:', ai_report_positive_savings: '훌륭한 저축 습관입니다!', ai_report_negative_savings: '저축액을 늘리는 것을 고려해 보세요.', ai_report_surplus_tip: '잉여금이 있습니다! 저축을 늘리거나 부채를 상환하는 데 사용해 보세요.'
+    }
+};
+
+// 3. 헬퍼 함수
+function capitalizeFirstLetter(string) {
+    if (!string) return '';
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
 
-/* Dark Mode Variables */
-body.dark-mode {
-    --bg-color: #1a1a2e;
-    --card-bg-color: #242444;
-    --text-color: #e0e0e0;
-    --header-bg-color: #162447;
-    --header-text-color: #e0e0e0;
-    --button-bg-color: #1f4068;
-    --button-text-color: #e0e0e0;
-    --input-border-color: #404066;
-    --input-focus-border-color: #92b0ff;
-    --summary-text-color: #92b0ff;
-    --shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    --accent-color: #92b0ff;
-    --danger-color: #ff6b6b;
-    --positive-color: #20c997;
-    --negative-color: #ff6b6b;
-    --balanced-color: #92b0ff;
-    --primary-dark-color: #7a9cff;
-    --tag-needs-bg: #2a2a50;
-    --tag-needs-text: #3699ff;
-    --tag-wants-bg: #4d3c20;
-    --tag-wants-text: #ffa800;
-    --tag-savings-bg: #204d4a;
-    --tag-savings-text: #1bc5bd;
-    --tag-debt-bg: #502a2a;
-    --tag-debt-text: #f64e60;
-    --tag-fixed-bg: #333355;
-    --tag-fixed-text: #b0b0d0;
-    --surplus-color: #20c997;
+function convertToAnnual(amount, frequency) {
+    amount = parseFloat(amount) || 0;
+    switch (frequency) {
+        case 'monthly': return amount * 12;
+        case 'bi-weekly': return amount * 26;
+        case 'weekly': return amount * 52;
+        default: return amount;
+    }
 }
 
-/* Base Styles */
-body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: var(--text-color); background-color: var(--bg-color); line-height: 1.6; }
-
-/* Header */
-header { background-color: var(--header-bg-color); color: var(--header-text-color); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow); flex-wrap: nowrap; }
-header h1 { margin: 0; font-size: 1.6em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 1; }
-.header-controls { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-
-/* Main Container */
-.container { max-width: 900px; margin: 20px auto; padding: 0 20px; }
-
-/* Budget Section */
-.budget-section { background-color: var(--card-bg-color); padding: 25px; margin-bottom: 25px; border-radius: var(--border-radius); box-shadow: var(--shadow); }
-.budget-section h2 { color: var(--accent-color); margin-top: 0; margin-bottom: 20px; border-bottom: 2px solid var(--input-border-color); padding-bottom: 10px; }
-
-/* Form Groups & Inputs */
-.form-group { margin-bottom: 20px; display: flex; flex-direction: column; }
-.form-group label { margin-bottom: 8px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
-.input-container { display: flex; width: 100%; gap: 10px; align-items: center; }
-
-/* All Input Controls Style */
-.form-control {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid var(--input-border-color);
-    border-radius: 5px;
-    background-color: var(--card-bg-color);
-    color: var(--text-color);
-    font-size: 1em;
-    box-sizing: border-box;
-    height: 43px;
-}
-select.form-control {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    background-size: 16px 12px;
-}
-body.dark-mode select.form-control {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23e0e0e0' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+function convertFromAnnual(annualAmount, frequency) {
+    annualAmount = parseFloat(annualAmount) || 0;
+    switch (frequency) {
+        case 'monthly': return annualAmount / 12;
+        case 'bi-weekly': return annualAmount / 26;
+        case 'weekly': return annualAmount / 52;
+        default: return annualAmount;
+    }
 }
 
-.form-control:focus { outline: none; border-color: var(--input-focus-border-color); box-shadow: 0 0 0 3px rgba(93, 120, 255, 0.2); }
-.salary-input-container select { flex-basis: 150px; flex-grow: 0; }
-.salary-input-container input { flex-grow: 1; }
-
-/* Buttons */
-.btn { background-color: var(--button-bg-color); color: var(--button-text-color); padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 1em; transition: background-color 0.2s, transform 0.1s; display: inline-block; }
-.btn:hover { background-color: var(--primary-dark-color); transform: translateY(-1px); }
-.btn-danger { background-color: var(--danger-color); }
-.btn-danger:hover { background-color: #e5394b; }
-.icon-btn { background: none; border: none; font-size: 1.5em; color: var(--header-text-color); cursor: pointer; }
-
-/* Form Grid */
-.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px; }
-
-/* Custom List */
-.custom-list { margin-top: 20px; border-top: 1px solid var(--input-border-color); padding-top: 15px; display: flex; flex-direction: column; gap: 20px; }
-.custom-list:empty { display: none; }
-.custom-list-item { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 10px; align-items: center; }
-.custom-list-item.income-item, .custom-list-item.expense-item, .custom-list-item.pre-tax-item, .custom-list-item.post-tax-item { grid-template-columns: 2fr 1fr 1fr 1fr auto; }
-.custom-list-item.tax-item { grid-template-columns: 2fr 1fr 1fr auto; }
-.add-custom-btn { margin-top: 10px; }
-
-/* Summary & Results */
-.summary-results { display: grid; grid-template-columns: auto 1fr; gap: 12px 20px; align-items: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--input-border-color); }
-.summary-results p { margin: 0; font-weight: 500; text-align: left; }
-.summary-results span { font-weight: bold; text-align: right; }
-#remaining-budget-display.positive { color: var(--positive-color); }
-#remaining-budget-display.negative { color: var(--negative-color); }
-#remaining-budget-display.balanced { color: var(--balanced-color); }
-.annual-salary-summary { margin-top: 15px; font-size: 1.1em; font-weight: bold; color: var(--summary-text-color); text-align: right; }
-
-/* Chart Container */
-.chart-container { position: relative; margin: 25px 0; background-color: var(--bg-color); border-radius: var(--border-radius); height: 350px; padding: 15px; }
-
-/* AI Report Box */
-.ai-report-box { background-color: var(--bg-color); padding: 20px; margin-top: 20px; border-radius: var(--border-radius); min-height: 100px; border: 1px dashed var(--input-border-color); display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
-.ai-report-box ul { padding-left: 20px; margin: 0; }
-
-/* Data Actions */
-.data-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
-
-/* Category Tag Styles */
-.category-tag { font-size: 0.75em; font-weight: 500; padding: 3px 8px; border-radius: 12px; text-align: center; margin-left: 10px; }
-.category-tag.needs { background-color: var(--tag-needs-bg); color: var(--tag-needs-text); }
-.category-tag.wants { background-color: var(--tag-wants-bg); color: var(--tag-wants-text); }
-.category-tag.savings { background-color: var(--tag-savings-bg); color: var(--tag-savings-text); }
-.category-tag.debt { background-color: var(--tag-debt-bg); color: var(--tag-debt-text); }
-.category-tag.fixed { background-color: var(--tag-fixed-bg); color: var(--tag-fixed-text); }
-
-/* Budget Rule Styles */
-#budget-rule-breakdown { display: flex; flex-direction: column; gap: 20px; margin-top: 20px; }
-.rule-progress-bar-container { display: flex; flex-direction: column; }
-.rule-progress-bar-labels { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95em; flex-wrap: wrap; }
-.rule-category-label { font-weight: bold; color: var(--accent-color); cursor: pointer; }
-.rule-category-label:hover { text-decoration: underline; }
-.rule-amount-label { font-weight: 500; white-space: nowrap; }
-.rule-progress-bar { width: 100%; background-color: var(--input-border-color); border-radius: 5px; height: 20px; overflow: hidden; }
-.rule-progress-bar-inner { height: 100%; width: 0; background-color: var(--positive-color); border-radius: 5px; transition: width 0.5s, background-color 0.5s; text-align: center; color: white; font-size: 0.8em; line-height: 20px; white-space: nowrap; overflow: hidden; }
-.rule-progress-bar-inner.over-budget { background-color: var(--negative-color); }
-.surplus-container { margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--input-border-color); text-align: center; }
-.surplus-label { font-size: 1.1em; font-weight: bold; color: var(--surplus-color); }
-
-/* Modal Styles */
-.modal-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
-.modal-container:not(.hidden) { opacity: 1; visibility: visible; }
-.modal-content { background: var(--card-bg-color); padding: 30px; border-radius: var(--border-radius); box-shadow: var(--shadow); width: 90%; max-width: 500px; position: relative; transform: translateY(-50px); transition: transform 0.3s; }
-.modal-container:not(.hidden) .modal-content { transform: translateY(0); }
-.modal-close-btn { position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 2em; color: var(--text-color); cursor: pointer; line-height: 1; }
-.modal-content h3 { margin-top: 0; color: var(--accent-color); }
-.modal-content ul { list-style: none; padding: 0; max-height: 300px; overflow-y: auto; }
-.modal-content li { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--input-border-color); }
-.modal-content li:last-child { border-bottom: none; }
-.modal-item-name { font-weight: 500; }
-.modal-item-amount { font-weight: bold; }
-
-/* Mobile Responsive Styles */
-@media (max-width: 768px) {
-    header h1 { font-size: 1.2em; }
-    .form-grid { grid-template-columns: 1fr; }
-    .custom-list-item, .custom-list-item.tax-item, .custom-list-item.income-item { display: flex; flex-direction: column; align-items: stretch; gap: 10px; grid-template-columns: 1fr; border-bottom: 1px solid var(--input-border-color); padding-bottom: 15px; }
-    .custom-list .custom-list-item:last-of-type { border-bottom: none; }
-    .custom-list-item .remove-btn { align-self: flex-end; }
-    .salary-input-container { flex-direction: row; }
-    .salary-input-container select { flex: 1; }
-    .salary-input-container input { flex: 2; }
+function calculateTotalForSection(items, customItems, freqKey) {
+    let total = 0;
+    const freq = data.frequencies[freqKey];
+    for (const key in items) {
+        if (key !== 'custom' && typeof items[key] === 'number') {
+            total += convertToAnnual(items[key], freq);
+        }
+    }
+    if (customItems) {
+        total += customItems.reduce((sum, item) => sum + convertToAnnual(item.amount, item.frequency), 0);
+    }
+    return total;
 }
 
-@media (max-width: 480px) {
-    header h1 { font-size: 1.1em; }
-    .budget-section { padding: 15px; }
-    .data-actions { grid-template-columns: 1fr; }
-    .salary-input-container { flex-direction: column; }
+function calculateBudget() {
+    let annualGrossSalary = convertToAnnual(data.grossSalary, data.salaryFrequency);
+    annualGrossSalary += data.customIncomes.reduce((sum, income) => sum + convertToAnnual(income.amount, income.frequency), 0);
+    const totalAnnualTaxes = calculateTotalForSection(data.taxes, data.taxes.custom, 'tax');
+    const totalAnnualPreTaxDeductions = calculateTotalForSection(data.preTaxDeductions, data.preTaxDeductions.custom, 'preTax');
+    const totalAnnualPostTaxDeductions = calculateTotalForSection(data.postTaxDeductions, data.postTaxDeductions.custom, 'postTax');
+    const { needs, wants, savings, debt } = categorizeAll();
+    const totalAnnualExpenses = needs + wants;
+    const netSalary = annualGrossSalary - totalAnnualTaxes - totalAnnualPreTaxDeductions - totalAnnualPostTaxDeductions;
+    const remainingBudget = netSalary - (totalAnnualExpenses + savings + debt);
+    return { annualGrossSalary, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, netSalary, totalAnnualExpenses, remainingBudget };
 }
 
-@media print {
-    header, .add-custom-btn, .data-actions, #ai-report-btn, .custom-list-item .remove-btn, .modal-container { display: none; }
-    .budget-section { box-shadow: none; border: 1px solid #ccc; }
-    .container { padding: 0; margin: 0; max-width: 100%; }
+// 4. UI 업데이트 & 렌더링
+function formatCurrency(amount) {
+    amount = parseFloat(amount) || 0;
+    const currency = data.currency;
+    const symbol = currency === 'KRW' ? '₩' : '$';
+    const locale = currency === 'KRW' ? 'ko-KR' : 'en-US';
+    const numberPart = new Intl.NumberFormat(locale, {
+        minimumFractionDigits: currency === 'KRW' ? 0 : 2,
+        maximumFractionDigits: currency === 'KRW' ? 0 : 2,
+    }).format(amount);
+    return `${symbol}${numberPart}`;
 }
+
+function updateDisplay() {
+    data.grossSalary = parseFloat(grossSalaryInput.value) || 0;
+    data.salaryFrequency = salaryFrequencySelect.value;
+    data.summaryFrequency = summaryFrequencySelect.value;
+    data.budgetRule = budgetRuleSelect.value;
+    data.frequencies = { tax: taxFrequencySelect.value, preTax: preTaxFrequencySelect.value, postTax: postTaxFrequencySelect.value, expense: expenseFrequencySelect.value };
+    ['taxes', 'preTaxDeductions', 'postTaxDeductions', 'expenses'].forEach(section => {
+        const inputs = section === 'taxes' ? taxInputs : section === 'preTaxDeductions' ? preTaxDeductInputs : section === 'postTaxDeductions' ? postTaxDeductInputs : expenseInputs;
+        Object.keys(inputs).forEach(key => {
+            if(data[section] && inputs[key]) data[section][key] = parseFloat(inputs[key].value) || 0;
+        });
+    });
+
+    const { annualGrossSalary, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, netSalary, totalAnnualExpenses, remainingBudget } = calculateBudget();
+    const summaryFreq = data.summaryFrequency; 
+
+    annualSalarySummaryDisplay.textContent = formatCurrency(annualGrossSalary);
+    grossSalarySummaryDisplay.textContent = formatCurrency(convertFromAnnual(annualGrossSalary, summaryFreq));
+    totalTaxesDisplay.textContent = formatCurrency(convertFromAnnual(totalAnnualTaxes, summaryFreq));
+    totalPreTaxDisplay.textContent = formatCurrency(convertFromAnnual(totalAnnualPreTaxDeductions, summaryFreq));
+    totalPostTaxDisplay.textContent = formatCurrency(convertFromAnnual(totalAnnualPostTaxDeductions, summaryFreq));
+    netSalaryDisplay.textContent = formatCurrency(convertFromAnnual(netSalary, summaryFreq));
+    totalExpensesDisplay.textContent = formatCurrency(convertFromAnnual(totalAnnualExpenses, summaryFreq));
+    
+    const periodicRemaining = convertFromAnnual(remainingBudget, summaryFreq);
+    remainingBudgetDisplay.textContent = formatCurrency(periodicRemaining);
+    remainingBudgetDisplay.className = periodicRemaining > 0 ? 'positive' : periodicRemaining < 0 ? 'negative' : 'balanced';
+
+    renderAllCustomLists();
+    const breakdownData = applyBudgetRule();
+    renderBudgetRule(breakdownData, remainingBudget, summaryFreq);
+    updateCharts();
+    renderCategoryTags();
+    saveData();
+}
+
+function renderAllCustomLists() {
+    renderCustomList(customIncomeList, data.customIncomes, 'income');
+    renderCustomList(customTaxList, data.taxes.custom, 'tax');
+    renderCustomList(customPreTaxDeductList, data.preTaxDeductions.custom, 'pre-tax');
+    renderCustomList(customPostTaxDeductList, data.postTaxDeductions.custom, 'post-tax');
+    renderCustomList(customExpenseList, data.expenses.custom, 'expense');
+}
+
+function renderCustomList(listElement, customItems, type) {
+    if (!listElement) return;
+    const lang = data.currentLanguage;
+    listElement.innerHTML = customItems.map((item, index) => {
+        const hasCategory = ['pre-tax', 'post-tax', 'expense'].includes(type);
+        const categoryDropdown = hasCategory ? `
+            <select class="custom-item-category form-control" data-index="${index}" data-type="${type}">
+                <option value="wants" ${item.category === 'wants' ? 'selected' : ''}>${translations[lang].tag_wants}</option>
+                <option value="needs" ${item.category === 'needs' ? 'selected' : ''}>${translations[lang].tag_needs}</option>
+                <option value="savings" ${item.category === 'savings' ? 'selected' : ''}>${translations[lang].tag_savings}</option>
+                <option value="debt" ${item.category === 'debt' ? 'selected' : ''}>${translations[lang].tag_debt}</option>
+            </select>
+        ` : '';
+        const placeholder = type === 'income' ? translations[lang].custom_income_name : translations[lang].custom_item_name;
+        return `
+            <div class="custom-list-item ${type}-item">
+                <input type="text" value="${item.name}" placeholder="${placeholder}" class="custom-item-name form-control" data-index="${index}" data-type="${type}">
+                <input type="number" value="${item.amount}" placeholder="${translations[lang].custom_item_amount}" class="custom-item-amount form-control" data-index="${index}" data-type="${type}">
+                <select class="custom-item-frequency form-control" data-index="${index}" data-type="${type}">
+                    <option value="monthly"${item.frequency === 'monthly' ? ' selected' : ''}>${translations[lang].frequency_monthly}</option>
+                    <option value="annual"${item.frequency === 'annual' ? ' selected' : ''}>${translations[lang].frequency_annually}</option>
+                    <option value="weekly"${item.frequency === 'weekly' ? ' selected' : ''}>${translations[lang].frequency_weekly}</option>
+                    <option value="bi-weekly"${item.frequency === 'bi-weekly' ? ' selected' : ''}>${translations[lang].frequency_bi_weekly}</option>
+                </select>
+                ${categoryDropdown}
+                <button class="remove-btn btn btn-danger" data-index="${index}" data-type="${type}">${translations[lang].remove}</button>
+            </div>`;
+    }).join('');
+
+    listElement.querySelectorAll('.custom-item-name, .custom-item-amount, .custom-item-frequency, .custom-item-category').forEach(el => el.addEventListener('change', handleCustomItemChange));
+    listElement.querySelectorAll('.remove-btn').forEach(button => button.addEventListener('click', removeCustomItem));
+}
+
+function renderCategoryTags() {
+    const lang = data.currentLanguage;
+    document.querySelectorAll('.form-group[data-item-id]').forEach(group => {
+        const itemId = group.dataset.itemId;
+        const category = ITEM_CATEGORIES[itemId];
+        const tagElement = group.querySelector('.category-tag');
+        if (category && tagElement) {
+            tagElement.textContent = translations[lang][`tag_${category}`] || '';
+            tagElement.className = `category-tag ${category}`;
+        } else if (tagElement) {
+            tagElement.textContent = '';
+            tagElement.className = 'category-tag';
+        }
+    });
+}
+
+// 5. 커스텀 항목 핸들러
+function addCustomItem(event) {
+    const type = event.target.dataset.type;
+    const targetMap = { 'income': data.customIncomes, 'tax': data.taxes.custom, 'pre-tax': data.preTaxDeductions.custom, 'post-tax': data.postTaxDeductions.custom, 'expense': data.expenses.custom };
+    const list = targetMap[type];
+    if (list) {
+        list.push({ name: '', amount: 0, frequency: 'monthly', category: 'wants' });
+        updateDisplay();
+    }
+}
+
+function handleCustomItemChange(event) {
+    const { index, type } = event.target.dataset;
+    const targetMap = { 'income': data.customIncomes, 'tax': data.taxes.custom, 'pre-tax': data.preTaxDeductions.custom, 'post-tax': data.postTaxDeductions.custom, 'expense': data.expenses.custom };
+    const list = targetMap[type];
+    const item = list[parseInt(index)];
+
+    if(item) {
+        if (event.target.classList.contains('custom-item-name')) item.name = event.target.value;
+        else if (event.target.classList.contains('custom-item-amount')) item.amount = parseFloat(event.target.value) || 0;
+        else if (event.target.classList.contains('custom-item-frequency')) item.frequency = event.target.value;
+        else if (event.target.classList.contains('custom-item-category')) item.category = event.target.value;
+        updateDisplay();
+    }
+}
+
+function removeCustomItem(event) {
+    const { index, type } = event.target.dataset;
+    const targetMap = { 'income': data.customIncomes, 'tax': data.taxes.custom, 'pre-tax': data.preTaxDeductions.custom, 'post-tax': data.postTaxDeductions.custom, 'expense': data.expenses.custom };
+    const list = targetMap[type];
+    list.splice(parseInt(index), 1);
+    updateDisplay();
+}
+
+// 6. 언어 & 테마
+function applyLanguage() {
+    const lang = data.currentLanguage;
+    document.documentElement.lang = lang;
+    languageToggleBtn.textContent = lang === 'ko' ? 'EN' : 'KO';
+    currencyToggleBtn.textContent = data.currency === 'USD' ? '₩' : '$';
+    document.querySelectorAll('[data-i18n-key]').forEach(element => {
+        const key = element.dataset.i18nKey;
+        if (translations[lang] && translations[lang][key]) {
+            const translation = translations[lang][key];
+            if (element.placeholder !== undefined) element.placeholder = translation;
+            else element.textContent = translation;
+        }
+    });
+    updateDisplay();
+}
+
+function applyDarkMode() {
+    const icon = darkmodeToggleBtn.querySelector('i');
+    if (data.isDarkMode) {
+        document.body.classList.add('dark-mode');
+        if(icon) icon.className = 'ri-sun-line';
+    } else {
+        document.body.classList.remove('dark-mode');
+        if(icon) icon.className = 'ri-moon-line';
+    }
+}
+
+// 7. 데이터 관리
+function saveData() { localStorage.setItem('budgetData', JSON.stringify(data)); }
+
+function populateUiFromData() {
+    grossSalaryInput.value = data.grossSalary;
+    salaryFrequencySelect.value = data.salaryFrequency;
+    summaryFrequencySelect.value = data.summaryFrequency;
+    budgetRuleSelect.value = data.budgetRule;
+    taxFrequencySelect.value = data.frequencies.tax;
+    preTaxFrequencySelect.value = data.frequencies.preTax;
+    postTaxFrequencySelect.value = data.frequencies.postTax;
+    expenseFrequencySelect.value = data.frequencies.expense;
+
+    Object.keys(taxInputs).forEach(key => { if(taxInputs[key]) taxInputs[key].value = data.taxes[key] || 0});
+    Object.keys(preTaxDeductInputs).forEach(key => { if(preTaxDeductInputs[key]) preTaxDeductInputs[key].value = data.preTaxDeductions[key] || 0});
+    Object.keys(postTaxDeductInputs).forEach(key => { if(postTaxDeductInputs[key]) postTaxDeductInputs[key].value = data.postTaxDeductions[key] || 0});
+    Object.keys(expenseInputs).forEach(key => { if(expenseInputs[key]) expenseInputs[key].value = data.expenses[key] || 0});
+    
+    applyDarkMode();
+    applyLanguage();
+}
+
+function loadData() {
+    const savedData = localStorage.getItem('budgetData');
+    if (savedData) {
+        const parsedData = JSON.parse(savedData);
+        if (!parsedData.customIncomes) parsedData.customIncomes = [];
+        Object.assign(data, parsedData);
+    }
+    populateUiFromData();
+}
+
+// 8. 차트
+function createOrUpdateChart(instance, canvasId, label, dataValues, labels) {
+    const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#E7E9ED', '#8AC926', '#A1C935', '#2a9d8f', '#e9c46a', '#f4a261', '#e76f51'];
+    const ctx = document.getElementById(canvasId);
+    if (!ctx) return instance;
+    const chartData = { labels: labels, datasets: [{ label: label, data: dataValues, backgroundColor: colors, hoverOffset: 4 }] };
+    if (instance) { instance.data = chartData; instance.options.plugins.title.text = label; instance.update(); return instance; }
+    return new Chart(ctx, { type: 'pie', data: chartData, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' }, title: { display: true, text: label } } } });
+}
+
+function updateCharts() {
+    const { totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses, remainingBudget } = calculateBudget();
+    const lang = data.currentLanguage;
+
+    const extractChartData = (items, customItems, sectionKey) => {
+        let labels = [], amounts = [];
+        const freq = data.frequencies[sectionKey];
+        if (items) {
+            for(const key in items) {
+                if(key !== 'custom' && items[key] > 0) {
+                    const cleanKey = key.replace(/-\d$/, ''); 
+                    const translationKey = `label_${cleanKey.replace(/-/g, '_')}`;
+                    const labelText = translations[lang][translationKey] || key;
+                    labels.push(capitalizeFirstLetter(labelText));
+                    amounts.push(convertToAnnual(items[key], freq));
+                }
+            }
+        }
+        if (customItems) {
+            customItems.forEach(item => {
+                if(item.amount > 0) {
+                    labels.push(capitalizeFirstLetter(item.name));
+                    amounts.push(convertToAnnual(item.amount, item.frequency));
+                }
+            });
+        }
+        return { labels, amounts };
+    };
+    
+    const taxData = extractChartData(data.taxes, data.taxes.custom, 'tax');
+    taxChartInstance = createOrUpdateChart(taxChartInstance, 'tax-chart', translations[lang].chart_taxes, taxData.amounts, taxData.labels);
+    const preTaxData = extractChartData(data.preTaxDeductions, data.preTaxDeductions.custom, 'preTax');
+    preTaxDeductChartInstance = createOrUpdateChart(preTaxDeductChartInstance, 'pre-tax-deduct-chart', translations[lang].chart_pre_tax, preTaxData.amounts, preTaxData.labels);
+    const postTaxData = extractChartData(data.postTaxDeductions, data.postTaxDeductions.custom, 'postTax');
+    postTaxDeductChartInstance = createOrUpdateChart(postTaxDeductChartInstance, 'post-tax-deduct-chart', translations[lang].chart_post_tax, postTaxData.amounts, postTaxData.labels);
+    const expenseData = extractChartData(data.expenses, data.expenses.custom, 'expense');
+    expensesChartInstance = createOrUpdateChart(expensesChartInstance, 'expenses-chart', translations[lang].chart_expenses, expenseData.amounts, expenseData.labels);
+    const overallData = [totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses, Math.max(0, remainingBudget)];
+    const overallLabels = [translations[lang].chart_labels_taxes, translations[lang].chart_labels_pre_tax_deductions, translations[lang].chart_labels_post_tax_deductions, translations[lang].chart_labels_expenses, translations[lang].chart_labels_remaining_budget];
+    const filteredAmounts = overallData.filter(v => v > 0);
+    const filteredLabels = overallLabels.filter((_, i) => overallData[i] > 0);
+    budgetDistributionChartInstance = createOrUpdateChart(budgetDistributionChartInstance, 'budget-distribution-chart', translations[lang].chart_budget_distribution, filteredAmounts, filteredLabels);
+}
+
+// 9. 예산 규칙 & AI 보고서
+function categorizeAll(getitems = false) {
+    let totals = { needs: 0, wants: 0, savings: 0, debt: 0 };
+    let items = { needs: [], wants: [], savings: [], debt: [] };
+
+    const processSection = (sectionName) => {
+        const sectionData = data[sectionName];
+        if (!sectionData) return;
+        const freqKeyMap = { 'preTaxDeductions': 'preTax', 'postTaxDeductions': 'postTax', 'expenses': 'expense' };
+        const freqKey = freqKeyMap[sectionName];
+        const itemPrefix = sectionName.includes('Deduct') ? 'deduct' : 'exp';
+        for (const key in sectionData) {
+            if (key === 'custom') continue;
+            const itemId = `${itemPrefix}-${key.replace(/_/g, '-')}-1`;
+            const category = ITEM_CATEGORIES[itemId];
+            if (category && totals.hasOwnProperty(category)) {
+                const amount = convertToAnnual(sectionData[key], data.frequencies[freqKey]);
+                totals[category] += amount;
+                if(getitems && amount > 0) {
+                    const transKey = `label_${key.replace(/-/g, '_')}`;
+                    items[category].push({ name: translations[data.currentLanguage][transKey] || key, amount: amount });
+                }
+            }
+        }
+        if (sectionData.custom) {
+            sectionData.custom.forEach(item => {
+                const category = item.category || 'wants';
+                if (totals.hasOwnProperty(category)) {
+                    const amount = convertToAnnual(item.amount, item.frequency);
+                    totals[category] += amount;
+                    if(getitems && amount > 0) {
+                        items[category].push({ name: item.name, amount: amount });
+                    }
+                }
+            });
+        }
+    };
+    ['preTaxDeductions', 'postTaxDeductions', 'expenses'].forEach(processSection);
+    return getitems ? items : totals;
+}
+
+function applyBudgetRule() {
+    const { netSalary } = calculateBudget();
+    const totals = categorizeAll();
+    const lang = data.currentLanguage;
+    let breakdown = [];
+    switch (data.budgetRule) {
+        case '50-30-20':
+            breakdown = [
+                { id: 'needs', label: translations[lang].rule_category_needs, goal: netSalary * 0.5, actual: totals.needs },
+                { id: 'wants', label: translations[lang].rule_category_wants, goal: netSalary * 0.3, actual: totals.wants },
+                { id: 'savings', label: translations[lang].rule_category_savings_debt, goal: netSalary * 0.2, actual: totals.savings + totals.debt }
+            ];
+            break;
+        case '70-20-10':
+            breakdown = [
+                { id: 'spending', label: translations[lang].rule_category_spending, goal: netSalary * 0.7, actual: totals.needs + totals.wants },
+                { id: 'savings', label: translations[lang].rule_category_savings, goal: netSalary * 0.2, actual: totals.savings },
+                { id: 'debt', label: translations[lang].rule_category_debt, goal: netSalary * 0.1, actual: totals.debt }
+            ];
+            break;
+        case '80-20':
+            breakdown = [
+                { id: 'spending', label: translations[lang].rule_category_spending, goal: netSalary * 0.8, actual: totals.needs + totals.wants + totals.debt },
+                { id: 'savings', label: translations[lang].rule_category_savings, goal: netSalary * 0.2, actual: totals.savings }
+            ];
+            break;
+    }
+    return breakdown;
+}
+
+function renderBudgetRule(breakdown, remaining, frequency) {
+    if (!budgetRuleBreakdown || !breakdown) return;
+    const lang = data.currentLanguage;
+    let html = breakdown.map(item => {
+        const periodicActual = convertFromAnnual(item.actual, frequency);
+        const periodicGoal = convertFromAnnual(item.goal, frequency);
+        const percentage = periodicGoal > 0 ? (periodicActual / periodicGoal) * 100 : 0;
+        const isOverBudget = periodicActual > periodicGoal;
+        return `
+            <div class="rule-progress-bar-container">
+                <div class="rule-progress-bar-labels">
+                    <span class="rule-category-label" data-categoryid="${item.id}">${item.label}</span>
+                    <span class="rule-amount-label">${formatCurrency(periodicActual)} / ${formatCurrency(periodicGoal)}</span>
+                </div>
+                <div class="rule-progress-bar">
+                    <div class="rule-progress-bar-inner ${isOverBudget ? 'over-budget' : ''}" style="width: ${Math.min(percentage, 100)}%;" title="${Math.round(percentage)}%">
+                        ${Math.round(percentage)}%
+                    </div>
+                </div>
+            </div>`;
+    }).join('');
+    if (remaining > 0) {
+        html += `<div class="surplus-container"><span class="surplus-label">${translations[lang].rule_category_surplus}: ${formatCurrency(convertFromAnnual(remaining, frequency))}</span></div>`;
+    }
+    budgetRuleBreakdown.innerHTML = html;
+    budgetRuleBreakdown.querySelectorAll('.rule-category-label').forEach(label => {
+        label.addEventListener('click', () => showCategoryDetails(label.dataset.categoryid));
+    });
+}
+
+function generateAiReport() {
+    const { netSalary, remainingBudget } = calculateBudget();
+    const totals = categorizeAll();
+    const lang = data.currentLanguage;
+    const breakdown = applyBudgetRule();
+    let insights = [];
+    const spendingCats = { [translations[lang].rule_category_needs]: totals.needs, [translations[lang].rule_category_wants]: totals.wants, [translations[lang].rule_category_debt]: totals.debt };
+    if (Object.values(spendingCats).some(v => v > 0)) {
+        const largestCat = Object.keys(spendingCats).reduce((a, b) => spendingCats[a] > spendingCats[b] ? a : b);
+        insights.push(`${translations[lang].ai_report_spending_habit} <strong>${largestCat}</strong>.`);
+    }
+    const overspending = breakdown.filter(item => item.actual > item.goal);
+    if (overspending.length > 0) {
+        insights.push(`${translations[lang].ai_report_over_spending} ${overspending.map(item => `<strong>${item.label}</strong>`).join(', ')}.`);
+    } else if (netSalary > 0) {
+        insights.push(translations[lang].ai_report_on_track);
+    }
+    if (totals.savings > 0) {
+        insights.push(translations[lang].ai_report_positive_savings);
+    } else if (netSalary > 0) {
+        insights.push(translations[lang].ai_report_negative_savings);
+    }
+    if (remainingBudget > 0) {
+        insights.push(translations[lang].ai_report_surplus_tip);
+    }
+    if (insights.length > 0) {
+        aiReportBox.innerHTML = `<strong>${translations[lang].ai_report_title}</strong><ul>${insights.map(i => `<li>${i}</li>`).join('')}</ul>`;
+    } else {
+        aiReportBox.innerHTML = `<p>${translations[lang].ai_report_placeholder}</p>`;
+    }
+}
+
+// 10. 예산 규칙 상세 보기 모달
+function showCategoryDetails(categoryId) {
+    const lang = data.currentLanguage;
+    const allItems = categorizeAll(true);
+    let itemsToShow = [];
+    let title = '';
+
+    switch (categoryId) {
+        case 'needs': itemsToShow = allItems.needs; title = translations[lang].modal_title_needs; break;
+        case 'wants': itemsToShow = allItems.wants; title = translations[lang].modal_title_wants; break;
+        case 'savings': itemsToShow = [...allItems.savings, ...allItems.debt]; title = translations[lang].modal_title_savings; break;
+        case 'spending': itemsToShow = [...allItems.needs, ...allItems.wants]; title = translations[lang].modal_title_spending; break;
+        case 'debt': itemsToShow = allItems.debt; title = translations[lang].modal_title_debt; break;
+    }
+    
+    modalTitle.textContent = title;
+    modalList.innerHTML = itemsToShow.length > 0 ? itemsToShow.map(item => `<li><span class="modal-item-name">${item.name}</span><span class="modal-item-amount">${formatCurrency(convertFromAnnual(item.amount, data.summaryFrequency))}</span></li>`).join('') : `<li>No items in this category.</li>`;
+    modalContainer.classList.remove('hidden');
+}
+
+// 11. 초기화
+document.addEventListener('DOMContentLoaded', () => {
+    grossSalaryInput = document.getElementById('salary-gross');
+    salaryFrequencySelect = document.getElementById('salary-frequency-select');
+    customIncomeList = document.getElementById('custom-income-list');
+    taxFrequencySelect = document.getElementById('tax-frequency-select');
+    preTaxFrequencySelect = document.getElementById('pre-tax-frequency-select');
+    postTaxFrequencySelect = document.getElementById('post-tax-frequency-select');
+    expenseFrequencySelect = document.getElementById('expense-frequency-select');
+    summaryFrequencySelect = document.getElementById('summary-frequency-select');
+    annualSalarySummaryDisplay = document.getElementById('annual-salary-summary-display');
+    grossSalarySummaryDisplay = document.getElementById('gross-salary-summary-display');
+    totalTaxesDisplay = document.getElementById('total-taxes-display');
+    totalPreTaxDisplay = document.getElementById('total-pre-tax-display');
+    totalPostTaxDisplay = document.getElementById('total-post-tax-display');
+    netSalaryDisplay = document.getElementById('net-salary-display');
+    totalExpensesDisplay = document.getElementById('total-expenses-display');
+    remainingBudgetDisplay = document.getElementById('remaining-budget-display');
+    Object.assign(taxInputs, { federal: document.getElementById('tax-federal-1'), state: document.getElementById('tax-state-1'), oasdi: document.getElementById('tax-oasdi-1'), medicare: document.getElementById('tax-medicare-1'), casdi: document.getElementById('tax-casdi-1') });
+    Object.assign(preTaxDeductInputs, { medical: document.getElementById('deduct-medical-1'), dental: document.getElementById('deduct-dental-1'), vision: document.getElementById('deduct-vision-1'), '401k-trad': document.getElementById('deduct-401k-trad-1') });
+    Object.assign(postTaxDeductInputs, { spp: document.getElementById('deduct-spp-1'), adnd: document.getElementById('deduct-adnd-1'), '401k-roth': document.getElementById('deduct-401k-roth-1'), ltd: document.getElementById('deduct-ltd-1') });
+    Object.assign(expenseInputs, { rent: document.getElementById('exp-rent-1'), utilities: document.getElementById('exp-utilities-1'), internet: document.getElementById('exp-internet-1'), phone: document.getElementById('exp-phone-1'), groceries: document.getElementById('exp-groceries-1'), dining: document.getElementById('exp-dining-1'), transport: document.getElementById('exp-transport-1'), shopping: document.getElementById('exp-shopping-1'), health: document.getElementById('exp-health-1'), entertainment: document.getElementById('exp-entertainment-1') });
+    customTaxList = document.getElementById('tax-custom-list');
+    customPreTaxDeductList = document.getElementById('pre-tax-custom-list');
+    customPostTaxDeductList = document.getElementById('post-tax-custom-list');
+    customExpenseList = document.getElementById('expenses-custom-list');
+    languageToggleBtn = document.getElementById('language-toggle');
+    darkmodeToggleBtn = document.getElementById('darkmode-toggle');
+    currencyToggleBtn = document.getElementById('currency-toggle');
+    exportJsonBtn = document.getElementById('export-json-btn');
+    importJsonBtn = document.getElementById('import-json-btn');
+    importJsonInput = document.getElementById('import-json-input');
+    clearAllDataBtn = document.getElementById('clear-all-data-btn');
+    printBtn = document.getElementById('print-btn');
+    emailBtn = document.getElementById('email-btn');
+    shareBtn = document.getElementById('share-btn');
+    aiReportBtn = document.getElementById('ai-report-btn');
+    aiReportBox = document.getElementById('ai-report-box');
+    budgetRuleSelect = document.getElementById('budget-rule-select');
+    budgetRuleBreakdown = document.getElementById('budget-rule-breakdown');
+    modalContainer = document.getElementById('modal-container');
+    modalTitle = document.getElementById('modal-title');
+    modalList = document.getElementById('modal-list');
+    modalCloseBtn = document.querySelector('.modal-close-btn');
+
+    document.querySelectorAll('input[type="number"], select').forEach(el => el.addEventListener('change', updateDisplay));
+    document.querySelectorAll('.add-custom-btn').forEach(btn => btn.addEventListener('click', addCustomItem));
+    languageToggleBtn.addEventListener('click', () => { data.currentLanguage = data.currentLanguage === 'ko' ? 'en' : 'ko'; applyLanguage(); });
+    darkmodeToggleBtn.addEventListener('click', () => { data.isDarkMode = !data.isDarkMode; applyDarkMode(); saveData(); });
+    currencyToggleBtn.addEventListener('click', () => { data.currency = data.currency === 'USD' ? 'KRW' : 'USD'; applyLanguage(); });
+    exportJsonBtn.addEventListener('click', () => { const jsonString = JSON.stringify(data, null, 2); const blob = new Blob([jsonString], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'budget_data.json'; a.click(); URL.revokeObjectURL(url); });
+    importJsonBtn.addEventListener('click', () => importJsonInput.click());
+    importJsonInput.addEventListener('change', (event) => { const file = event.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = (e) => { try { if (confirm(translations[data.currentLanguage].confirm_import_data)) { const importedData = JSON.parse(e.target.result); Object.assign(data, importedData); populateUiFromData(); alert(translations[data.currentLanguage].alert_data_loaded); } } catch (error) { alert(translations[data.currentLanguage].invalid_json); } }; reader.readAsText(file); event.target.value = ''; } });
+    clearAllDataBtn.addEventListener('click', () => { if (confirm(translations[data.currentLanguage].confirm_clear_data)) { localStorage.removeItem('budgetData'); window.location.reload(); } });
+    printBtn.addEventListener('click', () => window.print());
+    emailBtn.addEventListener('click', () => { const { netSalary, totalAnnualExpenses, remainingBudget } = calculateBudget(); const summaryFreq = data.summaryFrequency; const subject = "My Budget Summary"; const body = `Here is my budget summary:\n\nNet Income: ${formatCurrency(convertFromAnnual(netSalary, summaryFreq))}\nTotal Expenses: ${formatCurrency(convertFromAnnual(totalAnnualExpenses, summaryFreq))}\nRemaining: ${formatCurrency(convertFromAnnual(remainingBudget, summaryFreq))}\n`; window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`; });
+    shareBtn.addEventListener('click', async () => { const { netSalary, totalAnnualExpenses, remainingBudget } = calculateBudget(); const summaryFreq = data.summaryFrequency; const shareData = { title: 'My Budget Summary', text: `Here is my budget summary:\nNet Income: ${formatCurrency(convertFromAnnual(netSalary, summaryFreq))}\nTotal Expenses: ${formatCurrency(convertFromAnnual(totalAnnualExpenses, summaryFreq))}\nRemaining: ${formatCurrency(convertFromAnnual(remainingBudget, summaryFreq))}\n`, }; try { if (navigator.share) { await navigator.share(shareData); } else { alert("Share feature is not supported in this browser."); } } catch (err) { console.error("Share failed:", err); } });
+    aiReportBtn.addEventListener('click', generateAiReport);
+    modalCloseBtn.addEventListener('click', () => modalContainer.classList.add('hidden'));
+    modalContainer.addEventListener('click', (e) => { if (e.target === modalContainer) modalContainer.classList.add('hidden'); });
+
+    loadData();
+});
