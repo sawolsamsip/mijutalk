@@ -26,7 +26,7 @@
             <h2 data-i18n-key="section_salary_title">Gross Salary</h2>
             <form id="salary-form">
                 <div class="form-group">
-                    <label for="salary-gross" data-i18n-key="label_gross_salary">Gross Salary</label>
+                    <label for="salary-gross" data-i18n-key="label_base_salary">기본 급여</label>
                     <div class="input-container salary-input-container">
                         <select id="salary-frequency-select" class="form-control">
                             <option value="monthly" data-i18n-key="frequency_monthly">Monthly</option>
@@ -37,6 +37,9 @@
                         <input type="number" id="salary-gross" class="form-control" placeholder="0.00" value="0" min="0">
                     </div>
                 </div>
+                <div class="custom-list" id="custom-income-list"></div>
+                <button type="button" class="btn add-custom-btn" data-type="income" data-i18n-key="btn_add_income">추가 수입</button>
+
                 <p class="annual-salary-summary"><span data-i18n-key="label_annual_salary">Annual Gross Salary:</span> <span id="annual-salary-summary-display">$0.00</span></p>
             </form>
         </section>
@@ -180,7 +183,7 @@
 
         <section class="budget-section">
             <h2 data-i18n-key="section_data_title">Data Management</h2>
-            <div class="form-grid data-actions">
+            <div class="data-actions">
                 <button id="export-json-btn" class="btn" data-i18n-key="btn_export">Export JSON</button>
                 <button id="import-json-btn" class="btn" data-i18n-key="btn_import">Import JSON</button>
                 <input type="file" id="import-json-input" accept=".json" style="display: none;">
@@ -191,6 +194,15 @@
             </div>
         </section>
     </main>
+    
+    <div id="modal-container" class="modal-container hidden">
+        <div class="modal-content">
+            <button class="modal-close-btn">&times;</button>
+            <h3 id="modal-title"></h3>
+            <ul id="modal-list"></ul>
+        </div>
+    </div>
+
     <script src="../scripts/budget.js"></script>
 </body>
 </html>
