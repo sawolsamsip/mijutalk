@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n-key="app_title">예산 관리 도구</title>
-    <link rel="stylesheet" href="budget.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="stylesheet" href="../scripts/budget.css">
+    <link rel="stylesheet" href="../scripts/remixicon.css">
+    <script src="../scripts/chart.js"></script>
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicons/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicons/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/favicons/apple-touch-icon.png">
 </head>
 <body>
     <header>
@@ -39,6 +39,7 @@
                 </div>
                 <div class="custom-list" id="custom-income-list"></div>
                 <button type="button" class="btn add-custom-btn" data-type="income" data-i18n-key="btn_add_income">추가 수입</button>
+
                 <p class="annual-salary-summary"><span data-i18n-key="label_annual_salary">Annual Gross Salary:</span> <span id="annual-salary-summary-display">$0.00</span></p>
             </form>
         </section>
@@ -202,6 +203,6 @@
         </div>
     </div>
 
-    <script src="budget.js"></script>
+    <script src="../scripts/budget.js"></script>
 </body>
 </html>
