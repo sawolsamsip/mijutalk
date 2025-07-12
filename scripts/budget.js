@@ -57,7 +57,20 @@ const translations = {
         custom_item_name: 'Item Name', custom_income_name: 'Income Name', custom_item_amount: 'Amount', custom_item_category: 'Category', remove: 'Remove', confirm_clear_data: 'Are you sure you want to clear all data?', confirm_import_data: 'This will overwrite existing data. Continue?', invalid_json: 'Invalid JSON file.', alert_data_loaded: "Data loaded successfully!",
         chart_taxes: 'Taxes Distribution', chart_pre_tax: 'Pre-Tax Deductions', chart_post_tax: 'Post-Tax Deductions', chart_expenses: 'Expenses Distribution', chart_budget_distribution: 'Overall Budget Distribution',
         chart_labels_taxes: 'Taxes', chart_labels_pre_tax_deductions: 'Pre-Tax', chart_labels_post_tax_deductions: 'Post-Tax', chart_labels_expenses: 'Expenses', chart_labels_remaining_budget: 'Remaining',
-        ai_report_title: 'Your Financial Snapshot:', ai_report_spending_habit: 'Your largest spending category is', ai_report_on_track: 'You are on track with your budget rule.', ai_report_over_spending: 'You are overspending in the following categories:', ai_report_positive_savings: 'Great job on saving!', ai_report_negative_savings: 'Consider increasing your savings.', ai_report_surplus_tip: 'You have a surplus! Consider allocating it to your savings or paying off debt.'
+        report_local_generating: "Generating Local Analysis Report...",
+        report_local_failed: "Failed to generate local report. Please check the data.",
+        report_local_title: "Financial Health Analysis",
+        report_local_summary_title: "1. Executive Summary",
+        report_local_summary_text: "Based on a {summaryFreq} net income of {netIncome}, your savings rate is <strong>{savingsRate}%</strong>. You have a remaining surplus of <strong>{remaining}</strong>. Your spending habits show strengths in <strong>{strength}</strong>, with areas for improvement in <strong>{weakness}</strong>.",
+        report_local_strength: "prudent savings",
+        report_local_weakness: "high discretionary spending",
+        report_local_no_weakness: "balanced management",
+        report_local_recommendation_title: "3. Recommended Actions",
+        report_local_tip_overspending: "Your spending on '{category}' ({amount}) exceeds the budget rule. Consider reducing this by about 10-15%.",
+        report_local_tip_high_wants: "Your discretionary spending ('Wants') makes up {wantsPercentage}% of your income. Reviewing these items could significantly boost your savings.",
+        report_local_tip_low_savings: "Your savings rate is {savingsRate}%. To achieve your financial goals faster, consider allocating any surplus or cutting back on non-essential spending to increase this rate.",
+        report_local_tip_surplus: "You have a surplus of {remaining}! Allocating this to your savings or investments could generate an estimated {annualReturn} more per year (assuming a 5% return).",
+        report_local_no_data: "Insufficient data for a detailed analysis. Please input your income and expenses.",
     },
     ko: {
         btn_add_income: '수입 추가', label_base_salary: '기본 급여',
@@ -75,9 +88,22 @@ const translations = {
         section_budget_rule_title: '예산 규칙 적용', label_budget_rule_select: '예산 규칙 선택:', section_ai_title: 'AI 지출 보고서', btn_ai_report: 'AI 보고서 생성', ai_report_placeholder: '"AI 보고서 생성"을 클릭하여 지출 습관에 대한 통찰력을 얻으세요.',
         section_data_title: '데이터 관리', btn_export: 'JSON 내보내기', btn_import: 'JSON 가져오기', btn_clear_all_data: '모든 데이터 지우기',
         custom_item_name: '항목 이름', custom_income_name: '수입 이름', custom_item_amount: '금액', custom_item_category: '카테고리', remove: '삭제', confirm_clear_data: '정말 모든 데이터를 지우시겠습니까?', confirm_import_data: '기존 데이터를 덮어씁니다. 계속하시겠습니까?', invalid_json: '유효하지 않은 JSON 파일입니다.', alert_data_loaded: "데이터를 성공적으로 가져왔습니다!",
-        chart_taxes: 'Taxes Distribution', chart_pre_tax: 'Pre-Tax Deductions', chart_post_tax: 'Post-Tax Deductions', chart_expenses: 'Expenses Distribution', chart_budget_distribution: 'Overall Budget Distribution',
-        chart_labels_taxes: 'Taxes', chart_labels_pre_tax_deductions: 'Pre-Tax', chart_labels_post_tax_deductions: 'Post-Tax', chart_labels_expenses: 'Expenses', chart_labels_remaining_budget: 'Remaining',
-        ai_report_title: '나의 금융 스냅샷:', ai_report_spending_habit: '가장 큰 지출 항목은', ai_report_on_track: '예산 규칙을 잘 지키고 있습니다.', ai_report_over_spending: '다음 항목에서 예산을 초과하고 있습니다:', ai_report_positive_savings: '훌륭한 저축 습관입니다!', ai_report_negative_savings: '저축액을 늘리는 것을 고려해 보세요.', ai_report_surplus_tip: '잉여금이 있습니다! 저축을 늘리거나 부채를 상환하는 데 사용해 보세요.'
+        chart_taxes: '세금 분포', chart_pre_tax: '세전 공제', chart_post_tax: '세후 공제', chart_expenses: '지출 분포', chart_budget_distribution: '전체 예산 분포',
+        chart_labels_taxes: '세금', chart_labels_pre_tax_deductions: '세전 공제', chart_labels_post_tax_deductions: '세후 공제', chart_labels_expenses: '지출', chart_labels_remaining_budget: '남은 예산',
+        report_local_generating: "로컬 분석 리포트를 생성 중입니다...",
+        report_local_failed: "로컬 리포트 생성에 실패했습니다. 데이터를 확인해주세요.",
+        report_local_title: "재무 건강 분석 리포트",
+        report_local_summary_title: "1. 재무 현황 요약",
+        report_local_summary_text: "{summaryFreq} 순수입 {netIncome}을 기준으로, 저축률은 <strong>{savingsRate}%</strong>이며, <strong>{remaining}</strong>의 추가 잉여금이 있습니다. 재정 운용의 강점은 <strong>{strength}</strong>이며, <strong>{weakness}</strong> 부분에서 개선의 여지가 있습니다.",
+        report_local_strength: "계획적인 저축",
+        report_local_weakness: "높은 선택 지출 비중",
+        report_local_no_weakness: "균형 잡힌 관리",
+        report_local_recommendation_title: "2. 추천 실행 계획",
+        report_local_tip_overspending: "'{category}' 항목 지출({amount})이 예산 규칙을 초과했습니다. 이 부분을 10~15% 줄이는 것을 고려해보세요.",
+        report_local_tip_high_wants: "선택적 지출('선택')이 소득의 {wantsPercentage}%를 차지합니다. 이 항목들을 검토하면 저축액을 크게 늘릴 수 있습니다.",
+        report_local_tip_low_savings: "현재 저축률은 {savingsRate}%입니다. 재무 목표를 빠르게 달성하기 위해, 잉여금을 저축에 배분하거나 불필요한 지출을 줄여 저축률을 높여보세요.",
+        report_local_tip_surplus: "<strong>{remaining}</strong>의 잉여금이 있습니다! 이 금액을 저축이나 투자에 활용하면, 연 5% 수익률 가정 시 연간 약 <strong>{annualReturn}</strong>의 추가 수익을 기대할 수 있습니다.",
+        report_local_no_data: "상세 분석을 위한 데이터가 부족합니다. 수입 및 지출 내역을 입력해주세요.",
     }
 };
 
@@ -284,14 +310,13 @@ function applyLanguage() {
         const key = element.dataset.i18nKey;
         if (translations[lang] && translations[lang][key]) {
             const translation = translations[lang][key];
-            if (element.tagName === 'P' || element.tagName === 'H1' || element.tagName === 'H2' || element.tagName === 'SPAN' || element.tagName === 'BUTTON' || element.tagName === 'OPTION' || element.tagName === 'A') {
+            if (element.tagName === 'P' || element.tagName === 'H1' || element.tagName === 'H2' || element.tagName === 'SPAN' || element.tagName === 'BUTTON' || element.tagName === 'OPTION' || element.tagName === 'A' || element.tagName === 'LABEL' || element.tagName === 'TITLE') {
                 element.textContent = translation;
             } else if (element.placeholder !== undefined) {
                 element.placeholder = translation;
             }
         }
     });
-    // AI 리포트 박스 내부의 p 태그를 별도로 처리
     const aiPlaceholder = document.querySelector('#ai-report-box p[data-i18n-key]');
     if (aiPlaceholder) {
         aiPlaceholder.textContent = translations[lang].ai_report_placeholder;
@@ -498,47 +523,98 @@ function renderBudgetRule(breakdown, remaining, frequency) {
     });
 }
 
-function generateAiReport() {
+function generateLocalAiReport() {
     const lang = data.currentLanguage;
-    const { netSalary, remainingBudget } = calculateBudget();
-    const totals = categorizeAll();
-    const breakdown = applyBudgetRule();
-    let insights = [];
+    const t = translations[lang];
 
-    // 1. 가장 큰 지출 항목 찾기
-    const spendingCats = {
-        [translations[lang].rule_category_needs]: totals.needs,
-        [translations[lang].rule_category_wants]: totals.wants,
-        [translations[lang].rule_category_debt]: totals.debt
-    };
-    if (Object.values(spendingCats).some(v => v > 0)) {
-        const largestCat = Object.keys(spendingCats).reduce((a, b) => spendingCats[a] > spendingCats[b] ? a : b);
-        insights.push(`${translations[lang].ai_report_spending_habit} <strong>${largestCat}</strong>.`);
-    }
+    try {
+        const { netSalary, remainingBudget } = calculateBudget();
+        const totals = categorizeAll();
+        const breakdown = applyBudgetRule();
+        const summaryFreq = data.summaryFrequency;
 
-    // 2. 예산 규칙 준수 여부 확인
-    const overspending = breakdown.filter(item => item.actual > item.goal);
-    if (overspending.length > 0) {
-        insights.push(`${translations[lang].ai_report_over_spending} ${overspending.map(item => `<strong>${item.label}</strong>`).join(', ')}.`);
-    } else if (netSalary > 0) {
-        insights.push(translations[lang].ai_report_on_track);
-    }
+        if (netSalary <= 0) {
+            aiReportBox.innerHTML = `<p>${t.report_local_no_data}</p>`;
+            return;
+        }
 
-    // 3. 저축 및 잉여금에 대한 조언
-    if (totals.savings > 0) {
-        insights.push(translations[lang].ai_report_positive_savings);
-    } else if (netSalary > 0) {
-        insights.push(translations[lang].ai_report_negative_savings);
-    }
-    if (remainingBudget > 0) {
-        insights.push(translations[lang].ai_report_surplus_tip);
-    }
+        let insights = {
+            summary: "",
+            recommendations: []
+        };
 
-    // 4. 최종 리포트 생성
-    if (insights.length > 0) {
-        aiReportBox.innerHTML = `<strong>${translations[lang].ai_report_title}</strong><ul>${insights.map(i => `<li>${i}</li>`).join('')}</ul>`;
-    } else {
-        aiReportBox.innerHTML = `<p>${translations[lang].ai_report_placeholder}</p>`;
+        const savingsRate = Math.round((totals.savings / netSalary) * 100) || 0;
+        const wantsPercentage = Math.round((totals.wants / netSalary) * 100) || 0;
+        const strength = savingsRate > 10 ? t.report_local_strength : t.report_local_no_weakness;
+        const weakness = wantsPercentage > 30 ? t.report_local_weakness : t.report_local_no_weakness;
+        
+        insights.summary = t.report_local_summary_text
+            .replace('{summaryFreq}', translations[lang][`frequency_${summaryFreq}`])
+            .replace('{netIncome}', formatCurrency(convertFromAnnual(netSalary, summaryFreq)))
+            .replace('{savingsRate}', savingsRate)
+            .replace('{remaining}', formatCurrency(convertFromAnnual(remainingBudget, summaryFreq)))
+            .replace('{strength}', strength)
+            .replace('{weakness}', weakness);
+
+        const overspending = breakdown.find(item => item.actual > item.goal);
+        if (overspending) {
+            const overspendingItemName = overspending.label;
+            const overspendingAmount = formatCurrency(convertFromAnnual(overspending.actual, summaryFreq));
+            insights.recommendations.push(t.report_local_tip_overspending.replace('{category}', overspendingItemName).replace('{amount}', overspendingAmount));
+        }
+        if (wantsPercentage > 35) {
+            insights.recommendations.push(t.report_local_tip_high_wants.replace('{wantsPercentage}', wantsPercentage));
+        }
+        if (savingsRate < 10) {
+            insights.recommendations.push(t.report_local_tip_low_savings.replace('{savingsRate}', savingsRate));
+        }
+        if (remainingBudget > 0) {
+            const periodicSurplus = convertFromAnnual(remainingBudget, summaryFreq);
+            const annualReturn = convertToAnnual(periodicSurplus, summaryFreq) * 0.05;
+            insights.recommendations.push(t.report_local_tip_surplus.replace('{remaining}', formatCurrency(periodicSurplus)).replace('{annualReturn}', formatCurrency(annualReturn)));
+        }
+
+        let reportHtml = `<h3>${t.report_local_title}</h3>`;
+        reportHtml += `<h4>${t.report_local_summary_title}</h4><p>${insights.summary}</p>`;
+        
+        if (insights.recommendations.length > 0) {
+            reportHtml += `<h4>${t.report_local_recommendation_title}</h4><ul>`;
+            insights.recommendations.forEach(tip => {
+                reportHtml += `<li>${tip}</li>`;
+            });
+            reportHtml += `</ul>`;
+        }
+
+        aiReportBox.innerHTML = reportHtml;
+
+    } catch (error) {
+        console.error("Local report generation error:", error);
+        aiReportBox.innerHTML = `<p>${t.report_local_failed}</p>`;
+    }
+}
+
+async function generateAiReport() {
+    const lang = data.currentLanguage;
+    aiReportBox.innerHTML = `<p>${translations[lang].report_local_generating}</p>`;
+
+    try {
+        // This is a placeholder for a real API call.
+        // It will always fail and fall back to the local report.
+        if (false) { // Fails deliberately to enter catch block
+            const response = await fetch('/api/real-report', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ budgetData: data, lang: lang })
+            });
+            if (!response.ok) throw new Error('Server error');
+            const result = await response.json();
+            aiReportBox.innerHTML = result.report;
+        } else {
+            throw new Error("Simulating network failure to trigger local fallback.");
+        }
+    } catch (error) {
+        console.warn("AI endpoint simulation: falling back to local report.", error.message);
+        generateLocalAiReport();
     }
 }
 
