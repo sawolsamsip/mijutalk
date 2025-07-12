@@ -72,12 +72,12 @@ const translations = {
         label_rent_mortgage: '월세/주택담보대출', label_utilities: '공과금', label_internet: '인터넷', label_phone: '휴대폰 요금', label_groceries: '식료품', label_dining_out: '외식',
         label_transportation: '교통비', label_shopping: '쇼핑', label_health_wellness: '건강/웰빙', label_entertainment: '오락', section_summary_title: '예산 요약',
         label_total_taxes: '총 세금:', label_total_pre_tax: '총 세전 공제액:', label_total_post_tax: '총 세후 공제액:', label_net_salary: '순 급여:', label_total_expenses: '총 지출:', label_remaining_budget: '남은 예산:',
-        section_budget_rule_title: '예산 규칙 적용', label_budget_rule_select: '예산 규칙 선택:', section_ai_title: 'AI 지출 보고서', btn_ai_report: 'AI 보고서 생성', ai_report_placeholder: '"AI 보고서 생성"을 클릭하여 지출 습관에 대한 통찰력을 얻으세요.',
-        section_data_title: '데이터 관리', btn_export: 'JSON 내보내기', btn_import: 'JSON 가져오기', btn_clear_all_data: '모든 데이터 지우기',
-        custom_item_name: '항목 이름', custom_income_name: '수입 이름', custom_item_amount: '금액', custom_item_category: '카테고리', remove: '삭제', confirm_clear_data: '정말 모든 데이터를 지우시겠습니까?', confirm_import_data: '기존 데이터를 덮어씁니다. 계속하시겠습니까?', invalid_json: '유효하지 않은 JSON 파일입니다.', alert_data_loaded: "데이터를 성공적으로 가져왔습니다!",
+        section_budget_rule_title: '예산 규칙 적용', label_budget_rule_select: '예산 규칙 선택:', section_ai_title: 'AI Expense Report', btn_ai_report: 'Generate AI Report', ai_report_placeholder: 'Click "Generate AI Report" for insights on your spending habits.',
+        section_data_title: 'Data Management', btn_export: 'Export JSON', btn_import: 'Import JSON', btn_clear_all_data: 'Clear All Data',
+        custom_item_name: 'Item Name', custom_income_name: 'Income Name', custom_item_amount: 'Amount', custom_item_category: 'Category', remove: 'Remove', confirm_clear_data: 'Are you sure you want to clear all data?', confirm_import_data: 'This will overwrite existing data. Continue?', invalid_json: 'Invalid JSON file.', alert_data_loaded: "Data loaded successfully!",
         chart_taxes: 'Taxes Distribution', chart_pre_tax: 'Pre-Tax Deductions', chart_post_tax: 'Post-Tax Deductions', chart_expenses: 'Expenses Distribution', chart_budget_distribution: 'Overall Budget Distribution',
         chart_labels_taxes: 'Taxes', chart_labels_pre_tax_deductions: 'Pre-Tax', chart_labels_post_tax_deductions: 'Post-Tax', chart_labels_expenses: 'Expenses', chart_labels_remaining_budget: 'Remaining',
-        ai_report_title: '나의 금융 스냅샷:', ai_report_spending_habit: '가장 큰 지출 항목은', ai_report_on_track: '예산 규칙을 잘 지키고 있습니다.', ai_report_over_spending: '다음 항목에서 예산을 초과하고 있습니다:', ai_report_positive_savings: '훌륭한 저축 습관입니다!', ai_report_negative_savings: '저축액을 늘리는 것을 고려해 보세요.', ai_report_surplus_tip: '잉여금이 있습니다! 저축을 늘리거나 부채를 상환하는 데 사용해 보세요.'
+        ai_report_title: 'Your Financial Snapshot:', ai_report_spending_habit: 'Your largest spending category is', ai_report_on_track: 'You are on track with your budget rule.', ai_report_over_spending: 'You are overspending in the following categories:', ai_report_positive_savings: 'Great job on saving!', ai_report_negative_savings: 'Consider increasing your savings.', ai_report_surplus_tip: 'You have a surplus! Consider allocating it to your savings or paying off debt.'
     }
 };
 
@@ -408,7 +408,8 @@ function categorizeAll(getitems = false) {
                 totals[category] += amount;
                 if(getitems && amount > 0) {
                     const transKey = `label_${key.replace(/-/g, '_')}`;
-                    items[category].push({ name: translations[data.currentLanguage][transKey] || key, amount: amount });
+                    const name = translations[data.currentLanguage][transKey] || key;
+                    items[category].push({ name: name, amount: amount });
                 }
             }
         }
@@ -489,36 +490,27 @@ function renderBudgetRule(breakdown, remaining, frequency) {
     });
 }
 
-function generateAiReport() {
-    const { netSalary, remainingBudget } = calculateBudget();
-    const totals = categorizeAll();
+async function generateAiReport() {
+    aiReportBox.innerHTML = `<p>${translations[data.currentLanguage].ai_report_placeholder}</p>`;
+    // This is a placeholder. For actual Gemini integration, see the explanation.
+    // The following is a conceptual example and won't work without a backend server.
+    /*
     const lang = data.currentLanguage;
-    const breakdown = applyBudgetRule();
-    let insights = [];
-    const spendingCats = { [translations[lang].rule_category_needs]: totals.needs, [translations[lang].rule_category_wants]: totals.wants, [translations[lang].rule_category_debt]: totals.debt };
-    if (Object.values(spendingCats).some(v => v > 0)) {
-        const largestCat = Object.keys(spendingCats).reduce((a, b) => spendingCats[a] > spendingCats[b] ? a : b);
-        insights.push(`${translations[lang].ai_report_spending_habit} <strong>${largestCat}</strong>.`);
+    aiReportBox.innerHTML = `<p>AI 리포트를 생성 중입니다... 잠시만 기다려 주세요.</p>`;
+    try {
+        const response = await fetch('/generate-report', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ budgetData: data })
+        });
+        if (!response.ok) throw new Error('Server error');
+        const { report } = await response.json();
+        aiReportBox.innerHTML = report;
+    } catch (error) {
+        console.error("AI Report Error:", error);
+        aiReportBox.innerHTML = `<p>AI 리포트 생성에 실패했습니다. 나중에 다시 시도해 주세요.</p>`;
     }
-    const overspending = breakdown.filter(item => item.actual > item.goal);
-    if (overspending.length > 0) {
-        insights.push(`${translations[lang].ai_report_over_spending} ${overspending.map(item => `<strong>${item.label}</strong>`).join(', ')}.`);
-    } else if (netSalary > 0) {
-        insights.push(translations[lang].ai_report_on_track);
-    }
-    if (totals.savings > 0) {
-        insights.push(translations[lang].ai_report_positive_savings);
-    } else if (netSalary > 0) {
-        insights.push(translations[lang].ai_report_negative_savings);
-    }
-    if (remainingBudget > 0) {
-        insights.push(translations[lang].ai_report_surplus_tip);
-    }
-    if (insights.length > 0) {
-        aiReportBox.innerHTML = `<strong>${translations[lang].ai_report_title}</strong><ul>${insights.map(i => `<li>${i}</li>`).join('')}</ul>`;
-    } else {
-        aiReportBox.innerHTML = `<p>${translations[lang].ai_report_placeholder}</p>`;
-    }
+    */
 }
 
 // 10. 예산 규칙 상세 보기 모달
@@ -537,7 +529,14 @@ function showCategoryDetails(categoryId) {
     }
     
     modalTitle.textContent = title;
-    modalList.innerHTML = itemsToShow.length > 0 ? itemsToShow.map(item => `<li><span class="modal-item-name">${item.name}</span><span class="modal-item-amount">${formatCurrency(convertFromAnnual(item.amount, data.summaryFrequency))}</span></li>`).join('') : `<li>No items in this category.</li>`;
+    modalList.innerHTML = itemsToShow.length > 0 
+        ? itemsToShow.map(item => `
+            <li>
+                <span class="modal-item-name">${capitalizeFirstLetter(item.name)}</span>
+                <span class="modal-item-amount">${formatCurrency(convertFromAnnual(item.amount, data.summaryFrequency))}</span>
+            </li>`).join('') 
+        : `<li>No items in this category.</li>`;
+
     modalContainer.classList.remove('hidden');
 }
 
