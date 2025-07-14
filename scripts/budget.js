@@ -44,10 +44,10 @@ const ITEM_CATEGORIES = {
 // 2. 언어별 텍스트
 const translations = {
     en: {
-        app_title: 'Budget Management Tool',
+        app_title: 'Budget Tool',
         section_calculation_mode_title: 'Calculation Mode',
-        mode_simple: 'Simple (Net Income)',
-        mode_advanced: 'Advanced (Gross Income)',
+        mode_simple: 'Simple',
+        mode_advanced: 'Advanced',
         tooltip_calculation_mode: "Choose your calculation method. 'Simple Mode' uses your after-tax net income. 'Advanced Mode' allows for a detailed breakdown starting from your gross income and deductions.",
         section_net_income_title: 'Net Income',
         label_net_income: 'Monthly Net Income (After-Tax)',
@@ -103,7 +103,7 @@ const translations = {
         label_gross_salary: 'Gross Salary:',
         label_total_taxes: 'Total Taxes:',
         label_total_pre_tax: 'Total Pre-Tax:',
-        label_total_post_tax: 'Total Post-Tax:',
+        label_total_post_tax: 'Total Post-Tax Deductions:',
         label_net_salary: 'Net Salary:',
         label_total_expenses: 'Total Expenses:',
         label_remaining_budget: 'Remaining Budget:',
@@ -146,7 +146,8 @@ const translations = {
         rule_category_surplus: 'Surplus (Unallocated)',
         modal_title_needs: 'Needs Items',
         modal_title_wants: 'Wants Items',
-        modal_title_savings: 'Savings & Debt Items',
+        modal_title_savings: 'Savings Items',
+        modal_title_savings_debt: 'Savings & Debt Items',
         modal_title_spending: 'Spending Items',
         modal_title_debt: 'Debt Items',
         report_local_generating: "Generating Local Analysis Report...",
@@ -165,10 +166,10 @@ const translations = {
         report_local_no_data: "Insufficient data for a detailed analysis. Please input your income and expenses.",
     },
     ko: {
-        app_title: '예산 관리 도구',
-        section_calculation_mode_title: '계산 방식 선택',
-        mode_simple: '기본 모드 (순수입)',
-        mode_advanced: '고급 모드 (총수입)',
+        app_title: '스마트 예산 노트',
+        section_calculation_mode_title: '계산 방식',
+        mode_simple: '기본',
+        mode_advanced: '고급',
         tooltip_calculation_mode: "계산 방식을 선택합니다. '기본 모드'는 세후 순수입을 기준으로, '고급 모드'는 세전 총수입과 각종 공제 항목을 직접 입력하여 더 상세하게 계산합니다.",
         section_net_income_title: '순수입',
         label_net_income: '월 순수입 (세후)',
@@ -267,7 +268,8 @@ const translations = {
         rule_category_surplus: '잉여금',
         modal_title_needs: '필수 지출 항목',
         modal_title_wants: '선택 지출 항목',
-        modal_title_savings: '저축 & 부채 항목',
+        modal_title_savings: '저축 항목',
+        modal_title_savings_debt: '저축 & 부채 항목',
         modal_title_spending: '지출 항목',
         modal_title_debt: '부채 상환 항목',
         report_local_generating: "로컬 분석 리포트를 생성 중입니다...",
@@ -329,18 +331,20 @@ function calculateBudget() {
     let totalAnnualPreTaxDeductions = 0;
     let totalAnnualPostTaxDeductions = 0;
 
+    const { needs, wants, savings, debt } = categorizeAll();
+    let totalAnnualExpenses = needs + wants + savings + debt;
+
     if (data.calculationMode === 'advanced') {
         annualGrossSalary = convertToAnnual(data.grossSalary, data.salaryFrequency) + calculateTotalForSection({}, data.customIncomes, 'income');
         totalAnnualTaxes = calculateTotalForSection(data.taxes, data.taxes.custom, 'tax');
-        totalAnnualPreTaxDeductions = calculateTotalForSection(data.preTaxDeductions, data.preTaxDeductions.custom, 'preTax');
+        totalAnnualPreTaxDeductions = needs + wants + savings + debt;
+        annualNetIncome = annualGrossSalary - totalAnnualTaxes; 
         totalAnnualPostTaxDeductions = calculateTotalForSection(data.postTaxDeductions, data.postTaxDeductions.custom, 'postTax');
-        annualNetIncome = annualGrossSalary - totalAnnualTaxes - totalAnnualPreTaxDeductions;
+        totalAnnualExpenses += totalAnnualPostTaxDeductions;
     } else {
         annualNetIncome = convertToAnnual(data.netIncome, 'monthly');
     }
     
-    const { needs, wants, savings, debt } = categorizeAll();
-    const totalAnnualExpenses = needs + wants + savings + debt + (data.calculationMode === 'advanced' ? totalAnnualPostTaxDeductions : 0);
     const remainingBudget = annualNetIncome - totalAnnualExpenses;
     
     return { annualGrossSalary, annualNetIncome, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses, remainingBudget };
@@ -359,6 +363,7 @@ function formatCurrency(amount) {
 }
 
 function updateDisplay() {
+    // 1. 데이터 모델 업데이트
     data.calculationMode = modeToggleCheckbox.checked ? 'advanced' : 'simple';
     data.netIncome = parseFloat(netIncomeInput.value) || 0;
     data.grossSalary = parseFloat(grossSalaryInput.value) || 0;
@@ -375,13 +380,17 @@ function updateDisplay() {
     for(const key in postTaxDeductInputs) if(postTaxDeductInputs[key]) data.postTaxDeductions[key] = parseFloat(postTaxDeductInputs[key].value) || 0;
     for(const key in expenseInputs) if(expenseInputs[key]) data.expenses[key] = parseFloat(expenseInputs[key].value) || 0;
     
+    // 2. UI 표시/숨김 처리
     advancedModeContainer.classList.toggle('hidden', data.calculationMode === 'simple');
     simpleModeContainer.classList.toggle('hidden', data.calculationMode === 'advanced');
     summaryAdvancedView.classList.toggle('hidden', data.calculationMode === 'simple');
-    
+    document.querySelectorAll('.post-tax-summary-item').forEach(el => el.classList.toggle('hidden', data.calculationMode === 'simple'));
+
+    // 3. 계산 실행
     const { annualGrossSalary, annualNetIncome, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses, remainingBudget } = calculateBudget();
     const summaryFreq = data.summaryFrequency;
     
+    // 4. 요약 정보 업데이트
     summaryGrossSalary.textContent = formatCurrency(convertFromAnnual(annualGrossSalary, summaryFreq));
     summaryTotalTaxes.textContent = formatCurrency(convertFromAnnual(totalAnnualTaxes, summaryFreq));
     summaryTotalPreTax.textContent = formatCurrency(convertFromAnnual(totalAnnualPreTaxDeductions, summaryFreq));
@@ -399,6 +408,7 @@ function updateDisplay() {
         annualSummaryP.classList.add('hidden');
     }
     
+    // 5. 하위 컴포넌트 렌더링
     renderAllCustomLists();
     const breakdownData = applyBudgetRule();
     renderBudgetRule(breakdownData, remainingBudget, summaryFreq);
@@ -509,9 +519,7 @@ function applyLanguage() {
     document.querySelectorAll('[data-i18n-key]').forEach(element => {
         const key = element.dataset.i18nKey;
         if (translations[lang] && translations[lang][key]) {
-            if (element.classList.contains('tooltip-text')) {
-                element.textContent = translations[lang][key];
-            } else if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+            if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
                 if (element.placeholder !== undefined) element.placeholder = translations[lang][key];
             } else {
                 element.textContent = translations[lang][key];
@@ -529,14 +537,16 @@ function applyDarkMode() {
 function saveData() { localStorage.setItem('budgetAppData', JSON.stringify(data)); }
 
 function populateUiFromData(savedData) {
-    // Deep merge to ensure new properties are not lost
     const deepMerge = (target, source) => {
         for (const key in source) {
-            if (source[key] instanceof Object && key in target) {
-                Object.assign(source[key], deepMerge(target[key], source[key]));
+            if (source.hasOwnProperty(key)) {
+                if (source[key] instanceof Object && !Array.isArray(source[key]) && key in target && target[key] instanceof Object) {
+                    deepMerge(target[key], source[key]);
+                } else {
+                    target[key] = source[key];
+                }
             }
         }
-        Object.assign(target || {}, source);
         return target;
     }
     
@@ -597,10 +607,9 @@ function createOrUpdateChart(instance, canvasId, label, dataValues, labels) {
 function updateCharts() {
     const lang = data.currentLanguage;
     const t = translations[lang];
-    const { annualNetIncome, remainingBudget, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions } = calculateBudget();
+    const { annualNetIncome, remainingBudget, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses } = calculateBudget();
     const expenseTotals = categorizeAll(false);
-    const totalExpensesAndPostTax = expenseTotals.needs + expenseTotals.wants + expenseTotals.savings + expenseTotals.debt + (data.calculationMode === 'advanced' ? totalAnnualPostTaxDeductions : 0);
-
+    
     expensesChartInstance = createOrUpdateChart(expensesChartInstance, 'expenses-chart', t.section_expenses_title, 
         [expenseTotals.needs, expenseTotals.wants, expenseTotals.savings, expenseTotals.debt], 
         [t.tag_needs, t.tag_wants, t.tag_savings, t.tag_debt]
@@ -610,8 +619,8 @@ function updateCharts() {
         [t.label_total_taxes, t.label_total_pre_tax, t.label_total_post_tax, t.label_total_expenses, t.label_remaining_budget] :
         [t.label_total_expenses, t.label_remaining_budget];
     const overallData = data.calculationMode === 'advanced' ?
-        [totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalExpensesAndPostTax - totalAnnualPostTaxDeductions, remainingBudget] :
-        [totalExpensesAndPostTax, remainingBudget];
+        [totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses-totalAnnualPostTaxDeductions, remainingBudget] :
+        [totalAnnualExpenses, remainingBudget];
 
     budgetDistributionChartInstance = createOrUpdateChart(budgetDistributionChartInstance, 'budget-distribution-chart', t.section_summary_title, 
        overallData, overallLabels
@@ -660,27 +669,19 @@ function categorizeAll(getItems = false) {
             }
         }
     };
-    
-    // Advanced mode deductions are part of categorization
-    if (data.calculationMode === 'advanced') {
-        ['preTaxDeductions', 'postTaxDeductions'].forEach(section => {
-            const type = section.slice(0, -10); // preTax, postTax
-            for(const key in data[section]) {
-                if(key === 'custom') continue;
-                const category = ITEM_CATEGORIES[`deduct-${key}-1`];
-                if(category) process({name: key, amount: data[section][key]}, category, type, type);
-            }
-            data[section].custom.forEach(item => process(item, 'wants', type, item.frequency));
-        });
-    }
 
-    // Expenses are always categorized
-    for(const key in data.expenses) {
-        if(key === 'custom') continue;
-        const category = ITEM_CATEGORIES[`exp-${key}-1`];
-        if(category) process({name: key, amount: data.expenses[key]}, category, 'expense', 'expense');
-    }
-    data.expenses.custom.forEach(item => process(item, 'wants', 'expense', item.frequency));
+    ['preTaxDeductions', 'postTaxDeductions', 'expenses'].forEach(section => {
+        const type = section.slice(0, -10); // 'preTax', 'postTax', or 'expense'
+        const freqKey = type;
+        
+        for(const key in data[section]) {
+            if(key === 'custom') continue;
+            const idPrefix = section === 'expenses' ? 'exp' : 'deduct';
+            const category = ITEM_CATEGORIES[`${idPrefix}-${key}-1`];
+            if(category) process({name: key, amount: data[section][key]}, category, type, freqKey);
+        }
+        data[section].custom.forEach(item => process(item, 'wants', type, item.frequency));
+    });
 
     if (getItems) {
         items.spending = [...items.needs, ...items.wants];
@@ -691,7 +692,7 @@ function categorizeAll(getItems = false) {
 
 function applyBudgetRule() {
     const { annualNetIncome } = calculateBudget();
-    const totals = categorizeAll();
+    const {needs, wants, savings, debt} = categorizeAll();
     const lang = data.currentLanguage;
     const t = translations[lang];
 
@@ -700,20 +701,20 @@ function applyBudgetRule() {
     switch (data.budgetRule) {
         case '70-20-10':
             return [
-                { id: 'spending', label: t.rule_category_spending, goal: annualNetIncome * 0.7, actual: totals.needs + totals.wants },
-                { id: 'savings', label: t.rule_category_savings, goal: annualNetIncome * 0.2, actual: totals.savings },
-                { id: 'debt', label: t.rule_category_debt, goal: annualNetIncome * 0.1, actual: totals.debt }
+                { id: 'spending', label: t.rule_category_spending, goal: annualNetIncome * 0.7, actual: needs + wants },
+                { id: 'savings', label: t.rule_category_savings, goal: annualNetIncome * 0.2, actual: savings },
+                { id: 'debt', label: t.rule_category_debt, goal: annualNetIncome * 0.1, actual: debt }
             ];
         case '80-20':
              return [
-                { id: 'spending', label: t.rule_category_spending, goal: annualNetIncome * 0.8, actual: totals.needs + totals.wants + totals.debt },
-                { id: 'savings', label: t.rule_category_savings, goal: annualNetIncome * 0.2, actual: totals.savings }
+                { id: 'spending', label: t.rule_category_spending, goal: annualNetIncome * 0.8, actual: needs + wants + debt },
+                { id: 'savings', label: t.rule_category_savings, goal: annualNetIncome * 0.2, actual: savings }
             ];
         default: // 50-30-20
             return [
-                { id: 'needs', label: t.rule_category_needs, goal: annualNetIncome * 0.5, actual: totals.needs },
-                { id: 'wants', label: t.rule_category_wants, goal: annualNetIncome * 0.3, actual: totals.wants },
-                { id: 'savings', label: t.rule_category_savings_debt, goal: annualNetIncome * 0.2, actual: totals.savings + totals.debt }
+                { id: 'needs', label: t.rule_category_needs, goal: annualNetIncome * 0.5, actual: needs },
+                { id: 'wants', label: t.rule_category_wants, goal: annualNetIncome * 0.3, actual: wants },
+                { id: 'savings_debt', label: t.rule_category_savings_debt, goal: annualNetIncome * 0.2, actual: savings + debt }
             ];
     }
 }
@@ -807,7 +808,7 @@ async function generateAiReport() {
     const lang = data.currentLanguage;
     aiReportBox.innerHTML = `<p>${translations[lang].report_local_generating}</p>`;
     try {
-        if (false) { // Placeholder for future real API call
+        if (false) { // Placeholder
         } else {
             throw new Error("Simulating network failure to trigger local fallback.");
         }
@@ -829,11 +830,15 @@ function showCategoryDetails(categoryId) {
         case 'wants':
         case 'debt':
             itemsToShow = allItems[categoryId];
-            title = t[`modal_title_${categoryId}`];
+            title = t[`modal_title_${categoryId}`] || t[`rule_category_${categoryId}`];
             break;
-        case 'savings': // For 50/30/20 and 70/20/10 rules
-            itemsToShow = (data.budgetRule === '50-30-20') ? [...allItems.savings, ...allItems.debt] : allItems.savings;
-            title = (data.budgetRule === '50-30-20') ? t.modal_title_savings : t.tag_savings;
+        case 'savings_debt': // For 50/30/20
+            itemsToShow = [...allItems.savings, ...allItems.debt];
+            title = t.modal_title_savings_debt;
+            break;
+        case 'savings': // For 70/20/10 & 80/20
+            itemsToShow = allItems.savings;
+            title = t.modal_title_savings;
             break;
         case 'spending': // For 70/20/10 and 80/20 rules
             itemsToShow = [...allItems.needs, ...allItems.wants];
@@ -920,7 +925,7 @@ document.addEventListener('DOMContentLoaded', () => {
     exportJsonBtn.addEventListener('click', () => {
         const jsonString = JSON.stringify(data, null, 2);
         const blob = new Blob([jsonString], { type: 'application/json' });
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'budget_data.json'; a.click(); URL.revokeObjectURL(url);
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'budget_data.json'; a.click(); URL.revokeObjectURL(a.href);
     });
     importJsonBtn.addEventListener('click', () => importJsonInput.click());
     importJsonInput.addEventListener('change', (event) => {
@@ -953,13 +958,29 @@ document.addEventListener('DOMContentLoaded', () => {
             const summaryFreq = data.summaryFrequency;
             await navigator.share({
                 title: 'My Budget Summary',
-                text: `Net Income: ${formatCurrency(convertFromAnnual(annualNetIncome, summaryFreq))}\nExpenses: ${formatCircle(convertFromAnnual(totalAnnualExpenses, summaryFreq))}\nRemaining: ${formatCurrency(convertFromAnnual(remainingBudget, summaryFreq))}`,
+                text: `Net Income: ${formatCurrency(convertFromAnnual(annualNetIncome, summaryFreq))}\nExpenses: ${formatCurrency(convertFromAnnual(totalAnnualExpenses, summaryFreq))}\nRemaining: ${formatCurrency(convertFromAnnual(remainingBudget, summaryFreq))}`,
             });
         }
     });
     aiReportBtn.addEventListener('click', generateAiReport);
     modalCloseBtn.addEventListener('click', () => modalContainer.classList.add('hidden'));
     modalContainer.addEventListener('click', (e) => { if (e.target === modalContainer) modalContainer.classList.add('hidden'); });
+
+    // Tooltip handler for mobile (click) and desktop (hover)
+    document.querySelectorAll('.tooltip-icon').forEach(icon => {
+        icon.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent the document click from firing immediately
+            const tooltipText = icon.nextElementSibling;
+            const isVisible = tooltipText.classList.contains('visible');
+            // Hide all other tooltips
+            document.querySelectorAll('.tooltip-text.visible').forEach(tt => tt.classList.remove('visible'));
+            // Toggle current tooltip
+            if (!isVisible) tooltipText.classList.add('visible');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.tooltip-text.visible').forEach(tt => tt.classList.remove('visible'));
+    });
 
     loadData();
 });
