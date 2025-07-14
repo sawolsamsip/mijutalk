@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n-key="app_title">예산 관리 도구</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title data-i18n-key="app_title">스마트 예산 노트</title>
     <link rel="stylesheet" href="../scripts/budget.css">
     <link rel="stylesheet" href="../scripts/remixicon.css">
     <script src="../scripts/chart.js"></script>
@@ -13,7 +13,7 @@
 </head>
 <body>
     <header>
-        <h1 data-i18n-key="app_title">Budget Management Tool</h1>
+        <h1 data-i18n-key="app_title">Budget Tool</h1>
         <div class="header-controls">
             <button id="currency-toggle" class="icon-btn">₩</button>
             <button id="language-toggle" class="icon-btn">EN</button>
@@ -31,12 +31,12 @@
                 </div>
             </div>
             <div class="mode-toggle-container">
-                <span data-i18n-key="mode_simple">기본 모드 (순수입)</span>
+                <span data-i18n-key="mode_simple">기본 모드</span>
                 <label class="switch">
                     <input type="checkbox" id="mode-toggle-checkbox">
                     <span class="slider round"></span>
                 </label>
-                <span data-i18n-key="mode_advanced">고급 모드 (총수입)</span>
+                <span data-i18n-key="mode_advanced">고급 모드</span>
             </div>
         </section>
 
@@ -157,11 +157,11 @@
                 <p data-i18n-key="label_gross_salary">Gross Salary:</p> <span id="summary-gross-salary"></span>
                 <p data-i18n-key="label_total_taxes">Total Taxes:</p> <span id="summary-total-taxes"></span>
                 <p data-i18n-key="label_total_pre_tax">Total Pre-Tax:</p> <span id="summary-total-pre-tax"></span>
-                <p data-i18n-key="label_total_post_tax">Total Post-Tax:</p> <span id="summary-total-post-tax"></span>
             </div>
             <div class="summary-results">
                 <p data-i18n-key="label_net_salary">Net Salary:</p> <span id="summary-net-salary"></span>
                 <p data-i18n-key="label_total_expenses">Total Expenses:</p> <span id="summary-total-expenses"></span>
+                 <p data-i18n-key="label_total_post_tax" class="post-tax-summary-item hidden">Total Post-Tax Deductions:</p> <span id="summary-total-post-tax" class="post-tax-summary-item hidden"></span>
                 <p data-i18n-key="label_remaining_budget">Remaining Budget:</p> <span id="summary-remaining-budget"></span>
             </div>
             <div class="chart-container"><canvas id="budget-distribution-chart"></canvas></div>
