@@ -90,8 +90,7 @@ input:focus + .slider { box-shadow: 0 0 1px var(--accent-color); }
 input:checked + .slider:before { transform: translateX(26px); }
 .slider.round { border-radius: 34px; }
 .slider.round:before { border-radius: 50%; }
-.hidden { display: none; }
-
+.hidden { display: none !important; }
 
 /* Form Groups & Inputs */
 .form-group { margin-bottom: 20px; display: flex; flex-direction: column; }
@@ -130,17 +129,18 @@ body.dark-mode select.form-control {
 .custom-list { margin-top: 20px; border-top: 1px solid var(--input-border-color); padding-top: 15px; display: flex; flex-direction: column; gap: 20px; }
 .custom-list:empty { display: none; }
 .custom-list-item { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 10px; align-items: center; }
-.custom-list-item.income-item, .custom-list-item.expense-item, .custom-list-item.pre-tax-item, .custom-list-item.post-tax-item { grid-template-columns: 2fr 1fr 1fr 1fr auto; }
+.custom-list-item.income-item { grid-template-columns: 2fr 1fr 1fr auto; }
+.custom-list-item.expense-item, .custom-list-item.pre-tax-item, .custom-list-item.post-tax-item { grid-template-columns: 2fr 1fr 1fr 1fr auto; }
 .custom-list-item.tax-item { grid-template-columns: 2fr 1fr 1fr auto; }
 .add-custom-btn { margin-top: 10px; }
 
 /* Summary & Results */
-.summary-results { display: grid; grid-template-columns: auto 1fr; gap: 12px 20px; align-items: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--input-border-color); }
+.summary-results { display: grid; grid-template-columns: auto 1fr; gap: 12px 20px; align-items: center; margin-top: 20px; }
+#summary-advanced-view { border-bottom: 1px dashed var(--input-border-color); padding-bottom: 15px; margin-bottom: 15px; }
 .summary-results p { margin: 0; font-weight: 500; text-align: left; }
 .summary-results span { font-weight: bold; text-align: right; }
-#remaining-budget-display.positive { color: var(--positive-color); }
-#remaining-budget-display.negative { color: var(--negative-color); }
-#remaining-budget-display.balanced { color: var(--balanced-color); }
+#summary-remaining-budget.positive { color: var(--positive-color); }
+#summary-remaining-budget.negative { color: var(--negative-color); }
 .annual-salary-summary { margin-top: 15px; font-size: 1.1em; font-weight: bold; color: var(--summary-text-color); text-align: right; }
 
 /* Chart Container */
@@ -148,20 +148,19 @@ body.dark-mode select.form-control {
 
 /* AI Report Box */
 .ai-report-box { background-color: var(--bg-color); padding: 20px; margin-top: 20px; border-radius: var(--border-radius); min-height: 100px; border: 1px dashed var(--input-border-color); display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
-.ai-report-box h3 { margin-top: 0; }
-.ai-report-box h4 { margin: 15px 0 5px 0; }
+.ai-report-box h3 { margin-top: 0; color: var(--accent-color); }
+.ai-report-box h4 { margin: 15px 0 5px 0; color: var(--accent-color); }
 .ai-report-box ul { padding-left: 20px; margin: 0; }
 .ai-report-box p, .ai-report-box li { line-height: 1.5; }
 
 /* Data Actions */
-.data-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+.data-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
 
 /* Category Tag Styles */
 .category-tag { font-size: 0.75em; font-weight: 500; padding: 3px 8px; border-radius: 12px; text-align: center; margin-left: 10px; }
 .category-tag.needs { background-color: var(--tag-needs-bg); color: var(--tag-needs-text); }
 .category-tag.wants { background-color: var(--tag-wants-bg); color: var(--tag-wants-text); }
 .category-tag.savings { background-color: var(--tag-savings-bg); color: var(--tag-savings-text); }
-.category-tag.debt { background-color: var(--tag-debt-bg); color: var(--tag-debt-text); }
 .category-tag.fixed { background-color: var(--tag-fixed-bg); color: var(--tag-fixed-text); }
 
 /* Budget Rule Styles */
