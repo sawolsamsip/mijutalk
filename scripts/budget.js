@@ -53,6 +53,8 @@ const translations = {
         label_base_salary: 'Base Salary',
         frequency_monthly: 'Monthly',
         frequency_annual: 'Annual',
+        frequency_weekly: 'Weekly',
+        frequency_bi_weekly: 'Bi-Weekly',
         btn_add_income: 'Add Custom Income',
         label_annual_salary: 'Annual Gross Income:',
         section_taxes_title: 'Taxes',
@@ -160,6 +162,8 @@ const translations = {
         label_base_salary: '기본 급여',
         frequency_monthly: '월별',
         frequency_annual: '연간',
+        frequency_weekly: '주별',
+        frequency_bi_weekly: '2주별',
         btn_add_income: '추가 수입',
         label_annual_salary: '연간 총수입:',
         section_taxes_title: '세금',
@@ -261,14 +265,22 @@ const translations = {
 // 3. 헬퍼 함수
 function convertToAnnual(amount, frequency) {
     amount = parseFloat(amount) || 0;
-    if (frequency === 'monthly') return amount * 12;
-    return amount;
+    switch (frequency) {
+        case 'monthly': return amount * 12;
+        case 'bi-weekly': return amount * 26;
+        case 'weekly': return amount * 52;
+        default: return amount;
+    }
 }
 
 function convertFromAnnual(annualAmount, frequency) {
     annualAmount = parseFloat(annualAmount) || 0;
-    if (frequency === 'monthly') return annualAmount / 12;
-    return annualAmount;
+    switch (frequency) {
+        case 'monthly': return annualAmount / 12;
+        case 'bi-weekly': return annualAmount / 26;
+        case 'weekly': return annualAmount / 52;
+        default: return annualAmount;
+    }
 }
 
 function calculateTotalForSection(items, customItems, freqKey) {
@@ -318,13 +330,13 @@ function formatCurrency(amount) {
 }
 
 function updateDisplay() {
+    // 1. 데이터 모델 업데이트
     data.calculationMode = modeToggleCheckbox.checked ? 'advanced' : 'simple';
     data.netIncome = parseFloat(netIncomeInput.value) || 0;
     data.grossSalary = parseFloat(grossSalaryInput.value) || 0;
     data.salaryFrequency = salaryFrequencySelect.value;
     data.summaryFrequency = summaryFrequencySelect.value;
     data.budgetRule = budgetRuleSelect.value;
-
     ['tax', 'preTax', 'postTax', 'expense'].forEach(key => {
         const select = document.getElementById(`${key}-frequency-select`);
         if (select) data.frequencies[key] = select.value;
@@ -335,13 +347,16 @@ function updateDisplay() {
     for(const key in postTaxDeductInputs) if(postTaxDeductInputs[key]) data.postTaxDeductions[key] = parseFloat(postTaxDeductInputs[key].value) || 0;
     for(const key in expenseInputs) if(expenseInputs[key]) data.expenses[key] = parseFloat(expenseInputs[key].value) || 0;
     
+    // 2. UI 표시/숨김 처리
     advancedModeContainer.classList.toggle('hidden', data.calculationMode === 'simple');
     simpleModeContainer.classList.toggle('hidden', data.calculationMode === 'advanced');
     summaryAdvancedView.classList.toggle('hidden', data.calculationMode === 'simple');
-
+    
+    // 3. 계산 실행
     const { annualGrossSalary, annualNetIncome, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses, remainingBudget } = calculateBudget();
     const summaryFreq = data.summaryFrequency;
     
+    // 4. 요약 정보 업데이트
     summaryGrossSalary.textContent = formatCurrency(convertFromAnnual(annualGrossSalary, summaryFreq));
     summaryTotalTaxes.textContent = formatCurrency(convertFromAnnual(totalAnnualTaxes, summaryFreq));
     summaryTotalPreTax.textContent = formatCurrency(convertFromAnnual(totalAnnualPreTaxDeductions, summaryFreq));
@@ -359,6 +374,7 @@ function updateDisplay() {
         annualSummaryP.classList.add('hidden');
     }
     
+    // 5. 하위 컴포넌트 렌더링
     renderAllCustomLists();
     const breakdownData = applyBudgetRule();
     renderBudgetRule(breakdownData, remainingBudget, summaryFreq);
@@ -391,8 +407,12 @@ function renderCustomList(listElement, customItems, type) {
             </select>
         ` : '';
         const placeholder = type === 'income' ? t.custom_income_name : t.custom_item_name;
-        const frequencyOptions = `<option value="monthly"${item.frequency === 'monthly' ? ' selected' : ''}>${t.frequency_monthly}</option>
-                                  <option value="annual"${item.frequency === 'annual' ? ' selected' : ''}>${t.frequency_annual}</option>`;
+        const frequencyOptions = `
+            <option value="monthly"${item.frequency === 'monthly' ? ' selected' : ''}>${t.frequency_monthly}</option>
+            <option value="annual"${item.frequency === 'annual' ? ' selected' : ''}>${t.frequency_annual}</option>
+            <option value="weekly"${item.frequency === 'weekly' ? ' selected' : ''}>${t.frequency_weekly}</option>
+            <option value="bi-weekly"${item.frequency === 'bi-weekly' ? ' selected' : ''}>${t.frequency_bi_weekly}</option>
+        `;
 
         return `
             <div class="custom-list-item ${type}-item">
@@ -470,7 +490,7 @@ function applyLanguage() {
         const key = element.dataset.i18nKey;
         if (translations[lang] && translations[lang][key]) {
             if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-                element.placeholder = translations[lang][key];
+                if (element.placeholder !== undefined) element.placeholder = translations[lang][key];
             } else {
                 element.textContent = translations[lang][key];
             }
@@ -520,7 +540,19 @@ function createOrUpdateChart(instance, canvasId, label, dataValues, labels) {
     const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'];
     const ctx = document.getElementById(canvasId);
     if (!ctx) return instance;
-    const chartData = { labels, datasets: [{ label, data: dataValues, backgroundColor: colors }] };
+
+    const filteredData = dataValues.map((value, index) => ({value, label: labels[index]}))
+                                 .filter(item => item.value > 0);
+    
+    const chartData = {
+        labels: filteredData.map(item => item.label),
+        datasets: [{
+            label: label,
+            data: filteredData.map(item => item.value),
+            backgroundColor: colors
+        }]
+    };
+    
     if (instance) {
         instance.data = chartData;
         instance.options.plugins.title.text = label;
@@ -533,28 +565,32 @@ function createOrUpdateChart(instance, canvasId, label, dataValues, labels) {
 function updateCharts() {
     const lang = data.currentLanguage;
     const t = translations[lang];
-    const { annualNetIncome, remainingBudget } = calculateBudget();
-    const expenseTotals = categorizeAll();
+    const { annualNetIncome, remainingBudget, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions } = calculateBudget();
+    const expenseTotals = categorizeAll(false);
     
     expensesChartInstance = createOrUpdateChart(expensesChartInstance, 'expenses-chart', t.section_expenses_title, 
         [expenseTotals.needs, expenseTotals.wants, expenseTotals.savings, expenseTotals.debt], 
-        [t.tag_needs, t.tag_wants, t.tag_savings, t.tag_debt].filter((_, i) => [expenseTotals.needs, expenseTotals.wants, expenseTotals.savings, expenseTotals.debt][i] > 0)
+        [t.tag_needs, t.tag_wants, t.tag_savings, t.tag_debt]
     );
 
     const overallExpenses = expenseTotals.needs + expenseTotals.wants + expenseTotals.savings + expenseTotals.debt;
     budgetDistributionChartInstance = createOrUpdateChart(budgetDistributionChartInstance, 'budget-distribution-chart', t.section_summary_title, 
-        [overallExpenses, remainingBudget > 0 ? remainingBudget : 0], 
-        [t.label_total_expenses, t.label_remaining_budget].filter((_, i) => [overallExpenses, remainingBudget][i] > 0)
+        [totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, overallExpenses, remainingBudget], 
+        [t.label_total_taxes, t.label_total_pre_tax, t.label_total_post_tax, t.label_total_expenses, t.label_remaining_budget]
     );
 
     if (data.calculationMode === 'advanced') {
-        const totalTaxes = calculateTotalForSection(data.taxes, data.taxes.custom, 'tax');
-        const totalPreTax = calculateTotalForSection(data.preTaxDeductions, data.preTaxDeductions.custom, 'preTax');
-        const totalPostTax = calculateTotalForSection(data.postTaxDeductions, data.postTaxDeductions.custom, 'postTax');
+        const taxData = { labels: [], amounts: [] };
+        for(const key in taxInputs) if(data.taxes[key]>0) { taxData.labels.push(t[`label_${key.replace('-','_')}`] || key); taxData.amounts.push(data.taxes[key]); }
+        taxChartInstance = createOrUpdateChart(taxChartInstance, 'tax-chart', t.section_taxes_title, taxData.amounts, taxData.labels);
+        
+        const preTaxData = { labels: [], amounts: [] };
+        for(const key in preTaxDeductInputs) if(data.preTaxDeductions[key]>0) { preTaxData.labels.push(t[`label_${key.replace('-','_')}`] || key); preTaxData.amounts.push(data.preTaxDeductions[key]); }
+        preTaxDeductChartInstance = createOrUpdateChart(preTaxDeductChartInstance, 'pre-tax-deduct-chart', t.section_pre_tax_title, preTaxData.amounts, preTaxData.labels);
 
-        taxChartInstance = createOrUpdateChart(taxChartInstance, 'tax-chart', t.section_taxes_title, [totalTaxes], [t.section_taxes_title]);
-        preTaxDeductChartInstance = createOrUpdateChart(preTaxDeductChartInstance, 'pre-tax-deduct-chart', t.section_pre_tax_title, [totalPreTax], [t.section_pre_tax_title]);
-        postTaxDeductChartInstance = createOrUpdateChart(postTaxDeductChartInstance, 'post-tax-deduct-chart', t.section_post_tax_title, [totalPostTax], [t.section_post_tax_title]);
+        const postTaxData = { labels: [], amounts: [] };
+        for(const key in postTaxDeductInputs) if(data.postTaxDeductions[key]>0) { postTaxData.labels.push(t[`label_${key.replace('-','_')}`] || key); postTaxData.amounts.push(data.postTaxDeductions[key]); }
+        postTaxDeductChartInstance = createOrUpdateChart(postTaxDeductChartInstance, 'post-tax-deduct-chart', t.section_post_tax_title, postTaxData.amounts, postTaxData.labels);
     }
 }
 
@@ -567,22 +603,28 @@ function categorizeAll(getItems = false) {
         const category = item.category || defaultCategory;
         if(totals.hasOwnProperty(category)) {
             const amount = convertToAnnual(item.amount, item.frequency || data.frequencies[type]);
-            totals[category] += amount;
-            if(getItems && amount > 0) {
-                 items[category].push({name: item.name, amount: amount});
+            if (amount > 0) {
+                 totals[category] += amount;
+                 if(getItems) {
+                    const itemName = translations[data.currentLanguage][`label_${item.name.replace(/-/g, '_')}`] || item.name;
+                    items[category].push({name: itemName, amount: amount});
+                 }
             }
         }
     };
     
     ['expenses', 'preTaxDeductions', 'postTaxDeductions'].forEach(section => {
+        const type = section.slice(0, -10); // 'exp' or 'deduct'
+        const freqKey = section.slice(0, -1) === 'expense' ? 'expense' : section.slice(0,-10);
+        
         for(const key in data[section]) {
             if(key === 'custom') continue;
-            const category = ITEM_CATEGORIES[`${section.slice(0, 3)}-${key}-1`];
+            const category = ITEM_CATEGORIES[`${type.slice(0,3)}-${key}-1`];
             if(category) {
-                 process({name: key, amount: data[section][key]}, category, section.slice(0, -10));
+                 process({name: key, amount: data[section][key]}, category, freqKey);
             }
         }
-        data[section].custom.forEach(item => process(item, 'wants', section.slice(0, -10)));
+        data[section].custom.forEach(item => process(item, 'wants', freqKey));
     });
 
     return getItems ? items : totals;
@@ -707,8 +749,8 @@ async function generateAiReport() {
     const lang = data.currentLanguage;
     aiReportBox.innerHTML = `<p>${translations[lang].report_local_generating}</p>`;
     try {
-        if (false) { // This is the placeholder for real AI call
-            // const response = await fetch(...);
+        if (false) {
+            // Future real AI call logic
         } else {
             throw new Error("Simulating network failure to trigger local fallback.");
         }
@@ -722,18 +764,33 @@ function showCategoryDetails(categoryId) {
     const lang = data.currentLanguage;
     const t = translations[lang];
     const allItems = categorizeAll(true);
-    let itemsToShow = allItems[categoryId] || [];
-    let title = t[`modal_title_${categoryId}`] || "Details";
+    let itemsToShow = [];
+    let title = "";
 
-    if(categoryId === 'savings') itemsToShow = [...allItems.savings, ...allItems.debt];
-    if(categoryId === 'spending') itemsToShow = [...allItems.needs, ...allItems.wants];
+    switch(categoryId) {
+        case 'needs':
+        case 'wants':
+        case 'debt':
+            itemsToShow = allItems[categoryId];
+            title = t[`modal_title_${categoryId}`];
+            break;
+        case 'savings': // 50/30/20 rule combines savings and debt
+            itemsToShow = [...allItems.savings, ...allItems.debt];
+            title = t.modal_title_savings;
+            break;
+        case 'spending': // 70/20/10 and 80/20 rules combine needs and wants
+            itemsToShow = [...allItems.needs, ...allItems.wants];
+            title = t.modal_title_spending;
+            break;
+    }
 
-    modalTitle.textContent = title;
+    modalTitle.textContent = title || "Details";
     modalList.innerHTML = itemsToShow.length > 0
-        ? itemsToShow.map(item => `<li><span class="modal-item-name">${capitalizeFirstLetter(item.name)}</span><span class="modal-item-amount">${formatCurrency(convertFromAnnual(item.amount, data.summaryFrequency))}</span></li>`).join('')
+        ? itemsToShow.map(item => `<li><span class="modal-item-name">${item.name}</span><span class="modal-item-amount">${formatCurrency(convertFromAnnual(item.amount, data.summaryFrequency))}</span></li>`).join('')
         : `<li>No items in this category.</li>`;
     modalContainer.classList.remove('hidden');
 }
+
 
 // 11. 초기화
 document.addEventListener('DOMContentLoaded', () => {
