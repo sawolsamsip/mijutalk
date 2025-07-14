@@ -86,7 +86,7 @@ const translations = {
         label_accident_insurance: 'Accident Insurance',
         label_legal_services: 'Legal Services',
         section_expenses_title: 'Expense Management',
-        tooltip_expenses: "Enter all your regular expenses. Categorize each item as 'Needs', 'Wants', 'Savings', or 'Debt' to see how it fits into your budget rule.",
+        tooltip_expenses: "Enter all your regular expenses based on your Net Income. Categorize each item to see how it fits into your budget rule.",
         label_rent_mortgage: 'Rent/Mortgage',
         label_utilities: 'Utilities',
         label_internet: 'Internet',
@@ -102,13 +102,13 @@ const translations = {
         label_summary_frequency: 'Summary Frequency',
         label_gross_salary: 'Gross Salary:',
         label_total_taxes: 'Total Taxes:',
-        label_total_pre_tax: 'Total Pre-Tax:',
+        label_total_pre_tax: 'Total Pre-Tax Deductions:',
         label_total_post_tax: 'Total Post-Tax Deductions:',
-        label_net_salary: 'Net Salary:',
+        label_net_salary: 'Net Salary (Take-Home):',
         label_total_expenses: 'Total Expenses:',
         label_remaining_budget: 'Remaining Budget:',
         section_budget_rule_title: 'Budget Rule Application',
-        tooltip_budget_rule: "Select a popular budgeting rule to visually compare your spending against a target. Click on a category name to see a detailed list of items.",
+        tooltip_budget_rule: "Select a popular budgeting rule to visually compare your spending (from Net Income) against a target. Click on a category name to see a detailed list of items.",
         rule_50_30_20_title: '50/30/20 Rule (Needs/Wants/Savings)',
         rule_70_20_10_title: '70/20/10 Rule (Spending/Savings/Debt)',
         rule_80_20_title: '80/20 Rule (Spending/Savings)',
@@ -208,7 +208,7 @@ const translations = {
         label_accident_insurance: '상해 보험',
         label_legal_services: '법률 서비스',
         section_expenses_title: '지출 관리',
-        tooltip_expenses: "순수입에서 빠져나가는 모든 지출 항목을 입력합니다. 각 항목의 카테고리(필수, 선택, 저축 등)를 지정하여 예산 규칙에 맞게 관리할 수 있습니다.",
+        tooltip_expenses: "순수입(실수령액)에서 나가는 모든 지출을 입력합니다. 각 항목을 분류하여 예산 규칙에 얼마나 부합하는지 확인하세요.",
         label_rent_mortgage: '월세/주택담보대출',
         label_utilities: '공과금',
         label_internet: '인터넷',
@@ -226,11 +226,11 @@ const translations = {
         label_total_taxes: '총 세금:',
         label_total_pre_tax: '총 세전 공제:',
         label_total_post_tax: '총 세후 공제:',
-        label_net_salary: '순수입:',
+        label_net_salary: '순수입 (실수령액):',
         label_total_expenses: '총 지출:',
         label_remaining_budget: '남은 예산:',
         section_budget_rule_title: '예산 규칙 적용',
-        tooltip_budget_rule: "널리 알려진 예산 규칙을 선택하여 현재 지출이 목표에 얼마나 부합하는지 시각적으로 확인합니다. 각 카테고리명을 클릭하면 해당 항목들의 세부 내역을 볼 수 있습니다.",
+        tooltip_budget_rule: "널리 알려진 예산 규칙을 선택하여 현재 지출이 순수입(실수령액) 기준 목표에 얼마나 부합하는지 시각적으로 확인합니다. 각 카테고리명을 클릭하면 해당 항목들의 세부 내역을 볼 수 있습니다.",
         rule_50_30_20_title: '50/30/20 규칙 (필수/선택/저축)',
         rule_70_20_10_title: '70/20/10 규칙 (지출/저축/부채)',
         rule_80_20_title: '80/20 규칙 (지출/저축)',
@@ -303,6 +303,7 @@ function convertToAnnual(amount, frequency) {
 
 function convertFromAnnual(annualAmount, frequency) {
     annualAmount = parseFloat(annualAmount) || 0;
+    if (annualAmount === 0) return 0;
     switch (frequency) {
         case 'monthly': return annualAmount / 12;
         case 'bi-weekly': return annualAmount / 26;
@@ -330,21 +331,25 @@ function calculateBudget() {
     let totalAnnualTaxes = 0;
     let totalAnnualPreTaxDeductions = 0;
     let totalAnnualPostTaxDeductions = 0;
-
-    const { needs, wants, savings, debt } = categorizeAll();
-    let totalAnnualExpenses = needs + wants + savings + debt;
+    
+    // 지출(Expenses)은 항상 순수입에서 나가는 돈으로 따로 계산합니다.
+    const expenseTotals = categorizeExpensesOnly();
+    const totalAnnualExpenses = expenseTotals.needs + expenseTotals.wants + expenseTotals.savings + expenseTotals.debt;
 
     if (data.calculationMode === 'advanced') {
-        annualGrossSalary = convertToAnnual(data.grossSalary, data.salaryFrequency) + calculateTotalForSection({}, data.customIncomes, 'income');
+        annualGrossSalary = convertToAnnual(data.grossSalary, data.salaryFrequency) + calculateTotalForSection({}, data.customIncomes);
         totalAnnualTaxes = calculateTotalForSection(data.taxes, data.taxes.custom, 'tax');
-        totalAnnualPreTaxDeductions = needs + wants + savings + debt;
-        annualNetIncome = annualGrossSalary - totalAnnualTaxes; 
+        totalAnnualPreTaxDeductions = calculateTotalForSection(data.preTaxDeductions, data.preTaxDeductions.custom, 'preTax');
         totalAnnualPostTaxDeductions = calculateTotalForSection(data.postTaxDeductions, data.postTaxDeductions.custom, 'postTax');
-        totalAnnualExpenses += totalAnnualPostTaxDeductions;
+        
+        // 순수입(실수령액) = 총수입 - (모든 세금과 공제)
+        annualNetIncome = annualGrossSalary - totalAnnualTaxes - totalAnnualPreTaxDeductions - totalAnnualPostTaxDeductions;
     } else {
+        // 기본 모드에서는 사용자가 직접 순수입을 입력합니다.
         annualNetIncome = convertToAnnual(data.netIncome, 'monthly');
     }
     
+    // 남은 예산 = 순수입 - 총 지출
     const remainingBudget = annualNetIncome - totalAnnualExpenses;
     
     return { annualGrossSalary, annualNetIncome, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses, remainingBudget };
@@ -384,8 +389,7 @@ function updateDisplay() {
     advancedModeContainer.classList.toggle('hidden', data.calculationMode === 'simple');
     simpleModeContainer.classList.toggle('hidden', data.calculationMode === 'advanced');
     summaryAdvancedView.classList.toggle('hidden', data.calculationMode === 'simple');
-    document.querySelectorAll('.post-tax-summary-item').forEach(el => el.classList.toggle('hidden', data.calculationMode === 'simple'));
-
+    
     // 3. 계산 실행
     const { annualGrossSalary, annualNetIncome, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses, remainingBudget } = calculateBudget();
     const summaryFreq = data.summaryFrequency;
@@ -519,7 +523,7 @@ function applyLanguage() {
     document.querySelectorAll('[data-i18n-key]').forEach(element => {
         const key = element.dataset.i18nKey;
         if (translations[lang] && translations[lang][key]) {
-            if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+             if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
                 if (element.placeholder !== undefined) element.placeholder = translations[lang][key];
             } else {
                 element.textContent = translations[lang][key];
@@ -608,20 +612,15 @@ function updateCharts() {
     const lang = data.currentLanguage;
     const t = translations[lang];
     const { annualNetIncome, remainingBudget, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses } = calculateBudget();
-    const expenseTotals = categorizeAll(false);
+    const expenseTotals = categorizeExpensesOnly();
     
     expensesChartInstance = createOrUpdateChart(expensesChartInstance, 'expenses-chart', t.section_expenses_title, 
         [expenseTotals.needs, expenseTotals.wants, expenseTotals.savings, expenseTotals.debt], 
         [t.tag_needs, t.tag_wants, t.tag_savings, t.tag_debt]
     );
 
-    const overallLabels = data.calculationMode === 'advanced' ? 
-        [t.label_total_taxes, t.label_total_pre_tax, t.label_total_post_tax, t.label_total_expenses, t.label_remaining_budget] :
-        [t.label_total_expenses, t.label_remaining_budget];
-    const overallData = data.calculationMode === 'advanced' ?
-        [totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses-totalAnnualPostTaxDeductions, remainingBudget] :
-        [totalAnnualExpenses, remainingBudget];
-
+    const overallLabels = [t.label_total_expenses, t.label_remaining_budget];
+    const overallData = [totalAnnualExpenses, remainingBudget];
     budgetDistributionChartInstance = createOrUpdateChart(budgetDistributionChartInstance, 'budget-distribution-chart', t.section_summary_title, 
        overallData, overallLabels
     );
@@ -640,25 +639,20 @@ function updateCharts() {
             return { labels, amounts };
         };
 
-        const taxData = createChartData(taxInputs, data.taxes, 'tax');
-        taxChartInstance = createOrUpdateChart(taxChartInstance, 'tax-chart', t.section_taxes_title, taxData.amounts, taxData.labels);
-        
-        const preTaxData = createChartData(preTaxDeductInputs, data.preTaxDeductions, 'preTax');
-        preTaxDeductChartInstance = createOrUpdateChart(preTaxDeductChartInstance, 'pre-tax-deduct-chart', t.section_pre_tax_title, preTaxData.amounts, preTaxData.labels);
-
-        const postTaxData = createChartData(postTaxDeductInputs, data.postTaxDeductions, 'postTax');
-        postTaxDeductChartInstance = createOrUpdateChart(postTaxDeductChartInstance, 'post-tax-deduct-chart', t.section_post_tax_title, postTaxData.amounts, postTaxData.labels);
+        taxChartInstance = createOrUpdateChart(taxChartInstance, 'tax-chart', t.section_taxes_title, [totalAnnualTaxes], [t.section_taxes_title]);
+        preTaxDeductChartInstance = createOrUpdateChart(preTaxDeductChartInstance, 'pre-tax-deduct-chart', t.section_pre_tax_title, [totalAnnualPreTaxDeductions], [t.section_pre_tax_title]);
+        postTaxDeductChartInstance = createOrUpdateChart(postTaxDeductChartInstance, 'post-tax-deduct-chart', t.section_post_tax_title, [totalAnnualPostTaxDeductions], [t.section_post_tax_title]);
     }
 }
 
-function categorizeAll(getItems = false) {
+function categorizeExpensesOnly(getItems = false) {
     let totals = { needs: 0, wants: 0, savings: 0, debt: 0 };
-    let items = { needs: [], wants: [], savings: [], debt: [], spending: [] };
+    let items = { needs: [], wants: [], savings: [], debt: [] };
 
-    const process = (item, defaultCategory, type, freqKey) => {
+    const process = (item, defaultCategory) => {
         const category = item.category || defaultCategory;
         if(totals.hasOwnProperty(category)) {
-            const amount = convertToAnnual(item.amount, item.frequency || data.frequencies[freqKey]);
+            const amount = convertToAnnual(item.amount, item.frequency || data.frequencies.expense);
             if (amount > 0) {
                  totals[category] += amount;
                  if(getItems) {
@@ -670,18 +664,12 @@ function categorizeAll(getItems = false) {
         }
     };
 
-    ['preTaxDeductions', 'postTaxDeductions', 'expenses'].forEach(section => {
-        const type = section.slice(0, -10); // 'preTax', 'postTax', or 'expense'
-        const freqKey = type;
-        
-        for(const key in data[section]) {
-            if(key === 'custom') continue;
-            const idPrefix = section === 'expenses' ? 'exp' : 'deduct';
-            const category = ITEM_CATEGORIES[`${idPrefix}-${key}-1`];
-            if(category) process({name: key, amount: data[section][key]}, category, type, freqKey);
-        }
-        data[section].custom.forEach(item => process(item, 'wants', type, item.frequency));
-    });
+    for(const key in data.expenses) {
+        if(key === 'custom') continue;
+        const category = ITEM_CATEGORIES[`exp-${key}-1`];
+        if(category) process({name: key, amount: data.expenses[key]}, category);
+    }
+    data.expenses.custom.forEach(item => process(item, 'wants'));
 
     if (getItems) {
         items.spending = [...items.needs, ...items.wants];
@@ -692,7 +680,7 @@ function categorizeAll(getItems = false) {
 
 function applyBudgetRule() {
     const { annualNetIncome } = calculateBudget();
-    const {needs, wants, savings, debt} = categorizeAll();
+    const expenseTotals = categorizeExpensesOnly();
     const lang = data.currentLanguage;
     const t = translations[lang];
 
@@ -701,20 +689,20 @@ function applyBudgetRule() {
     switch (data.budgetRule) {
         case '70-20-10':
             return [
-                { id: 'spending', label: t.rule_category_spending, goal: annualNetIncome * 0.7, actual: needs + wants },
-                { id: 'savings', label: t.rule_category_savings, goal: annualNetIncome * 0.2, actual: savings },
-                { id: 'debt', label: t.rule_category_debt, goal: annualNetIncome * 0.1, actual: debt }
+                { id: 'spending', label: t.rule_category_spending, goal: annualNetIncome * 0.7, actual: expenseTotals.needs + expenseTotals.wants },
+                { id: 'savings', label: t.rule_category_savings, goal: annualNetIncome * 0.2, actual: expenseTotals.savings },
+                { id: 'debt', label: t.rule_category_debt, goal: annualNetIncome * 0.1, actual: expenseTotals.debt }
             ];
         case '80-20':
              return [
-                { id: 'spending', label: t.rule_category_spending, goal: annualNetIncome * 0.8, actual: needs + wants + debt },
-                { id: 'savings', label: t.rule_category_savings, goal: annualNetIncome * 0.2, actual: savings }
+                { id: 'spending', label: t.rule_category_spending, goal: annualNetIncome * 0.8, actual: expenseTotals.needs + expenseTotals.wants + expenseTotals.debt },
+                { id: 'savings', label: t.rule_category_savings, goal: annualNetIncome * 0.2, actual: expenseTotals.savings }
             ];
         default: // 50-30-20
             return [
-                { id: 'needs', label: t.rule_category_needs, goal: annualNetIncome * 0.5, actual: needs },
-                { id: 'wants', label: t.rule_category_wants, goal: annualNetIncome * 0.3, actual: wants },
-                { id: 'savings_debt', label: t.rule_category_savings_debt, goal: annualNetIncome * 0.2, actual: savings + debt }
+                { id: 'needs', label: t.rule_category_needs, goal: annualNetIncome * 0.5, actual: expenseTotals.needs },
+                { id: 'wants', label: t.rule_category_wants, goal: annualNetIncome * 0.3, actual: expenseTotals.wants },
+                { id: 'savings_debt', label: t.rule_category_savings_debt, goal: annualNetIncome * 0.2, actual: expenseTotals.savings + expenseTotals.debt }
             ];
     }
 }
@@ -754,7 +742,7 @@ function generateLocalAiReport() {
 
     try {
         const { annualNetIncome, remainingBudget } = calculateBudget();
-        const totals = categorizeAll();
+        const totals = categorizeExpensesOnly();
         const breakdown = applyBudgetRule();
         const summaryFreq = data.summaryFrequency;
 
@@ -808,7 +796,7 @@ async function generateAiReport() {
     const lang = data.currentLanguage;
     aiReportBox.innerHTML = `<p>${translations[lang].report_local_generating}</p>`;
     try {
-        if (false) { // Placeholder
+        if (false) {
         } else {
             throw new Error("Simulating network failure to trigger local fallback.");
         }
@@ -821,7 +809,7 @@ async function generateAiReport() {
 function showCategoryDetails(categoryId) {
     const lang = data.currentLanguage;
     const t = translations[lang];
-    const allItems = categorizeAll(true);
+    const allItems = categorizeExpensesOnly(true);
     let itemsToShow = [];
     let title = "";
 
@@ -969,12 +957,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Tooltip handler for mobile (click) and desktop (hover)
     document.querySelectorAll('.tooltip-icon').forEach(icon => {
         icon.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent the document click from firing immediately
+            e.stopPropagation(); 
             const tooltipText = icon.nextElementSibling;
             const isVisible = tooltipText.classList.contains('visible');
-            // Hide all other tooltips
             document.querySelectorAll('.tooltip-text.visible').forEach(tt => tt.classList.remove('visible'));
-            // Toggle current tooltip
             if (!isVisible) tooltipText.classList.add('visible');
         });
     });
