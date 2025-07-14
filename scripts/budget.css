@@ -64,7 +64,14 @@ body.dark-mode {
 }
 
 /* Base Styles */
-body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: var(--text-color); background-color: var(--bg-color); line-height: 1.6; }
+body { 
+    margin: 0; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    color: var(--text-color); 
+    background-color: var(--bg-color); 
+    line-height: 1.6;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+}
 
 /* Header */
 header { background-color: var(--header-bg-color); color: var(--header-text-color); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow); flex-wrap: nowrap; }
@@ -76,20 +83,26 @@ header h1 { margin: 0; font-size: 1.6em; white-space: nowrap; overflow: hidden; 
 
 /* Budget Section */
 .budget-section { background-color: var(--card-bg-color); padding: 25px; margin-bottom: 25px; border-radius: var(--border-radius); box-shadow: var(--shadow); }
-.section-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--input-border-color); margin-bottom: 20px; }
-.section-header h2 { border-bottom: none; margin-bottom: 10px; }
+.section-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--input-border-color); margin-bottom: 20px; gap: 10px; }
+.section-header h2 { border-bottom: none; margin: 0; padding: 0 0 10px 0; flex-shrink: 0;}
 .budget-section h2 { color: var(--accent-color); margin-top: 0; }
 
 /* Tooltip Styles */
 .tooltip-container { position: relative; display: inline-flex; align-items: center; margin-left: auto; }
 .tooltip-icon { cursor: pointer; color: var(--accent-color); font-size: 1.2rem; }
-.tooltip-text { visibility: hidden; width: 250px; background-color: #555; color: #fff; text-align: center; border-radius: 6px; padding: 5px 10px; position: absolute; z-index: 1; bottom: 125%; left: 50%; margin-left: -125px; opacity: 0; transition: opacity 0.3s; font-size: 0.8rem; font-weight: normal; }
-.tooltip-container:hover .tooltip-text { visibility: visible; opacity: 1; }
+.tooltip-text { visibility: hidden; width: 250px; background-color: #555; color: #fff; text-align: center; border-radius: 6px; padding: 5px 10px; position: absolute; z-index: 10; bottom: 125%; left: 50%; margin-left: -125px; opacity: 0; transition: opacity 0.3s; font-size: 0.8rem; font-weight: normal; }
+.tooltip-container .tooltip-text.visible { visibility: visible; opacity: 1; }
+.tooltip-container:hover .tooltip-text {
+    /* For desktop hover */
+    visibility: visible;
+    opacity: 1;
+}
 
 /* Mode Toggle Switch */
 .calculation-mode-section .section-header { border-bottom: none; }
-.mode-toggle-container { display: flex; justify-content: center; align-items: center; gap: 15px; font-weight: bold; }
-.switch { position: relative; display: inline-block; width: 60px; height: 34px; }
+.mode-toggle-container { display: flex; justify-content: center; align-items: center; gap: 15px; font-weight: bold; flex-wrap: nowrap; }
+.mode-toggle-container span { white-space: nowrap; }
+.switch { position: relative; display: inline-block; width: 60px; height: 34px; flex-shrink: 0; }
 .switch input { opacity: 0; width: 0; height: 0; }
 .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; }
 .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; }
@@ -208,6 +221,7 @@ body.dark-mode select.form-control {
     .salary-input-container { flex-direction: row; }
     .salary-input-container select { flex: 1; }
     .salary-input-container input { flex: 2; }
+    .tooltip-text { left: auto; right: 0; margin-left: 0; margin-right: 0; }
 }
 
 @media (max-width: 480px) {
@@ -215,10 +229,11 @@ body.dark-mode select.form-control {
     .budget-section { padding: 15px; }
     .data-actions { grid-template-columns: 1fr; }
     .salary-input-container { flex-direction: column; }
+    .mode-toggle-container span { font-size: 0.9em; }
 }
 
 @media print {
-    header, .add-custom-btn, .data-actions, #ai-report-btn, .custom-list-item .remove-btn, .modal-container, .calculation-mode-section { display: none; }
+    header, .add-custom-btn, .data-actions, #ai-report-btn, .custom-list-item .remove-btn, .modal-container, .calculation-mode-section, .tooltip-container { display: none; }
     .budget-section { box-shadow: none; border: 1px solid #ccc; }
     .container { padding: 0; margin: 0; max-width: 100%; }
 }
