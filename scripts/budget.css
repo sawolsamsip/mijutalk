@@ -161,6 +161,7 @@ body.dark-mode select.form-control {
 .category-tag.needs { background-color: var(--tag-needs-bg); color: var(--tag-needs-text); }
 .category-tag.wants { background-color: var(--tag-wants-bg); color: var(--tag-wants-text); }
 .category-tag.savings { background-color: var(--tag-savings-bg); color: var(--tag-savings-text); }
+.category-tag.debt { background-color: var(--tag-debt-bg); color: var(--tag-debt-text); }
 .category-tag.fixed { background-color: var(--tag-fixed-bg); color: var(--tag-fixed-text); }
 
 /* Budget Rule Styles */
