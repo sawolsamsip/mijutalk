@@ -76,10 +76,18 @@ header h1 { margin: 0; font-size: 1.6em; white-space: nowrap; overflow: hidden; 
 
 /* Budget Section */
 .budget-section { background-color: var(--card-bg-color); padding: 25px; margin-bottom: 25px; border-radius: var(--border-radius); box-shadow: var(--shadow); }
-.budget-section h2 { color: var(--accent-color); margin-top: 0; margin-bottom: 20px; border-bottom: 2px solid var(--input-border-color); padding-bottom: 10px; }
+.section-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--input-border-color); margin-bottom: 20px; }
+.section-header h2 { border-bottom: none; margin-bottom: 10px; }
+.budget-section h2 { color: var(--accent-color); margin-top: 0; }
+
+/* Tooltip Styles */
+.tooltip-container { position: relative; display: inline-flex; align-items: center; margin-left: auto; }
+.tooltip-icon { cursor: pointer; color: var(--accent-color); font-size: 1.2rem; }
+.tooltip-text { visibility: hidden; width: 250px; background-color: #555; color: #fff; text-align: center; border-radius: 6px; padding: 5px 10px; position: absolute; z-index: 1; bottom: 125%; left: 50%; margin-left: -125px; opacity: 0; transition: opacity 0.3s; font-size: 0.8rem; font-weight: normal; }
+.tooltip-container:hover .tooltip-text { visibility: visible; opacity: 1; }
 
 /* Mode Toggle Switch */
-.calculation-mode-section h2 { border-bottom: none; }
+.calculation-mode-section .section-header { border-bottom: none; }
 .mode-toggle-container { display: flex; justify-content: center; align-items: center; gap: 15px; font-weight: bold; }
 .switch { position: relative; display: inline-block; width: 60px; height: 34px; }
 .switch input { opacity: 0; width: 0; height: 0; }
