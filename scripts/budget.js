@@ -37,8 +37,7 @@ const ITEM_CATEGORIES = {
     'deduct-medical-1': 'needs', 'deduct-dental-1': 'needs', 'deduct-vision-1': 'needs', 'deduct-ltd-1': 'needs', 'deduct-adnd-1': 'needs',
     'deduct-critical-illness-1': 'needs', 'deduct-accident-insurance-1': 'needs', 'deduct-legal-services-1': 'wants',
     'deduct-401k-trad-1': 'savings', 'deduct-401k-roth-1': 'savings', 'deduct-spp-1': 'savings',
-    'exp-rent-1': 'needs', 'exp-utilities-1': 'needs', 'exp-internet-1': 'needs', 'exp-phone-1': 'needs', 'exp-groceries-1': 'needs', 'exp-transport-1': 'needs', 'exp-health-1': 'needs',
-    'exp-insurance-1': 'needs', 'exp-children-1': 'needs',
+    'exp-rent-1': 'needs', 'exp-utilities-1': 'needs', 'exp-internet-1': 'needs', 'exp-phone-1': 'needs', 'exp-groceries-1': 'needs', 'exp-transport-1': 'needs', 'exp-health-1': 'needs', 'exp-insurance-1': 'needs', 'exp-children-1': 'needs',
     'exp-dining-1': 'wants', 'exp-shopping-1': 'wants', 'exp-entertainment-1': 'wants', 'exp-travel-1': 'wants', 'exp-pets-1': 'wants', 'exp-donation-1': 'wants'
 };
 
@@ -346,16 +345,14 @@ function calculateBudget() {
     let totalAnnualTaxes = 0;
     let totalAnnualPreTaxDeductions = 0;
     let totalAnnualPostTaxDeductions = 0;
-
-    const expenseTotals = categorizeAll(false, true); // Only expenses
+    const expenseTotals = categorizeExpensesOnly();
     const totalAnnualExpenses = expenseTotals.needs + expenseTotals.wants + expenseTotals.savings + expenseTotals.debt;
 
     if (data.calculationMode === 'advanced') {
-        annualGrossSalary = convertToAnnual(data.grossSalary, data.salaryFrequency) + calculateTotalForSection({}, data.customIncomes, 'income');
+        annualGrossSalary = convertToAnnual(data.grossSalary, data.salaryFrequency) + calculateTotalForSection({}, data.customIncomes);
         totalAnnualTaxes = calculateTotalForSection(data.taxes, data.taxes.custom, 'tax');
         totalAnnualPreTaxDeductions = calculateTotalForSection(data.preTaxDeductions, data.preTaxDeductions.custom, 'preTax');
         totalAnnualPostTaxDeductions = calculateTotalForSection(data.postTaxDeductions, data.postTaxDeductions.custom, 'postTax');
-        
         annualNetIncome = annualGrossSalary - totalAnnualTaxes - totalAnnualPreTaxDeductions - totalAnnualPostTaxDeductions;
     } else {
         annualNetIncome = convertToAnnual(data.netIncome, 'monthly');
@@ -379,7 +376,6 @@ function formatCurrency(amount) {
 }
 
 function updateDisplay() {
-    // 1. 데이터 모델 업데이트
     data.calculationMode = modeToggleCheckbox.checked ? 'advanced' : 'simple';
     data.netIncome = parseFloat(netIncomeInput.value) || 0;
     data.grossSalary = parseFloat(grossSalaryInput.value) || 0;
@@ -396,16 +392,13 @@ function updateDisplay() {
     for(const key in postTaxDeductInputs) if(postTaxDeductInputs[key]) data.postTaxDeductions[key] = parseFloat(postTaxDeductInputs[key].value) || 0;
     for(const key in expenseInputs) if(expenseInputs[key]) data.expenses[key] = parseFloat(expenseInputs[key].value) || 0;
     
-    // 2. UI 표시/숨김 처리
     advancedModeContainer.classList.toggle('hidden', data.calculationMode === 'simple');
     simpleModeContainer.classList.toggle('hidden', data.calculationMode === 'advanced');
     summaryAdvancedView.classList.toggle('hidden', data.calculationMode === 'simple');
     
-    // 3. 계산 실행
     const { annualGrossSalary, annualNetIncome, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses, remainingBudget } = calculateBudget();
     const summaryFreq = data.summaryFrequency;
     
-    // 4. 요약 정보 업데이트
     summaryGrossSalary.textContent = formatCurrency(convertFromAnnual(annualGrossSalary, summaryFreq));
     summaryTotalTaxes.textContent = formatCurrency(convertFromAnnual(totalAnnualTaxes, summaryFreq));
     summaryTotalPreTax.textContent = formatCurrency(convertFromAnnual(totalAnnualPreTaxDeductions, summaryFreq));
@@ -423,7 +416,6 @@ function updateDisplay() {
         annualSummaryP.classList.add('hidden');
     }
     
-    // 5. 하위 컴포넌트 렌더링
     renderAllCustomLists();
     const breakdownData = applyBudgetRule();
     renderBudgetRule(breakdownData, remainingBudget, summaryFreq);
@@ -534,7 +526,7 @@ function applyLanguage() {
     document.querySelectorAll('[data-i18n-key]').forEach(element => {
         const key = element.dataset.i18nKey;
         if (translations[lang] && translations[lang][key]) {
-             if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+            if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
                 if (element.placeholder !== undefined) element.placeholder = translations[lang][key];
             } else {
                 element.textContent = translations[lang][key];
@@ -666,9 +658,59 @@ function updateCharts() {
     }
 }
 
-function categorizeExpensesOnly(getItems = false) {
+function categorizeAll(getItems = false) {
     let totals = { needs: 0, wants: 0, savings: 0, debt: 0 };
     let items = { needs: [], wants: [], savings: [], debt: [], spending: [] };
+
+    const process = (item, defaultCategory, type, freqKey) => {
+        const category = item.category || defaultCategory;
+        if(totals.hasOwnProperty(category)) {
+            const amount = convertToAnnual(item.amount, item.frequency || data.frequencies[freqKey]);
+            if (amount > 0) {
+                 totals[category] += amount;
+                 if(getItems) {
+                    const transKey = `label_${item.name.replace(/-/g, '_')}`;
+                    const itemName = translations[data.currentLanguage][transKey] || item.name;
+                    items[category].push({name: itemName, amount: amount});
+                 }
+            }
+        }
+    };
+
+    if (data.calculationMode === 'advanced') {
+        ['preTaxDeductions', 'postTaxDeductions'].forEach(section => {
+            const type = section.slice(0, -10);
+            const freqKey = type;
+            for (const key in data[section]) {
+                if (key === 'custom') continue;
+                const category = ITEM_CATEGORIES[`deduct-${key.replace(/_/g, '-')}-1`];
+                if (category) process({ name: key, amount: data[section][key] }, category, type, freqKey);
+            }
+            data[section].custom.forEach(item => process(item, 'wants', type, item.frequency));
+        });
+    }
+    
+    // Expenses are categorized based on their own logic, separate from deductions
+    const expenseTotals = categorizeExpensesOnly(getItems);
+    totals.needs += expenseTotals.needs;
+    totals.wants += expenseTotals.wants;
+    totals.savings += expenseTotals.savings;
+    totals.debt += expenseTotals.debt;
+    if(getItems) {
+        items.needs = items.needs.concat(expenseTotals.items.needs);
+        items.wants = items.wants.concat(expenseTotals.items.wants);
+        items.savings = items.savings.concat(expenseTotals.items.savings);
+        items.debt = items.debt.concat(expenseTotals.items.debt);
+        items.spending = [...items.needs, ...items.wants];
+    }
+    
+    return getItems ? items : totals;
+}
+
+
+function categorizeExpensesOnly(getItems = false) {
+    let totals = { needs: 0, wants: 0, savings: 0, debt: 0 };
+    let items = { needs: [], wants: [], savings: [], debt: [] };
 
     const process = (item, defaultCategory, freqKey) => {
         const category = item.category || defaultCategory;
@@ -692,11 +734,7 @@ function categorizeExpensesOnly(getItems = false) {
     }
     data.expenses.custom.forEach(item => process(item, 'wants', 'expense'));
 
-    if (getItems) {
-        items.spending = [...items.needs, ...items.wants];
-    }
-    
-    return getItems ? items : totals;
+    return getItems ? {items: items, totals: totals} : totals;
 }
 
 function applyBudgetRule() {
@@ -830,7 +868,7 @@ async function generateAiReport() {
 function showCategoryDetails(categoryId) {
     const lang = data.currentLanguage;
     const t = translations[lang];
-    const allItems = categorizeExpensesOnly(true);
+    const expenseDetails = categorizeExpensesOnly(true);
     let itemsToShow = [];
     let title = "";
 
@@ -838,20 +876,17 @@ function showCategoryDetails(categoryId) {
         case 'needs':
         case 'wants':
         case 'debt':
-            itemsToShow = allItems[categoryId];
-            title = t[`modal_title_${categoryId}`];
+        case 'savings':
+            itemsToShow = expenseDetails.items[categoryId];
+            title = t[`modal_title_${categoryId}`] || t[`rule_category_${categoryId}`];
             break;
-        case 'savings_debt': 
-            itemsToShow = [...allItems.savings, ...allItems.debt];
+        case 'savings_debt':
+            itemsToShow = [...expenseDetails.items.savings, ...expenseDetails.items.debt];
             title = t.modal_title_savings_debt;
             break;
-        case 'savings': 
-            itemsToShow = allItems.savings;
-            title = t.modal_title_savings;
-            break;
         case 'spending':
-            itemsToShow = [...allItems.needs, ...allItems.wants];
-            if (data.budgetRule === '80-20') itemsToShow.push(...allItems.debt);
+            itemsToShow = [...expenseDetails.items.needs, ...expenseDetails.items.wants];
+            if (data.budgetRule === '80-20') itemsToShow.push(...expenseDetails.items.debt);
             title = t.modal_title_spending;
             break;
     }
@@ -862,6 +897,7 @@ function showCategoryDetails(categoryId) {
         : `<li>No items in this category.</li>`;
     modalContainer.classList.remove('hidden');
 }
+
 
 // 11. 초기화
 document.addEventListener('DOMContentLoaded', () => {
