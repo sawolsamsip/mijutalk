@@ -15,7 +15,7 @@ let advancedModeContainer, simpleModeContainer;
 
 // 1. 초기 데이터 및 분류 정의
 const data = {
-    calculationMode: 'simple', // 'simple' or 'advanced'
+    calculationMode: 'simple',
     netIncome: 0,
     grossSalary: 0,
     salaryFrequency: 'monthly',
@@ -37,7 +37,8 @@ const ITEM_CATEGORIES = {
     'deduct-medical-1': 'needs', 'deduct-dental-1': 'needs', 'deduct-vision-1': 'needs', 'deduct-ltd-1': 'needs', 'deduct-adnd-1': 'needs',
     'deduct-critical-illness-1': 'needs', 'deduct-accident-insurance-1': 'needs', 'deduct-legal-services-1': 'wants',
     'deduct-401k-trad-1': 'savings', 'deduct-401k-roth-1': 'savings', 'deduct-spp-1': 'savings',
-    'exp-rent-1': 'needs', 'exp-utilities-1': 'needs', 'exp-internet-1': 'needs', 'exp-phone-1': 'needs', 'exp-groceries-1': 'needs', 'exp-transport-1': 'needs', 'exp-health-1': 'needs', 'exp-insurance-1': 'needs', 'exp-children-1': 'needs',
+    'exp-rent-1': 'needs', 'exp-utilities-1': 'needs', 'exp-internet-1': 'needs', 'exp-phone-1': 'needs', 'exp-groceries-1': 'needs', 'exp-transport-1': 'needs', 'exp-health-1': 'needs',
+    'exp-insurance-1': 'needs', 'exp-children-1': 'needs',
     'exp-dining-1': 'wants', 'exp-shopping-1': 'wants', 'exp-entertainment-1': 'wants', 'exp-travel-1': 'wants', 'exp-pets-1': 'wants', 'exp-donation-1': 'wants'
 };
 
@@ -300,6 +301,10 @@ const translations = {
 };
 
 // 3. 헬퍼 함수
+function capitalizeFirstLetter(string) {
+    if (!string) return '';
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+}
 function convertToAnnual(amount, frequency) {
     amount = parseFloat(amount) || 0;
     switch (frequency) {
@@ -341,15 +346,16 @@ function calculateBudget() {
     let totalAnnualTaxes = 0;
     let totalAnnualPreTaxDeductions = 0;
     let totalAnnualPostTaxDeductions = 0;
-    
-    const expenseTotals = categorizeExpensesOnly();
+
+    const expenseTotals = categorizeAll(false, true); // Only expenses
     const totalAnnualExpenses = expenseTotals.needs + expenseTotals.wants + expenseTotals.savings + expenseTotals.debt;
 
     if (data.calculationMode === 'advanced') {
-        annualGrossSalary = convertToAnnual(data.grossSalary, data.salaryFrequency) + calculateTotalForSection({}, data.customIncomes);
+        annualGrossSalary = convertToAnnual(data.grossSalary, data.salaryFrequency) + calculateTotalForSection({}, data.customIncomes, 'income');
         totalAnnualTaxes = calculateTotalForSection(data.taxes, data.taxes.custom, 'tax');
         totalAnnualPreTaxDeductions = calculateTotalForSection(data.preTaxDeductions, data.preTaxDeductions.custom, 'preTax');
         totalAnnualPostTaxDeductions = calculateTotalForSection(data.postTaxDeductions, data.postTaxDeductions.custom, 'postTax');
+        
         annualNetIncome = annualGrossSalary - totalAnnualTaxes - totalAnnualPreTaxDeductions - totalAnnualPostTaxDeductions;
     } else {
         annualNetIncome = convertToAnnual(data.netIncome, 'monthly');
@@ -452,7 +458,7 @@ function renderCustomList(listElement, customItems, type) {
         const placeholder = type === 'income' ? t.custom_income_name : t.custom_item_name;
         const frequencyOptions = `
             <option value="monthly"${item.frequency === 'monthly' ? ' selected' : ''}>${t.frequency_monthly}</option>
-            <option value="annual"${item.frequency === 'annual' ? ' selected' : ''}>${t.frequency_annually}</option>
+            <option value="annual"${item.frequency === 'annual' ? ' selected' : ''}>${t.frequency_annual}</option>
             <option value="weekly"${item.frequency === 'weekly' ? ' selected' : ''}>${t.frequency_weekly}</option>
             <option value="bi-weekly"${item.frequency === 'bi-weekly' ? ' selected' : ''}>${t.frequency_bi_weekly}</option>
         `;
@@ -569,10 +575,10 @@ function populateUiFromData(savedData) {
     budgetRuleSelect.value = data.budgetRule || '50-30-20';
     data.isDarkMode = document.body.classList.contains('dark-mode');
 
-    for(const key in taxInputs) if(data.taxes[key] !== undefined) taxInputs[key].value = data.taxes[key];
-    for(const key in preTaxDeductInputs) if(data.preTaxDeductions[key] !== undefined) preTaxDeductInputs[key].value = data.preTaxDeductions[key];
-    for(const key in postTaxDeductInputs) if(data.postTaxDeductions[key] !== undefined) postTaxDeductInputs[key].value = data.postTaxDeductions[key];
-    for(const key in expenseInputs) if(data.expenses[key] !== undefined) expenseInputs[key].value = data.expenses[key];
+    for(const key in taxInputs) if(taxInputs[key] && data.taxes[key] !== undefined) taxInputs[key].value = data.taxes[key];
+    for(const key in preTaxDeductInputs) if(preTaxDeductInputs[key] && data.preTaxDeductions[key] !== undefined) preTaxDeductInputs[key].value = data.preTaxDeductions[key];
+    for(const key in postTaxDeductInputs) if(postTaxDeductInputs[key] && data.postTaxDeductions[key] !== undefined) postTaxDeductInputs[key].value = data.postTaxDeductions[key];
+    for(const key in expenseInputs) if(expenseInputs[key] && data.expenses[key] !== undefined) expenseInputs[key].value = data.expenses[key];
     
     applyDarkMode();
     applyLanguage();
@@ -617,7 +623,7 @@ function updateCharts() {
     const lang = data.currentLanguage;
     const t = translations[lang];
     const { annualNetIncome, remainingBudget, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses } = calculateBudget();
-    const expenseTotals = categorizeExpensesOnly();
+    const expenseTotals = categorizeExpensesOnly(false);
     
     expensesChartInstance = createOrUpdateChart(expensesChartInstance, 'expenses-chart', t.section_expenses_title, 
         [expenseTotals.needs, expenseTotals.wants, expenseTotals.savings, expenseTotals.debt], 
@@ -632,7 +638,7 @@ function updateCharts() {
         [totalAnnualExpenses, remainingBudget];
 
     budgetDistributionChartInstance = createOrUpdateChart(budgetDistributionChartInstance, 'budget-distribution-chart', t.section_summary_title, 
-       overallData, overallLabels
+       overallData.map(v => Math.max(0, v)), overallLabels
     );
 
     if (data.calculationMode === 'advanced') {
@@ -660,11 +666,11 @@ function updateCharts() {
     }
 }
 
-function categorizeAll(getItems = false, forExpensesOnly = false) {
+function categorizeExpensesOnly(getItems = false) {
     let totals = { needs: 0, wants: 0, savings: 0, debt: 0 };
     let items = { needs: [], wants: [], savings: [], debt: [], spending: [] };
 
-    const process = (item, defaultCategory, type, freqKey) => {
+    const process = (item, defaultCategory, freqKey) => {
         const category = item.category || defaultCategory;
         if(totals.hasOwnProperty(category)) {
             const amount = convertToAnnual(item.amount, item.frequency || data.frequencies[freqKey]);
@@ -679,57 +685,12 @@ function categorizeAll(getItems = false, forExpensesOnly = false) {
         }
     };
     
-    if (!forExpensesOnly && data.calculationMode === 'advanced') {
-        ['preTaxDeductions', 'postTaxDeductions'].forEach(section => {
-            const type = section.slice(0, -10); // preTax, postTax
-            for(const key in data[section]) {
-                if(key === 'custom') continue;
-                const category = ITEM_CATEGORIES[`deduct-${key.replace(/_/g, '-')}-1`];
-                if(category) process({name: key, amount: data[section][key]}, category, type, type);
-            }
-            data[section].custom.forEach(item => process(item, 'wants', type, item.frequency));
-        });
-    }
-
     for(const key in data.expenses) {
         if(key === 'custom') continue;
         const category = ITEM_CATEGORIES[`exp-${key}-1`];
-        if(category) process({name: key, amount: data.expenses[key]}, category, 'expense', 'expense');
+        if(category) process({name: key, amount: data.expenses[key]}, category, 'expense');
     }
-    data.expenses.custom.forEach(item => process(item, 'wants', 'expense', item.frequency));
-
-    if (getItems) {
-        items.spending = [...items.needs, ...items.wants];
-    }
-    
-    return getItems ? items : totals;
-}
-
-function categorizeExpensesOnly(getItems = false) {
-    let totals = { needs: 0, wants: 0, savings: 0, debt: 0 };
-    let items = { needs: [], wants: [], savings: [], debt: [] };
-
-    const process = (item, defaultCategory) => {
-        const category = item.category || defaultCategory;
-        if(totals.hasOwnProperty(category)) {
-            const amount = convertToAnnual(item.amount, item.frequency || data.frequencies.expense);
-            if (amount > 0) {
-                 totals[category] += amount;
-                 if(getItems) {
-                    const transKey = `label_${item.name.replace(/-/g, '_')}`;
-                    const itemName = translations[data.currentLanguage][transKey] || item.name;
-                    items[category].push({name: itemName, amount: amount});
-                 }
-            }
-        }
-    };
-    
-    for(const key in data.expenses) {
-        if(key === 'custom') continue;
-        const category = ITEM_CATEGORIES[`exp-${key}-1`];
-        if(category) process({name: key, amount: data.expenses[key]}, category);
-    }
-    data.expenses.custom.forEach(item => process(item, 'wants'));
+    data.expenses.custom.forEach(item => process(item, 'wants', 'expense'));
 
     if (getItems) {
         items.spending = [...items.needs, ...items.wants];
@@ -740,7 +701,7 @@ function categorizeExpensesOnly(getItems = false) {
 
 function applyBudgetRule() {
     const { annualNetIncome } = calculateBudget();
-    const totals = categorizeExpensesOnly(); // Only expenses for budget rules
+    const totals = categorizeExpensesOnly();
     const lang = data.currentLanguage;
     const t = translations[lang];
 
@@ -856,7 +817,7 @@ async function generateAiReport() {
     const lang = data.currentLanguage;
     aiReportBox.innerHTML = `<p>${translations[lang].report_local_generating}</p>`;
     try {
-        if (false) { // Placeholder for real AI call
+        if (false) {
         } else {
             throw new Error("Simulating network failure to trigger local fallback.");
         }
@@ -878,7 +839,7 @@ function showCategoryDetails(categoryId) {
         case 'wants':
         case 'debt':
             itemsToShow = allItems[categoryId];
-            title = t[`modal_title_${categoryId}`] || t[`rule_category_${categoryId}`];
+            title = t[`modal_title_${categoryId}`];
             break;
         case 'savings_debt': 
             itemsToShow = [...allItems.savings, ...allItems.debt];
@@ -1014,7 +975,7 @@ document.addEventListener('DOMContentLoaded', () => {
     modalCloseBtn.addEventListener('click', () => modalContainer.classList.add('hidden'));
     modalContainer.addEventListener('click', (e) => { if (e.target === modalContainer) modalContainer.classList.add('hidden'); });
 
-    // Tooltip handler
+    // Tooltip handler for mobile (click) and desktop (hover)
     document.querySelectorAll('.tooltip-icon').forEach(icon => {
         icon.addEventListener('click', (e) => {
             e.stopPropagation(); 
