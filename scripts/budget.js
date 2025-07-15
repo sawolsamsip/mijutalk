@@ -15,7 +15,7 @@ let advancedModeContainer, simpleModeContainer;
 
 // 1. 초기 데이터 및 분류 정의
 const data = {
-    calculationMode: 'simple',
+    calculationMode: 'simple', // 'simple' or 'advanced'
     netIncome: 0,
     grossSalary: 0,
     salaryFrequency: 'monthly',
@@ -26,7 +26,7 @@ const data = {
     taxes: { federal: 0, state: 0, oasdi: 0, medicare: 0, casdi: 0, custom: [] },
     preTaxDeductions: { medical: 0, dental: 0, vision: 0, '401k-trad': 0, custom: [] },
     postTaxDeductions: { spp: 0, adnd: 0, '401k-roth': 0, ltd: 0, 'critical-illness': 0, 'accident-insurance': 0, 'legal-services': 0, custom: [] },
-    expenses: { rent: 0, utilities: 0, internet: 0, phone: 0, groceries: 0, dining: 0, transport: 0, shopping: 0, health: 0, entertainment: 0, custom: [] },
+    expenses: { rent: 0, utilities: 0, internet: 0, phone: 0, groceries: 0, dining: 0, transport: 0, shopping: 0, health: 0, entertainment: 0, insurance: 0, donation: 0, travel: 0, pets: 0, children: 0, custom: [] },
     budgetRule: '50-30-20',
     currentLanguage: 'ko',
     isDarkMode: false
@@ -37,8 +37,8 @@ const ITEM_CATEGORIES = {
     'deduct-medical-1': 'needs', 'deduct-dental-1': 'needs', 'deduct-vision-1': 'needs', 'deduct-ltd-1': 'needs', 'deduct-adnd-1': 'needs',
     'deduct-critical-illness-1': 'needs', 'deduct-accident-insurance-1': 'needs', 'deduct-legal-services-1': 'wants',
     'deduct-401k-trad-1': 'savings', 'deduct-401k-roth-1': 'savings', 'deduct-spp-1': 'savings',
-    'exp-rent-1': 'needs', 'exp-utilities-1': 'needs', 'exp-internet-1': 'needs', 'exp-phone-1': 'needs', 'exp-groceries-1': 'needs', 'exp-transport-1': 'needs', 'exp-health-1': 'needs',
-    'exp-dining-1': 'wants', 'exp-shopping-1': 'wants', 'exp-entertainment-1': 'wants'
+    'exp-rent-1': 'needs', 'exp-utilities-1': 'needs', 'exp-internet-1': 'needs', 'exp-phone-1': 'needs', 'exp-groceries-1': 'needs', 'exp-transport-1': 'needs', 'exp-health-1': 'needs', 'exp-insurance-1': 'needs', 'exp-children-1': 'needs',
+    'exp-dining-1': 'wants', 'exp-shopping-1': 'wants', 'exp-entertainment-1': 'wants', 'exp-travel-1': 'wants', 'exp-pets-1': 'wants', 'exp-donation-1': 'wants'
 };
 
 // 2. 언어별 텍스트
@@ -97,6 +97,11 @@ const translations = {
         label_shopping: 'Shopping',
         label_health_wellness: 'Health/Wellness',
         label_entertainment: 'Entertainment',
+        label_insurance: 'Insurance',
+        label_donation: 'Donation',
+        label_travel: 'Travel',
+        label_pets: 'Pets',
+        label_children: 'Children',
         section_summary_title: 'Budget Summary',
         tooltip_summary: "This is a complete overview of your finances based on your inputs. You can view the amounts based on your selected frequency.",
         label_summary_frequency: 'Summary Frequency',
@@ -219,6 +224,11 @@ const translations = {
         label_shopping: '쇼핑',
         label_health_wellness: '건강/웰빙',
         label_entertainment: '오락/여가',
+        label_insurance: '보험',
+        label_donation: '기부',
+        label_travel: '여행',
+        label_pets: '반려동물',
+        label_children: '자녀 양육비',
         section_summary_title: '예산 요약',
         tooltip_summary: "모든 수입과 지출을 종합한 최종 요약입니다. 선택한 주기에 따라 환산된 금액을 보여줍니다.",
         label_summary_frequency: '요약 주기',
@@ -332,7 +342,6 @@ function calculateBudget() {
     let totalAnnualPreTaxDeductions = 0;
     let totalAnnualPostTaxDeductions = 0;
     
-    // 지출(Expenses)은 항상 순수입에서 나가는 돈으로 따로 계산합니다.
     const expenseTotals = categorizeExpensesOnly();
     const totalAnnualExpenses = expenseTotals.needs + expenseTotals.wants + expenseTotals.savings + expenseTotals.debt;
 
@@ -341,15 +350,11 @@ function calculateBudget() {
         totalAnnualTaxes = calculateTotalForSection(data.taxes, data.taxes.custom, 'tax');
         totalAnnualPreTaxDeductions = calculateTotalForSection(data.preTaxDeductions, data.preTaxDeductions.custom, 'preTax');
         totalAnnualPostTaxDeductions = calculateTotalForSection(data.postTaxDeductions, data.postTaxDeductions.custom, 'postTax');
-        
-        // 순수입(실수령액) = 총수입 - (모든 세금과 공제)
         annualNetIncome = annualGrossSalary - totalAnnualTaxes - totalAnnualPreTaxDeductions - totalAnnualPostTaxDeductions;
     } else {
-        // 기본 모드에서는 사용자가 직접 순수입을 입력합니다.
         annualNetIncome = convertToAnnual(data.netIncome, 'monthly');
     }
     
-    // 남은 예산 = 순수입 - 총 지출
     const remainingBudget = annualNetIncome - totalAnnualExpenses;
     
     return { annualGrossSalary, annualNetIncome, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses, remainingBudget };
@@ -447,7 +452,7 @@ function renderCustomList(listElement, customItems, type) {
         const placeholder = type === 'income' ? t.custom_income_name : t.custom_item_name;
         const frequencyOptions = `
             <option value="monthly"${item.frequency === 'monthly' ? ' selected' : ''}>${t.frequency_monthly}</option>
-            <option value="annual"${item.frequency === 'annual' ? ' selected' : ''}>${t.frequency_annual}</option>
+            <option value="annual"${item.frequency === 'annual' ? ' selected' : ''}>${t.frequency_annually}</option>
             <option value="weekly"${item.frequency === 'weekly' ? ' selected' : ''}>${t.frequency_weekly}</option>
             <option value="bi-weekly"${item.frequency === 'bi-weekly' ? ' selected' : ''}>${t.frequency_bi_weekly}</option>
         `;
@@ -619,8 +624,13 @@ function updateCharts() {
         [t.tag_needs, t.tag_wants, t.tag_savings, t.tag_debt]
     );
 
-    const overallLabels = [t.label_total_expenses, t.label_remaining_budget];
-    const overallData = [totalAnnualExpenses, remainingBudget];
+    const overallLabels = data.calculationMode === 'advanced' ? 
+        [t.label_total_taxes, t.label_total_pre_tax, t.label_total_post_tax, t.label_total_expenses, t.label_remaining_budget] :
+        [t.label_total_expenses, t.label_remaining_budget];
+    const overallData = data.calculationMode === 'advanced' ?
+        [totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses, remainingBudget] :
+        [totalAnnualExpenses, remainingBudget];
+
     budgetDistributionChartInstance = createOrUpdateChart(budgetDistributionChartInstance, 'budget-distribution-chart', t.section_summary_title, 
        overallData, overallLabels
     );
@@ -639,10 +649,60 @@ function updateCharts() {
             return { labels, amounts };
         };
 
-        taxChartInstance = createOrUpdateChart(taxChartInstance, 'tax-chart', t.section_taxes_title, [totalAnnualTaxes], [t.section_taxes_title]);
-        preTaxDeductChartInstance = createOrUpdateChart(preTaxDeductChartInstance, 'pre-tax-deduct-chart', t.section_pre_tax_title, [totalAnnualPreTaxDeductions], [t.section_pre_tax_title]);
-        postTaxDeductChartInstance = createOrUpdateChart(postTaxDeductChartInstance, 'post-tax-deduct-chart', t.section_post_tax_title, [totalAnnualPostTaxDeductions], [t.section_post_tax_title]);
+        const taxData = createChartData(taxInputs, data.taxes, 'tax');
+        taxChartInstance = createOrUpdateChart(taxChartInstance, 'tax-chart', t.section_taxes_title, taxData.amounts, taxData.labels);
+        
+        const preTaxData = createChartData(preTaxDeductInputs, data.preTaxDeductions, 'preTax');
+        preTaxDeductChartInstance = createOrUpdateChart(preTaxDeductChartInstance, 'pre-tax-deduct-chart', t.section_pre_tax_title, preTaxData.amounts, preTaxData.labels);
+
+        const postTaxData = createChartData(postTaxDeductInputs, data.postTaxDeductions, 'postTax');
+        postTaxDeductChartInstance = createOrUpdateChart(postTaxDeductChartInstance, 'post-tax-deduct-chart', t.section_post_tax_title, postTaxData.amounts, postTaxData.labels);
     }
+}
+
+function categorizeAll(getItems = false, forExpensesOnly = false) {
+    let totals = { needs: 0, wants: 0, savings: 0, debt: 0 };
+    let items = { needs: [], wants: [], savings: [], debt: [], spending: [] };
+
+    const process = (item, defaultCategory, type, freqKey) => {
+        const category = item.category || defaultCategory;
+        if(totals.hasOwnProperty(category)) {
+            const amount = convertToAnnual(item.amount, item.frequency || data.frequencies[freqKey]);
+            if (amount > 0) {
+                 totals[category] += amount;
+                 if(getItems) {
+                    const transKey = `label_${item.name.replace(/-/g, '_')}`;
+                    const itemName = translations[data.currentLanguage][transKey] || item.name;
+                    items[category].push({name: itemName, amount: amount});
+                 }
+            }
+        }
+    };
+    
+    if (!forExpensesOnly && data.calculationMode === 'advanced') {
+        ['preTaxDeductions', 'postTaxDeductions'].forEach(section => {
+            const type = section.slice(0, -10); // preTax, postTax
+            for(const key in data[section]) {
+                if(key === 'custom') continue;
+                const category = ITEM_CATEGORIES[`deduct-${key.replace(/_/g, '-')}-1`];
+                if(category) process({name: key, amount: data[section][key]}, category, type, type);
+            }
+            data[section].custom.forEach(item => process(item, 'wants', type, item.frequency));
+        });
+    }
+
+    for(const key in data.expenses) {
+        if(key === 'custom') continue;
+        const category = ITEM_CATEGORIES[`exp-${key}-1`];
+        if(category) process({name: key, amount: data.expenses[key]}, category, 'expense', 'expense');
+    }
+    data.expenses.custom.forEach(item => process(item, 'wants', 'expense', item.frequency));
+
+    if (getItems) {
+        items.spending = [...items.needs, ...items.wants];
+    }
+    
+    return getItems ? items : totals;
 }
 
 function categorizeExpensesOnly(getItems = false) {
@@ -663,7 +723,7 @@ function categorizeExpensesOnly(getItems = false) {
             }
         }
     };
-
+    
     for(const key in data.expenses) {
         if(key === 'custom') continue;
         const category = ITEM_CATEGORIES[`exp-${key}-1`];
@@ -680,7 +740,7 @@ function categorizeExpensesOnly(getItems = false) {
 
 function applyBudgetRule() {
     const { annualNetIncome } = calculateBudget();
-    const expenseTotals = categorizeExpensesOnly();
+    const totals = categorizeExpensesOnly(); // Only expenses for budget rules
     const lang = data.currentLanguage;
     const t = translations[lang];
 
@@ -689,20 +749,20 @@ function applyBudgetRule() {
     switch (data.budgetRule) {
         case '70-20-10':
             return [
-                { id: 'spending', label: t.rule_category_spending, goal: annualNetIncome * 0.7, actual: expenseTotals.needs + expenseTotals.wants },
-                { id: 'savings', label: t.rule_category_savings, goal: annualNetIncome * 0.2, actual: expenseTotals.savings },
-                { id: 'debt', label: t.rule_category_debt, goal: annualNetIncome * 0.1, actual: expenseTotals.debt }
+                { id: 'spending', label: t.rule_category_spending, goal: annualNetIncome * 0.7, actual: totals.needs + totals.wants },
+                { id: 'savings', label: t.rule_category_savings, goal: annualNetIncome * 0.2, actual: totals.savings },
+                { id: 'debt', label: t.rule_category_debt, goal: annualNetIncome * 0.1, actual: totals.debt }
             ];
         case '80-20':
              return [
-                { id: 'spending', label: t.rule_category_spending, goal: annualNetIncome * 0.8, actual: expenseTotals.needs + expenseTotals.wants + expenseTotals.debt },
-                { id: 'savings', label: t.rule_category_savings, goal: annualNetIncome * 0.2, actual: expenseTotals.savings }
+                { id: 'spending', label: t.rule_category_spending, goal: annualNetIncome * 0.8, actual: totals.needs + totals.wants + totals.debt },
+                { id: 'savings', label: t.rule_category_savings, goal: annualNetIncome * 0.2, actual: totals.savings }
             ];
         default: // 50-30-20
             return [
-                { id: 'needs', label: t.rule_category_needs, goal: annualNetIncome * 0.5, actual: expenseTotals.needs },
-                { id: 'wants', label: t.rule_category_wants, goal: annualNetIncome * 0.3, actual: expenseTotals.wants },
-                { id: 'savings_debt', label: t.rule_category_savings_debt, goal: annualNetIncome * 0.2, actual: expenseTotals.savings + expenseTotals.debt }
+                { id: 'needs', label: t.rule_category_needs, goal: annualNetIncome * 0.5, actual: totals.needs },
+                { id: 'wants', label: t.rule_category_wants, goal: annualNetIncome * 0.3, actual: totals.wants },
+                { id: 'savings_debt', label: t.rule_category_savings_debt, goal: annualNetIncome * 0.2, actual: totals.savings + totals.debt }
             ];
     }
 }
@@ -796,7 +856,7 @@ async function generateAiReport() {
     const lang = data.currentLanguage;
     aiReportBox.innerHTML = `<p>${translations[lang].report_local_generating}</p>`;
     try {
-        if (false) {
+        if (false) { // Placeholder for real AI call
         } else {
             throw new Error("Simulating network failure to trigger local fallback.");
         }
@@ -820,15 +880,15 @@ function showCategoryDetails(categoryId) {
             itemsToShow = allItems[categoryId];
             title = t[`modal_title_${categoryId}`] || t[`rule_category_${categoryId}`];
             break;
-        case 'savings_debt': // For 50/30/20
+        case 'savings_debt': 
             itemsToShow = [...allItems.savings, ...allItems.debt];
             title = t.modal_title_savings_debt;
             break;
-        case 'savings': // For 70/20/10 & 80/20
+        case 'savings': 
             itemsToShow = allItems.savings;
             title = t.modal_title_savings;
             break;
-        case 'spending': // For 70/20/10 and 80/20 rules
+        case 'spending':
             itemsToShow = [...allItems.needs, ...allItems.wants];
             if (data.budgetRule === '80-20') itemsToShow.push(...allItems.debt);
             title = t.modal_title_spending;
@@ -837,7 +897,7 @@ function showCategoryDetails(categoryId) {
 
     modalTitle.textContent = title || "Details";
     modalList.innerHTML = itemsToShow.length > 0
-        ? itemsToShow.map(item => `<li><span class="modal-item-name">${item.name}</span><span class="modal-item-amount">${formatCurrency(convertFromAnnual(item.amount, data.summaryFrequency))}</span></li>`).join('')
+        ? itemsToShow.map(item => `<li><span class="modal-item-name">${capitalizeFirstLetter(item.name)}</span><span class="modal-item-amount">${formatCurrency(convertFromAnnual(item.amount, data.summaryFrequency))}</span></li>`).join('')
         : `<li>No items in this category.</li>`;
     modalContainer.classList.remove('hidden');
 }
@@ -869,7 +929,7 @@ document.addEventListener('DOMContentLoaded', () => {
     Object.assign(taxInputs, { federal: document.getElementById('tax-federal-1'), state: document.getElementById('tax-state-1'), oasdi: document.getElementById('tax-oasdi-1'), medicare: document.getElementById('tax-medicare-1'), casdi: document.getElementById('tax-casdi-1') });
     Object.assign(preTaxDeductInputs, { medical: document.getElementById('deduct-medical-1'), dental: document.getElementById('deduct-dental-1'), vision: document.getElementById('deduct-vision-1'), '401k-trad': document.getElementById('deduct-401k-trad-1') });
     Object.assign(postTaxDeductInputs, { spp: document.getElementById('deduct-spp-1'), adnd: document.getElementById('deduct-adnd-1'), '401k-roth': document.getElementById('deduct-401k-roth-1'), ltd: document.getElementById('deduct-ltd-1'), 'critical-illness': document.getElementById('deduct-critical-illness-1'), 'accident-insurance': document.getElementById('deduct-accident-insurance-1'), 'legal-services': document.getElementById('deduct-legal-services-1')});
-    Object.assign(expenseInputs, { rent: document.getElementById('exp-rent-1'), utilities: document.getElementById('exp-utilities-1'), internet: document.getElementById('exp-internet-1'), phone: document.getElementById('exp-phone-1'), groceries: document.getElementById('exp-groceries-1'), dining: document.getElementById('exp-dining-1'), transport: document.getElementById('exp-transport-1'), shopping: document.getElementById('exp-shopping-1'), health: document.getElementById('exp-health-1'), entertainment: document.getElementById('exp-entertainment-1') });
+    Object.assign(expenseInputs, { rent: document.getElementById('exp-rent-1'), utilities: document.getElementById('exp-utilities-1'), internet: document.getElementById('exp-internet-1'), phone: document.getElementById('exp-phone-1'), groceries: document.getElementById('exp-groceries-1'), dining: document.getElementById('exp-dining-1'), transport: document.getElementById('exp-transport-1'), shopping: document.getElementById('exp-shopping-1'), health: document.getElementById('exp-health-1'), entertainment: document.getElementById('exp-entertainment-1'), insurance: document.getElementById('exp-insurance-1'), donation: document.getElementById('exp-donation-1'), travel: document.getElementById('exp-travel-1'), pets: document.getElementById('exp-pets-1'), children: document.getElementById('exp-children-1') });
 
     customIncomeList = document.getElementById('custom-income-list');
     customTaxList = document.getElementById('tax-custom-list');
@@ -954,7 +1014,7 @@ document.addEventListener('DOMContentLoaded', () => {
     modalCloseBtn.addEventListener('click', () => modalContainer.classList.add('hidden'));
     modalContainer.addEventListener('click', (e) => { if (e.target === modalContainer) modalContainer.classList.add('hidden'); });
 
-    // Tooltip handler for mobile (click) and desktop (hover)
+    // Tooltip handler
     document.querySelectorAll('.tooltip-icon').forEach(icon => {
         icon.addEventListener('click', (e) => {
             e.stopPropagation(); 
