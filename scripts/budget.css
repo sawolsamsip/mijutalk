@@ -85,7 +85,10 @@ header h1 { margin: 0; font-size: 1.6em; white-space: nowrap; overflow: hidden; 
 .tooltip-icon { cursor: pointer; color: var(--accent-color); font-size: 1.2rem; }
 .tooltip-text { visibility: hidden; width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 6px; padding: 8px 12px; position: absolute; z-index: 10; bottom: 125%; left: 50%; transform: translateX(-50%); opacity: 0; transition: opacity 0.3s; font-size: 0.8rem; font-weight: normal; }
 .tooltip-container .tooltip-text.visible { visibility: visible; opacity: 1; }
-.tooltip-container:hover .tooltip-text { visibility: visible; opacity: 1; }
+.tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
 
 /* Mode Toggle Switch */
 .calculation-mode-section .section-header { border-bottom: none; }
@@ -104,7 +107,7 @@ input:checked + .slider:before { transform: translateX(26px); }
 
 /* Form Groups & Inputs */
 .form-group { margin-bottom: 20px; display: flex; flex-direction: column; }
-.form-group label { margin-bottom: 8px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+.form-group label { margin-bottom: 8px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; flex-wrap: nowrap; gap: 5px; }
 .input-container { display: flex; width: 100%; gap: 10px; align-items: center; }
 
 /* All Input Controls Style */
@@ -208,20 +211,18 @@ body.dark-mode select.form-control {
     .custom-list-item, .custom-list-item.tax-item, .custom-list-item.income-item, .custom-list-item.expense-item, .custom-list-item.pre-tax-item, .custom-list-item.post-tax-item { display: flex; flex-direction: column; align-items: stretch; gap: 10px; grid-template-columns: 1fr; border-bottom: 1px solid var(--input-border-color); padding-bottom: 15px; }
     .custom-list .custom-list-item:last-of-type { border-bottom: none; }
     .custom-list-item .remove-btn { align-self: flex-end; }
-    .salary-input-container { flex-direction: row; }
-    .salary-input-container select { flex: 1; }
-    .salary-input-container input { flex: 2; }
-    .tooltip-text { left: auto; right: 0; transform: translateX(0); margin-left: 0; margin-right: 0; }
+    .salary-input-container { flex-direction: column; }
+    .salary-input-container select, .salary-input-container input { max-width: none; }
+    .tooltip-text { left: auto; right: 0; transform: none; margin-left: 0; margin-right: 10px; }
+    .mode-toggle-container { font-size: 0.8em; }
 }
 
 @media (max-width: 480px) {
-    header { padding: 10px 15px; flex-wrap: wrap; }
-    header h1 { font-size: 1.2em; flex-basis: 100%; text-align: center; margin-bottom: 10px; }
-    .header-controls { flex-grow: 1; justify-content: center; }
+    header { flex-direction: column; text-align: center; gap: 10px; }
+    header h1 { font-size: 1.3em; flex-basis: 100%; }
+    .header-controls { width: 100%; justify-content: center; }
     .budget-section { padding: 15px; }
     .data-actions { grid-template-columns: 1fr; }
-    .salary-input-container { flex-direction: column; }
-    .mode-toggle-container { font-size: 0.9em; }
 }
 
 @media print {
