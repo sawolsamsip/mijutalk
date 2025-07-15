@@ -125,17 +125,22 @@
                      <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">Bi-Weekly</option>
                 </select>
             </div>
-            <div class="form-grid">
+            <div class="form-grid expenses-grid">
                 <div class="form-group" data-item-id="exp-rent-1"><label><span data-i18n-key="label_rent_mortgage">Rent/Mortgage</span><span class="category-tag"></span></label><input type="number" id="exp-rent-1" class="form-control" min="0" value="0"></div>
                 <div class="form-group" data-item-id="exp-utilities-1"><label><span data-i18n-key="label_utilities">Utilities</span><span class="category-tag"></span></label><input type="number" id="exp-utilities-1" class="form-control" min="0" value="0"></div>
                 <div class="form-group" data-item-id="exp-internet-1"><label><span data-i18n-key="label_internet">Internet</span><span class="category-tag"></span></label><input type="number" id="exp-internet-1" class="form-control" min="0" value="0"></div>
                 <div class="form-group" data-item-id="exp-phone-1"><label><span data-i18n-key="label_phone">Phone Bill</span><span class="category-tag"></span></label><input type="number" id="exp-phone-1" class="form-control" min="0" value="0"></div>
                 <div class="form-group" data-item-id="exp-groceries-1"><label><span data-i18n-key="label_groceries">Groceries</span><span class="category-tag"></span></label><input type="number" id="exp-groceries-1" class="form-control" min="0" value="0"></div>
-                <div class="form-group" data-item-id="exp-dining-1"><label><span data-i18n-key="label_dining_out">Dining Out</span><span class="category-tag"></span></label><input type="number" id="exp-dining-1" class="form-control" min="0" value="0"></div>
                 <div class="form-group" data-item-id="exp-transport-1"><label><span data-i18n-key="label_transportation">Transportation</span><span class="category-tag"></span></label><input type="number" id="exp-transport-1" class="form-control" min="0" value="0"></div>
-                <div class="form-group" data-item-id="exp-shopping-1"><label><span data-i18n-key="label_shopping">Shopping</span><span class="category-tag"></span></label><input type="number" id="exp-shopping-1" class="form-control" min="0" value="0"></div>
                 <div class="form-group" data-item-id="exp-health-1"><label><span data-i18n-key="label_health_wellness">Health/Wellness</span><span class="category-tag"></span></label><input type="number" id="exp-health-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-insurance-1"><label><span data-i18n-key="label_insurance">Insurance</span><span class="category-tag"></span></label><input type="number" id="exp-insurance-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-children-1"><label><span data-i18n-key="label_children">Children</span><span class="category-tag"></span></label><input type="number" id="exp-children-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-dining-1"><label><span data-i18n-key="label_dining_out">Dining Out</span><span class="category-tag"></span></label><input type="number" id="exp-dining-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-shopping-1"><label><span data-i18n-key="label_shopping">Shopping</span><span class="category-tag"></span></label><input type="number" id="exp-shopping-1" class="form-control" min="0" value="0"></div>
                 <div class="form-group" data-item-id="exp-entertainment-1"><label><span data-i18n-key="label_entertainment">Entertainment</span><span class="category-tag"></span></label><input type="number" id="exp-entertainment-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-travel-1"><label><span data-i18n-key="label_travel">Travel</span><span class="category-tag"></span></label><input type="number" id="exp-travel-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-pets-1"><label><span data-i18n-key="label_pets">Pets</span><span class="category-tag"></span></label><input type="number" id="exp-pets-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-donation-1"><label><span data-i18n-key="label_donation">Donation</span><span class="category-tag"></span></label><input type="number" id="exp-donation-1" class="form-control" min="0" value="0"></div>
             </div>
             <div class="custom-list" id="expenses-custom-list"></div>
             <button class="btn add-custom-btn" data-type="expense" data-i18n-key="btn_add_item">Add Item</button>
@@ -156,19 +161,19 @@
             <div id="summary-advanced-view" class="summary-results hidden">
                 <p data-i18n-key="label_gross_salary">Gross Salary:</p> <span id="summary-gross-salary"></span>
                 <p data-i18n-key="label_total_taxes">Total Taxes:</p> <span id="summary-total-taxes"></span>
-                <p data-i18n-key="label_total_pre_tax">Total Pre-Tax:</p> <span id="summary-total-pre-tax"></span>
+                <p data-i18n-key="label_total_pre_tax">Total Pre-Tax Deductions:</p> <span id="summary-total-pre-tax"></span>
+                <p data-i18n-key="label_total_post_tax">Total Post-Tax Deductions:</p> <span id="summary-total-post-tax"></span>
             </div>
             <div class="summary-results">
-                <p data-i18n-key="label_net_salary">Net Salary:</p> <span id="summary-net-salary"></span>
+                <p data-i18n-key="label_net_salary">Net Salary (Take-Home):</p> <span id="summary-net-salary"></span>
                 <p data-i18n-key="label_total_expenses">Total Expenses:</p> <span id="summary-total-expenses"></span>
-                 <p data-i18n-key="label_total_post_tax" class="post-tax-summary-item hidden">Total Post-Tax Deductions:</p> <span id="summary-total-post-tax" class="post-tax-summary-item hidden"></span>
                 <p data-i18n-key="label_remaining_budget">Remaining Budget:</p> <span id="summary-remaining-budget"></span>
             </div>
             <div class="chart-container"><canvas id="budget-distribution-chart"></canvas></div>
         </section>
 
         <section class="budget-section">
-            <div class="section-header"><h2 data-i18n-key="section_budget_rule_title">Budget Rule Application</h2><div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_budget_rule">널리 알려진 예산 규칙을 선택하여 현재 지출이 목표에 얼마나 부합하는지 시각적으로 확인합니다. 각 카테고리명을 클릭하면 해당 항목들의 세부 내역을 볼 수 있습니다.</span></div></div>
+            <div class="section-header"><h2 data-i18n-key="section_budget_rule_title">Budget Rule Application</h2><div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_budget_rule">널리 알려진 예산 규칙을 선택하여 현재 지출이 순수입(실수령액) 기준 목표에 얼마나 부합하는지 시각적으로 확인합니다. 각 카테고리명을 클릭하면 해당 항목들의 세부 내역을 볼 수 있습니다.</span></div></div>
             <div class="form-group">
                 <label for="budget-rule-select" data-i18n-key="label_budget_rule_select">Select Budget Rule:</label>
                 <select id="budget-rule-select" class="form-control rule-select">
