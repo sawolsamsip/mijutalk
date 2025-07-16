@@ -304,7 +304,6 @@ function capitalizeFirstLetter(string) {
     if (!string) return '';
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
-
 function convertToAnnual(amount, frequency) {
     amount = parseFloat(amount) || 0;
     switch (frequency) {
@@ -379,7 +378,6 @@ function formatCurrency(amount) {
 }
 
 function updateDisplay() {
-    // 1. 데이터 모델 업데이트
     data.calculationMode = modeToggleCheckbox.checked ? 'advanced' : 'simple';
     data.netIncome = parseFloat(netIncomeInput.value) || 0;
     data.grossSalary = parseFloat(grossSalaryInput.value) || 0;
@@ -396,16 +394,13 @@ function updateDisplay() {
     for(const key in postTaxDeductInputs) if(postTaxDeductInputs[key]) data.postTaxDeductions[key] = parseFloat(postTaxDeductInputs[key].value) || 0;
     for(const key in expenseInputs) if(expenseInputs[key]) data.expenses[key] = parseFloat(expenseInputs[key].value) || 0;
     
-    // 2. UI 표시/숨김 처리
     advancedModeContainer.classList.toggle('hidden', data.calculationMode === 'simple');
     simpleModeContainer.classList.toggle('hidden', data.calculationMode === 'advanced');
     summaryAdvancedView.classList.toggle('hidden', data.calculationMode === 'simple');
     
-    // 3. 계산 실행
     const { annualGrossSalary, annualNetIncome, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses, remainingBudget } = calculateBudget();
     const summaryFreq = data.summaryFrequency;
     
-    // 4. 요약 정보 업데이트
     summaryGrossSalary.textContent = formatCurrency(convertFromAnnual(annualGrossSalary, summaryFreq));
     summaryTotalTaxes.textContent = formatCurrency(convertFromAnnual(totalAnnualTaxes, summaryFreq));
     summaryTotalPreTax.textContent = formatCurrency(convertFromAnnual(totalAnnualPreTaxDeductions, summaryFreq));
@@ -423,7 +418,6 @@ function updateDisplay() {
         annualSummaryP.classList.add('hidden');
     }
     
-    // 5. 하위 컴포넌트 렌더링
     renderAllCustomLists();
     const breakdownData = applyBudgetRule();
     renderBudgetRule(breakdownData, remainingBudget, summaryFreq);
@@ -457,10 +451,10 @@ function renderCustomList(listElement, customItems, type) {
         ` : '';
         const placeholder = type === 'income' ? t.custom_income_name : t.custom_item_name;
         const frequencyOptions = `
-            <option value="monthly"${item.frequency === 'monthly' ? ' selected' : ''}>${t.frequency_monthly}</option>
-            <option value="annual"${item.frequency === 'annual' ? ' selected' : ''}>${t.frequency_annually}</option>
             <option value="weekly"${item.frequency === 'weekly' ? ' selected' : ''}>${t.frequency_weekly}</option>
             <option value="bi-weekly"${item.frequency === 'bi-weekly' ? ' selected' : ''}>${t.frequency_bi_weekly}</option>
+            <option value="monthly"${item.frequency === 'monthly' ? ' selected' : ''}>${t.frequency_monthly}</option>
+            <option value="annual"${item.frequency === 'annual' ? ' selected' : ''}>${t.frequency_annually}</option>
         `;
 
         return `
@@ -534,7 +528,7 @@ function applyLanguage() {
     document.querySelectorAll('[data-i18n-key]').forEach(element => {
         const key = element.dataset.i18nKey;
         if (translations[lang] && translations[lang][key]) {
-             if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+            if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
                 if (element.placeholder !== undefined) element.placeholder = translations[lang][key];
             } else {
                 element.textContent = translations[lang][key];
@@ -602,7 +596,7 @@ function createOrUpdateChart(instance, canvasId, label, dataValues, labels) {
                                  .filter(item => item.value > 0);
     
     const chartData = {
-        labels: filteredData.map(item => item.label),
+        labels: filteredData.map(item => capitalizeFirstLetter(item.label)),
         datasets: [{
             label: label,
             data: filteredData.map(item => item.value),
@@ -696,12 +690,12 @@ function categorizeExpensesOnly(getItems = false) {
         items.spending = [...items.needs, ...items.wants];
     }
     
-    return getItems ? {items: items, totals: totals} : totals;
+    return getItems ? items : totals;
 }
 
 function applyBudgetRule() {
     const { annualNetIncome } = calculateBudget();
-    const totals = categorizeAll(false, true); // Use expenses only for budget rules
+    const totals = categorizeExpensesOnly(); // Rules are based on expenses from net income
     const lang = data.currentLanguage;
     const t = translations[lang];
 
@@ -855,10 +849,11 @@ function showCategoryDetails(categoryId) {
 
     modalTitle.textContent = title || "Details";
     modalList.innerHTML = itemsToShow.length > 0
-        ? itemsToShow.map(item => `<li><span class="modal-item-name">${item.name}</span><span class="modal-item-amount">${formatCurrency(convertFromAnnual(item.amount, data.summaryFrequency))}</span></li>`).join('')
+        ? itemsToShow.map(item => `<li><span class="modal-item-name">${capitalizeFirstLetter(item.name)}</span><span class="modal-item-amount">${formatCurrency(convertFromAnnual(item.amount, data.summaryFrequency))}</span></li>`).join('')
         : `<li>No items in this category.</li>`;
     modalContainer.classList.remove('hidden');
 }
+
 
 // 11. 초기화
 document.addEventListener('DOMContentLoaded', () => {
