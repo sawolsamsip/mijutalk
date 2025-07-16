@@ -304,6 +304,7 @@ function capitalizeFirstLetter(string) {
     if (!string) return '';
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
+
 function convertToAnnual(amount, frequency) {
     amount = parseFloat(amount) || 0;
     switch (frequency) {
@@ -331,9 +332,7 @@ function calculateTotalForSection(items, customItems, freqKey) {
     let total = 0;
     const freq = data.frequencies[freqKey];
     for (const key in items) {
-        if (key !== 'custom' && typeof items[key] === 'number') {
-            total += convertToAnnual(items[key], freq);
-        }
+        if (key !== 'custom') total += convertToAnnual(items[key], freq);
     }
     if (customItems) {
         total += customItems.reduce((sum, item) => sum + convertToAnnual(item.amount, item.frequency), 0);
@@ -348,7 +347,7 @@ function calculateBudget() {
     let totalAnnualPreTaxDeductions = 0;
     let totalAnnualPostTaxDeductions = 0;
     
-    const expenseTotals = categorizeExpensesOnly();
+    const expenseTotals = categorizeAll(false, true); // Only expenses
     const totalAnnualExpenses = expenseTotals.needs + expenseTotals.wants + expenseTotals.savings + expenseTotals.debt;
 
     if (data.calculationMode === 'advanced') {
@@ -380,6 +379,7 @@ function formatCurrency(amount) {
 }
 
 function updateDisplay() {
+    // 1. 데이터 모델 업데이트
     data.calculationMode = modeToggleCheckbox.checked ? 'advanced' : 'simple';
     data.netIncome = parseFloat(netIncomeInput.value) || 0;
     data.grossSalary = parseFloat(grossSalaryInput.value) || 0;
@@ -396,13 +396,16 @@ function updateDisplay() {
     for(const key in postTaxDeductInputs) if(postTaxDeductInputs[key]) data.postTaxDeductions[key] = parseFloat(postTaxDeductInputs[key].value) || 0;
     for(const key in expenseInputs) if(expenseInputs[key]) data.expenses[key] = parseFloat(expenseInputs[key].value) || 0;
     
+    // 2. UI 표시/숨김 처리
     advancedModeContainer.classList.toggle('hidden', data.calculationMode === 'simple');
     simpleModeContainer.classList.toggle('hidden', data.calculationMode === 'advanced');
     summaryAdvancedView.classList.toggle('hidden', data.calculationMode === 'simple');
     
+    // 3. 계산 실행
     const { annualGrossSalary, annualNetIncome, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses, remainingBudget } = calculateBudget();
     const summaryFreq = data.summaryFrequency;
     
+    // 4. 요약 정보 업데이트
     summaryGrossSalary.textContent = formatCurrency(convertFromAnnual(annualGrossSalary, summaryFreq));
     summaryTotalTaxes.textContent = formatCurrency(convertFromAnnual(totalAnnualTaxes, summaryFreq));
     summaryTotalPreTax.textContent = formatCurrency(convertFromAnnual(totalAnnualPreTaxDeductions, summaryFreq));
@@ -420,6 +423,7 @@ function updateDisplay() {
         annualSummaryP.classList.add('hidden');
     }
     
+    // 5. 하위 컴포넌트 렌더링
     renderAllCustomLists();
     const breakdownData = applyBudgetRule();
     renderBudgetRule(breakdownData, remainingBudget, summaryFreq);
@@ -530,7 +534,7 @@ function applyLanguage() {
     document.querySelectorAll('[data-i18n-key]').forEach(element => {
         const key = element.dataset.i18nKey;
         if (translations[lang] && translations[lang][key]) {
-            if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+             if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
                 if (element.placeholder !== undefined) element.placeholder = translations[lang][key];
             } else {
                 element.textContent = translations[lang][key];
@@ -692,12 +696,12 @@ function categorizeExpensesOnly(getItems = false) {
         items.spending = [...items.needs, ...items.wants];
     }
     
-    return getItems ? items : totals;
+    return getItems ? {items: items, totals: totals} : totals;
 }
 
 function applyBudgetRule() {
     const { annualNetIncome } = calculateBudget();
-    const totals = categorizeExpensesOnly();
+    const totals = categorizeAll(false, true); // Use expenses only for budget rules
     const lang = data.currentLanguage;
     const t = translations[lang];
 
@@ -834,16 +838,13 @@ function showCategoryDetails(categoryId) {
         case 'needs':
         case 'wants':
         case 'debt':
+        case 'savings':
             itemsToShow = allItems.items[categoryId];
             title = t[`modal_title_${categoryId}`] || t[`rule_category_${categoryId}`];
             break;
         case 'savings_debt':
             itemsToShow = [...allItems.items.savings, ...allItems.items.debt];
             title = t.modal_title_savings_debt;
-            break;
-        case 'savings':
-            itemsToShow = allItems.items.savings;
-            title = t.modal_title_savings;
             break;
         case 'spending':
             itemsToShow = [...allItems.items.needs, ...allItems.items.wants];
@@ -854,11 +855,10 @@ function showCategoryDetails(categoryId) {
 
     modalTitle.textContent = title || "Details";
     modalList.innerHTML = itemsToShow.length > 0
-        ? itemsToShow.map(item => `<li><span class="modal-item-name">${capitalizeFirstLetter(item.name)}</span><span class="modal-item-amount">${formatCurrency(convertFromAnnual(item.amount, data.summaryFrequency))}</span></li>`).join('')
+        ? itemsToShow.map(item => `<li><span class="modal-item-name">${item.name}</span><span class="modal-item-amount">${formatCurrency(convertFromAnnual(item.amount, data.summaryFrequency))}</span></li>`).join('')
         : `<li>No items in this category.</li>`;
     modalContainer.classList.remove('hidden');
 }
-
 
 // 11. 초기화
 document.addEventListener('DOMContentLoaded', () => {
@@ -972,7 +972,7 @@ document.addEventListener('DOMContentLoaded', () => {
     modalCloseBtn.addEventListener('click', () => modalContainer.classList.add('hidden'));
     modalContainer.addEventListener('click', (e) => { if (e.target === modalContainer) modalContainer.classList.add('hidden'); });
 
-    // Tooltip handler for mobile (click) and desktop (hover)
+    // Tooltip handler
     document.querySelectorAll('.tooltip-icon').forEach(icon => {
         icon.addEventListener('click', (e) => {
             e.stopPropagation(); 
