@@ -48,10 +48,10 @@
                         <label for="salary-gross" data-i18n-key="label_base_salary">기본 급여</label>
                         <div class="input-container salary-input-container">
                             <select id="salary-frequency-select" class="form-control">
-                                <option value="monthly" data-i18n-key="frequency_monthly">Monthly</option>
-                                <option value="annual" data-i18n-key="frequency_annually">Annual</option>
                                 <option value="weekly" data-i18n-key="frequency_weekly">Weekly</option>
                                 <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">Bi-Weekly</option>
+                                <option value="monthly" data-i18n-key="frequency_monthly">Monthly</option>
+                                <option value="annual" data-i18n-key="frequency_annually">Annual</option>
                             </select>
                             <input type="number" id="salary-gross" class="form-control" placeholder="0.00" value="0" min="0">
                         </div>
@@ -63,7 +63,7 @@
             </section>
             <section class="budget-section">
                 <div class="section-header"><h2 data-i18n-key="section_taxes_title">Taxes</h2><div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_taxes">급여에서 원천징수되는 세금 항목들을 입력합니다.</span></div></div>
-                <div class="form-group"><label for="tax-frequency-select" data-i18n-key="label_frequency">Frequency:</label><select id="tax-frequency-select" class="form-control"><option value="monthly" data-i18n-key="frequency_monthly">Monthly</option><option value="annual" data-i18n-key="frequency_annually">Annual</option><option value="weekly" data-i18n-key="frequency_weekly">Weekly</option><option value="bi-weekly" data-i18n-key="frequency_bi_weekly">Bi-Weekly</option></select></div>
+                <div class="form-group"><label for="tax-frequency-select" data-i18n-key="label_frequency">Frequency:</label><select id="tax-frequency-select" class="form-control"><option value="weekly" data-i18n-key="frequency_weekly">Weekly</option><option value="bi-weekly" data-i18n-key="frequency_bi_weekly">Bi-Weekly</option><option value="monthly" data-i18n-key="frequency_monthly">Monthly</option><option value="annual" data-i18n-key="frequency_annually">Annual</option></select></div>
                 <div class="form-grid">
                     <div class="form-group" data-item-id="tax-federal-1"><label><span data-i18n-key="label_federal_withholding">Federal Withholding</span><span class="category-tag"></span></label><input type="number" id="tax-federal-1" class="form-control" min="0" value="0"></div>
                     <div class="form-group" data-item-id="tax-state-1"><label><span data-i18n-key="label_state_tax">State Tax</span><span class="category-tag"></span></label><input type="number" id="tax-state-1" class="form-control" min="0" value="0"></div>
@@ -77,7 +77,7 @@
             </section>
             <section class="budget-section">
                 <div class="section-header"><h2 data-i18n-key="section_pre_tax_title">Pre-Tax Deductions</h2><div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_pre_tax">세금을 부과하기 전에 총수입에서 공제되는 항목들입니다. 주로 401k와 같은 연금 저축이나 특정 보험료가 해당됩니다.</span></div></div>
-                <div class="form-group"><label for="pre-tax-frequency-select" data-i18n-key="label_frequency">Frequency:</label><select id="pre-tax-frequency-select" class="form-control"><option value="monthly" data-i18n-key="frequency_monthly">Monthly</option><option value="annual" data-i18n-key="frequency_annually">Annual</option><option value="weekly" data-i18n-key="frequency_weekly">Weekly</option><option value="bi-weekly" data-i18n-key="frequency_bi_weekly">Bi-Weekly</option></select></div>
+                <div class="form-group"><label for="pre-tax-frequency-select" data-i18n-key="label_frequency">Frequency:</label><select id="pre-tax-frequency-select" class="form-control"><option value="weekly" data-i18n-key="frequency_weekly">Weekly</option><option value="bi-weekly" data-i18n-key="frequency_bi_weekly">Bi-Weekly</option><option value="monthly" data-i18n-key="frequency_monthly">Monthly</option><option value="annual" data-i18n-key="frequency_annually">Annual</option></select></div>
                 <div class="form-grid">
                     <div class="form-group" data-item-id="deduct-medical-1"><label><span data-i18n-key="label_medical_premium">Medical Premium</span><span class="category-tag"></span></label><input type="number" id="deduct-medical-1" class="form-control" min="0" value="0"></div>
                     <div class="form-group" data-item-id="deduct-dental-1"><label><span data-i18n-key="label_dental_premium">Dental Premium</span><span class="category-tag"></span></label><input type="number" id="deduct-dental-1" class="form-control" min="0" value="0"></div>
@@ -90,7 +90,7 @@
             </section>
             <section class="budget-section">
                 <div class="section-header"><h2 data-i18n-key="section_post_tax_title">Post-Tax Deductions</h2><div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_post_tax">세금을 납부한 후, 순수입에서 공제되는 항목들입니다.</span></div></div>
-                <div class="form-group"><label for="post-tax-frequency-select" data-i18n-key="label_frequency">Frequency:</label><select id="post-tax-frequency-select" class="form-control"><option value="monthly" data-i18n-key="frequency_monthly">Monthly</option><option value="annual" data-i18n-key="frequency_annually">Annual</option><option value="weekly" data-i18n-key="frequency_weekly">Weekly</option><option value="bi-weekly" data-i18n-key="frequency_bi_weekly">Bi-Weekly</option></select></div>
+                <div class="form-group"><label for="post-tax-frequency-select" data-i18n-key="label_frequency">Frequency:</label><select id="post-tax-frequency-select" class="form-control"><option value="weekly" data-i18n-key="frequency_weekly">Weekly</option><option value="bi-weekly" data-i18n-key="frequency_bi_weekly">Bi-Weekly</option><option value="monthly" data-i18n-key="frequency_monthly">Monthly</option><option value="annual" data-i18n-key="frequency_annually">Annual</option></select></div>
                 <div class="form-grid">
                     <div class="form-group" data-item-id="deduct-spp-1"><label><span data-i18n-key="label_spp">SPP</span><span class="category-tag"></span></label><input type="number" id="deduct-spp-1" class="form-control" min="0" value="0"></div>
                     <div class="form-group" data-item-id="deduct-adnd-1"><label><span data-i18n-key="label_adnd">AD&D</span><span class="category-tag"></span></label><input type="number" id="deduct-adnd-1" class="form-control" min="0" value="0"></div>
@@ -119,10 +119,10 @@
             <div class="form-group">
                 <label for="expense-frequency-select" data-i18n-key="label_frequency">Frequency:</label>
                 <select id="expense-frequency-select" class="form-control">
-                     <option value="monthly" data-i18n-key="frequency_monthly">Monthly</option>
-                     <option value="annual" data-i18n-key="frequency_annually">Annual</option>
                      <option value="weekly" data-i18n-key="frequency_weekly">Weekly</option>
                      <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">Bi-Weekly</option>
+                     <option value="monthly" data-i18n-key="frequency_monthly">Monthly</option>
+                     <option value="annual" data-i18n-key="frequency_annually">Annual</option>
                 </select>
             </div>
             <div class="form-grid expenses-grid">
@@ -152,10 +152,10 @@
             <div class="form-group">
                 <label for="summary-frequency-select" data-i18n-key="label_summary_frequency">Summary Frequency:</label>
                 <select id="summary-frequency-select" class="form-control">
-                    <option value="monthly" data-i18n-key="frequency_monthly">Monthly</option>
-                    <option value="annual" data-i18n-key="frequency_annually">Annual</option>
                     <option value="weekly" data-i18n-key="frequency_weekly">Weekly</option>
                     <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">Bi-Weekly</option>
+                    <option value="monthly" data-i18n-key="frequency_monthly">Monthly</option>
+                    <option value="annual" data-i18n-key="frequency_annually">Annual</option>
                 </select>
             </div>
             <div id="summary-advanced-view" class="summary-results hidden">
