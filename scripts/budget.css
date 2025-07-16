@@ -195,16 +195,16 @@ body.dark-mode select.form-control { background-image: url("data:image/svg+xml,%
     .custom-list-item, .custom-list-item.tax-item, .custom-list-item.income-item, .custom-list-item.expense-item, .custom-list-item.pre-tax-item, .custom-list-item.post-tax-item { display: flex; flex-direction: column; align-items: stretch; gap: 10px; grid-template-columns: 1fr; border-bottom: 1px solid var(--input-border-color); padding-bottom: 15px; }
     .custom-list .custom-list-item:last-of-type { border-bottom: none; }
     .custom-list-item .remove-btn { align-self: flex-end; }
-    .salary-input-container { flex-direction: column; align-items: stretch; }
+    .salary-input-container { flex-direction: column; }
     .salary-input-container select, .salary-input-container input { max-width: none; flex-basis: auto; }
     .tooltip-text { left: auto; right: 0; transform: none; margin-left: 0; margin-right: 10px; }
     .mode-toggle-container { font-size: 0.8em; }
 }
 
 @media (max-width: 480px) {
-    header { padding: 10px 15px; flex-wrap: wrap; text-align: center; }
+    header { flex-direction: column; text-align: center; gap: 10px; }
     header h1 { font-size: 1.3em; flex-basis: 100%; margin-bottom: 10px; }
-    .header-controls { flex-grow: 1; justify-content: center; }
+    .header-controls { width: 100%; justify-content: center; }
     .budget-section { padding: 15px; }
     .data-actions { grid-template-columns: 1fr; }
 }
