@@ -1,3 +1,4 @@
+
 // 0. 전역 변수
 let grossSalaryInput, salaryFrequencySelect, netIncomeInput, modeToggleCheckbox;
 let taxFrequencySelect, preTaxFrequencySelect, postTaxFrequencySelect, expenseFrequencySelect;
@@ -195,7 +196,7 @@ const translations = {
         label_state_tax: '주세',
         label_oasdi: '사회보장세 (OASDI)',
         label_medicare: '메디케어',
-        label_ca_sdi: '캘리포니아 주 장애보험 (CASDI)',
+        label_ca_sdi: 'CA 장애보험 (CASDI)',
         btn_add_item: '항목 추가',
         section_pre_tax_title: '세전 공제',
         tooltip_pre_tax: "세금을 부과하기 전에 총수입에서 공제되는 항목들입니다. 주로 401k와 같은 연금 저축이나 특정 보험료가 해당됩니다.",
@@ -206,7 +207,7 @@ const translations = {
         section_post_tax_title: '세후 공제',
         tooltip_post_tax: "세금을 납부한 후, 순수입에서 공제되는 항목들입니다.",
         label_spp: '자사주 매입 계획 (SPP)',
-        label_adnd: '사고 사망 및 신체 상해 보험 (AD&D)',
+        label_adnd: '사고사망 및 상해보험 (AD&D)',
         label_401k_roth: '401k (Roth)',
         label_ltd: '장기 장애 보험 (LTD)',
         label_critical_illness: '중대질병 보험',
@@ -345,16 +346,14 @@ function calculateBudget() {
     let totalAnnualTaxes = 0;
     let totalAnnualPreTaxDeductions = 0;
     let totalAnnualPostTaxDeductions = 0;
-    
-    const expenseTotals = categorizeAll(false, true); // Only expenses
+    const expenseTotals = categorizeExpensesOnly();
     const totalAnnualExpenses = expenseTotals.needs + expenseTotals.wants + expenseTotals.savings + expenseTotals.debt;
 
     if (data.calculationMode === 'advanced') {
-        annualGrossSalary = convertToAnnual(data.grossSalary, data.salaryFrequency) + calculateTotalForSection({}, data.customIncomes, 'income');
+        annualGrossSalary = convertToAnnual(data.grossSalary, data.salaryFrequency) + calculateTotalForSection({}, data.customIncomes);
         totalAnnualTaxes = calculateTotalForSection(data.taxes, data.taxes.custom, 'tax');
         totalAnnualPreTaxDeductions = calculateTotalForSection(data.preTaxDeductions, data.preTaxDeductions.custom, 'preTax');
         totalAnnualPostTaxDeductions = calculateTotalForSection(data.postTaxDeductions, data.postTaxDeductions.custom, 'postTax');
-        
         annualNetIncome = annualGrossSalary - totalAnnualTaxes - totalAnnualPreTaxDeductions - totalAnnualPostTaxDeductions;
     } else {
         annualNetIncome = convertToAnnual(data.netIncome, 'monthly');
@@ -451,10 +450,10 @@ function renderCustomList(listElement, customItems, type) {
         ` : '';
         const placeholder = type === 'income' ? t.custom_income_name : t.custom_item_name;
         const frequencyOptions = `
+            <option value="monthly"${item.frequency === 'monthly' ? ' selected' : ''}>${t.frequency_monthly}</option>
+            <option value="annual"${item.frequency === 'annual' ? ' selected' : ''}>${t.frequency_annual}</option>
             <option value="weekly"${item.frequency === 'weekly' ? ' selected' : ''}>${t.frequency_weekly}</option>
             <option value="bi-weekly"${item.frequency === 'bi-weekly' ? ' selected' : ''}>${t.frequency_bi_weekly}</option>
-            <option value="monthly"${item.frequency === 'monthly' ? ' selected' : ''}>${t.frequency_monthly}</option>
-            <option value="annual"${item.frequency === 'annual' ? ' selected' : ''}>${t.frequency_annually}</option>
         `;
 
         return `
@@ -596,7 +595,7 @@ function createOrUpdateChart(instance, canvasId, label, dataValues, labels) {
                                  .filter(item => item.value > 0);
     
     const chartData = {
-        labels: filteredData.map(item => capitalizeFirstLetter(item.label)),
+        labels: filteredData.map(item => item.label),
         datasets: [{
             label: label,
             data: filteredData.map(item => item.value),
@@ -660,9 +659,59 @@ function updateCharts() {
     }
 }
 
-function categorizeExpensesOnly(getItems = false) {
+function categorizeAll(getItems = false) {
     let totals = { needs: 0, wants: 0, savings: 0, debt: 0 };
     let items = { needs: [], wants: [], savings: [], debt: [], spending: [] };
+
+    const process = (item, defaultCategory, type, freqKey) => {
+        const category = item.category || defaultCategory;
+        if(totals.hasOwnProperty(category)) {
+            const amount = convertToAnnual(item.amount, item.frequency || data.frequencies[freqKey]);
+            if (amount > 0) {
+                 totals[category] += amount;
+                 if(getItems) {
+                    const transKey = `label_${item.name.replace(/-/g, '_')}`;
+                    const itemName = translations[data.currentLanguage][transKey] || item.name;
+                    items[category].push({name: itemName, amount: amount});
+                 }
+            }
+        }
+    };
+
+    if (data.calculationMode === 'advanced') {
+        ['preTaxDeductions', 'postTaxDeductions'].forEach(section => {
+            const type = section.slice(0, -10);
+            const freqKey = type;
+            for (const key in data[section]) {
+                if (key === 'custom') continue;
+                const category = ITEM_CATEGORIES[`deduct-${key.replace(/_/g, '-')}-1`];
+                if (category) process({ name: key, amount: data[section][key] }, category, type, freqKey);
+            }
+            data[section].custom.forEach(item => process(item, 'wants', type, item.frequency));
+        });
+    }
+    
+    // Expenses are categorized based on their own logic, separate from deductions
+    const expenseTotals = categorizeExpensesOnly(getItems);
+    totals.needs += expenseTotals.needs;
+    totals.wants += expenseTotals.wants;
+    totals.savings += expenseTotals.savings;
+    totals.debt += expenseTotals.debt;
+    if(getItems) {
+        items.needs = items.needs.concat(expenseTotals.items.needs);
+        items.wants = items.wants.concat(expenseTotals.items.wants);
+        items.savings = items.savings.concat(expenseTotals.items.savings);
+        items.debt = items.debt.concat(expenseTotals.items.debt);
+        items.spending = [...items.needs, ...items.wants];
+    }
+    
+    return getItems ? items : totals;
+}
+
+
+function categorizeExpensesOnly(getItems = false) {
+    let totals = { needs: 0, wants: 0, savings: 0, debt: 0 };
+    let items = { needs: [], wants: [], savings: [], debt: [] };
 
     const process = (item, defaultCategory, freqKey) => {
         const category = item.category || defaultCategory;
@@ -686,16 +735,12 @@ function categorizeExpensesOnly(getItems = false) {
     }
     data.expenses.custom.forEach(item => process(item, 'wants', 'expense'));
 
-    if (getItems) {
-        items.spending = [...items.needs, ...items.wants];
-    }
-    
-    return getItems ? items : totals;
+    return getItems ? {items: items, totals: totals} : totals;
 }
 
 function applyBudgetRule() {
     const { annualNetIncome } = calculateBudget();
-    const totals = categorizeExpensesOnly(); // Rules are based on expenses from net income
+    const totals = categorizeExpensesOnly();
     const lang = data.currentLanguage;
     const t = translations[lang];
 
@@ -824,7 +869,7 @@ async function generateAiReport() {
 function showCategoryDetails(categoryId) {
     const lang = data.currentLanguage;
     const t = translations[lang];
-    const allItems = categorizeExpensesOnly(true);
+    const expenseDetails = categorizeExpensesOnly(true);
     let itemsToShow = [];
     let title = "";
 
@@ -833,16 +878,16 @@ function showCategoryDetails(categoryId) {
         case 'wants':
         case 'debt':
         case 'savings':
-            itemsToShow = allItems.items[categoryId];
+            itemsToShow = expenseDetails.items[categoryId];
             title = t[`modal_title_${categoryId}`] || t[`rule_category_${categoryId}`];
             break;
         case 'savings_debt':
-            itemsToShow = [...allItems.items.savings, ...allItems.items.debt];
+            itemsToShow = [...expenseDetails.items.savings, ...expenseDetails.items.debt];
             title = t.modal_title_savings_debt;
             break;
         case 'spending':
-            itemsToShow = [...allItems.items.needs, ...allItems.items.wants];
-            if (data.budgetRule === '80-20') itemsToShow.push(...allItems.items.debt);
+            itemsToShow = [...expenseDetails.items.needs, ...expenseDetails.items.wants];
+            if (data.budgetRule === '80-20') itemsToShow.push(...expenseDetails.items.debt);
             title = t.modal_title_spending;
             break;
     }
@@ -967,7 +1012,7 @@ document.addEventListener('DOMContentLoaded', () => {
     modalCloseBtn.addEventListener('click', () => modalContainer.classList.add('hidden'));
     modalContainer.addEventListener('click', (e) => { if (e.target === modalContainer) modalContainer.classList.add('hidden'); });
 
-    // Tooltip handler
+    // Tooltip handler for mobile (click) and desktop (hover)
     document.querySelectorAll('.tooltip-icon').forEach(icon => {
         icon.addEventListener('click', (e) => {
             e.stopPropagation(); 
