@@ -178,6 +178,24 @@ const translations = {
         report_local_tip_low_savings: "Your savings rate is {savingsRate}%. To achieve your financial goals faster, consider allocating any surplus or cutting back on non-essential spending to increase this rate.",
         report_local_tip_surplus: "You have a surplus of {remaining}! Allocating this to your savings or investments could generate an estimated {annualReturn} more per year (assuming a 5% return).",
         report_local_no_data: "Insufficient data for a detailed analysis. Please input your income and expenses.",
+        section_debt_title: "Debt Management",
+        tooltip_debt: "Manage your debts. We'll help you calculate a 'Debt Avalanche' plan, prioritizing high-interest debts.",
+        label_debt_name: "Debt Name",
+        label_debt_balance: "Current Balance",
+        label_debt_rate: "Interest Rate (%)",
+        label_debt_min_payment: "Min. Monthly Payment",
+        btn_add_debt: "Add Debt",
+        label_debt_extra_payment: "Extra Monthly Payment",
+
+        section_goals_title: "Financial Goal Setting",
+        tooltip_goals: "Add and manage your financial goals. Update your progress by adding to your saved amount.",
+        label_goal_name: "Goal Name",
+        label_goal_target: "Target Amount",
+        btn_add_goal: "Add Goal",
+
+        section_trends_title: "Financial Trend Analysis",
+        tooltip_trends: "Record your data at the end of each month to track your financial changes over time.",
+        btn_record_history: "Record This Month's Data"
     },
     ko: {
         app_title: '스마트 예산 노트',
@@ -305,6 +323,24 @@ const translations = {
         report_local_tip_low_savings: "현재 저축률은 {savingsRate}%입니다. 재무 목표를 빠르게 달성하기 위해, 잉여금을 저축에 배분하거나 불필요한 지출을 줄여 저축률을 높여보세요.",
         report_local_tip_surplus: "<strong>{remaining}</strong>의 잉여금이 있습니다! 이 금액을 저축이나 투자에 활용하면, 연 5% 수익률 가정 시 연간 약 <strong>{annualReturn}</strong>의 추가 수익을 기대할 수 있습니다.",
         report_local_no_data: "상세 분석을 위한 데이터가 부족합니다. 수입 및 지출 내역을 입력해주세요.",
+        section_debt_title: "부채 관리",
+        tooltip_debt: "상환할 부채 목록을 관리합니다. 이자율이 높은 순서대로 상환하는 '눈사태(Avalanche)' 전략을 계산해 드립니다.",
+        label_debt_name: "부채 이름",
+        label_debt_balance: "현재 잔액",
+        label_debt_rate: "이자율 (%)",
+        label_debt_min_payment: "월 최소상환액",
+        btn_add_debt: "부채 추가",
+        label_debt_extra_payment: "월 추가 상환액",
+
+        section_goals_title: "재무 목표 설정",
+        tooltip_goals: "달성하고 싶은 재무 목표를 추가하고 관리합니다. '저축액 추가'에 금액을 입력하여 달성률을 업데이트할 수 있습니다.",
+        label_goal_name: "목표 이름",
+        label_goal_target: "목표 금액",
+        btn_add_goal: "목표 추가",
+
+        section_trends_title: "재무 트렌드 분석",
+        tooltip_trends: "매월 말 '이번 달 데이터 기록하기' 버튼을 눌러 데이터를 저장하고, 시간 경과에 따른 재무 변화를 차트로 확인하세요.",
+        btn_record_history: "이번 달 데이터 기록하기"
     }
 };
 
