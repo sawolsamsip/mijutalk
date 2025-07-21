@@ -215,6 +215,7 @@ const translations = {
         label_expense_amount: "Amount",
         btn_add_expense: "Add Other Expense",
         label_api_key: 'Gemini API Key',
+        placeholder_api_key: 'Paste your API key here',
     },
     ko: {
         app_title: '스마트 예산 노트',
@@ -369,6 +370,7 @@ const translations = {
         label_expense_amount: "금액",
         btn_add_expense: "기타 지출 추가",
         label_api_key: 'Gemini API 키',
+        placeholder_api_key: '이곳에 API 키를 붙여넣으세요',
     }
 };
 
