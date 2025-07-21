@@ -207,6 +207,38 @@ body.dark-mode select.form-control { background-image: url("data:image/svg+xml,%
     margin-bottom: 0;
 }
 
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+}
+
+.stat-card {
+    background-color: var(--bg-color);
+    padding: 15px 20px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--input-border-color);
+}
+
+.stat-title {
+    font-size: 0.9em;
+    margin-bottom: 8px;
+    color: var(--text-color);
+    opacity: 0.8;
+}
+
+.stat-value {
+    font-size: 1.6em;
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+.stat-value.positive {
+    color: var(--positive-color);
+}
+.stat-value.negative {
+    color: var(--negative-color);
+}
 
 /* Responsive Styles */
 @media (max-width: 768px) {
