@@ -198,7 +198,7 @@ body.dark-mode select.form-control { background-image: url("data:image/svg+xml,%
 #debt-form { grid-template-columns: 2fr 1fr 1fr 1fr auto; align-items: flex-end; }
 #debt-calculator { margin-top: 25px; border-top: 1px solid var(--input-border-color); padding-top: 20px; grid-template-columns: 2fr 1fr; }
 #category-form { grid-template-columns: 2fr 1fr auto; align-items: flex-end; }
-#expense-form { grid-template-columns: 2fr 1fr 1fr auto; align-items: flex-end; gap: 10px; }
+#expense-form { grid-template-columns: 3fr 1.5fr 2fr auto; align-items: flex-end; gap: 10px; }
 
 /* A small fix to remove unnecessary margins inside the forms */
 #goal-form .form-group,
