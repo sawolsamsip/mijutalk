@@ -6,20 +6,21 @@ let grossSalaryInput, salaryFrequencySelect, netIncomeInput, modeToggleCheckbox;
 let taxFrequencySelect, preTaxFrequencySelect, postTaxFrequencySelect, expenseFrequencySelect;
 let summaryFrequencySelect;
 let annualSalarySummaryDisplay, summaryGrossSalary, summaryTotalTaxes, summaryTotalPreTax, summaryTotalPostTax, summaryNetSalary, summaryTotalExpenses, summaryRemainingBudget, summaryAdvancedView;
-const taxInputs = {}, preTaxDeductInputs = {}, postTaxDeductInputs = {}, expenseInputs = {};
-let customIncomeList, customTaxList, customPreTaxDeductList, customPostTaxDeductList, customExpenseList;
+const taxInputs = {}, preTaxDeductInputs = {}, postTaxDeductInputs = {};
+let customIncomeList, customTaxList, customPreTaxDeductList, customPostTaxDeductList;
 let languageToggleBtn, darkmodeToggleBtn, currencyToggleBtn;
 let exportJsonBtn, importJsonBtn, importJsonInput, clearAllDataBtn, printBtn, emailBtn, shareBtn;
-let aiReportBtn, aiReportBox;
+let aiReportBtn, aiReportBox, apiKeyInput;
 let budgetRuleSelect, budgetRuleBreakdown;
-let taxChartInstance, preTaxDeductChartInstance, postTaxDeductChartInstance, expensesChartInstance, budgetDistributionChartInstance;
+let taxChartInstance, preTaxDeductChartInstance, postTaxDeductChartInstance, expensesChartInstance, budgetDistributionChartInstance, historyChartInstance;
 let modalContainer, modalTitle, modalList, modalCloseBtn;
 let advancedModeContainer, simpleModeContainer;
 let goalNameInput, goalTargetInput, addGoalBtn, goalListContainer;
-let debtNameInput, debtBalanceInput, debtRateInput, debtPaymentInput, addDebtBtn, debtListContainer;
-let debtExtraPaymentInput, debtResultContainer;
-let recordHistoryBtn, historyChartInstance;
-let apiKeyInput;
+let debtNameInput, debtBalanceInput, debtRateInput, debtPaymentInput, addDebtBtn, debtListContainer, debtExtraPaymentInput, debtResultContainer;
+let recordHistoryBtn;
+let categoryNameInput, categoryTypeSelect, addCategoryBtn, categoryListContainer;
+let expenseNameInput, expenseAmountInput, expenseCategorySelect, addExpenseBtn, expenseListContainer;
+
 
 const data = {
     calculationMode: 'simple',
@@ -33,7 +34,14 @@ const data = {
     taxes: { federal: 0, state: 0, oasdi: 0, medicare: 0, casdi: 0, custom: [] },
     preTaxDeductions: { medical: 0, dental: 0, vision: 0, '401k-trad': 0, custom: [] },
     postTaxDeductions: { spp: 0, adnd: 0, '401k-roth': 0, ltd: 0, 'critical-illness': 0, 'accident-insurance': 0, 'legal-services': 0, custom: [] },
-    expenses: { rent: 0, utilities: 0, internet: 0, phone: 0, groceries: 0, dining: 0, transport: 0, shopping: 0, health: 0, entertainment: 0, insurance: 0, donation: 0, travel: 0, pets: 0, children: 0, custom: [] },
+    expenses: [],
+    categories: [
+        { id: 1, name: 'Rent/Mortgage', type: 'needs' }, { id: 2, name: 'Utilities', type: 'needs' }, { id: 3, name: 'Groceries', type: 'needs' },
+        { id: 4, name: 'Transportation', type: 'needs' }, { id: 5, name: 'Health/Wellness', type: 'needs' }, { id: 6, name: 'Insurance', type: 'needs' },
+        { id: 7, name: 'Phone Bill', type: 'needs' }, { id: 8, name: 'Internet', type: 'needs' }, { id: 9, name: 'Children', type: 'needs' },
+        { id: 10, name: 'Dining Out', type: 'wants' }, { id: 11, name: 'Shopping', type: 'wants' }, { id: 12, name: 'Entertainment', type: 'wants' },
+        { id: 13, name: 'Travel', type: 'wants' }, { id: 14, name: 'Pets', type: 'wants' }, { id: 15, name: 'Donation', type: 'wants' }
+    ],
     goals: [],
     debts: [],
     history: [],
@@ -46,9 +54,7 @@ const ITEM_CATEGORIES = {
     'tax-federal-1': 'fixed', 'tax-state-1': 'fixed', 'tax-oasdi-1': 'fixed', 'tax-medicare-1': 'fixed', 'tax-casdi-1': 'fixed',
     'deduct-medical-1': 'needs', 'deduct-dental-1': 'needs', 'deduct-vision-1': 'needs', 'deduct-ltd-1': 'needs', 'deduct-adnd-1': 'needs',
     'deduct-critical-illness-1': 'needs', 'deduct-accident-insurance-1': 'needs', 'deduct-legal-services-1': 'wants',
-    'deduct-401k-trad-1': 'savings', 'deduct-401k-roth-1': 'savings', 'deduct-spp-1': 'savings',
-    'exp-rent-1': 'needs', 'exp-utilities-1': 'needs', 'exp-internet-1': 'needs', 'exp-phone-1': 'needs', 'exp-groceries-1': 'needs', 'exp-transport-1': 'needs', 'exp-health-1': 'needs', 'exp-insurance-1': 'needs', 'exp-children-1': 'needs',
-    'exp-dining-1': 'wants', 'exp-shopping-1': 'wants', 'exp-entertainment-1': 'wants', 'exp-travel-1': 'wants', 'exp-pets-1': 'wants', 'exp-donation-1': 'wants'
+    'deduct-401k-trad-1': 'savings', 'deduct-401k-roth-1': 'savings', 'deduct-spp-1': 'savings'
 };
 
 const translations = {
@@ -95,24 +101,9 @@ const translations = {
         label_accident_insurance: 'Accident Insurance',
         label_legal_services: 'Legal Services',
         section_expenses_title: 'Expense Management',
-        tooltip_expenses: "Enter all your regular expenses based on your Net Income. Categorize each item to see how it fits into your budget rule.",
-        label_rent_mortgage: 'Rent/Mortgage',
-        label_utilities: 'Utilities',
-        label_internet: 'Internet',
-        label_phone: 'Phone Bill',
-        label_groceries: 'Groceries',
-        label_dining_out: 'Dining Out',
-        label_transportation: 'Transportation',
-        label_shopping: 'Shopping',
-        label_health_wellness: 'Health/Wellness',
-        label_entertainment: 'Entertainment',
-        label_insurance: 'Insurance',
-        label_donation: 'Donation',
-        label_travel: 'Travel',
-        label_pets: 'Pets',
-        label_children: 'Children',
+        tooltip_expenses: "Enter all your regular expenses based on your Net Income.",
         section_summary_title: 'Budget Summary',
-        tooltip_summary: "This is a complete overview of your finances based on your inputs. You can view the amounts based on your selected frequency.",
+        tooltip_summary: "This is a complete overview of your finances based on your inputs.",
         label_summary_frequency: 'Summary Frequency',
         label_gross_salary: 'Gross Salary:',
         label_total_taxes: 'Total Taxes:',
@@ -122,7 +113,7 @@ const translations = {
         label_total_expenses: 'Total Expenses:',
         label_remaining_budget: 'Remaining Budget:',
         section_budget_rule_title: 'Budget Rule Application',
-        tooltip_budget_rule: "Select a popular budgeting rule to visually compare your spending (from Net Income) against a target. Click on a category name to see a detailed list of items.",
+        tooltip_budget_rule: "Select a popular budgeting rule to visually compare your spending against a target.",
         rule_50_30_20_title: '50/30/20 Rule (Needs/Wants/Savings)',
         rule_70_20_10_title: '70/20/10 Rule (Spending/Savings/Debt)',
         rule_80_20_title: '80/20 Rule (Spending/Savings)',
@@ -186,18 +177,24 @@ const translations = {
         label_debt_min_payment: "Min. Monthly Payment",
         btn_add_debt: "Add Debt",
         label_debt_extra_payment: "Extra Monthly Payment",
-
         section_goals_title: "Financial Goal Setting",
         tooltip_goals: "Add and manage your financial goals. Update your progress by adding to your saved amount.",
         label_goal_name: "Goal Name",
         label_goal_target: "Target Amount",
         btn_add_goal: "Add Goal",
-
         section_trends_title: "Financial Trend Analysis",
         tooltip_trends: "Record your data at the end of each month to track your financial changes over time.",
         btn_record_history: "Record This Month's Data",
         placeholder_goal: 'e.g., Trip to Europe',
         placeholder_debt: 'e.g., Credit Card A',
+        section_category_title: "Category Management",
+        tooltip_category: "Add, view, and delete your expense categories here.",
+        label_category_name: "Category Name",
+        label_category_type: "Category Type",
+        btn_add_category: "Add Category",
+        label_expense_name: "Expense Name",
+        label_expense_amount: "Amount",
+        btn_add_expense: "Add Expense"
     },
     ko: {
         app_title: '스마트 예산 노트',
@@ -242,24 +239,9 @@ const translations = {
         label_accident_insurance: '상해 보험',
         label_legal_services: '법률 서비스',
         section_expenses_title: '지출 관리',
-        tooltip_expenses: "순수입(실수령액)에서 나가는 모든 지출을 입력합니다. 각 항목을 분류하여 예산 규칙에 얼마나 부합하는지 확인하세요.",
-        label_rent_mortgage: '월세/주택담보대출',
-        label_utilities: '공과금',
-        label_internet: '인터넷',
-        label_phone: '통신비',
-        label_groceries: '식료품',
-        label_dining_out: '외식',
-        label_transportation: '교통',
-        label_shopping: '쇼핑',
-        label_health_wellness: '건강/웰빙',
-        label_entertainment: '오락/여가',
-        label_insurance: '보험',
-        label_donation: '기부',
-        label_travel: '여행',
-        label_pets: '반려동물',
-        label_children: '자녀 양육비',
+        tooltip_expenses: "순수입(실수령액)에서 나가는 모든 지출을 입력합니다.",
         section_summary_title: '예산 요약',
-        tooltip_summary: "모든 수입과 지출을 종합한 최종 요약입니다. 선택한 주기에 따라 환산된 금액을 보여줍니다.",
+        tooltip_summary: "모든 수입과 지출을 종합한 최종 요약입니다.",
         label_summary_frequency: '요약 주기',
         label_gross_salary: '총수입:',
         label_total_taxes: '총 세금:',
@@ -269,7 +251,7 @@ const translations = {
         label_total_expenses: '총 지출:',
         label_remaining_budget: '남은 예산:',
         section_budget_rule_title: '예산 규칙 적용',
-        tooltip_budget_rule: "널리 알려진 예산 규칙을 선택하여 현재 지출이 순수입(실수령액) 기준 목표에 얼마나 부합하는지 시각적으로 확인합니다. 각 카테고리명을 클릭하면 해당 항목들의 세부 내역을 볼 수 있습니다.",
+        tooltip_budget_rule: "널리 알려진 예산 규칙을 선택하여 현재 지출이 순수입(실수령액) 기준 목표에 얼마나 부합하는지 시각적으로 확인합니다.",
         rule_50_30_20_title: '50/30/20 규칙 (필수/선택/저축)',
         rule_70_20_10_title: '70/20/10 규칙 (지출/저축/부채)',
         rule_80_20_title: '80/20 규칙 (지출/저축)',
@@ -333,18 +315,24 @@ const translations = {
         label_debt_min_payment: "월 최소상환액",
         btn_add_debt: "부채 추가",
         label_debt_extra_payment: "월 추가 상환액",
-
         section_goals_title: "재무 목표 설정",
         tooltip_goals: "달성하고 싶은 재무 목표를 추가하고 관리합니다. '저축액 추가'에 금액을 입력하여 달성률을 업데이트할 수 있습니다.",
         label_goal_name: "목표 이름",
         label_goal_target: "목표 금액",
         btn_add_goal: "목표 추가",
-
         section_trends_title: "재무 트렌드 분석",
         tooltip_trends: "매월 말 '이번 달 데이터 기록하기' 버튼을 눌러 데이터를 저장하고, 시간 경과에 따른 재무 변화를 차트로 확인하세요.",
         btn_record_history: "이번 달 데이터 기록하기",
         placeholder_goal: '예: 유럽 여행',
         placeholder_debt: '예: 신용카드 A',
+        section_category_title: "카테고리 관리",
+        tooltip_category: "지출 카테고리를 직접 추가, 확인, 삭제할 수 있습니다.",
+        label_category_name: "카테고리 이름",
+        label_category_type: "카테고리 종류",
+        btn_add_category: "카테고리 추가",
+        label_expense_name: "지출 항목",
+        label_expense_amount: "금액",
+        btn_add_expense: "지출 추가"
     }
 };
 
@@ -409,17 +397,14 @@ function calculateBudget() {
     let totalAnnualPreTaxDeductions = 0;
     let totalAnnualPostTaxDeductions = 0;
     
-    // 1. '지출 관리' 섹션의 비용 계산
     const expenseTotals = categorizeExpensesOnly();
     let totalAnnualExpenses = expenseTotals.needs + expenseTotals.wants + expenseTotals.savings + expenseTotals.debt;
 
-    // 2. '부채 관리' 섹션의 최소 상환액을 총 지출에 추가
     const totalAnnualDebtPayments = data.debts.reduce((sum, debt) => {
         return sum + convertToAnnual(debt.payment, 'monthly');
     }, 0);
     totalAnnualExpenses += totalAnnualDebtPayments;
 
-    // 3. 수입 계산
     if (data.calculationMode === 'advanced') {
         annualGrossSalary = convertToAnnual(data.grossSalary, data.salaryFrequency) + calculateTotalForSection({}, data.customIncomes);
         totalAnnualTaxes = calculateTotalForSection(data.taxes, data.taxes.custom, 'tax');
@@ -430,7 +415,6 @@ function calculateBudget() {
         annualNetIncome = convertToAnnual(data.netIncome, 'monthly');
     }
 
-    // 4. 최종 남은 예산 계산
     const remainingBudget = annualNetIncome - totalAnnualExpenses;
 
     return { annualGrossSalary, annualNetIncome, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses, remainingBudget };
@@ -440,30 +424,25 @@ function categorizeExpensesOnly(getItems = false) {
     let totals = { needs: 0, wants: 0, savings: 0, debt: 0 };
     let items = { needs: [], wants: [], savings: [], debt: [] };
 
-    const process = (item, defaultCategory, freqKey) => {
-        const category = item.category || defaultCategory;
-        if (totals.hasOwnProperty(category)) {
-            const amount = convertToAnnual(item.amount, item.frequency || data.frequencies[freqKey]);
-            if (amount > 0) {
-                totals[category] += amount;
-                if (getItems) {
-                    const transKey = `label_${item.name.replace(/-/g, '_')}`;
-                    const itemName = translations[data.currentLanguage][transKey] || item.name;
-                    items[category].push({ name: itemName, amount: amount });
+    data.expenses.forEach(expense => {
+        const category = data.categories.find(c => c.id === expense.categoryId);
+        if (category) {
+            const categoryType = category.type;
+            if (totals.hasOwnProperty(categoryType)) {
+                const amount = convertToAnnual(expense.amount, expense.frequency);
+                if (amount > 0) {
+                    totals[categoryType] += amount;
+                    if (getItems) {
+                        items[categoryType].push({ name: expense.name, amount: amount });
+                    }
                 }
             }
         }
-    };
-
-    for (const key in data.expenses) {
-        if (key === 'custom') continue;
-        const category = ITEM_CATEGORIES[`exp-${key}-1`];
-        if (category) process({ name: key, amount: data.expenses[key] }, category, 'expense');
-    }
-    data.expenses.custom.forEach(item => process(item, 'wants', 'expense'));
+    });
 
     return getItems ? { items: items, totals: totals } : totals;
 }
+
 
 function applyBudgetRule() {
     const { annualNetIncome } = calculateBudget();
@@ -494,18 +473,12 @@ function applyBudgetRule() {
     }
 }
 
-// budget.js -> // 2. 핵심 로직 및 계산 함수 구역
-
 function calculateDebtPaydown() {
     const extraPayment = parseFloat(debtExtraPaymentInput.value) || 0;
-    // 시뮬레이션을 위해 원본 데이터를 복사해서 사용합니다.
     let debts = JSON.parse(JSON.stringify(data.debts));
-
     if (debts.length === 0) {
         return { months: 0, totalInterest: 0, totalPaid: 0 };
     }
-
-    // 1. 이자율이 높은 순으로 정렬 (눈사태 전략)
     debts.sort((a, b) => b.rate - a.rate);
 
     let months = 0;
@@ -516,19 +489,16 @@ function calculateDebtPaydown() {
         months++;
         let monthlyExtraPayment = extraPayment;
 
-        // 2. 모든 부채에 대해 이자 계산 및 최소 상환액 지불
         for (const debt of debts) {
             if (debt.balance > 0) {
                 const monthlyInterest = (debt.balance * (debt.rate / 100)) / 12;
                 totalInterestPaid += monthlyInterest;
                 debt.balance += monthlyInterest;
-
                 const payment = Math.min(debt.balance, debt.payment);
                 debt.balance -= payment;
             }
         }
         
-        // 3. 남은 추가 상환액을 이자율이 가장 높은 부채에 집중
         for (const debt of debts) {
             if (debt.balance > 0 && monthlyExtraPayment > 0) {
                 const payment = Math.min(debt.balance, monthlyExtraPayment);
@@ -537,11 +507,9 @@ function calculateDebtPaydown() {
             }
         }
         
-        // 4. 모든 부채가 상환되었는지 확인
         hasRemainingDebt = debts.some(d => d.balance > 0);
         
-        // 무한 루프 방지 (상환액이 부족한 경우)
-        if (months > 1200) { // 100년 이상
+        if (months > 1200) {
             return { months: -1, totalInterest: 0, totalPaid: 0 };
         }
     }
@@ -580,7 +548,6 @@ function renderHistoryChart() {
     const ctx = document.getElementById('history-chart');
     if (!ctx) return;
 
-    // 데이터가 2개 이상 있어야 라인 차트 의미가 있음
     const labels = data.history.map(item => item.date);
     const needsData = data.history.map(item => item.summary.needs);
     const wantsData = data.history.map(item => item.summary.wants);
@@ -589,30 +556,9 @@ function renderHistoryChart() {
     const chartData = {
         labels: labels,
         datasets: [
-            {
-                label: '필수 지출 (Needs)',
-                data: needsData,
-                borderColor: '#FF6384',
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                fill: true,
-                tension: 0.1
-            },
-            {
-                label: '선택 지출 (Wants)',
-                data: wantsData,
-                borderColor: '#FFCE56',
-                backgroundColor: 'rgba(255, 206, 86, 0.2)',
-                fill: true,
-                tension: 0.1
-            },
-            {
-                label: '저축 (Savings)',
-                data: savingsData,
-                borderColor: '#36A2EB',
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                fill: true,
-                tension: 0.1
-            }
+            { label: '필수 지출 (Needs)', data: needsData, borderColor: '#FF6384', backgroundColor: 'rgba(255, 99, 132, 0.2)', fill: true, tension: 0.1 },
+            { label: '선택 지출 (Wants)', data: wantsData, borderColor: '#FFCE56', backgroundColor: 'rgba(255, 206, 86, 0.2)', fill: true, tension: 0.1 },
+            { label: '저축 (Savings)', data: savingsData, borderColor: '#36A2EB', backgroundColor: 'rgba(54, 162, 235, 0.2)', fill: true, tension: 0.1 }
         ]
     };
 
@@ -626,15 +572,8 @@ function renderHistoryChart() {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'top' },
-                    title: { display: true, text: '월별 지출 및 저축 트렌드' }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
+                plugins: { legend: { position: 'top' }, title: { display: true, text: '월별 지출 및 저축 트렌드' } },
+                scales: { y: { beginAtZero: true } }
             }
         });
     }
@@ -655,14 +594,13 @@ function renderAllCustomLists() {
     renderCustomList(customTaxList, data.taxes.custom, 'tax');
     renderCustomList(customPreTaxDeductList, data.preTaxDeductions.custom, 'pre-tax');
     renderCustomList(customPostTaxDeductList, data.postTaxDeductions.custom, 'post-tax');
-    renderCustomList(customExpenseList, data.expenses.custom, 'expense');
 }
 
 function renderCustomList(listElement, customItems, type) {
     if (!listElement) return;
     const lang = data.currentLanguage;
     const t = translations[lang];
-    const hasCategory = ['pre-tax', 'post-tax', 'expense'].includes(type);
+    const hasCategory = ['pre-tax', 'post-tax'].includes(type);
 
     listElement.innerHTML = customItems.map((item, index) => {
         const categoryDropdown = hasCategory ? `
@@ -769,7 +707,7 @@ function createOrUpdateChart(instance, canvasId, label, dataValues, labels) {
 function updateCharts() {
     const lang = data.currentLanguage;
     const t = translations[lang];
-    const { annualNetIncome, remainingBudget, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses } = calculateBudget();
+    const { remainingBudget, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses } = calculateBudget();
     const expenseTotals = categorizeExpensesOnly(false);
 
     expensesChartInstance = createOrUpdateChart(expensesChartInstance, 'expenses-chart', t.section_expenses_title,
@@ -816,7 +754,7 @@ function updateCharts() {
 function showCategoryDetails(categoryId) {
     const lang = data.currentLanguage;
     const t = translations[lang];
-    const expenseDetails = categorizeExpensesOnly(true);
+    const { items: expenseItems } = categorizeExpensesOnly(true);
     let itemsToShow = [];
     let title = "";
 
@@ -825,16 +763,16 @@ function showCategoryDetails(categoryId) {
         case 'wants':
         case 'debt':
         case 'savings':
-            itemsToShow = expenseDetails.items[categoryId];
+            itemsToShow = expenseItems[categoryId];
             title = t[`modal_title_${categoryId}`] || t[`rule_category_${categoryId}`];
             break;
         case 'savings_debt':
-            itemsToShow = [...expenseDetails.items.savings, ...expenseDetails.items.debt];
+            itemsToShow = [...expenseItems.savings, ...expenseItems.debt];
             title = t.modal_title_savings_debt;
             break;
         case 'spending':
-            itemsToShow = [...expenseDetails.items.needs, ...expenseDetails.items.wants];
-            if (data.budgetRule === '80-20') itemsToShow.push(...expenseDetails.items.debt);
+            itemsToShow = [...expenseItems.needs, ...expenseItems.wants];
+            if (data.budgetRule === '80-20') itemsToShow.push(...expenseItems.debt);
             title = t.modal_title_spending;
             break;
     }
@@ -847,7 +785,6 @@ function showCategoryDetails(categoryId) {
 }
 
 
-// A.I. 리포트, 데이터 관리 등 기타 UI 업데이트를 모두 포함하는 메인 함수
 function updateDisplay() {
     // 1. 현재 UI에서 데이터 객체로 값 업데이트
     data.calculationMode = modeToggleCheckbox.checked ? 'advanced' : 'simple';
@@ -864,7 +801,6 @@ function updateDisplay() {
     for (const key in taxInputs) if (taxInputs[key]) data.taxes[key] = parseFloat(taxInputs[key].value) || 0;
     for (const key in preTaxDeductInputs) if (preTaxDeductInputs[key]) data.preTaxDeductions[key] = parseFloat(preTaxDeductInputs[key].value) || 0;
     for (const key in postTaxDeductInputs) if (postTaxDeductInputs[key]) data.postTaxDeductions[key] = parseFloat(postTaxDeductInputs[key].value) || 0;
-    for (const key in expenseInputs) if (expenseInputs[key]) data.expenses[key] = parseFloat(expenseInputs[key].value) || 0;
 
     // 2. 계산 실행
     const { annualGrossSalary, annualNetIncome, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses, remainingBudget } = calculateBudget();
@@ -896,6 +832,9 @@ function updateDisplay() {
     renderAllCustomLists();
     renderGoals();
     renderDebts();
+    renderCategories();
+    populateCategoryDropdown();
+    renderExpenses();
     const debtResults = calculateDebtPaydown();
     displayDebtResults(debtResults);
     renderHistoryChart();
@@ -930,7 +869,6 @@ function recordMonthlyData() {
         debt: convertFromAnnual(totals.debt, summaryFreq)
     };
     
-    // 순수입이 0 이하면 기록하지 않음
     if (monthlySummary.netIncome <= 0) {
         alert("순수입이 0 이상일 때 기록할 수 있습니다.");
         return;
@@ -939,25 +877,19 @@ function recordMonthlyData() {
     const existingIndex = data.history.findIndex(item => item.date === currentMonthKey);
 
     if (existingIndex > -1) {
-        // 데이터가 이미 존재할 경우, 덮어쓸지 물어봄
         if (confirm(`'${currentMonthKey}' 데이터가 이미 존재합니다. 현재 데이터로 덮어쓰시겠습니까?`)) {
             data.history[existingIndex].summary = monthlySummary;
             alert("데이터가 업데이트되었습니다.");
         }
     } else {
-        // 새로운 데이터 추가
-        data.history.push({
-            date: currentMonthKey,
-            summary: monthlySummary
-        });
+        data.history.push({ date: currentMonthKey, summary: monthlySummary });
         alert("이번 달 데이터가 기록되었습니다.");
     }
 
-    // 날짜순으로 정렬
     data.history.sort((a, b) => a.date.localeCompare(b.date));
-    
     updateDisplay();
 }
+
 function renderGoals() {
     if (!goalListContainer) return;
     
@@ -985,26 +917,21 @@ function renderGoals() {
         `;
     }).join('');
 
-    // 새로 생성된 버튼들에 이벤트 리스너 연결
     goalListContainer.querySelectorAll('.update-goal-btn').forEach(btn => btn.addEventListener('click', updateGoalSavedAmount));
     goalListContainer.querySelectorAll('.remove-goal-btn').forEach(btn => btn.addEventListener('click', removeGoal));
 }
 
 function renderDebts() {
     if (!debtListContainer) return;
-
-    debtListContainer.innerHTML = data.debts.map((debt, index) => {
-        return `
-            <div class="debt-item">
-                <span class="debt-name">${debt.name}</span>
-                <span class="debt-balance">${formatCurrency(debt.balance)}</span>
-                <span class="debt-rate">${debt.rate}%</span>
-                <span class="debt-payment">${formatCurrency(debt.payment)}/월</span>
-                <button class="btn btn-danger remove-debt-btn" data-index="${index}">삭제</button>
-            </div>
-        `;
-    }).join('');
-
+    debtListContainer.innerHTML = data.debts.map((debt, index) => `
+        <div class="debt-item">
+            <span class="debt-name">${debt.name}</span>
+            <span class="debt-balance">${formatCurrency(debt.balance)}</span>
+            <span class="debt-rate">${debt.rate}%</span>
+            <span class="debt-payment">${formatCurrency(debt.payment)}/월</span>
+            <button class="btn btn-danger remove-debt-btn" data-index="${index}">삭제</button>
+        </div>
+    `).join('');
     debtListContainer.querySelectorAll('.remove-debt-btn').forEach(btn => btn.addEventListener('click', removeDebt));
 }
 
@@ -1015,14 +942,7 @@ function addDebt() {
     const payment = parseFloat(debtPaymentInput.value) || 0;
 
     if (name && balance > 0 && rate >= 0 && payment > 0) {
-        data.debts.push({
-            id: Date.now(),
-            name,
-            balance,
-            rate,
-            payment
-        });
-
+        data.debts.push({ id: Date.now(), name, balance, rate, payment });
         debtNameInput.value = '';
         debtBalanceInput.value = '';
         debtRateInput.value = '';
@@ -1044,14 +964,8 @@ function removeDebt(event) {
 function addGoal() {
     const name = goalNameInput.value.trim();
     const target = parseFloat(goalTargetInput.value) || 0;
-
     if (name && target > 0) {
-        data.goals.push({
-            id: Date.now(),
-            name: name,
-            target: target,
-            saved: 0
-        });
+        data.goals.push({ id: Date.now(), name: name, target: target, saved: 0 });
         goalNameInput.value = '';
         goalTargetInput.value = '';
         updateDisplay();
@@ -1065,7 +979,6 @@ function updateGoalSavedAmount(event) {
     const goal = data.goals[index];
     const input = goalListContainer.querySelector(`.goal-saved-input[data-index="${index}"]`);
     const amountToAdd = parseFloat(input.value) || 0;
-
     if (goal && amountToAdd > 0) {
         goal.saved = (parseFloat(goal.saved) || 0) + amountToAdd;
         updateDisplay();
@@ -1081,7 +994,7 @@ function removeGoal(event) {
 }
 function addCustomItem(event) {
     const type = event.target.dataset.type;
-    const listMap = { 'income': data.customIncomes, 'tax': data.taxes.custom, 'pre-tax': data.preTaxDeductions.custom, 'post-tax': data.postTaxDeductions.custom, 'expense': data.expenses.custom };
+    const listMap = { 'income': data.customIncomes, 'tax': data.taxes.custom, 'pre-tax': data.preTaxDeductions.custom, 'post-tax': data.postTaxDeductions.custom };
     const list = listMap[type];
     if (list) {
         list.push({ name: '', amount: 0, frequency: 'monthly', category: 'wants' });
@@ -1091,10 +1004,9 @@ function addCustomItem(event) {
 
 function handleCustomItemChange(event) {
     const { index, type } = event.target.dataset;
-    const listMap = { 'income': data.customIncomes, 'tax': data.taxes.custom, 'pre-tax': data.preTaxDeductions.custom, 'post-tax': data.postTaxDeductions.custom, 'expense': data.expenses.custom };
+    const listMap = { 'income': data.customIncomes, 'tax': data.taxes.custom, 'pre-tax': data.preTaxDeductions.custom, 'post-tax': data.postTaxDeductions.custom };
     const list = listMap[type];
     const item = list[parseInt(index)];
-
     if (item) {
         if (event.target.classList.contains('custom-item-name')) item.name = event.target.value;
         else if (event.target.classList.contains('custom-item-amount')) item.amount = parseFloat(event.target.value) || 0;
@@ -1106,7 +1018,7 @@ function handleCustomItemChange(event) {
 
 function removeCustomItem(event) {
     const { index, type } = event.target.dataset;
-    const listMap = { 'income': data.customIncomes, 'tax': data.taxes.custom, 'pre-tax': data.preTaxDeductions.custom, 'post-tax': data.postTaxDeductions.custom, 'expense': data.expenses.custom };
+    const listMap = { 'income': data.customIncomes, 'tax': data.taxes.custom, 'pre-tax': data.preTaxDeductions.custom, 'post-tax': data.postTaxDeductions.custom };
     const list = listMap[type];
     list.splice(parseInt(index), 1);
     updateDisplay();
@@ -1135,7 +1047,6 @@ function applyDarkMode() {
     darkmodeToggleBtn.querySelector('i').className = data.isDarkMode ? 'ri-sun-line' : 'ri-moon-line';
 }
 
-// AI에게 보낼 데이터를 요약하는 헬퍼 함수
 function getFinancialSummaryForAI() {
     const { annualNetIncome, totalAnnualExpenses, remainingBudget } = calculateBudget();
     const totals = categorizeExpensesOnly();
@@ -1154,9 +1065,8 @@ function getFinancialSummaryForAI() {
     - Financial Goals: ${data.goals.length > 0 ? data.goals.map(g => `${g.name} (Target: ${formatCurrency(g.target)})`).join(', ') : 'None'}
     - Debts: ${data.debts.length > 0 ? data.debts.map(d => `${d.name} (Balance: ${formatCurrency(d.balance)} at ${d.rate}% interest)`).join(', ') : 'None'}
     `;
-    return summaryText.replace(/\s+/g, ' '); // 줄바꿈 및 여러 공백 제거
+    return summaryText.replace(/\s+/g, ' ').trim();
 }
-
 
 async function generateAiReport() {
     const apiKey = apiKeyInput.value.trim();
@@ -1182,12 +1092,8 @@ async function generateAiReport() {
     try {
         const response = await fetch(API_URL, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: prompt }] }]
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
         });
 
         if (!response.ok) {
@@ -1197,8 +1103,7 @@ async function generateAiReport() {
 
         const responseData = await response.json();
         const aiText = responseData.candidates[0].content.parts[0].text;
-        
-        aiReportBox.innerHTML = aiText; // AI가 생성한 HTML을 그대로 삽입
+        aiReportBox.innerHTML = aiText;
 
     } catch (error) {
         console.error("AI Report generation failed:", error);
@@ -1206,32 +1111,107 @@ async function generateAiReport() {
     }
 }
 
+function renderCategories() {
+    if (!categoryListContainer) return;
+    const lang = data.currentLanguage;
+    const t = translations[lang];
+    categoryListContainer.innerHTML = data.categories.map((cat, index) => `
+        <div class="category-item">
+            <span>${cat.name}</span>
+            <span class="category-tag ${cat.type}">${t['tag_' + cat.type]}</span>
+            <button class="remove-category-btn" data-index="${index}" title="Remove">&times;</button>
+        </div>
+    `).join('');
+    categoryListContainer.querySelectorAll('.remove-category-btn').forEach(btn => btn.addEventListener('click', removeCategory));
+}
+
+function addCategory() {
+    const name = categoryNameInput.value.trim();
+    const type = categoryTypeSelect.value;
+    if (name && type) {
+        if (data.categories.some(cat => cat.name.toLowerCase() === name.toLowerCase())) {
+            alert('This category name already exists.');
+            return;
+        }
+        data.categories.push({ id: Date.now(), name, type });
+        categoryNameInput.value = '';
+        updateDisplay();
+    }
+}
+
+function removeCategory(event) {
+    const index = event.target.dataset.index;
+    const categoryName = data.categories[index].name;
+    if (confirm(`Are you sure you want to delete the "${categoryName}" category?`)) {
+        data.categories.splice(index, 1);
+        updateDisplay();
+    }
+}
+
+function populateCategoryDropdown() {
+    if (!expenseCategorySelect) return;
+    const lang = data.currentLanguage;
+    const t = translations[lang];
+    expenseCategorySelect.innerHTML = data.categories.map(cat => `<option value="${cat.id}">${cat.name} (${t['tag_' + cat.type]})</option>`).join('');
+}
+
+function renderExpenses() {
+    if (!expenseListContainer) return;
+    expenseListContainer.innerHTML = data.expenses.map((exp, index) => {
+        const category = data.categories.find(c => c.id === exp.categoryId);
+        return `
+            <div class="custom-list-item expense-item">
+                <input type="text" value="${exp.name}" class="form-control" readonly>
+                <input type="number" value="${exp.amount}" class="form-control" readonly>
+                <input type="text" value="${exp.frequency}" class="form-control" readonly>
+                <input type="text" value="${category ? category.name : 'Uncategorized'}" class="form-control" readonly>
+                <button class="btn btn-danger remove-expense-btn" data-index="${index}">&times;</button>
+            </div>
+        `;
+    }).join('');
+    expenseListContainer.querySelectorAll('.remove-expense-btn').forEach(btn => btn.addEventListener('click', removeExpense));
+}
+
+function addExpense() {
+    const name = expenseNameInput.value.trim();
+    const amount = parseFloat(expenseAmountInput.value) || 0;
+    const categoryId = parseInt(expenseCategorySelect.value);
+    const frequency = expenseFrequencySelect.value;
+    if (name && amount > 0 && categoryId) {
+        data.expenses.push({ id: Date.now(), name, amount, frequency, categoryId });
+        expenseNameInput.value = '';
+        expenseAmountInput.value = '';
+        updateDisplay();
+    } else {
+        alert('Please enter a valid expense name, amount, and select a category.');
+    }
+}
+
+function removeExpense(event) {
+    const index = event.target.dataset.index;
+    if (confirm('Are you sure you want to delete this expense?')) {
+        data.expenses.splice(index, 1);
+        updateDisplay();
+    }
+}
 
 
 // =================================================================================
 // 5. 데이터 관리 함수 (Data Management Functions)
 // =================================================================================
 function isImportedDataValid(parsedData) {
-    // 가져온 데이터에 필수 키들이 존재하는지 확인합니다.
-    const requiredKeys = ['calculationMode', 'netIncome', 'expenses', 'customIncomes', 'taxes'];
-    
+    const requiredKeys = ['calculationMode', 'netIncome', 'expenses', 'customIncomes', 'taxes', 'categories'];
     if (!parsedData || typeof parsedData !== 'object') {
         return false;
     }
-
     for (const key of requiredKeys) {
         if (!(key in parsedData)) {
-            // 필수 키 중 하나라도 없으면 유효하지 않은 데이터로 판단합니다.
             return false;
         }
     }
-
-    // 데이터 타입까지 간단히 확인해볼 수 있습니다.
-    if(typeof parsedData.expenses !== 'object' || !Array.isArray(parsedData.customIncomes)) {
+    if (typeof parsedData.expenses !== 'object' || !Array.isArray(parsedData.customIncomes)) {
         return false;
     }
-
-    // 모든 검사를 통과하면 유효한 데이터입니다.
     return true;
 }
 
@@ -1253,6 +1233,12 @@ function populateUiFromData(savedData) {
         return target;
     }
 
+    // Ensure default arrays exist if not in savedData
+    savedData.goals = savedData.goals || [];
+    savedData.debts = savedData.debts || [];
+    savedData.history = savedData.history || [];
+    savedData.categories = savedData.categories || [];
+    
     deepMerge(data, savedData);
 
     taxFrequencySelect.value = data.frequencies.tax || 'monthly';
@@ -1265,12 +1251,10 @@ function populateUiFromData(savedData) {
     salaryFrequencySelect.value = data.salaryFrequency || 'monthly';
     summaryFrequencySelect.value = data.summaryFrequency || 'monthly';
     budgetRuleSelect.value = data.budgetRule || '50-30-20';
-    data.isDarkMode = document.body.classList.contains('dark-mode');
 
     for (const key in taxInputs) if (taxInputs[key] && data.taxes[key] !== undefined) taxInputs[key].value = data.taxes[key];
     for (const key in preTaxDeductInputs) if (preTaxDeductInputs[key] && data.preTaxDeductions[key] !== undefined) preTaxDeductInputs[key].value = data.preTaxDeductions[key];
     for (const key in postTaxDeductInputs) if (postTaxDeductInputs[key] && data.postTaxDeductions[key] !== undefined) postTaxDeductInputs[key].value = data.postTaxDeductions[key];
-    for (const key in expenseInputs) if (expenseInputs[key] && data.expenses[key] !== undefined) expenseInputs[key].value = data.expenses[key];
 
     applyDarkMode();
     applyLanguage();
@@ -1306,6 +1290,15 @@ document.addEventListener('DOMContentLoaded', () => {
     goalTargetInput = document.getElementById('goal-target-input');
     addGoalBtn = document.getElementById('add-goal-btn');
     goalListContainer = document.getElementById('goal-list-container');
+    categoryNameInput = document.getElementById('category-name-input');
+    categoryTypeSelect = document.getElementById('category-type-select');
+    addCategoryBtn = document.getElementById('add-category-btn');
+    categoryListContainer = document.getElementById('category-list-container');
+    expenseNameInput = document.getElementById('expense-name-input');
+    expenseAmountInput = document.getElementById('expense-amount-input');
+    expenseCategorySelect = document.getElementById('expense-category-select');
+    addExpenseBtn = document.getElementById('add-expense-btn');
+    expenseListContainer = document.getElementById('expense-list-container');
     modeToggleCheckbox = document.getElementById('mode-toggle-checkbox');
     advancedModeContainer = document.getElementById('advanced-mode-container');
     simpleModeContainer = document.getElementById('simple-mode-container');
@@ -1330,13 +1323,11 @@ document.addEventListener('DOMContentLoaded', () => {
     Object.assign(taxInputs, { federal: document.getElementById('tax-federal-1'), state: document.getElementById('tax-state-1'), oasdi: document.getElementById('tax-oasdi-1'), medicare: document.getElementById('tax-medicare-1'), casdi: document.getElementById('tax-casdi-1') });
     Object.assign(preTaxDeductInputs, { medical: document.getElementById('deduct-medical-1'), dental: document.getElementById('deduct-dental-1'), vision: document.getElementById('deduct-vision-1'), '401k-trad': document.getElementById('deduct-401k-trad-1') });
     Object.assign(postTaxDeductInputs, { spp: document.getElementById('deduct-spp-1'), adnd: document.getElementById('deduct-adnd-1'), '401k-roth': document.getElementById('deduct-401k-roth-1'), ltd: document.getElementById('deduct-ltd-1'), 'critical-illness': document.getElementById('deduct-critical-illness-1'), 'accident-insurance': document.getElementById('deduct-accident-insurance-1'), 'legal-services': document.getElementById('deduct-legal-services-1') });
-    Object.assign(expenseInputs, { rent: document.getElementById('exp-rent-1'), utilities: document.getElementById('exp-utilities-1'), internet: document.getElementById('exp-internet-1'), phone: document.getElementById('exp-phone-1'), groceries: document.getElementById('exp-groceries-1'), dining: document.getElementById('exp-dining-1'), transport: document.getElementById('exp-transport-1'), shopping: document.getElementById('exp-shopping-1'), health: document.getElementById('exp-health-1'), entertainment: document.getElementById('exp-entertainment-1'), insurance: document.getElementById('exp-insurance-1'), donation: document.getElementById('exp-donation-1'), travel: document.getElementById('exp-travel-1'), pets: document.getElementById('exp-pets-1'), children: document.getElementById('exp-children-1') });
-
+    
     customIncomeList = document.getElementById('custom-income-list');
     customTaxList = document.getElementById('tax-custom-list');
     customPreTaxDeductList = document.getElementById('pre-tax-custom-list');
     customPostTaxDeductList = document.getElementById('post-tax-custom-list');
-    customExpenseList = document.getElementById('expenses-custom-list');
 
     languageToggleBtn = document.getElementById('language-toggle');
     darkmodeToggleBtn = document.getElementById('darkmode-toggle');
@@ -1364,7 +1355,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Event Listeners ---
     recordHistoryBtn.addEventListener('click', recordMonthlyData);
     addDebtBtn.addEventListener('click', addDebt);
-    addGoalBtn.addEventListener('click', addGoal); 
+    addGoalBtn.addEventListener('click', addGoal);
+    addCategoryBtn.addEventListener('click', addCategory);
+    addExpenseBtn.addEventListener('click', addExpense);
     modeToggleCheckbox.addEventListener('change', updateDisplay);
     document.querySelectorAll('.add-custom-btn').forEach(btn => btn.addEventListener('click', addCustomItem));
 
@@ -1390,13 +1383,10 @@ document.addEventListener('DOMContentLoaded', () => {
             reader.onload = (e) => {
                 try {
                     const parsedData = JSON.parse(e.target.result);
-    
-                    // <<< 새로운 기능: 데이터 구조 유효성 검사! >>>
                     if (!isImportedDataValid(parsedData)) {
                         alert(translations[data.currentLanguage].invalid_json);
-                        return; // 잘못된 파일이므로 여기서 중단
+                        return;
                     }
-    
                     if (confirm(translations[data.currentLanguage].confirm_import_data)) {
                         populateUiFromData(parsedData);
                         alert(translations[data.currentLanguage].alert_data_loaded);
@@ -1407,7 +1397,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             };
             reader.readAsText(file);
-            event.target.value = ''; // 다음번에도 같은 파일을 선택할 수 있도록 초기화
+            event.target.value = '';
         }
     });
 
