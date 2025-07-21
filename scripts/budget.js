@@ -21,7 +21,7 @@ let recordHistoryBtn;
 let categoryNameInput, categoryTypeSelect, addCategoryBtn, categoryListContainer;
 let expenseNameInput, expenseAmountInput, expenseCategorySelect, addExpenseBtn, expenseListContainer;
 let dashboardNetIncome, dashboardTotalExpenses, dashboardRemaining, dashboardSavingsRate;
-let scenarioIncomeChangeInput, scenarioExpenseChangeInput, runScenarioBtn, scenarioResultsContainer;
+let scenarioIncomeChangeInput, scenarioExpenseChangeInput, runScenarioBtn, scenarioResultsContainer, scenarioDebtPaymentChangeInput;
 
 const data = {
     calculationMode: 'simple',
@@ -222,7 +222,8 @@ const translations = {
         tooltip_what_if: "Simulate how hypothetical income/expense changes affect your debt payoff timeline.",
         label_scenario_income: "Monthly Net Income Change (%)",
         label_scenario_expense: "Monthly Fixed Expense Change",
-        btn_run_scenario: "Run Scenario"
+        btn_run_scenario: "Run Scenario",
+        label_scenario_debt_payment: "Additional Monthly Debt Payment Change",
     },
     ko: {
         app_title: '스마트 예산 노트',
@@ -383,7 +384,8 @@ const translations = {
         tooltip_what_if: "가상의 수입/지출 변화가 부채 상환 완료 시점에 미치는 영향을 시뮬레이션합니다.",
         label_scenario_income: "월 순수입 변화 (%)",
         label_scenario_expense: "월 고정지출 변화",
-        btn_run_scenario: "시나리오 실행"
+        btn_run_scenario: "시나리오 실행",
+        label_scenario_debt_payment: "월 추가 부채 상환액 변경",
     }
 };
 
@@ -942,11 +944,20 @@ function updateDisplay() {
 // 4. 이벤트 핸들러 함수 (Event Handler Functions)
 // =================================================================================
 
+// budget.js의 함수 두 개를 아래 코드로 교체
+
 function runScenario() {
+    // 1. 모든 시나리오 입력 값 가져오기
     const incomeChangePercent = parseFloat(scenarioIncomeChangeInput.value) || 0;
     const expenseChangeAmount = parseFloat(scenarioExpenseChangeInput.value) || 0;
+    const debtPaymentChange = parseFloat(scenarioDebtPaymentChangeInput.value) || 0;
+    
+    // 2. 시나리오 데이터 생성
     let scenarioData = JSON.parse(JSON.stringify(data));
+    const originalExtraDebtPayment = parseFloat(debtExtraPaymentInput.value) || 0;
+    const scenarioExtraDebtPayment = originalExtraDebtPayment + debtPaymentChange;
 
+    // 3. 시나리오 데이터에 변경사항 적용
     if (incomeChangePercent !== 0) {
         if (scenarioData.calculationMode === 'advanced') {
             const currentAnnualGross = convertToAnnual(scenarioData.grossSalary, scenarioData.salaryFrequency);
@@ -960,22 +971,23 @@ function runScenario() {
     }
     if (expenseChangeAmount !== 0) {
         scenarioData.expenses.custom.push({
-            id: Date.now(),
-            name: 'Scenario Adjustment',
-            amount: expenseChangeAmount,
-            frequency: 'monthly',
-            categoryId: 15 
+            id: Date.now(), name: 'Scenario Adjustment', amount: expenseChangeAmount,
+            frequency: 'monthly', categoryId: 15 // 'wants' 타입의 기본 카테고리
         });
     }
 
-    const originalPlan = calculateDebtPaydown(data);
-    const scenarioPlan = calculateDebtPaydown(scenarioData);
-    displayScenarioResults(originalPlan, scenarioPlan);
+    // 4. 원본 및 시나리오 계획 계산
+    const originalPlan = calculateDebtPaydown(data, originalExtraDebtPayment);
+    const scenarioPlan = calculateDebtPaydown(scenarioData, scenarioExtraDebtPayment);
+
+    // 5. 의미있는 결과 표시
+    displayScenarioResults(originalPlan, scenarioPlan, { incomeChangePercent, expenseChangeAmount, debtPaymentChange });
 }
 
-function displayScenarioResults(originalPlan, scenarioPlan) {
+function displayScenarioResults(originalPlan, scenarioPlan, inputs) {
     if (!scenarioResultsContainer) return;
     const lang = data.currentLanguage;
+    scenarioResultsContainer.style.display = 'block';
 
     const formatMonths = (months) => {
         if (months <= 0) return lang === 'ko' ? "부채 없음" : "No Debt";
@@ -992,6 +1004,13 @@ function displayScenarioResults(originalPlan, scenarioPlan) {
     const scenarioTime = formatMonths(scenarioPlan.months);
     const difference = originalPlan.months - scenarioPlan.months;
 
+    let scenarioDescription = [];
+    if (inputs.incomeChangePercent > 0) scenarioDescription.push(lang === 'ko' ? `소득 ${inputs.incomeChangePercent}% 증가` : `a ${inputs.incomeChangePercent}% income increase`);
+    if (inputs.incomeChangePercent < 0) scenarioDescription.push(lang === 'ko' ? `소득 ${Math.abs(inputs.incomeChangePercent)}% 감소` : `a ${Math.abs(inputs.incomeChangePercent)}% income decrease`);
+    if (inputs.expenseChangeAmount > 0) scenarioDescription.push(lang === 'ko' ? `매달 ${formatCurrency(inputs.expenseChangeAmount)} 지출 증가` : `a ${formatCurrency(inputs.expenseChangeAmount)} monthly expense increase`);
+    if (inputs.expenseChangeAmount < 0) scenarioDescription.push(lang === 'ko' ? `매달 ${formatCurrency(Math.abs(inputs.expenseChangeAmount))} 지출 감소` : `a ${formatCurrency(Math.abs(inputs.expenseChangeAmount))} monthly expense decrease`);
+    if (inputs.debtPaymentChange > 0) scenarioDescription.push(lang === 'ko' ? `부채 상환액 ${formatCurrency(inputs.debtPaymentChange)} 추가` : `${formatCurrency(inputs.debtPaymentChange)} extra toward debt`);
+
     let impactText = '';
     if (originalPlan.months > 0 && scenarioPlan.months > 0 && difference !== 0) {
         if (difference > 0) {
@@ -1002,8 +1021,10 @@ function displayScenarioResults(originalPlan, scenarioPlan) {
     }
 
     scenarioResultsContainer.innerHTML = `
-        <p>기존 계획: ${originalTime}</p>
-        <p>시나리오 적용 시: ${scenarioTime}</p>
+        <h4>시나리오 결과</h4>
+        <p><strong>가정:</strong> ${scenarioDescription.join(', ')}</p>
+        <p>기존 상환 기간: ${originalTime}</p>
+        <p>시나리오 적용 시 상환 기간: ${scenarioTime}</p>
         ${impactText}
     `;
 }
@@ -1442,6 +1463,7 @@ function loadData() {
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Element References ---
+    scenarioDebtPaymentChangeInput = document.getElementById('scenario-debt-payment-change');
     apiKeyInput = document.getElementById('api-key-input');
     debtExtraPaymentInput = document.getElementById('debt-extra-payment-input');
     debtResultContainer = document.getElementById('debt-result-container');
