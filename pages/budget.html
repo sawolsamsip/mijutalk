@@ -23,6 +23,28 @@
     </header>
 
     <main class="container">
+
+        <section class="budget-section dashboard-section">
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="stat-title" data-i18n-key="label_net_salary">순수입 (실수령액)</div>
+                    <div class="stat-value" id="dashboard-net-income">$0.00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title" data-i18n-key="label_total_expenses">총지출</div>
+                    <div class="stat-value" id="dashboard-total-expenses">$0.00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title" data-i18n-key="label_remaining_budget">남은 예산</div>
+                    <div class="stat-value" id="dashboard-remaining">$0.00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title" data-i18n-key="label_savings_rate">저축률</div>
+                    <div class="stat-value" id="dashboard-savings-rate">0%</div>
+                </div>
+            </div>
+        </section>
+        
         <section class="budget-section calculation-mode-section">
             <div class="section-header">
                 <h2 data-i18n-key="section_calculation_mode_title">계산 방식 선택</h2>
