@@ -408,9 +408,18 @@ function calculateBudget() {
     let totalAnnualTaxes = 0;
     let totalAnnualPreTaxDeductions = 0;
     let totalAnnualPostTaxDeductions = 0;
+    
+    // 1. '지출 관리' 섹션의 비용 계산
     const expenseTotals = categorizeExpensesOnly();
-    const totalAnnualExpenses = expenseTotals.needs + expenseTotals.wants + expenseTotals.savings + expenseTotals.debt;
+    let totalAnnualExpenses = expenseTotals.needs + expenseTotals.wants + expenseTotals.savings + expenseTotals.debt;
 
+    // 2. '부채 관리' 섹션의 최소 상환액을 총 지출에 추가
+    const totalAnnualDebtPayments = data.debts.reduce((sum, debt) => {
+        return sum + convertToAnnual(debt.payment, 'monthly');
+    }, 0);
+    totalAnnualExpenses += totalAnnualDebtPayments;
+
+    // 3. 수입 계산
     if (data.calculationMode === 'advanced') {
         annualGrossSalary = convertToAnnual(data.grossSalary, data.salaryFrequency) + calculateTotalForSection({}, data.customIncomes);
         totalAnnualTaxes = calculateTotalForSection(data.taxes, data.taxes.custom, 'tax');
@@ -421,6 +430,7 @@ function calculateBudget() {
         annualNetIncome = convertToAnnual(data.netIncome, 'monthly');
     }
 
+    // 4. 최종 남은 예산 계산
     const remainingBudget = annualNetIncome - totalAnnualExpenses;
 
     return { annualGrossSalary, annualNetIncome, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses, remainingBudget };
