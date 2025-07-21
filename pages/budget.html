@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://generativelanguage.googleapis.com;">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://generativelaunguage.googleapis.com;">
     <title data-i18n-key="app_title">스마트 예산 노트</title>
     <link rel="stylesheet" href="../scripts/budget.css">
     <link rel="stylesheet" href="../scripts/remixicon.css">
@@ -26,17 +26,11 @@
         <section class="budget-section calculation-mode-section">
             <div class="section-header">
                 <h2 data-i18n-key="section_calculation_mode_title">계산 방식 선택</h2>
-                <div class="tooltip-container">
-                    <i class="ri-question-line tooltip-icon"></i>
-                    <span class="tooltip-text" data-i18n-key="tooltip_calculation_mode">계산 방식을 선택합니다. '기본 모드'는 세후 순수입을 기준으로, '고급 모드'는 세전 총수입과 각종 공제 항목을 직접 입력하여 더 상세하게 계산합니다.</span>
-                </div>
+                <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_calculation_mode">계산 방식을 선택합니다. '기본 모드'는 세후 순수입을 기준으로, '고급 모드'는 세전 총수입과 각종 공제 항목을 직접 입력하여 더 상세하게 계산합니다.</span></div>
             </div>
             <div class="mode-toggle-container">
                 <span data-i18n-key="mode_simple">기본 모드</span>
-                <label class="switch">
-                    <input type="checkbox" id="mode-toggle-checkbox">
-                    <span class="slider round"></span>
-                </label>
+                <label class="switch"><input type="checkbox" id="mode-toggle-checkbox"><span class="slider round"></span></label>
                 <span data-i18n-key="mode_advanced">고급 모드</span>
             </div>
         </section>
@@ -48,12 +42,7 @@
                     <div class="form-group">
                         <label for="salary-gross" data-i18n-key="label_base_salary">기본 급여</label>
                         <div class="input-container salary-input-container">
-                            <select id="salary-frequency-select" class="form-control">
-                                <option value="weekly" data-i18n-key="frequency_weekly">Weekly</option>
-                                <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">Bi-Weekly</option>
-                                <option value="monthly" data-i18n-key="frequency_monthly">Monthly</option>
-                                <option value="annual" data-i18n-key="frequency_annually">Annual</option>
-                            </select>
+                            <select id="salary-frequency-select" class="form-control"><option value="weekly" data-i18n-key="frequency_weekly">Weekly</option><option value="bi-weekly" data-i18n-key="frequency_bi_weekly">Bi-Weekly</option><option value="monthly" data-i18n-key="frequency_monthly">Monthly</option><option value="annual" data-i18n-key="frequency_annually">Annual</option></select>
                             <input type="number" id="salary-gross" class="form-control" placeholder="0.00" value="0" min="0">
                         </div>
                     </div>
@@ -77,7 +66,7 @@
                 <div class="chart-container"><canvas id="tax-chart"></canvas></div>
             </section>
             <section class="budget-section">
-                <div class="section-header"><h2 data-i18n-key="section_pre_tax_title">Pre-Tax Deductions</h2><div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_pre_tax">세금을 부과하기 전에 총수입에서 공제되는 항목들입니다. 주로 401k와 같은 연금 저축이나 특정 보험료가 해당됩니다.</span></div></div>
+                <div class="section-header"><h2 data-i18n-key="section_pre_tax_title">Pre-Tax Deductions</h2><div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_pre_tax">세금을 부과하기 전에 총수입에서 공제되는 항목들입니다.</span></div></div>
                 <div class="form-group"><label for="pre-tax-frequency-select" data-i18n-key="label_frequency">Frequency:</label><select id="pre-tax-frequency-select" class="form-control"><option value="weekly" data-i18n-key="frequency_weekly">Weekly</option><option value="bi-weekly" data-i18n-key="frequency_bi_weekly">Bi-Weekly</option><option value="monthly" data-i18n-key="frequency_monthly">Monthly</option><option value="annual" data-i18n-key="frequency_annually">Annual</option></select></div>
                 <div class="form-grid">
                     <div class="form-group" data-item-id="deduct-medical-1"><label><span data-i18n-key="label_medical_premium">Medical Premium</span><span class="category-tag"></span></label><input type="number" id="deduct-medical-1" class="form-control" min="0" value="0"></div>
@@ -116,15 +105,10 @@
         </section>
 
         <section class="budget-section">
-            <div class="section-header"><h2 data-i18n-key="section_expenses_title">Expense Management</h2><div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_expenses">순수입(실수령액)에서 나가는 모든 지출을 입력합니다. 각 항목을 분류하여 예산 규칙에 얼마나 부합하는지 확인하세요.</span></div></div>
+            <div class="section-header"><h2 data-i18n-key="section_expenses_title">Expense Management</h2><div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_expenses">순수입(실수령액)에서 나가는 모든 지출을 입력합니다.</span></div></div>
             <div class="form-group">
                 <label for="expense-frequency-select" data-i18n-key="label_frequency">Frequency:</label>
-                <select id="expense-frequency-select" class="form-control">
-                     <option value="weekly" data-i18n-key="frequency_weekly">Weekly</option>
-                     <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">Bi-Weekly</option>
-                     <option value="monthly" data-i18n-key="frequency_monthly">Monthly</option>
-                     <option value="annual" data-i18n-key="frequency_annually">Annual</option>
-                </select>
+                <select id="expense-frequency-select" class="form-control"><option value="weekly" data-i18n-key="frequency_weekly">Weekly</option><option value="bi-weekly" data-i18n-key="frequency_bi_weekly">Bi-Weekly</option><option value="monthly" data-i18n-key="frequency_monthly">Monthly</option><option value="annual" data-i18n-key="frequency_annually">Annual</option></select>
             </div>
             <div class="form-grid expenses-grid">
                 <div class="form-group" data-item-id="exp-rent-1"><label><span data-i18n-key="label_rent_mortgage">Rent/Mortgage</span><span class="category-tag"></span></label><input type="number" id="exp-rent-1" class="form-control" min="0" value="0"></div>
@@ -151,73 +135,27 @@
         <section class="budget-section">
             <div class="section-header">
                 <h2 data-i18n-key="section_debt_title">부채 관리</h2>
-                <div class="tooltip-container">
-                    <i class="ri-question-line tooltip-icon"></i>
-                    <span class="tooltip-text" data-i18n-key="tooltip_debt">
-                        상환할 부채 목록을 관리합니다. 이자율이 높은 순서대로 상환하는 '눈사태(Avalanche)' 전략을 계산해 드립니다.
-                    </span>
-                </div>
+                <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_debt">상환할 부채 목록을 관리합니다. 이자율이 높은 순서대로 상환하는 '눈사태(Avalanche)' 전략을 계산해 드립니다.</span></div>
             </div>
             <div id="debt-form" class="form-grid" style="grid-template-columns: 2fr 1fr 1fr 1fr auto; align-items: flex-end; margin-bottom: 25px;">
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label for="debt-name-input" data-i18n-key="label_debt_name">부채 이름</label>
-                    <input type="text" id="debt-name-input" class="form-control" placeholder="예: 신용카드 A">
-                </div>
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label for="debt-balance-input" data-i18n-key="label_debt_balance">현재 잔액</label>
-                    <input type="number" id="debt-balance-input" class="form-control" placeholder="0">
-                </div>
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label for="debt-rate-input" data-i18n-key="label_debt_rate">이자율 (%)</label>
-                    <input type="number" id="debt-rate-input" class="form-control" placeholder="0.0">
-                </div>
-                 <div class="form-group" style="margin-bottom: 0;">
-                    <label for="debt-payment-input" data-i18n-key="label_debt_min_payment">월 최소상환액</label>
-                    <input type="number" id="debt-payment-input" class="form-control" placeholder="0">
-                </div>
+                <div class="form-group" style="margin-bottom: 0;"><label for="debt-name-input" data-i18n-key="label_debt_name">부채 이름</label><input type="text" id="debt-name-input" class="form-control" placeholder="예: 신용카드 A"></div>
+                <div class="form-group" style="margin-bottom: 0;"><label for="debt-balance-input" data-i18n-key="label_debt_balance">현재 잔액</label><input type="number" id="debt-balance-input" class="form-control" placeholder="0"></div>
+                <div class="form-group" style="margin-bottom: 0;"><label for="debt-rate-input" data-i18n-key="label_debt_rate">이자율 (%)</label><input type="number" id="debt-rate-input" class="form-control" placeholder="0.0"></div>
+                <div class="form-group" style="margin-bottom: 0;"><label for="debt-payment-input" data-i18n-key="label_debt_min_payment">월 최소상환액</label><input type="number" id="debt-payment-input" class="form-control" placeholder="0"></div>
                 <button id="add-debt-btn" class="btn" data-i18n-key="btn_add_debt">부채 추가</button>
             </div>
-
             <div id="debt-calculator" class="form-grid" style="grid-template-columns: 2fr 1fr; margin-top: 25px; border-top: 1px solid var(--input-border-color); padding-top: 20px;">
-                <div class="form-group">
-                    <label for="debt-extra-payment-input" data-i18n-key="label_debt_extra_payment">월 추가 상환액</label>
-                    <input type="number" id="debt-extra-payment-input" class="form-control" value="0" min="0">
-                </div>
-                <div id="debt-result-container" style="align-self: center; text-align: right;">
-                    </div>
+                <div class="form-group"><label for="debt-extra-payment-input" data-i18n-key="label_debt_extra_payment">월 추가 상환액</label><input type="number" id="debt-extra-payment-input" class="form-control" value="0" min="0"></div>
+                <div id="debt-result-container" style="align-self: center; text-align: right;"></div>
             </div>
-
-            
-            <div id="debt-list-container">
-                </div>
+            <div id="debt-list-container"></div>
         </section>
 
         <section class="budget-section">
-            <div class="section-header">
-                <h2 data-i18n-key="section_trends_title">재무 트렌드 분석</h2>
-                <div class="tooltip-container">
-                    <i class="ri-question-line tooltip-icon"></i>
-                    <span class="tooltip-text" data-i18n-key="tooltip_trends">
-                        매월 말 '이번 달 데이터 기록하기' 버튼을 눌러 데이터를 저장하고, 시간 경과에 따른 재무 변화를 차트로 확인하세요.
-                    </span>
-                </div>
-            </div>
-            <button id="record-history-btn" class="btn" style="margin-bottom: 20px;" data-i18n-key="btn_record_history">이번 달 데이터 기록하기</button>
-            <div class="chart-container" style="height: 400px;">
-                <canvas id="history-chart"></canvas>
-            </div>
-        </section>
-        
-        <section class="budget-section">
-            <div class="section-header"><h2 data-i18n-key="section_summary_title">Budget Summary</h2><div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_summary">모든 수입과 지출을 종합한 최종 요약입니다. 선택한 주기에 따라 환산된 금액을 보여줍니다.</span></div></div>
+            <div class="section-header"><h2 data-i18n-key="section_summary_title">Budget Summary</h2><div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_summary">모든 수입과 지출을 종합한 최종 요약입니다.</span></div></div>
             <div class="form-group">
                 <label for="summary-frequency-select" data-i18n-key="label_summary_frequency">Summary Frequency:</label>
-                <select id="summary-frequency-select" class="form-control">
-                    <option value="weekly" data-i18n-key="frequency_weekly">Weekly</option>
-                    <option value="bi-weekly" data-i18n-key="frequency_bi_weekly">Bi-Weekly</option>
-                    <option value="monthly" data-i18n-key="frequency_monthly">Monthly</option>
-                    <option value="annual" data-i18n-key="frequency_annually">Annual</option>
-                </select>
+                <select id="summary-frequency-select" class="form-control"><option value="weekly" data-i18n-key="frequency_weekly">Weekly</option><option value="bi-weekly" data-i18n-key="frequency_bi_weekly">Bi-Weekly</option><option value="monthly" data-i18n-key="frequency_monthly">Monthly</option><option value="annual" data-i18n-key="frequency_annually">Annual</option></select>
             </div>
             <div id="summary-advanced-view" class="summary-results hidden">
                 <p data-i18n-key="label_gross_salary">Gross Salary:</p> <span id="summary-gross-salary"></span>
@@ -234,14 +172,10 @@
         </section>
 
         <section class="budget-section">
-            <div class="section-header"><h2 data-i18n-key="section_budget_rule_title">Budget Rule Application</h2><div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_budget_rule">널리 알려진 예산 규칙을 선택하여 현재 지출이 순수입(실수령액) 기준 목표에 얼마나 부합하는지 시각적으로 확인합니다. 각 카테고리명을 클릭하면 해당 항목들의 세부 내역을 볼 수 있습니다.</span></div></div>
+            <div class="section-header"><h2 data-i18n-key="section_budget_rule_title">Budget Rule Application</h2><div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_budget_rule">널리 알려진 예산 규칙을 선택하여 현재 지출이 순수입(실수령액) 기준 목표에 얼마나 부합하는지 시각적으로 확인합니다.</span></div></div>
             <div class="form-group">
                 <label for="budget-rule-select" data-i18n-key="label_budget_rule_select">Select Budget Rule:</label>
-                <select id="budget-rule-select" class="form-control rule-select">
-                    <option value="50-30-20" data-i18n-key="rule_50_30_20_title">50/30/20 Rule</option>
-                    <option value="70-20-10" data-i18n-key="rule_70_20_10_title">70/20/10 Rule</option>
-                    <option value="80-20" data-i18n-key="rule_80_20_title">80/20 Rule</option>
-                </select>
+                <select id="budget-rule-select" class="form-control rule-select"><option value="50-30-20" data-i18n-key="rule_50_30_20_title">50/30/20 Rule</option><option value="70-20-10" data-i18n-key="rule_70_20_10_title">70/20/10 Rule</option><option value="80-20" data-i18n-key="rule_80_20_title">80/20 Rule</option></select>
             </div>
             <div id="budget-rule-breakdown"></div>
         </section>
@@ -249,42 +183,34 @@
         <section class="budget-section">
             <div class="section-header">
                 <h2 data-i18n-key="section_goals_title">재무 목표 설정</h2>
-                <div class="tooltip-container">
-                    <i class="ri-question-line tooltip-icon"></i>
-                    <span class="tooltip-text" data-i18n-key="tooltip_goals">
-                        달성하고 싶은 재무 목표를 추가하고 관리합니다. '저축액 추가'에 금액을 입력하여 달성률을 업데이트할 수 있습니다.
-                    </span>
-                </div>
+                <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_goals">달성하고 싶은 재무 목표를 추가하고 관리합니다. '저축액 추가'에 금액을 입력하여 달성률을 업데이트할 수 있습니다.</span></div>
             </div>
             <div id="goal-form" class="form-grid" style="grid-template-columns: 2fr 1fr auto; align-items: flex-end; margin-bottom: 25px;">
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label for="goal-name-input" data-i18n-key="label_goal_name">목표 이름</label>
-                    <input type="text" id="goal-name-input" class="form-control" placeholder="예: 유럽 여행">
-                </div>
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label for="goal-target-input" data-i18n-key="label_goal_target">목표 금액</label>
-                    <input type="number" id="goal-target-input" class="form-control" placeholder="0" min="0">
-                </div>
+                <div class="form-group" style="margin-bottom: 0;"><label for="goal-name-input" data-i18n-key="label_goal_name">목표 이름</label><input type="text" id="goal-name-input" class="form-control" placeholder="예: 유럽 여행"></div>
+                <div class="form-group" style="margin-bottom: 0;"><label for="goal-target-input" data-i18n-key="label_goal_target">목표 금액</label><input type="number" id="goal-target-input" class="form-control" placeholder="0" min="0"></div>
                 <button id="add-goal-btn" class="btn" data-i18n-key="btn_add_goal">목표 추가</button>
             </div>
-            <div id="goal-list-container">
-                </div>
+            <div id="goal-list-container"></div>
         </section>
 
         <section class="budget-section">
-             <div class="section-header"><h2 data-i18n-key="section_ai_title">AI Expense Report</h2> ... </div>
-            
+            <div class="section-header">
+                <h2 data-i18n-key="section_trends_title">재무 트렌드 분석</h2>
+                <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_trends">매월 말 '이번 달 데이터 기록하기' 버튼을 눌러 데이터를 저장하고, 시간 경과에 따른 재무 변화를 차트로 확인하세요.</span></div>
+            </div>
+            <button id="record-history-btn" class="btn" style="margin-bottom: 20px;" data-i18n-key="btn_record_history">이번 달 데이터 기록하기</button>
+            <div class="chart-container" style="height: 400px;"><canvas id="history-chart"></canvas></div>
+        </section>
+
+        <section class="budget-section">
+            <div class="section-header">
+                <h2 data-i18n-key="section_ai_title">AI Expense Report</h2>
+                <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_ai_report">입력된 데이터를 바탕으로 현재 재무 상태를 분석하고 개선을 위한 조언을 제공합니다.</span></div>
+            </div>
             <div class="form-group">
                 <label for="api-key-input">Gemini API Key</label>
                 <input type="password" id="api-key-input" class="form-control" placeholder="이곳에 API 키를 붙여넣으세요">
             </div>
-
-            <button id="ai-report-btn" class="btn" data-i18n-key="btn_ai_report">Generate AI Report</button>
-            <div id="ai-report-box" class="ai-report-box"> ... </div>
-        </section>
-        
-        <section class="budget-section">
-             <div class="section-header"><h2 data-i18n-key="section_ai_title">AI Expense Report</h2><div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_ai_report">입력된 데이터를 바탕으로 현재 재무 상태를 분석하고 개선을 위한 조언을 제공합니다.</span></div></div>
             <button id="ai-report-btn" class="btn" data-i18n-key="btn_ai_report">Generate AI Report</button>
             <div id="ai-report-box" class="ai-report-box"><p data-i18n-key="ai_report_placeholder">Click "Generate AI Report" for insights.</p></div>
         </section>
