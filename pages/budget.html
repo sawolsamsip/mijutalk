@@ -176,6 +176,17 @@
                 </div>
                 <button id="add-debt-btn" class="btn" data-i18n-key="btn_add_debt">부채 추가</button>
             </div>
+
+            <div id="debt-calculator" class="form-grid" style="grid-template-columns: 2fr 1fr; margin-top: 25px; border-top: 1px solid var(--input-border-color); padding-top: 20px;">
+                <div class="form-group">
+                    <label for="debt-extra-payment-input" data-i18n-key="label_debt_extra_payment">월 추가 상환액</label>
+                    <input type="number" id="debt-extra-payment-input" class="form-control" value="0" min="0">
+                </div>
+                <div id="debt-result-container" style="align-self: center; text-align: right;">
+                    </div>
+            </div>
+
+            
             <div id="debt-list-container">
                 </div>
         </section>
