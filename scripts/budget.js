@@ -1099,7 +1099,7 @@ function getFinancialSummaryForAI() {
     - Currency: ${data.currency}
     - Net Income: ${formatCurrency(convertFromAnnual(annualNetIncome, summaryFreq))}
     - Total Expenses: ${formatCurrency(convertFromAnnual(totalAnnualExpenses, summaryFreq))}
-    - (Needs: ${formatCurrency(convertFromAnnual(totals.needs, summaryFreq))}, Wants: ${formatcurrency(convertFromAnnual(totals.wants, summaryFreq))}, Savings: ${formatCurrency(convertFromAnnual(totals.savings, summaryFreq))}, Debt Payments: ${formatCurrency(convertFromAnnual(totals.debt, summaryFreq))})
+    - (Needs: ${formatCurrency(convertFromAnnual(totals.needs, summaryFreq))}, Wants: ${formatCurrency(convertFromAnnual(totals.wants, summaryFreq))}, Savings: ${formatCurrency(convertFromAnnual(totals.savings, summaryFreq))}, Debt Payments: ${formatCurrency(convertFromAnnual(totals.debt, summaryFreq))})
     - Remaining Surplus: ${formatCurrency(convertFromAnnual(remainingBudget, summaryFreq))}
     - Financial Goals: ${data.goals.length > 0 ? data.goals.map(g => `${g.name} (Target: ${formatCurrency(g.target)})`).join(', ') : 'None'}
     - Debts: ${data.debts.length > 0 ? data.debts.map(d => `${d.name} (Balance: ${formatCurrency(d.balance)} at ${d.rate}% interest)`).join(', ') : 'None'}
