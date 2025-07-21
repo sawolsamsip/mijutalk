@@ -21,7 +21,7 @@ let recordHistoryBtn;
 let categoryNameInput, categoryTypeSelect, addCategoryBtn, categoryListContainer;
 let expenseNameInput, expenseAmountInput, expenseCategorySelect, addExpenseBtn, expenseListContainer;
 let dashboardNetIncome, dashboardTotalExpenses, dashboardRemaining, dashboardSavingsRate;
-
+let scenarioIncomeChangeInput, scenarioExpenseChangeInput, runScenarioBtn, scenarioResultsContainer;
 
 const data = {
     calculationMode: 'simple',
@@ -132,6 +132,7 @@ const translations = {
         label_net_salary: 'Net Salary (Take-Home):',
         label_total_expenses: 'Total Expenses:',
         label_remaining_budget: 'Remaining Budget:',
+        label_savings_rate: 'Savings Rate',
         section_budget_rule_title: 'Budget Rule Application',
         tooltip_budget_rule: "Select a popular budgeting rule to visually compare your spending against a target.",
         rule_50_30_20_title: '50/30/20 Rule (Needs/Wants/Savings)',
@@ -217,6 +218,11 @@ const translations = {
         btn_add_expense: "Add Other Expense",
         label_api_key: 'Gemini API Key',
         placeholder_api_key: 'Paste your API key here',
+        section_what_if_title: "What-If Scenario Analysis",
+        tooltip_what_if: "Simulate how hypothetical income/expense changes affect your debt payoff timeline.",
+        label_scenario_income: "Monthly Net Income Change (%)",
+        label_scenario_expense: "Monthly Fixed Expense Change",
+        btn_run_scenario: "Run Scenario"
     },
     ko: {
         app_title: '스마트 예산 노트',
@@ -287,6 +293,7 @@ const translations = {
         label_net_salary: '순수입 (실수령액):',
         label_total_expenses: '총 지출:',
         label_remaining_budget: '남은 예산:',
+        label_savings_rate: '저축률',
         section_budget_rule_title: '예산 규칙 적용',
         tooltip_budget_rule: "널리 알려진 예산 규칙을 선택하여 현재 지출이 순수입(실수령액) 기준 목표에 얼마나 부합하는지 시각적으로 확인합니다.",
         rule_50_30_20_title: '50/30/20 규칙 (필수/선택/저축)',
@@ -372,6 +379,11 @@ const translations = {
         btn_add_expense: "기타 지출 추가",
         label_api_key: 'Gemini API 키',
         placeholder_api_key: '이곳에 API 키를 붙여넣으세요',
+        section_what_if_title: "What-If 시나리오 분석",
+        tooltip_what_if: "가상의 수입/지출 변화가 부채 상환 완료 시점에 미치는 영향을 시뮬레이션합니다.",
+        label_scenario_income: "월 순수입 변화 (%)",
+        label_scenario_expense: "월 고정지출 변화",
+        btn_run_scenario: "시나리오 실행"
     }
 };
 
@@ -417,9 +429,9 @@ function convertFromAnnual(annualAmount, frequency) {
     }
 }
 
-function calculateTotalForSection(items, customItems, freqKey) {
+function calculateTotalForSection(sourceData, items, customItems, freqKey) {
     let total = 0;
-    const freq = data.frequencies[freqKey];
+    const freq = sourceData.frequencies[freqKey];
     for (const key in items) {
         if (key !== 'custom') total += convertToAnnual(items[key], freq);
     }
@@ -429,29 +441,29 @@ function calculateTotalForSection(items, customItems, freqKey) {
     return total;
 }
 
-function calculateBudget() {
+function calculateBudget(sourceData) {
     let annualNetIncome = 0;
     let annualGrossSalary = 0;
     let totalAnnualTaxes = 0;
     let totalAnnualPreTaxDeductions = 0;
     let totalAnnualPostTaxDeductions = 0;
     
-    const expenseTotals = categorizeExpensesOnly();
+    const expenseTotals = categorizeExpensesOnly(sourceData);
     let totalAnnualExpenses = expenseTotals.needs + expenseTotals.wants + expenseTotals.savings + expenseTotals.debt;
 
-    const totalAnnualDebtPayments = data.debts.reduce((sum, debt) => {
+    const totalAnnualDebtPayments = sourceData.debts.reduce((sum, debt) => {
         return sum + convertToAnnual(debt.payment, 'monthly');
     }, 0);
     totalAnnualExpenses += totalAnnualDebtPayments;
 
-    if (data.calculationMode === 'advanced') {
-        annualGrossSalary = convertToAnnual(data.grossSalary, data.salaryFrequency) + calculateTotalForSection({}, data.customIncomes);
-        totalAnnualTaxes = calculateTotalForSection(data.taxes, data.taxes.custom, 'tax');
-        totalAnnualPreTaxDeductions = calculateTotalForSection(data.preTaxDeductions, data.preTaxDeductions.custom, 'preTax');
-        totalAnnualPostTaxDeductions = calculateTotalForSection(data.postTaxDeductions, data.postTaxDeductions.custom, 'postTax');
+    if (sourceData.calculationMode === 'advanced') {
+        annualGrossSalary = convertToAnnual(sourceData.grossSalary, sourceData.salaryFrequency) + calculateTotalForSection(sourceData, {}, sourceData.customIncomes);
+        totalAnnualTaxes = calculateTotalForSection(sourceData, sourceData.taxes, sourceData.taxes.custom, 'tax');
+        totalAnnualPreTaxDeductions = calculateTotalForSection(sourceData, sourceData.preTaxDeductions, sourceData.preTaxDeductions.custom, 'preTax');
+        totalAnnualPostTaxDeductions = calculateTotalForSection(sourceData, sourceData.postTaxDeductions, sourceData.postTaxDeductions.custom, 'postTax');
         annualNetIncome = annualGrossSalary - totalAnnualTaxes - totalAnnualPreTaxDeductions - totalAnnualPostTaxDeductions;
     } else {
-        annualNetIncome = convertToAnnual(data.netIncome, 'monthly');
+        annualNetIncome = convertToAnnual(sourceData.netIncome, 'monthly');
     }
 
     const remainingBudget = annualNetIncome - totalAnnualExpenses;
@@ -459,21 +471,17 @@ function calculateBudget() {
     return { annualGrossSalary, annualNetIncome, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses, remainingBudget };
 }
 
-function categorizeExpensesOnly(getItems = false) {
+function categorizeExpensesOnly(sourceData, getItems = false) {
     let totals = { needs: 0, wants: 0, savings: 0, debt: 0 };
     let items = { needs: [], wants: [], savings: [], debt: [] };
-    const lang = data.currentLanguage;
+    const lang = sourceData.currentLanguage;
     const t = translations[lang];
 
-    // 1. 고정 지출 항목 처리
-    for (const key in data.expenses) {
+    for (const key in sourceData.expenses) {
         if (key === 'custom') continue;
-
-        const amount = convertToAnnual(data.expenses[key], data.frequencies.expense);
+        const amount = convertToAnnual(sourceData.expenses[key], sourceData.frequencies.expense);
         if (amount > 0) {
-            // Note: This relies on category names matching keys, which can be fragile.
-            // A better approach might involve a direct mapping if names diverge from keys.
-            const category = data.categories.find(c => c.name.toLowerCase().replace(/[^a-z0-9]/g, '').startsWith(key.toLowerCase()));
+            const category = sourceData.categories.find(c => c.name.toLowerCase().replace(/[^a-z0-9]/g, '').startsWith(key.toLowerCase()));
             if (category) {
                 totals[category.type] += amount;
                 if (getItems) {
@@ -484,9 +492,8 @@ function categorizeExpensesOnly(getItems = false) {
         }
     }
 
-    // 2. 맞춤(기타) 지출 항목 처리
-    data.expenses.custom.forEach(expense => {
-        const category = data.categories.find(c => c.id === expense.categoryId);
+    sourceData.expenses.custom.forEach(expense => {
+        const category = sourceData.categories.find(c => c.id === expense.categoryId);
         if (category) {
             const categoryType = category.type;
             const amount = convertToAnnual(expense.amount, expense.frequency);
@@ -504,8 +511,8 @@ function categorizeExpensesOnly(getItems = false) {
 
 
 function applyBudgetRule() {
-    const { annualNetIncome } = calculateBudget();
-    const totals = categorizeExpensesOnly();
+    const { annualNetIncome } = calculateBudget(data);
+    const totals = categorizeExpensesOnly(data);
     const lang = data.currentLanguage;
     const t = translations[lang];
 
@@ -537,9 +544,9 @@ function applyBudgetRule() {
  * This version simulates the true "Avalanche" method by rolling over
  * the minimum payments of paid-off debts to accelerate repayment.
  */
-function calculateDebtPaydown() {
-    const extraPayment = parseFloat(debtExtraPaymentInput.value) || 0;
-    let debts = JSON.parse(JSON.stringify(data.debts));
+function calculateDebtPaydown(sourceData, extraPaymentOverride = null) {
+    const extraPayment = extraPaymentOverride !== null ? extraPaymentOverride : (parseFloat(debtExtraPaymentInput.value) || 0);
+    let debts = JSON.parse(JSON.stringify(sourceData.debts));
 
     if (debts.length === 0) {
         return { months: 0, totalInterest: 0 };
@@ -554,7 +561,6 @@ function calculateDebtPaydown() {
         months++;
         let paymentPool = extraPayment;
 
-        // Add all minimum payments of active debts to the payment pool for this month
         for (const debt of debts) {
             if (debt.balance > 0) {
                 const monthlyInterest = (debt.balance * (debt.rate / 100)) / 12;
@@ -564,7 +570,6 @@ function calculateDebtPaydown() {
             }
         }
         
-        // Distribute the total payment pool according to the avalanche method
         for (const debt of debts) {
             if (paymentPool <= 0) break;
             if (debt.balance > 0) {
@@ -574,7 +579,7 @@ function calculateDebtPaydown() {
             }
         }
         
-        if (months > 1200) { // Safety break for 100 years
+        if (months > 1200) { 
             return { months: -1, totalInterest: 0 };
         }
     }
@@ -609,30 +614,27 @@ function displayDebtResults(results) {
 // =================================================================================
 // 3. UI 렌더링 및 업데이트 함수 (UI Rendering & Update Functions)
 // =================================================================================
+
 function updateDashboard() {
-    const { annualNetIncome, totalAnnualExpenses, remainingBudget } = calculateBudget();
+    const { annualNetIncome, totalAnnualExpenses, remainingBudget } = calculateBudget(data);
     const summaryFreq = data.summaryFrequency;
     
-    // 월별 금액으로 환산
     const monthlyNetIncome = convertFromAnnual(annualNetIncome, summaryFreq);
     const monthlyTotalExpenses = convertFromAnnual(totalAnnualExpenses, summaryFreq);
     const monthlyRemaining = convertFromAnnual(remainingBudget, summaryFreq);
     
-    // 저축률 계산
-    const expenseTotals = categorizeExpensesOnly();
+    const expenseTotals = categorizeExpensesOnly(data);
     const annualSavings = expenseTotals.savings + expenseTotals.debt;
     let savingsRate = 0;
     if (annualNetIncome > 0) {
         savingsRate = (annualSavings / annualNetIncome) * 100;
     }
 
-    // 대시보드 UI 업데이트
     dashboardNetIncome.textContent = formatCurrency(monthlyNetIncome);
     dashboardTotalExpenses.textContent = formatCurrency(monthlyTotalExpenses);
     dashboardRemaining.textContent = formatCurrency(monthlyRemaining);
     dashboardSavingsRate.textContent = `${savingsRate.toFixed(1)}%`;
 
-    // 남은 예산에 따라 색상 변경
     dashboardRemaining.classList.toggle('positive', monthlyRemaining >= 0);
     dashboardRemaining.classList.toggle('negative', monthlyRemaining < 0);
 }
@@ -800,8 +802,8 @@ function createOrUpdateChart(instance, canvasId, label, dataValues, labels) {
 function updateCharts() {
     const lang = data.currentLanguage;
     const t = translations[lang];
-    const { remainingBudget, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses } = calculateBudget();
-    const expenseTotals = categorizeExpensesOnly(false);
+    const { remainingBudget, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses } = calculateBudget(data);
+    const expenseTotals = categorizeExpensesOnly(data, false);
 
     expensesChartInstance = createOrUpdateChart(expensesChartInstance, 'expenses-chart', t.section_expenses_title,
         [expenseTotals.needs, expenseTotals.wants, expenseTotals.savings, expenseTotals.debt],
@@ -847,7 +849,7 @@ function updateCharts() {
 function showCategoryDetails(categoryId) {
     const lang = data.currentLanguage;
     const t = translations[lang];
-    const { items: expenseItems } = categorizeExpensesOnly(true);
+    const { items: expenseItems } = categorizeExpensesOnly(data, true);
     let itemsToShow = [];
     let title = "";
 
@@ -895,7 +897,7 @@ function updateDisplay() {
     for (const key in postTaxDeductInputs) if (postTaxDeductInputs[key]) data.postTaxDeductions[key] = parseFloat(postTaxDeductInputs[key].value) || 0;
     for (const key in expenseInputs) if (expenseInputs[key]) data.expenses[key] = parseFloat(expenseInputs[key].value) || 0;
 
-    const { annualGrossSalary, annualNetIncome, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses, remainingBudget } = calculateBudget();
+    const { annualGrossSalary, annualNetIncome, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses, remainingBudget } = calculateBudget(data);
     const summaryFreq = data.summaryFrequency;
 
     advancedModeContainer.classList.toggle('hidden', data.calculationMode === 'simple');
@@ -925,14 +927,14 @@ function updateDisplay() {
     renderCategories();
     populateCategoryDropdown();
     renderExpenses();
-    const debtResults = calculateDebtPaydown();
+    const debtResults = calculateDebtPaydown(data);
     displayDebtResults(debtResults);
     renderHistoryChart();
     const breakdownData = applyBudgetRule();
     renderBudgetRule(breakdownData, remainingBudget, summaryFreq);
+    updateDashboard();
     updateCharts();
     renderCategoryTags();
-    updateDashboard();
     saveData();
 }
 
@@ -940,14 +942,80 @@ function updateDisplay() {
 // 4. 이벤트 핸들러 함수 (Event Handler Functions)
 // =================================================================================
 
+function runScenario() {
+    const incomeChangePercent = parseFloat(scenarioIncomeChangeInput.value) || 0;
+    const expenseChangeAmount = parseFloat(scenarioExpenseChangeInput.value) || 0;
+    let scenarioData = JSON.parse(JSON.stringify(data));
+
+    if (incomeChangePercent !== 0) {
+        if (scenarioData.calculationMode === 'advanced') {
+            const currentAnnualGross = convertToAnnual(scenarioData.grossSalary, scenarioData.salaryFrequency);
+            const newAnnualGross = currentAnnualGross * (1 + incomeChangePercent / 100);
+            scenarioData.grossSalary = convertFromAnnual(newAnnualGross, scenarioData.salaryFrequency);
+        } else {
+            const currentAnnualNet = convertToAnnual(scenarioData.netIncome, 'monthly');
+            const newAnnualNet = currentAnnualNet * (1 + incomeChangePercent / 100);
+            scenarioData.netIncome = convertFromAnnual(newAnnualNet, 'monthly');
+        }
+    }
+    if (expenseChangeAmount !== 0) {
+        scenarioData.expenses.custom.push({
+            id: Date.now(),
+            name: 'Scenario Adjustment',
+            amount: expenseChangeAmount,
+            frequency: 'monthly',
+            categoryId: 15 
+        });
+    }
+
+    const originalPlan = calculateDebtPaydown(data);
+    const scenarioPlan = calculateDebtPaydown(scenarioData);
+    displayScenarioResults(originalPlan, scenarioPlan);
+}
+
+function displayScenarioResults(originalPlan, scenarioPlan) {
+    if (!scenarioResultsContainer) return;
+    const lang = data.currentLanguage;
+
+    const formatMonths = (months) => {
+        if (months <= 0) return lang === 'ko' ? "부채 없음" : "No Debt";
+        if (months === -1) return lang === 'ko' ? "상환 불가" : "Cannot Repay";
+        const years = Math.floor(months / 12);
+        const remainingMonths = months % 12;
+        let timeText = '';
+        if (years > 0) timeText += `${years}년 `;
+        if (remainingMonths > 0) timeText += `${remainingMonths}개월`;
+        return timeText.trim();
+    };
+
+    const originalTime = formatMonths(originalPlan.months);
+    const scenarioTime = formatMonths(scenarioPlan.months);
+    const difference = originalPlan.months - scenarioPlan.months;
+
+    let impactText = '';
+    if (originalPlan.months > 0 && scenarioPlan.months > 0 && difference !== 0) {
+        if (difference > 0) {
+            impactText = `<p><strong>결과: ${difference}개월 더 빨리 부채를 청산할 수 있습니다! 🚀</strong></p>`;
+        } else {
+            impactText = `<p><strong>결과: 부채 청산까지 ${Math.abs(difference)}개월이 더 걸립니다.</strong></p>`;
+        }
+    }
+
+    scenarioResultsContainer.innerHTML = `
+        <p>기존 계획: ${originalTime}</p>
+        <p>시나리오 적용 시: ${scenarioTime}</p>
+        ${impactText}
+    `;
+}
+
 function recordMonthlyData() {
     const now = new Date();
     const year = now.getFullYear();
     const month = (now.getMonth() + 1).toString().padStart(2, '0');
     const currentMonthKey = `${year}-${month}`;
 
-    const { annualNetIncome } = calculateBudget();
-    const totals = categorizeExpensesOnly();
+    const { annualNetIncome } = calculateBudget(data);
+    const totals = categorizeExpensesOnly(data);
     const summaryFreq = 'monthly';
 
     const monthlySummary = {
@@ -1142,8 +1210,8 @@ function applyDarkMode() {
 }
 
 function getFinancialSummaryForAI() {
-    const { annualNetIncome, totalAnnualExpenses, remainingBudget } = calculateBudget();
-    const totals = categorizeExpensesOnly();
+    const { annualNetIncome, totalAnnualExpenses, remainingBudget } = calculateBudget(data);
+    const totals = categorizeExpensesOnly(data);
     const summaryFreq = 'monthly';
     const lang = data.currentLanguage;
 
@@ -1397,10 +1465,6 @@ document.addEventListener('DOMContentLoaded', () => {
     expenseCategorySelect = document.getElementById('expense-category-select');
     addExpenseBtn = document.getElementById('add-expense-btn');
     expenseListContainer = document.getElementById('expense-list-container');
-    dashboardNetIncome = document.getElementById('dashboard-net-income');
-    dashboardTotalExpenses = document.getElementById('dashboard-total-expenses');
-    dashboardRemaining = document.getElementById('dashboard-remaining');
-    dashboardSavingsRate = document.getElementById('dashboard-savings-rate');
     modeToggleCheckbox = document.getElementById('mode-toggle-checkbox');
     advancedModeContainer = document.getElementById('advanced-mode-container');
     simpleModeContainer = document.getElementById('simple-mode-container');
@@ -1421,6 +1485,14 @@ document.addEventListener('DOMContentLoaded', () => {
     preTaxFrequencySelect = document.getElementById('pre-tax-frequency-select');
     postTaxFrequencySelect = document.getElementById('post-tax-frequency-select');
     expenseFrequencySelect = document.getElementById('expense-frequency-select');
+    dashboardNetIncome = document.getElementById('dashboard-net-income');
+    dashboardTotalExpenses = document.getElementById('dashboard-total-expenses');
+    dashboardRemaining = document.getElementById('dashboard-remaining');
+    dashboardSavingsRate = document.getElementById('dashboard-savings-rate');
+    scenarioIncomeChangeInput = document.getElementById('scenario-income-change');
+    scenarioExpenseChangeInput = document.getElementById('scenario-expense-change');
+    runScenarioBtn = document.getElementById('run-scenario-btn');
+    scenarioResultsContainer = document.getElementById('scenario-results-container');
 
     Object.assign(taxInputs, { federal: document.getElementById('tax-federal-1'), state: document.getElementById('tax-state-1'), oasdi: document.getElementById('tax-oasdi-1'), medicare: document.getElementById('tax-medicare-1'), casdi: document.getElementById('tax-casdi-1') });
     Object.assign(preTaxDeductInputs, { medical: document.getElementById('deduct-medical-1'), dental: document.getElementById('deduct-dental-1'), vision: document.getElementById('deduct-vision-1'), '401k-trad': document.getElementById('deduct-401k-trad-1') });
@@ -1456,6 +1528,20 @@ document.addEventListener('DOMContentLoaded', () => {
     modalCloseBtn = document.querySelector('.modal-close-btn');
 
     // --- Event Listeners ---
+    languageToggleBtn.addEventListener('click', () => {
+        data.currentLanguage = data.currentLanguage === 'ko' ? 'en' : 'ko';
+        applyLanguage();
+    });
+    darkmodeToggleBtn.addEventListener('click', () => {
+        data.isDarkMode = !data.isDarkMode;
+        applyDarkMode();
+        saveData();
+    });
+    currencyToggleBtn.addEventListener('click', () => {
+        data.currency = data.currency === 'KRW' ? 'USD' : 'KRW';
+        applyLanguage();
+    });
+    runScenarioBtn.addEventListener('click', runScenario);
     recordHistoryBtn.addEventListener('click', recordMonthlyData);
     addDebtBtn.addEventListener('click', addDebt);
     addGoalBtn.addEventListener('click', addGoal);
@@ -1467,13 +1553,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const debouncedUpdate = debounce(updateDisplay, 300);
     document.querySelectorAll('input[type="number"]').forEach(el => el.addEventListener('input', debouncedUpdate));
     document.querySelectorAll('select').forEach(el => el.addEventListener('change', updateDisplay));
-
-    languageToggleBtn.addEventListener('click', () => {
-        data.currentLanguage = data.currentLanguage === 'ko' ? 'en' : 'ko';
-        applyLanguage();
-    });
-    darkmodeToggleBtn.addEventListener('click', () => { data.isDarkMode = !data.isDarkMode; applyDarkMode(); saveData(); });
-    currencyToggleBtn.addEventListener('click', () => { data.currency = data.currency === 'KRW' ? 'USD' : 'KRW'; applyLanguage(); });
 
     clearAllDataBtn.addEventListener('click', () => { if (confirm(translations[data.currentLanguage].confirm_clear_data)) { localStorage.removeItem('budgetAppData'); window.location.reload(); } });
     exportJsonBtn.addEventListener('click', () => {
@@ -1509,7 +1588,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     printBtn.addEventListener('click', () => window.print());
     emailBtn.addEventListener('click', () => {
-        const { annualNetIncome, totalAnnualExpenses, remainingBudget } = calculateBudget();
+        const { annualNetIncome, totalAnnualExpenses, remainingBudget } = calculateBudget(data);
         const summaryFreq = data.summaryFrequency;
         const subject = "My Budget Summary";
         const body = `Net Income: ${formatCurrency(convertFromAnnual(annualNetIncome, summaryFreq))}\nExpenses: ${formatCurrency(convertFromAnnual(totalAnnualExpenses, summaryFreq))}\nRemaining: ${formatCurrency(convertFromAnnual(remainingBudget, summaryFreq))}`;
@@ -1517,7 +1596,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     shareBtn.addEventListener('click', async () => {
         if (navigator.share) {
-            const { annualNetIncome, totalAnnualExpenses, remainingBudget } = calculateBudget();
+            const { annualNetIncome, totalAnnualExpenses, remainingBudget } = calculateBudget(data);
             const summaryFreq = data.summaryFrequency;
             await navigator.share({
                 title: 'My Budget Summary',
