@@ -1046,7 +1046,7 @@ function removeCustomItem(event) {
     updateDisplay();
 }
 
-function applyLanguage() {
+function applyLanguage(shouldUpdate = true) {
     const lang = data.currentLanguage;
     document.documentElement.lang = lang;
     languageToggleBtn.textContent = lang === 'ko' ? 'EN' : 'KO';
@@ -1061,7 +1061,10 @@ function applyLanguage() {
             }
         }
     });
-    updateDisplay();
+    
+    if (shouldUpdate) { // 2. 이 부분을 추가
+        updateDisplay();
+    }
 }
 
 function applyDarkMode() {
@@ -1243,8 +1246,7 @@ function saveData() {
 
 function populateUiFromData(savedData) {
     const deepMerge = (target, source) => {
-        for (const key in postTaxDeductInputs) {
-            for (const key in expenseInputs) if (expenseInputs[key] && data.expenses[key] !== undefined) expenseInputs[key].value = data.expenses[key];
+        for (const key in source) {
             if (source.hasOwnProperty(key)) {
                 if (source[key] instanceof Object && !Array.isArray(source[key]) && key in target && target[key] instanceof Object) {
                     deepMerge(target[key], source[key]);
@@ -1256,31 +1258,31 @@ function populateUiFromData(savedData) {
         return target;
     }
 
-    // Ensure default arrays exist if not in savedData
-    savedData.goals = savedData.goals || [];
-    savedData.debts = savedData.debts || [];
-    savedData.history = savedData.history || [];
-    savedData.categories = savedData.categories || [];
-    
     deepMerge(data, savedData);
 
+    // FIX: 새로고침 시 주기 선택이 초기화되는 문제 해결
     taxFrequencySelect.value = data.frequencies.tax || 'monthly';
     preTaxFrequencySelect.value = data.frequencies.preTax || 'monthly';
     postTaxFrequencySelect.value = data.frequencies.postTax || 'monthly';
     expenseFrequencySelect.value = data.frequencies.expense || 'monthly';
+
+    // FIX: 새로고침 시 모드가 초기화되는 문제 해결
     modeToggleCheckbox.checked = data.calculationMode === 'advanced';
+
     netIncomeInput.value = data.netIncome || 0;
     grossSalaryInput.value = data.grossSalary || 0;
     salaryFrequencySelect.value = data.salaryFrequency || 'monthly';
     summaryFrequencySelect.value = data.summaryFrequency || 'monthly';
     budgetRuleSelect.value = data.budgetRule || '50-30-20';
+    data.isDarkMode = document.body.classList.contains('dark-mode');
 
     for (const key in taxInputs) if (taxInputs[key] && data.taxes[key] !== undefined) taxInputs[key].value = data.taxes[key];
     for (const key in preTaxDeductInputs) if (preTaxDeductInputs[key] && data.preTaxDeductions[key] !== undefined) preTaxDeductInputs[key].value = data.preTaxDeductions[key];
     for (const key in postTaxDeductInputs) if (postTaxDeductInputs[key] && data.postTaxDeductions[key] !== undefined) postTaxDeductInputs[key].value = data.postTaxDeductions[key];
 
     applyDarkMode();
-    applyLanguage();
+    applyLanguage(false);
+    updateDisplay();   
 }
 
 function loadData() {
