@@ -17,6 +17,7 @@ let modalContainer, modalTitle, modalList, modalCloseBtn;
 let advancedModeContainer, simpleModeContainer;
 let goalNameInput, goalTargetInput, addGoalBtn, goalListContainer;
 let debtNameInput, debtBalanceInput, debtRateInput, debtPaymentInput, addDebtBtn, debtListContainer;
+let debtExtraPaymentInput, debtResultContainer;
 
 const data = {
     calculationMode: 'simple',
@@ -440,6 +441,84 @@ function applyBudgetRule() {
     }
 }
 
+// budget.js -> // 2. 핵심 로직 및 계산 함수 구역
+
+function calculateDebtPaydown() {
+    const extraPayment = parseFloat(debtExtraPaymentInput.value) || 0;
+    // 시뮬레이션을 위해 원본 데이터를 복사해서 사용합니다.
+    let debts = JSON.parse(JSON.stringify(data.debts));
+
+    if (debts.length === 0) {
+        return { months: 0, totalInterest: 0, totalPaid: 0 };
+    }
+
+    // 1. 이자율이 높은 순으로 정렬 (눈사태 전략)
+    debts.sort((a, b) => b.rate - a.rate);
+
+    let months = 0;
+    let totalInterestPaid = 0;
+    let hasRemainingDebt = true;
+
+    while (hasRemainingDebt) {
+        months++;
+        let monthlyExtraPayment = extraPayment;
+
+        // 2. 모든 부채에 대해 이자 계산 및 최소 상환액 지불
+        for (const debt of debts) {
+            if (debt.balance > 0) {
+                const monthlyInterest = (debt.balance * (debt.rate / 100)) / 12;
+                totalInterestPaid += monthlyInterest;
+                debt.balance += monthlyInterest;
+
+                const payment = Math.min(debt.balance, debt.payment);
+                debt.balance -= payment;
+            }
+        }
+        
+        // 3. 남은 추가 상환액을 이자율이 가장 높은 부채에 집중
+        for (const debt of debts) {
+            if (debt.balance > 0 && monthlyExtraPayment > 0) {
+                const payment = Math.min(debt.balance, monthlyExtraPayment);
+                debt.balance -= payment;
+                monthlyExtraPayment -= payment;
+            }
+        }
+        
+        // 4. 모든 부채가 상환되었는지 확인
+        hasRemainingDebt = debts.some(d => d.balance > 0);
+        
+        // 무한 루프 방지 (상환액이 부족한 경우)
+        if (months > 1200) { // 100년 이상
+            return { months: -1, totalInterest: 0, totalPaid: 0 };
+        }
+    }
+    
+    return { months, totalInterest: totalInterestPaid };
+}
+
+function displayDebtResults(results) {
+    if (!debtResultContainer) return;
+    const lang = data.currentLanguage;
+
+    if (results.months === -1) {
+        debtResultContainer.textContent = "상환액이 부족하여 계산할 수 없습니다.";
+        return;
+    }
+    if (results.months === 0) {
+        debtResultContainer.innerHTML = "";
+        return;
+    }
+
+    const years = Math.floor(results.months / 12);
+    const remainingMonths = results.months % 12;
+    
+    let timeText = '';
+    if (years > 0) timeText += `${years}년 `;
+    if (remainingMonths > 0) timeText += `${remainingMonths}개월`;
+
+    const resultText = `<strong>${timeText}</strong> 후 부채 청산! (총 이자: ${formatCurrency(results.totalInterest)})`;
+    debtResultContainer.innerHTML = resultText;
+}
 
 // =================================================================================
 // 3. UI 렌더링 및 업데이트 함수 (UI Rendering & Update Functions)
@@ -702,6 +781,8 @@ function updateDisplay() {
     renderAllCustomLists();
     renderGoals();
     renderDebts();
+    const debtResults = calculateDebtPaydown();
+    displayDebtResults(debtResults);
     const breakdownData = applyBudgetRule();
     renderBudgetRule(breakdownData, remainingBudget, summaryFreq);
     updateCharts();
@@ -1044,6 +1125,8 @@ function loadData() {
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Element References ---
+    debtExtraPaymentInput = document.getElementById('debt-extra-payment-input');
+    debtResultContainer = document.getElementById('debt-result-container');
     debtNameInput = document.getElementById('debt-name-input');
     debtBalanceInput = document.getElementById('debt-balance-input');
     debtRateInput = document.getElementById('debt-rate-input');
