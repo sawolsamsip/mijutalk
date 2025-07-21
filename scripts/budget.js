@@ -195,7 +195,9 @@ const translations = {
 
         section_trends_title: "Financial Trend Analysis",
         tooltip_trends: "Record your data at the end of each month to track your financial changes over time.",
-        btn_record_history: "Record This Month's Data"
+        btn_record_history: "Record This Month's Data",
+        placeholder_goal: 'e.g., Trip to Europe',
+        placeholder_debt: 'e.g., Credit Card A',
     },
     ko: {
         app_title: '스마트 예산 노트',
@@ -340,7 +342,9 @@ const translations = {
 
         section_trends_title: "재무 트렌드 분석",
         tooltip_trends: "매월 말 '이번 달 데이터 기록하기' 버튼을 눌러 데이터를 저장하고, 시간 경과에 따른 재무 변화를 차트로 확인하세요.",
-        btn_record_history: "이번 달 데이터 기록하기"
+        btn_record_history: "이번 달 데이터 기록하기",
+        placeholder_goal: '예: 유럽 여행',
+        placeholder_debt: '예: 신용카드 A',
     }
 };
 
