@@ -18,6 +18,7 @@ let advancedModeContainer, simpleModeContainer;
 let goalNameInput, goalTargetInput, addGoalBtn, goalListContainer;
 let debtNameInput, debtBalanceInput, debtRateInput, debtPaymentInput, addDebtBtn, debtListContainer;
 let debtExtraPaymentInput, debtResultContainer;
+let recordHistoryBtn, historyChartInstance;
 
 const data = {
     calculationMode: 'simple',
@@ -524,7 +525,69 @@ function displayDebtResults(results) {
 // =================================================================================
 // 3. UI 렌더링 및 업데이트 함수 (UI Rendering & Update Functions)
 // =================================================================================
+function renderHistoryChart() {
+    const ctx = document.getElementById('history-chart');
+    if (!ctx) return;
 
+    // 데이터가 2개 이상 있어야 라인 차트 의미가 있음
+    const labels = data.history.map(item => item.date);
+    const needsData = data.history.map(item => item.summary.needs);
+    const wantsData = data.history.map(item => item.summary.wants);
+    const savingsData = data.history.map(item => item.summary.savings);
+
+    const chartData = {
+        labels: labels,
+        datasets: [
+            {
+                label: '필수 지출 (Needs)',
+                data: needsData,
+                borderColor: '#FF6384',
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                fill: true,
+                tension: 0.1
+            },
+            {
+                label: '선택 지출 (Wants)',
+                data: wantsData,
+                borderColor: '#FFCE56',
+                backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                fill: true,
+                tension: 0.1
+            },
+            {
+                label: '저축 (Savings)',
+                data: savingsData,
+                borderColor: '#36A2EB',
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                fill: true,
+                tension: 0.1
+            }
+        ]
+    };
+
+    if (historyChartInstance) {
+        historyChartInstance.data = chartData;
+        historyChartInstance.update();
+    } else {
+        historyChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: chartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: { display: true, text: '월별 지출 및 저축 트렌드' }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+}
 function formatCurrency(amount) {
     amount = parseFloat(amount) || 0;
     const isKRW = data.currency === 'KRW';
@@ -784,6 +847,7 @@ function updateDisplay() {
     renderDebts();
     const debtResults = calculateDebtPaydown();
     displayDebtResults(debtResults);
+    renderHistoryChart();
     const breakdownData = applyBudgetRule();
     renderBudgetRule(breakdownData, remainingBudget, summaryFreq);
     updateCharts();
@@ -797,6 +861,52 @@ function updateDisplay() {
 // 4. 이벤트 핸들러 함수 (Event Handler Functions)
 // =================================================================================
 
+function recordMonthlyData() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const currentMonthKey = `${year}-${month}`;
+
+    const { annualNetIncome } = calculateBudget();
+    const totals = categorizeExpensesOnly();
+    const summaryFreq = 'monthly';
+
+    const monthlySummary = {
+        netIncome: convertFromAnnual(annualNetIncome, summaryFreq),
+        needs: convertFromAnnual(totals.needs, summaryFreq),
+        wants: convertFromAnnual(totals.wants, summaryFreq),
+        savings: convertFromAnnual(totals.savings, summaryFreq),
+        debt: convertFromAnnual(totals.debt, summaryFreq)
+    };
+    
+    // 순수입이 0 이하면 기록하지 않음
+    if (monthlySummary.netIncome <= 0) {
+        alert("순수입이 0 이상일 때 기록할 수 있습니다.");
+        return;
+    }
+
+    const existingIndex = data.history.findIndex(item => item.date === currentMonthKey);
+
+    if (existingIndex > -1) {
+        // 데이터가 이미 존재할 경우, 덮어쓸지 물어봄
+        if (confirm(`'${currentMonthKey}' 데이터가 이미 존재합니다. 현재 데이터로 덮어쓰시겠습니까?`)) {
+            data.history[existingIndex].summary = monthlySummary;
+            alert("데이터가 업데이트되었습니다.");
+        }
+    } else {
+        // 새로운 데이터 추가
+        data.history.push({
+            date: currentMonthKey,
+            summary: monthlySummary
+        });
+        alert("이번 달 데이터가 기록되었습니다.");
+    }
+
+    // 날짜순으로 정렬
+    data.history.sort((a, b) => a.date.localeCompare(b.date));
+    
+    updateDisplay();
+}
 function renderGoals() {
     if (!goalListContainer) return;
     
@@ -1128,6 +1238,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Element References ---
     debtExtraPaymentInput = document.getElementById('debt-extra-payment-input');
     debtResultContainer = document.getElementById('debt-result-container');
+    recordHistoryBtn = document.getElementById('record-history-btn');
     debtNameInput = document.getElementById('debt-name-input');
     debtBalanceInput = document.getElementById('debt-balance-input');
     debtRateInput = document.getElementById('debt-rate-input');
@@ -1194,6 +1305,7 @@ document.addEventListener('DOMContentLoaded', () => {
     modalCloseBtn = document.querySelector('.modal-close-btn');
 
     // --- Event Listeners ---
+    recordHistoryBtn.addEventListener('click', recordMonthlyData);
     addDebtBtn.addEventListener('click', addDebt);
     addGoalBtn.addEventListener('click', addGoal); 
     modeToggleCheckbox.addEventListener('change', updateDisplay);
