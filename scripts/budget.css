@@ -279,3 +279,43 @@ body.dark-mode select.form-control { background-image: url("data:image/svg+xml,%
 .goal-item-controls input {
     max-width: 150px;
 }
+/* Debt Section Styles */
+#debt-list-container {
+    margin-top: 25px;
+    border-top: 1px solid var(--input-border-color);
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.debt-item {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    align-items: center;
+    gap: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--input-border-color);
+}
+.debt-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.debt-item span {
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    #debt-form {
+        grid-template-columns: 1fr;
+    }
+    .debt-item {
+        grid-template-columns: 1fr;
+        gap: 5px;
+        text-align: left;
+    }
+    .debt-item .remove-debt-btn {
+        justify-self: flex-end;
+    }
+}
