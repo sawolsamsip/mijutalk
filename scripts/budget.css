@@ -280,6 +280,12 @@ body.dark-mode select.form-control { background-image: url("data:image/svg+xml,%
     max-width: 150px;
 }
 /* Debt Section Styles */
+#debt-result-container {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
 #debt-list-container {
     margin-top: 25px;
     border-top: 1px solid var(--input-border-color);
