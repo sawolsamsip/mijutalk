@@ -97,6 +97,30 @@
             
             <section class="budget-section">
                 <div class="section-header">
+                    <h2 data-i18n-key="section_category_title">Category Management</h2>
+                    <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_category">Add, view, and delete your expense categories here.</span></div>
+                </div>
+                <div id="category-form" class="form-grid">
+                    <div class="form-group">
+                        <label for="category-name-input" data-i18n-key="label_category_name">Category Name</label>
+                        <input type="text" id="category-name-input" class="form-control" placeholder="e.g., Subscriptions">
+                    </div>
+                    <div class="form-group">
+                        <label for="category-type-select" data-i18n-key="label_category_type">Category Type</label>
+                        <select id="category-type-select" class="form-control">
+                            <option value="needs" data-i18n-key="tag_needs">Needs</option>
+                            <option value="wants" data-i18n-key="tag_wants">Wants</option>
+                            <option value="savings" data-i18n-key="tag_savings">Savings</option>
+                            <option value="debt" data-i18n-key="tag_debt">Debt</option>
+                        </select>
+                    </div>
+                    <button id="add-category-btn" class="btn" data-i18n-key="btn_add_category">Add Category</button>
+                </div>
+                <div id="category-list-container"></div>
+            </section>
+            
+            <section class="budget-section">
+                <div class="section-header">
                     <h2 data-i18n-key="section_debt_title">부채 관리</h2>
                     <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_debt">상환할 부채 목록을 관리합니다. 이자율이 높은 순서대로 상환하는 '눈사태(Avalanche)' 전략을 계산해 드립니다.</span></div>
                 </div>
@@ -146,39 +170,11 @@
         </section>
 
         <section class="budget-section">
-            <div class="section-header">
-                <h2 data-i18n-key="section_category_title">Category Management</h2>
-                <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_category">Add, view, and delete your expense categories here.</span></div>
-            </div>
-            <div id="category-form" class="form-grid">
-                <div class="form-group">
-                    <label for="category-name-input" data-i18n-key="label_category_name">Category Name</label>
-                    <input type="text" id="category-name-input" class="form-control" placeholder="e.g., Subscriptions">
-                </div>
-                <div class="form-group">
-                    <label for="category-type-select" data-i18n-key="label_category_type">Category Type</label>
-                    <select id="category-type-select" class="form-control">
-                        <option value="needs" data-i18n-key="tag_needs">Needs</option>
-                        <option value="wants" data-i18n-key="tag_wants">Wants</option>
-                        <option value="savings" data-i18n-key="tag_savings">Savings</option>
-                        <option value="debt" data-i18n-key="tag_debt">Debt</option>
-                    </select>
-                </div>
-                <button id="add-category-btn" class="btn" data-i18n-key="btn_add_category">Add Category</button>
-            </div>
-            <div id="category-list-container"></div>
-        </section>
-
-        <section class="budget-section">
-            <div class="section-header">
-                <h2 data-i18n-key="section_expenses_title">Expense Management</h2>
-                <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_expenses">순수입(실수령액)에서 나가는 모든 지출을 입력합니다.</span></div>
-            </div>
+            <div class="section-header"><h2 data-i18n-key="section_expenses_title">Expense Management</h2><div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_expenses">순수입(실수령액)에서 나가는 모든 지출을 입력합니다.</span></div></div>
             <div class="form-group">
                 <label for="expense-frequency-select" data-i18n-key="label_frequency">Frequency:</label>
                 <select id="expense-frequency-select" class="form-control"><option value="weekly" data-i18n-key="frequency_weekly">Weekly</option><option value="bi-weekly" data-i18n-key="frequency_bi_weekly">Bi-Weekly</option><option value="monthly" data-i18n-key="frequency_monthly">Monthly</option><option value="annual" data-i18n-key="frequency_annually">Annual</option></select>
             </div>
-            
             <div class="form-grid expenses-grid">
                 <div class="form-group" data-item-id="exp-rent-1"><label><span data-i18n-key="label_rent_mortgage">Rent/Mortgage</span><span class="category-tag"></span></label><input type="number" id="exp-rent-1" class="form-control" min="0" value="0"></div>
                 <div class="form-group" data-item-id="exp-utilities-1"><label><span data-i18n-key="label_utilities">Utilities</span><span class="category-tag"></span></label><input type="number" id="exp-utilities-1" class="form-control" min="0" value="0"></div>
@@ -196,9 +192,7 @@
                 <div class="form-group" data-item-id="exp-pets-1"><label><span data-i18n-key="label_pets">Pets</span><span class="category-tag"></span></label><input type="number" id="exp-pets-1" class="form-control" min="0" value="0"></div>
                 <div class="form-group" data-item-id="exp-donation-1"><label><span data-i18n-key="label_donation">Donation</span><span class="category-tag"></span></label><input type="number" id="exp-donation-1" class="form-control" min="0" value="0"></div>
             </div>
-        
-            <div class="custom-list" id="expense-list-container">
-                </div>
+            <div class="custom-list" id="expense-list-container"></div>
             <div id="expense-form" class="form-grid">
                 <div class="form-group">
                     <label for="expense-name-input" data-i18n-key="label_expense_name">기타 지출 항목</label>
@@ -214,7 +208,6 @@
                 </div>
                 <button id="add-expense-btn" class="btn" data-i18n-key="btn_add_expense">기타 지출 추가</button>
             </div>
-        
             <div class="chart-container"><canvas id="expenses-chart"></canvas></div>
         </section>
 
