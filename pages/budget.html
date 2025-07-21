@@ -148,6 +148,39 @@
         </section>
 
         <section class="budget-section">
+            <div class="section-header">
+                <h2 data-i18n-key="section_debt_title">부채 관리</h2>
+                <div class="tooltip-container">
+                    <i class="ri-question-line tooltip-icon"></i>
+                    <span class="tooltip-text" data-i18n-key="tooltip_debt">
+                        상환할 부채 목록을 관리합니다. 이자율이 높은 순서대로 상환하는 '눈사태(Avalanche)' 전략을 계산해 드립니다.
+                    </span>
+                </div>
+            </div>
+            <div id="debt-form" class="form-grid" style="grid-template-columns: 2fr 1fr 1fr 1fr auto; align-items: flex-end; margin-bottom: 25px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="debt-name-input" data-i18n-key="label_debt_name">부채 이름</label>
+                    <input type="text" id="debt-name-input" class="form-control" placeholder="예: 신용카드 A">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="debt-balance-input" data-i18n-key="label_debt_balance">현재 잔액</label>
+                    <input type="number" id="debt-balance-input" class="form-control" placeholder="0">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="debt-rate-input" data-i18n-key="label_debt_rate">이자율 (%)</label>
+                    <input type="number" id="debt-rate-input" class="form-control" placeholder="0.0">
+                </div>
+                 <div class="form-group" style="margin-bottom: 0;">
+                    <label for="debt-payment-input" data-i18n-key="label_debt_min_payment">월 최소상환액</label>
+                    <input type="number" id="debt-payment-input" class="form-control" placeholder="0">
+                </div>
+                <button id="add-debt-btn" class="btn" data-i18n-key="btn_add_debt">부채 추가</button>
+            </div>
+            <div id="debt-list-container">
+                </div>
+        </section>
+        
+        <section class="budget-section">
             <div class="section-header"><h2 data-i18n-key="section_summary_title">Budget Summary</h2><div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_summary">모든 수입과 지출을 종합한 최종 요약입니다. 선택한 주기에 따라 환산된 금액을 보여줍니다.</span></div></div>
             <div class="form-group">
                 <label for="summary-frequency-select" data-i18n-key="label_summary_frequency">Summary Frequency:</label>
