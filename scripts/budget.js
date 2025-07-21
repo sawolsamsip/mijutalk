@@ -16,6 +16,7 @@ let taxChartInstance, preTaxDeductChartInstance, postTaxDeductChartInstance, exp
 let modalContainer, modalTitle, modalList, modalCloseBtn;
 let advancedModeContainer, simpleModeContainer;
 let goalNameInput, goalTargetInput, addGoalBtn, goalListContainer;
+let debtNameInput, debtBalanceInput, debtRateInput, debtPaymentInput, addDebtBtn, debtListContainer;
 
 const data = {
     calculationMode: 'simple',
@@ -700,6 +701,7 @@ function updateDisplay() {
     // 4. 나머지 UI 요소들 업데이트
     renderAllCustomLists();
     renderGoals();
+    renderDebts();
     const breakdownData = applyBudgetRule();
     renderBudgetRule(breakdownData, remainingBudget, summaryFreq);
     updateCharts();
@@ -743,6 +745,57 @@ function renderGoals() {
     // 새로 생성된 버튼들에 이벤트 리스너 연결
     goalListContainer.querySelectorAll('.update-goal-btn').forEach(btn => btn.addEventListener('click', updateGoalSavedAmount));
     goalListContainer.querySelectorAll('.remove-goal-btn').forEach(btn => btn.addEventListener('click', removeGoal));
+}
+
+function renderDebts() {
+    if (!debtListContainer) return;
+
+    debtListContainer.innerHTML = data.debts.map((debt, index) => {
+        return `
+            <div class="debt-item">
+                <span class="debt-name">${debt.name}</span>
+                <span class="debt-balance">${formatCurrency(debt.balance)}</span>
+                <span class="debt-rate">${debt.rate}%</span>
+                <span class="debt-payment">${formatCurrency(debt.payment)}/월</span>
+                <button class="btn btn-danger remove-debt-btn" data-index="${index}">삭제</button>
+            </div>
+        `;
+    }).join('');
+
+    debtListContainer.querySelectorAll('.remove-debt-btn').forEach(btn => btn.addEventListener('click', removeDebt));
+}
+
+function addDebt() {
+    const name = debtNameInput.value.trim();
+    const balance = parseFloat(debtBalanceInput.value) || 0;
+    const rate = parseFloat(debtRateInput.value) || 0;
+    const payment = parseFloat(debtPaymentInput.value) || 0;
+
+    if (name && balance > 0 && rate >= 0 && payment > 0) {
+        data.debts.push({
+            id: Date.now(),
+            name,
+            balance,
+            rate,
+            payment
+        });
+
+        debtNameInput.value = '';
+        debtBalanceInput.value = '';
+        debtRateInput.value = '';
+        debtPaymentInput.value = '';
+        updateDisplay();
+    } else {
+        alert('모든 부채 정보를 올바르게 입력해주세요.');
+    }
+}
+
+function removeDebt(event) {
+    const index = event.target.dataset.index;
+    if (confirm(`'${data.debts[index].name}' 부채를 정말 삭제하시겠습니까?`)) {
+        data.debts.splice(index, 1);
+        updateDisplay();
+    }
 }
 
 function addGoal() {
@@ -991,6 +1044,12 @@ function loadData() {
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Element References ---
+    debtNameInput = document.getElementById('debt-name-input');
+    debtBalanceInput = document.getElementById('debt-balance-input');
+    debtRateInput = document.getElementById('debt-rate-input');
+    debtPaymentInput = document.getElementById('debt-payment-input');
+    addDebtBtn = document.getElementById('add-debt-btn');
+    debtListContainer = document.getElementById('debt-list-container');
     goalNameInput = document.getElementById('goal-name-input');
     goalTargetInput = document.getElementById('goal-target-input');
     addGoalBtn = document.getElementById('add-goal-btn');
@@ -1051,6 +1110,7 @@ document.addEventListener('DOMContentLoaded', () => {
     modalCloseBtn = document.querySelector('.modal-close-btn');
 
     // --- Event Listeners ---
+    addDebtBtn.addEventListener('click', addDebt);
     addGoalBtn.addEventListener('click', addGoal); 
     modeToggleCheckbox.addEventListener('change', updateDisplay);
     document.querySelectorAll('.add-custom-btn').forEach(btn => btn.addEventListener('click', addCustomItem));
