@@ -213,7 +213,8 @@ const translations = {
         btn_add_category: "Add Category",
         label_expense_name: "Other Expense",
         label_expense_amount: "Amount",
-        btn_add_expense: "Add Other Expense"
+        btn_add_expense: "Add Other Expense",
+        label_api_key: 'Gemini API Key',
     },
     ko: {
         app_title: '스마트 예산 노트',
@@ -366,7 +367,8 @@ const translations = {
         btn_add_category: "카테고리 추가",
         label_expense_name: "기타 지출 항목",
         label_expense_amount: "금액",
-        btn_add_expense: "기타 지출 추가"
+        btn_add_expense: "기타 지출 추가",
+        label_api_key: 'Gemini API 키',
     }
 };
 
