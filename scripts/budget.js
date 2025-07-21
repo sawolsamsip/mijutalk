@@ -106,6 +106,21 @@ const translations = {
         label_legal_services: 'Legal Services',
         section_expenses_title: 'Expense Management',
         tooltip_expenses: "Enter all your regular expenses based on your Net Income.",
+        label_rent_mortgage: 'Rent/Mortgage',
+        label_utilities: 'Utilities',
+        label_internet: 'Internet',
+        label_phone: 'Phone Bill',
+        label_groceries: 'Groceries',
+        label_dining_out: 'Dining Out',
+        label_transportation: 'Transportation',
+        label_shopping: 'Shopping',
+        label_health_wellness: 'Health/Wellness',
+        label_entertainment: 'Entertainment',
+        label_insurance: 'Insurance',
+        label_donation: 'Donation',
+        label_travel: 'Travel',
+        label_pets: 'Pets',
+        label_children: 'Children',
         section_summary_title: 'Budget Summary',
         tooltip_summary: "This is a complete overview of your finances based on your inputs.",
         label_summary_frequency: 'Summary Frequency',
@@ -196,9 +211,9 @@ const translations = {
         label_category_name: "Category Name",
         label_category_type: "Category Type",
         btn_add_category: "Add Category",
-        label_expense_name: "Expense Name",
+        label_expense_name: "Other Expense",
         label_expense_amount: "Amount",
-        btn_add_expense: "Add Expense"
+        btn_add_expense: "Add Other Expense"
     },
     ko: {
         app_title: '스마트 예산 노트',
@@ -244,6 +259,21 @@ const translations = {
         label_legal_services: '법률 서비스',
         section_expenses_title: '지출 관리',
         tooltip_expenses: "순수입(실수령액)에서 나가는 모든 지출을 입력합니다.",
+        label_rent_mortgage: '월세/주택담보대출',
+        label_utilities: '공과금',
+        label_internet: '인터넷',
+        label_phone: '통신비',
+        label_groceries: '식료품',
+        label_dining_out: '외식',
+        label_transportation: '교통',
+        label_shopping: '쇼핑',
+        label_health_wellness: '건강/웰빙',
+        label_entertainment: '오락/여가',
+        label_insurance: '보험',
+        label_donation: '기부',
+        label_travel: '여행',
+        label_pets: '반려동물',
+        label_children: '자녀 양육비',
         section_summary_title: '예산 요약',
         tooltip_summary: "모든 수입과 지출을 종합한 최종 요약입니다.",
         label_summary_frequency: '요약 주기',
@@ -334,9 +364,9 @@ const translations = {
         label_category_name: "카테고리 이름",
         label_category_type: "카테고리 종류",
         btn_add_category: "카테고리 추가",
-        label_expense_name: "지출 항목",
+        label_expense_name: "기타 지출 항목",
         label_expense_amount: "금액",
-        btn_add_expense: "지출 추가"
+        btn_add_expense: "기타 지출 추가"
     }
 };
 
@@ -432,11 +462,13 @@ function categorizeExpensesOnly(getItems = false) {
 
     // 1. 고정 지출 항목 처리
     for (const key in data.expenses) {
-        if (key === 'custom') continue; // custom 배열은 나중에 처리
+        if (key === 'custom') continue;
 
         const amount = convertToAnnual(data.expenses[key], data.frequencies.expense);
         if (amount > 0) {
-            const category = data.categories.find(c => c.name.toLowerCase().startsWith(key.toLowerCase()));
+            // Note: This relies on category names matching keys, which can be fragile.
+            // A better approach might involve a direct mapping if names diverge from keys.
+            const category = data.categories.find(c => c.name.toLowerCase().replace(/[^a-z0-9]/g, '').startsWith(key.toLowerCase()));
             if (category) {
                 totals[category.type] += amount;
                 if (getItems) {
@@ -495,44 +527,50 @@ function applyBudgetRule() {
     }
 }
 
+/**
+ * UPGRADED DEBT CALCULATOR
+ * This version simulates the true "Avalanche" method by rolling over
+ * the minimum payments of paid-off debts to accelerate repayment.
+ */
 function calculateDebtPaydown() {
     const extraPayment = parseFloat(debtExtraPaymentInput.value) || 0;
     let debts = JSON.parse(JSON.stringify(data.debts));
+
     if (debts.length === 0) {
-        return { months: 0, totalInterest: 0, totalPaid: 0 };
+        return { months: 0, totalInterest: 0 };
     }
+    
     debts.sort((a, b) => b.rate - a.rate);
 
     let months = 0;
     let totalInterestPaid = 0;
-    let hasRemainingDebt = true;
-
-    while (hasRemainingDebt) {
+    
+    while (debts.some(d => d.balance > 0)) {
         months++;
-        let monthlyExtraPayment = extraPayment;
+        let paymentPool = extraPayment;
 
+        // Add all minimum payments of active debts to the payment pool for this month
         for (const debt of debts) {
             if (debt.balance > 0) {
                 const monthlyInterest = (debt.balance * (debt.rate / 100)) / 12;
                 totalInterestPaid += monthlyInterest;
                 debt.balance += monthlyInterest;
-                const payment = Math.min(debt.balance, debt.payment);
-                debt.balance -= payment;
+                paymentPool += debt.payment;
             }
         }
         
+        // Distribute the total payment pool according to the avalanche method
         for (const debt of debts) {
-            if (debt.balance > 0 && monthlyExtraPayment > 0) {
-                const payment = Math.min(debt.balance, monthlyExtraPayment);
-                debt.balance -= payment;
-                monthlyExtraPayment -= payment;
+            if (paymentPool <= 0) break;
+            if (debt.balance > 0) {
+                const paymentAmount = Math.min(debt.balance, paymentPool);
+                debt.balance -= paymentAmount;
+                paymentPool -= paymentAmount;
             }
         }
         
-        hasRemainingDebt = debts.some(d => d.balance > 0);
-        
-        if (months > 1200) {
-            return { months: -1, totalInterest: 0, totalPaid: 0 };
+        if (months > 1200) { // Safety break for 100 years
+            return { months: -1, totalInterest: 0 };
         }
     }
     
@@ -808,7 +846,6 @@ function showCategoryDetails(categoryId) {
 
 
 function updateDisplay() {
-    // 1. 현재 UI에서 데이터 객체로 값 업데이트
     data.calculationMode = modeToggleCheckbox.checked ? 'advanced' : 'simple';
     data.netIncome = parseFloat(netIncomeInput.value) || 0;
     data.grossSalary = parseFloat(grossSalaryInput.value) || 0;
@@ -823,12 +860,11 @@ function updateDisplay() {
     for (const key in taxInputs) if (taxInputs[key]) data.taxes[key] = parseFloat(taxInputs[key].value) || 0;
     for (const key in preTaxDeductInputs) if (preTaxDeductInputs[key]) data.preTaxDeductions[key] = parseFloat(preTaxDeductInputs[key].value) || 0;
     for (const key in postTaxDeductInputs) if (postTaxDeductInputs[key]) data.postTaxDeductions[key] = parseFloat(postTaxDeductInputs[key].value) || 0;
+    for (const key in expenseInputs) if (expenseInputs[key]) data.expenses[key] = parseFloat(expenseInputs[key].value) || 0;
 
-    // 2. 계산 실행
     const { annualGrossSalary, annualNetIncome, totalAnnualTaxes, totalAnnualPreTaxDeductions, totalAnnualPostTaxDeductions, totalAnnualExpenses, remainingBudget } = calculateBudget();
     const summaryFreq = data.summaryFrequency;
 
-    // 3. 계산 결과를 UI에 렌더링
     advancedModeContainer.classList.toggle('hidden', data.calculationMode === 'simple');
     simpleModeContainer.classList.toggle('hidden', data.calculationMode === 'advanced');
     summaryAdvancedView.classList.toggle('hidden', data.calculationMode === 'simple');
@@ -850,7 +886,6 @@ function updateDisplay() {
         annualSummaryP.classList.add('hidden');
     }
 
-    // 4. 나머지 UI 요소들 업데이트
     renderAllCustomLists();
     renderGoals();
     renderDebts();
@@ -864,8 +899,6 @@ function updateDisplay() {
     renderBudgetRule(breakdownData, remainingBudget, summaryFreq);
     updateCharts();
     renderCategoryTags();
-
-    // 5. 모든 변경사항을 로컬 스토리지에 저장
     saveData();
 }
 
@@ -1003,6 +1036,7 @@ function updateGoalSavedAmount(event) {
     const amountToAdd = parseFloat(input.value) || 0;
     if (goal && amountToAdd > 0) {
         goal.saved = (parseFloat(goal.saved) || 0) + amountToAdd;
+        input.value = '';
         updateDisplay();
     }
 }
@@ -1061,11 +1095,12 @@ function applyLanguage(shouldUpdate = true) {
             }
         }
     });
-    
-    if (shouldUpdate) { // 2. 이 부분을 추가
+
+    if (shouldUpdate) {
         updateDisplay();
     }
 }
+
 
 function applyDarkMode() {
     document.body.classList.toggle('dark-mode', data.isDarkMode);
@@ -1182,7 +1217,7 @@ function populateCategoryDropdown() {
 
 function renderExpenses() {
     if (!expenseListContainer) return;
-    expenseListContainer.innerHTML = data.expenses.custom.map((exp, index) => { // data.expenses -> data.expenses.custom
+    expenseListContainer.innerHTML = data.expenses.custom.map((exp, index) => {
         const category = data.categories.find(c => c.id === exp.categoryId);
         return `
             <div class="custom-list-item expense-item">
@@ -1203,7 +1238,7 @@ function addExpense() {
     const categoryId = parseInt(expenseCategorySelect.value);
     const frequency = expenseFrequencySelect.value;
     if (name && amount > 0 && categoryId) {
-        data.expenses.custom.push({ id: Date.now(), name, amount, frequency, categoryId }); // .push() -> .expenses.custom.push()
+        data.expenses.custom.push({ id: Date.now(), name, amount, frequency, categoryId });
         expenseNameInput.value = '';
         expenseAmountInput.value = '';
         updateDisplay();
@@ -1215,7 +1250,7 @@ function addExpense() {
 function removeExpense(event) {
     const index = event.target.dataset.index;
     if (confirm('Are you sure you want to delete this expense?')) {
-        data.expenses.custom.splice(index, 1); // .splice() -> .expenses.custom.splice()
+        data.expenses.custom.splice(index, 1);
         updateDisplay();
     }
 }
@@ -1258,15 +1293,19 @@ function populateUiFromData(savedData) {
         return target;
     }
 
+    savedData.goals = savedData.goals || [];
+    savedData.debts = savedData.debts || [];
+    savedData.history = savedData.history || [];
+    savedData.categories = savedData.categories || [];
+    savedData.frequencies = savedData.frequencies || {};
+    
     deepMerge(data, savedData);
 
-    // FIX: 새로고침 시 주기 선택이 초기화되는 문제 해결
     taxFrequencySelect.value = data.frequencies.tax || 'monthly';
     preTaxFrequencySelect.value = data.frequencies.preTax || 'monthly';
     postTaxFrequencySelect.value = data.frequencies.postTax || 'monthly';
     expenseFrequencySelect.value = data.frequencies.expense || 'monthly';
 
-    // FIX: 새로고침 시 모드가 초기화되는 문제 해결
     modeToggleCheckbox.checked = data.calculationMode === 'advanced';
 
     netIncomeInput.value = data.netIncome || 0;
@@ -1274,15 +1313,15 @@ function populateUiFromData(savedData) {
     salaryFrequencySelect.value = data.salaryFrequency || 'monthly';
     summaryFrequencySelect.value = data.summaryFrequency || 'monthly';
     budgetRuleSelect.value = data.budgetRule || '50-30-20';
-    data.isDarkMode = document.body.classList.contains('dark-mode');
 
     for (const key in taxInputs) if (taxInputs[key] && data.taxes[key] !== undefined) taxInputs[key].value = data.taxes[key];
     for (const key in preTaxDeductInputs) if (preTaxDeductInputs[key] && data.preTaxDeductions[key] !== undefined) preTaxDeductInputs[key].value = data.preTaxDeductions[key];
     for (const key in postTaxDeductInputs) if (postTaxDeductInputs[key] && data.postTaxDeductions[key] !== undefined) postTaxDeductInputs[key].value = data.postTaxDeductions[key];
+    for (const key in expenseInputs) if (expenseInputs[key] && data.expenses[key] !== undefined) expenseInputs[key].value = data.expenses[key];
 
     applyDarkMode();
     applyLanguage(false);
-    updateDisplay();   
+    updateDisplay();
 }
 
 function loadData() {
@@ -1391,7 +1430,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('input[type="number"]').forEach(el => el.addEventListener('input', debouncedUpdate));
     document.querySelectorAll('select').forEach(el => el.addEventListener('change', updateDisplay));
 
-    languageToggleBtn.addEventListener('click', () => { data.currentLanguage = data.currentLanguage === 'ko' ? 'en' : 'ko'; applyLanguage(); });
+    languageToggleBtn.addEventListener('click', () => {
+        data.currentLanguage = data.currentLanguage === 'ko' ? 'en' : 'ko';
+        applyLanguage();
+    });
     darkmodeToggleBtn.addEventListener('click', () => { data.isDarkMode = !data.isDarkMode; applyDarkMode(); saveData(); });
     currencyToggleBtn.addEventListener('click', () => { data.currency = data.currency === 'KRW' ? 'USD' : 'KRW'; applyLanguage(); });
 
