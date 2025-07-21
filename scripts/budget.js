@@ -20,6 +20,7 @@ let debtNameInput, debtBalanceInput, debtRateInput, debtPaymentInput, addDebtBtn
 let recordHistoryBtn;
 let categoryNameInput, categoryTypeSelect, addCategoryBtn, categoryListContainer;
 let expenseNameInput, expenseAmountInput, expenseCategorySelect, addExpenseBtn, expenseListContainer;
+let dashboardNetIncome, dashboardTotalExpenses, dashboardRemaining, dashboardSavingsRate;
 
 
 const data = {
@@ -608,6 +609,34 @@ function displayDebtResults(results) {
 // =================================================================================
 // 3. UI 렌더링 및 업데이트 함수 (UI Rendering & Update Functions)
 // =================================================================================
+function updateDashboard() {
+    const { annualNetIncome, totalAnnualExpenses, remainingBudget } = calculateBudget();
+    const summaryFreq = data.summaryFrequency;
+    
+    // 월별 금액으로 환산
+    const monthlyNetIncome = convertFromAnnual(annualNetIncome, summaryFreq);
+    const monthlyTotalExpenses = convertFromAnnual(totalAnnualExpenses, summaryFreq);
+    const monthlyRemaining = convertFromAnnual(remainingBudget, summaryFreq);
+    
+    // 저축률 계산
+    const expenseTotals = categorizeExpensesOnly();
+    const annualSavings = expenseTotals.savings + expenseTotals.debt;
+    let savingsRate = 0;
+    if (annualNetIncome > 0) {
+        savingsRate = (annualSavings / annualNetIncome) * 100;
+    }
+
+    // 대시보드 UI 업데이트
+    dashboardNetIncome.textContent = formatCurrency(monthlyNetIncome);
+    dashboardTotalExpenses.textContent = formatCurrency(monthlyTotalExpenses);
+    dashboardRemaining.textContent = formatCurrency(monthlyRemaining);
+    dashboardSavingsRate.textContent = `${savingsRate.toFixed(1)}%`;
+
+    // 남은 예산에 따라 색상 변경
+    dashboardRemaining.classList.toggle('positive', monthlyRemaining >= 0);
+    dashboardRemaining.classList.toggle('negative', monthlyRemaining < 0);
+}
+
 function renderHistoryChart() {
     const ctx = document.getElementById('history-chart');
     if (!ctx) return;
@@ -903,6 +932,7 @@ function updateDisplay() {
     renderBudgetRule(breakdownData, remainingBudget, summaryFreq);
     updateCharts();
     renderCategoryTags();
+    updateDashboard();
     saveData();
 }
 
@@ -1367,6 +1397,10 @@ document.addEventListener('DOMContentLoaded', () => {
     expenseCategorySelect = document.getElementById('expense-category-select');
     addExpenseBtn = document.getElementById('add-expense-btn');
     expenseListContainer = document.getElementById('expense-list-container');
+    dashboardNetIncome = document.getElementById('dashboard-net-income');
+    dashboardTotalExpenses = document.getElementById('dashboard-total-expenses');
+    dashboardRemaining = document.getElementById('dashboard-remaining');
+    dashboardSavingsRate = document.getElementById('dashboard-savings-rate');
     modeToggleCheckbox = document.getElementById('mode-toggle-checkbox');
     advancedModeContainer = document.getElementById('advanced-mode-container');
     simpleModeContainer = document.getElementById('simple-mode-container');
