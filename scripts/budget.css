@@ -146,7 +146,7 @@ body.dark-mode select.form-control { background-image: url("data:image/svg+xml,%
 .category-tag.debt { background-color: var(--tag-debt-bg); color: var(--tag-debt-text); }
 .category-tag.fixed { background-color: var(--tag-fixed-bg); color: var(--tag-fixed-text); }
 
-.rule-progress-bar-container { display: flex; flex-direction: column; }
+.rule-progress-bar-container { display: flex; flex-direction: column; margin-top: 20px; }
 .rule-progress-bar-labels { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95em; flex-wrap: wrap; }
 .rule-category-label { font-weight: bold; color: var(--accent-color); cursor: pointer; }
 .rule-category-label:hover { text-decoration: underline; }
@@ -200,7 +200,6 @@ body.dark-mode select.form-control { background-image: url("data:image/svg+xml,%
 #category-form { grid-template-columns: 2fr 1fr auto; align-items: flex-end; }
 #expense-form { grid-template-columns: 3fr 1.5fr 2fr auto; align-items: flex-end; gap: 10px; }
 
-/* A small fix to remove unnecessary margins inside the forms */
 #goal-form .form-group,
 #debt-form .form-group,
 #category-form .form-group,
