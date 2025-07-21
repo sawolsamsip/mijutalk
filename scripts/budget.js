@@ -840,6 +840,29 @@ async function generateAiReport() {
 // =================================================================================
 // 5. 데이터 관리 함수 (Data Management Functions)
 // =================================================================================
+function isImportedDataValid(parsedData) {
+    // 가져온 데이터에 필수 키들이 존재하는지 확인합니다.
+    const requiredKeys = ['calculationMode', 'netIncome', 'expenses', 'customIncomes', 'taxes'];
+    
+    if (!parsedData || typeof parsedData !== 'object') {
+        return false;
+    }
+
+    for (const key of requiredKeys) {
+        if (!(key in parsedData)) {
+            // 필수 키 중 하나라도 없으면 유효하지 않은 데이터로 판단합니다.
+            return false;
+        }
+    }
+
+    // 데이터 타입까지 간단히 확인해볼 수 있습니다.
+    if(typeof parsedData.expenses !== 'object' || !Array.isArray(parsedData.customIncomes)) {
+        return false;
+    }
+
+    // 모든 검사를 통과하면 유효한 데이터입니다.
+    return true;
+}
 
 function saveData() {
     localStorage.setItem('budgetAppData', JSON.stringify(data));
@@ -974,13 +997,25 @@ document.addEventListener('DOMContentLoaded', () => {
             const reader = new FileReader();
             reader.onload = (e) => {
                 try {
+                    const parsedData = JSON.parse(e.target.result);
+    
+                    // <<< 새로운 기능: 데이터 구조 유효성 검사! >>>
+                    if (!isImportedDataValid(parsedData)) {
+                        alert(translations[data.currentLanguage].invalid_json);
+                        return; // 잘못된 파일이므로 여기서 중단
+                    }
+    
                     if (confirm(translations[data.currentLanguage].confirm_import_data)) {
-                        populateUiFromData(JSON.parse(e.target.result));
+                        populateUiFromData(parsedData);
                         alert(translations[data.currentLanguage].alert_data_loaded);
                     }
-                } catch (error) { alert(translations[data.currentLanguage].invalid_json); }
+                } catch (error) {
+                    console.error("Import Error: ", error);
+                    alert(translations[data.currentLanguage].invalid_json);
+                }
             };
-            reader.readAsText(file); event.target.value = '';
+            reader.readAsText(file);
+            event.target.value = ''; // 다음번에도 같은 파일을 선택할 수 있도록 초기화
         }
     });
 
