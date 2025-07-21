@@ -115,6 +115,79 @@
                 <button class="btn add-custom-btn" data-type="post-tax" data-i18n-key="btn_add_item">Add Item</button>
                 <div class="chart-container"><canvas id="post-tax-deduct-chart"></canvas></div>
             </section>
+            
+            <section class="budget-section">
+                <div class="section-header">
+                    <h2 data-i18n-key="section_category_title">Category Management</h2>
+                    <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_category">Add, view, and delete your expense categories here.</span></div>
+                </div>
+                <div id="category-form" class="form-grid">
+                    <div class="form-group"><label for="category-name-input" data-i18n-key="label_category_name">Category Name</label><input type="text" id="category-name-input" class="form-control" placeholder="e.g., Subscriptions"></div>
+                    <div class="form-group"><label for="category-type-select" data-i18n-key="label_category_type">Category Type</label><select id="category-type-select" class="form-control"><option value="needs" data-i18n-key="tag_needs">Needs</option><option value="wants" data-i18n-key="tag_wants">Wants</option><option value="savings" data-i18n-key="tag_savings">Savings</option><option value="debt" data-i18n-key="tag_debt">Debt</option></select></div>
+                    <button id="add-category-btn" class="btn" data-i18n-key="btn_add_category">Add Category</button>
+                </div>
+                <div id="category-list-container"></div>
+            </section>
+            
+            <section class="budget-section">
+                <div class="section-header">
+                    <h2 data-i18n-key="section_debt_title">부채 관리</h2>
+                    <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_debt">상환할 부채 목록을 관리합니다. 이자율이 높은 순서대로 상환하는 '눈사태(Avalanche)' 전략을 계산해 드립니다.</span></div>
+                </div>
+                <div id="debt-form" class="form-grid">
+                    <div class="form-group"><label for="debt-name-input" data-i18n-key="label_debt_name">부채 이름</label><input type="text" id="debt-name-input" class="form-control" placeholder="예: 신용카드 A" data-i18n-key="placeholder_debt"></div>
+                    <div class="form-group"><label for="debt-balance-input" data-i18n-key="label_debt_balance">현재 잔액</label><input type="number" id="debt-balance-input" class="form-control" placeholder="0"></div>
+                    <div class="form-group"><label for="debt-rate-input" data-i18n-key="label_debt_rate">이자율 (%)</label><input type="number" id="debt-rate-input" class="form-control" placeholder="0.0"></div>
+                    <div class="form-group"><label for="debt-payment-input" data-i18n-key="label_debt_min_payment">월 최소상환액</label><input type="number" id="debt-payment-input" class="form-control" placeholder="0"></div>
+                    <button id="add-debt-btn" class="btn" data-i18n-key="btn_add_debt">부채 추가</button>
+                </div>
+                <div id="debt-calculator" class="form-grid">
+                    <div class="form-group"><label for="debt-extra-payment-input" data-i18n-key="label_debt_extra_payment">월 추가 상환액</label><input type="number" id="debt-extra-payment-input" class="form-control" value="0" min="0"></div>
+                    <div id="debt-result-container"></div>
+                </div>
+                <div id="debt-list-container"></div>
+            </section>
+
+            <section class="budget-section">
+                <div class="section-header">
+                    <h2 data-i18n-key="section_goals_title">재무 목표 설정</h2>
+                    <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_goals">달성하고 싶은 재무 목표를 추가하고 관리합니다. '저축액 추가'에 금액을 입력하여 달성률을 업데이트할 수 있습니다.</span></div>
+                </div>
+                <div id="goal-form" class="form-grid">
+                    <div class="form-group"><label for="goal-name-input" data-i18n-key="label_goal_name">목표 이름</label><input type="text" id="goal-name-input" class="form-control" placeholder="예: 유럽 여행" data-i18n-key="placeholder_goal"></div>
+                    <div class="form-group"><label for="goal-target-input" data-i18n-key="label_goal_target">목표 금액</label><input type="number" id="goal-target-input" class="form-control" placeholder="0" min="0"></div>
+                    <button id="add-goal-btn" class="btn" data-i18n-key="btn_add_goal">목표 추가</button>
+                </div>
+                <div id="goal-list-container"></div>
+            </section>
+
+            <section class="budget-section">
+                <div class="section-header">
+                    <h2 data-i18n-key="section_trends_title">재무 트렌드 분석</h2>
+                    <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_trends">매월 말 '이번 달 데이터 기록하기' 버튼을 눌러 데이터를 저장하고, 시간 경과에 따른 재무 변화를 차트로 확인하세요.</span></div>
+                </div>
+                <button id="record-history-btn" class="btn" data-i18n-key="btn_record_history">이번 달 데이터 기록하기</button>
+                <div class="chart-container" style="height: 400px;"><canvas id="history-chart"></canvas></div>
+            </section>
+
+            <section class="budget-section">
+                <div class="section-header">
+                    <h2 data-i18n-key="section_what_if_title">What-If 시나리오 분석</h2>
+                    <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_what_if">가상의 수입/지출 변화가 부채 상환 완료 시점에 미치는 영향을 시뮬레이션합니다.</span></div>
+                </div>
+                <div id="scenario-controls" class="form-grid">
+                    <div class="form-group">
+                        <label for="scenario-income-change" data-i18n-key="label_scenario_income">월 순수입 변화 (%)</label>
+                        <input type="number" id="scenario-income-change" class="form-control" placeholder="예: 10 또는 -5">
+                    </div>
+                    <div class="form-group">
+                        <label for="scenario-expense-change" data-i18n-key="label_scenario_expense">월 고정지출 변화</label>
+                        <input type="number" id="scenario-expense-change" class="form-control" placeholder="예: -50000 또는 100000">
+                    </div>
+                </div>
+                <button id="run-scenario-btn" class="btn" data-i18n-key="btn_run_scenario">시나리오 실행</button>
+                <div id="scenario-results-container"></div>
+            </section>
         </div>
 
         <section id="simple-mode-container" class="budget-section">
@@ -123,19 +196,6 @@
                 <label for="net-income-input" data-i18n-key="label_net_income">월 순수입 (세후)</label>
                 <input type="number" id="net-income-input" class="form-control" placeholder="0.00" value="0" min="0">
             </div>
-        </section>
-
-        <section class="budget-section">
-            <div class="section-header">
-                <h2 data-i18n-key="section_category_title">Category Management</h2>
-                <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_category">Add, view, and delete your expense categories here.</span></div>
-            </div>
-            <div id="category-form" class="form-grid">
-                <div class="form-group"><label for="category-name-input" data-i18n-key="label_category_name">Category Name</label><input type="text" id="category-name-input" class="form-control" placeholder="e.g., Subscriptions"></div>
-                <div class="form-group"><label for="category-type-select" data-i18n-key="label_category_type">Category Type</label><select id="category-type-select" class="form-control"><option value="needs" data-i18n-key="tag_needs">Needs</option><option value="wants" data-i18n-key="tag_wants">Wants</option><option value="savings" data-i18n-key="tag_savings">Savings</option><option value="debt" data-i18n-key="tag_debt">Debt</option></select></div>
-                <button id="add-category-btn" class="btn" data-i18n-key="btn_add_category">Add Category</button>
-            </div>
-            <div id="category-list-container"></div>
         </section>
         
         <section class="budget-section">
@@ -181,34 +241,6 @@
         </section>
 
         <section class="budget-section">
-            <div class="section-header">
-                <h2 data-i18n-key="section_debt_title">부채 관리</h2>
-                <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_debt">상환할 부채 목록을 관리합니다. 이자율이 높은 순서대로 상환하는 '눈사태(Avalanche)' 전략을 계산해 드립니다.</span></div>
-            </div>
-            <div id="debt-form" class="form-grid">
-                <div class="form-group"><label for="debt-name-input" data-i18n-key="label_debt_name">부채 이름</label><input type="text" id="debt-name-input" class="form-control" placeholder="예: 신용카드 A" data-i18n-key="placeholder_debt"></div>
-                <div class="form-group"><label for="debt-balance-input" data-i18n-key="label_debt_balance">현재 잔액</label><input type="number" id="debt-balance-input" class="form-control" placeholder="0"></div>
-                <div class="form-group"><label for="debt-rate-input" data-i18n-key="label_debt_rate">이자율 (%)</label><input type="number" id="debt-rate-input" class="form-control" placeholder="0.0"></div>
-                <div class="form-group"><label for="debt-payment-input" data-i18n-key="label_debt_min_payment">월 최소상환액</label><input type="number" id="debt-payment-input" class="form-control" placeholder="0"></div>
-                <button id="add-debt-btn" class="btn" data-i18n-key="btn_add_debt">부채 추가</button>
-            </div>
-            <div id="debt-calculator" class="form-grid">
-                <div class="form-group"><label for="debt-extra-payment-input" data-i18n-key="label_debt_extra_payment">월 추가 상환액</label><input type="number" id="debt-extra-payment-input" class="form-control" value="0" min="0"></div>
-                <div id="debt-result-container"></div>
-            </div>
-            <div id="debt-list-container"></div>
-        </section>
-
-        <section class="budget-section">
-            <div class="section-header">
-                <h2 data-i18n-key="section_trends_title">재무 트렌드 분석</h2>
-                <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_trends">매월 말 '이번 달 데이터 기록하기' 버튼을 눌러 데이터를 저장하고, 시간 경과에 따른 재무 변화를 차트로 확인하세요.</span></div>
-            </div>
-            <button id="record-history-btn" class="btn" data-i18n-key="btn_record_history">이번 달 데이터 기록하기</button>
-            <div class="chart-container" style="height: 400px;"><canvas id="history-chart"></canvas></div>
-        </section>
-        
-        <section class="budget-section">
             <div class="section-header"><h2 data-i18n-key="section_summary_title">Budget Summary</h2><div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_summary">모든 수입과 지출을 종합한 최종 요약입니다.</span></div></div>
             <div class="form-group">
                 <label for="summary-frequency-select" data-i18n-key="label_summary_frequency">Summary Frequency:</label>
@@ -235,39 +267,6 @@
                 <select id="budget-rule-select" class="form-control rule-select"><option value="50-30-20" data-i18n-key="rule_50_30_20_title">50/30/20 Rule</option><option value="70-20-10" data-i18n-key="rule_70_20_10_title">70/20/10 Rule</option><option value="80-20" data-i18n-key="rule_80_20_title">80/20 Rule</option></select>
             </div>
             <div id="budget-rule-breakdown"></div>
-        </section>
-        
-        <section class="budget-section">
-            <div class="section-header">
-                <h2 data-i18n-key="section_goals_title">재무 목표 설정</h2>
-                <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_goals">달성하고 싶은 재무 목표를 추가하고 관리합니다. '저축액 추가'에 금액을 입력하여 달성률을 업데이트할 수 있습니다.</span></div>
-            </div>
-            <div id="goal-form" class="form-grid">
-                <div class="form-group"><label for="goal-name-input" data-i18n-key="label_goal_name">목표 이름</label><input type="text" id="goal-name-input" class="form-control" placeholder="예: 유럽 여행" data-i18n-key="placeholder_goal"></div>
-                <div class="form-group"><label for="goal-target-input" data-i18n-key="label_goal_target">목표 금액</label><input type="number" id="goal-target-input" class="form-control" placeholder="0" min="0"></div>
-                <button id="add-goal-btn" class="btn" data-i18n-key="btn_add_goal">목표 추가</button>
-            </div>
-            <div id="goal-list-container"></div>
-        </section>
-
-        <section class="budget-section">
-            <div class="section-header">
-                <h2 data-i18n-key="section_what_if_title">What-If 시나리오 분석</h2>
-                <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_what_if">가상의 수입/지출 변화가 부채 상환 완료 시점에 미치는 영향을 시뮬레이션합니다.</span></div>
-            </div>
-            <div id="scenario-controls" class="form-grid">
-                <div class="form-group">
-                    <label for="scenario-income-change" data-i18n-key="label_scenario_income">월 순수입 변화 (%)</label>
-                    <input type="number" id="scenario-income-change" class="form-control" placeholder="예: 10 또는 -5">
-                </div>
-                <div class="form-group">
-                    <label for="scenario-expense-change" data-i18n-key="label_scenario_expense">월 고정지출 변화</label>
-                    <input type="number" id="scenario-expense-change" class="form-control" placeholder="예: -50000 또는 100000">
-                </div>
-            </div>
-            <button id="run-scenario-btn" class="btn" data-i18n-key="btn_run_scenario">시나리오 실행</button>
-            <div id="scenario-results-container">
-                </div>
         </section>
         
         <section class="budget-section">
