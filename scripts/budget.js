@@ -6,7 +6,7 @@ let grossSalaryInput, salaryFrequencySelect, netIncomeInput, modeToggleCheckbox;
 let taxFrequencySelect, preTaxFrequencySelect, postTaxFrequencySelect, expenseFrequencySelect;
 let summaryFrequencySelect;
 let annualSalarySummaryDisplay, summaryGrossSalary, summaryTotalTaxes, summaryTotalPreTax, summaryTotalPostTax, summaryNetSalary, summaryTotalExpenses, summaryRemainingBudget, summaryAdvancedView;
-const taxInputs = {}, preTaxDeductInputs = {}, postTaxDeductInputs = {};
+const taxInputs = {}, preTaxDeductInputs = {}, postTaxDeductInputs = {}, expenseInputs = {};
 let customIncomeList, customTaxList, customPreTaxDeductList, customPostTaxDeductList;
 let languageToggleBtn, darkmodeToggleBtn, currencyToggleBtn;
 let exportJsonBtn, importJsonBtn, importJsonInput, clearAllDataBtn, printBtn, emailBtn, shareBtn;
@@ -34,7 +34,11 @@ const data = {
     taxes: { federal: 0, state: 0, oasdi: 0, medicare: 0, casdi: 0, custom: [] },
     preTaxDeductions: { medical: 0, dental: 0, vision: 0, '401k-trad': 0, custom: [] },
     postTaxDeductions: { spp: 0, adnd: 0, '401k-roth': 0, ltd: 0, 'critical-illness': 0, 'accident-insurance': 0, 'legal-services': 0, custom: [] },
-    expenses: [],
+    expenses: {
+        rent: 0, utilities: 0, internet: 0, phone: 0, groceries: 0, dining: 0, transport: 0, shopping: 0, health: 0,
+        entertainment: 0, insurance: 0, donation: 0, travel: 0, pets: 0, children: 0,
+        custom: []\
+    },
     categories: [
         { id: 1, name: 'Rent/Mortgage', type: 'needs' }, { id: 2, name: 'Utilities', type: 'needs' }, { id: 3, name: 'Groceries', type: 'needs' },
         { id: 4, name: 'Transportation', type: 'needs' }, { id: 5, name: 'Health/Wellness', type: 'needs' }, { id: 6, name: 'Insurance', type: 'needs' },
@@ -423,24 +427,42 @@ function calculateBudget() {
 function categorizeExpensesOnly(getItems = false) {
     let totals = { needs: 0, wants: 0, savings: 0, debt: 0 };
     let items = { needs: [], wants: [], savings: [], debt: [] };
+    const lang = data.currentLanguage;
+    const t = translations[lang];
 
-    data.expenses.forEach(expense => {
+    // 1. 고정 지출 항목 처리
+    for (const key in data.expenses) {
+        if (key === 'custom') continue; // custom 배열은 나중에 처리
+
+        const amount = convertToAnnual(data.expenses[key], data.frequencies.expense);
+        if (amount > 0) {
+            const category = data.categories.find(c => c.name.toLowerCase().startsWith(key.toLowerCase()));
+            if (category) {
+                totals[category.type] += amount;
+                if (getItems) {
+                    const itemName = t[`label_${key.replace(/-/g, '_')}`] || category.name;
+                    items[category.type].push({ name: itemName, amount });
+                }
+            }
+        }
+    }
+
+    // 2. 맞춤(기타) 지출 항목 처리
+    data.expenses.custom.forEach(expense => {
         const category = data.categories.find(c => c.id === expense.categoryId);
         if (category) {
             const categoryType = category.type;
-            if (totals.hasOwnProperty(categoryType)) {
-                const amount = convertToAnnual(expense.amount, expense.frequency);
-                if (amount > 0) {
-                    totals[categoryType] += amount;
-                    if (getItems) {
-                        items[categoryType].push({ name: expense.name, amount: amount });
-                    }
+            const amount = convertToAnnual(expense.amount, expense.frequency);
+            if (amount > 0) {
+                totals[categoryType] += amount;
+                if (getItems) {
+                    items[categoryType].push({ name: expense.name, amount });
                 }
             }
         }
     });
 
-    return getItems ? { items: items, totals: totals } : totals;
+    return getItems ? { items, totals } : totals;
 }
 
 
@@ -1157,7 +1179,7 @@ function populateCategoryDropdown() {
 
 function renderExpenses() {
     if (!expenseListContainer) return;
-    expenseListContainer.innerHTML = data.expenses.map((exp, index) => {
+    expenseListContainer.innerHTML = data.expenses.custom.map((exp, index) => { // data.expenses -> data.expenses.custom
         const category = data.categories.find(c => c.id === exp.categoryId);
         return `
             <div class="custom-list-item expense-item">
@@ -1178,7 +1200,7 @@ function addExpense() {
     const categoryId = parseInt(expenseCategorySelect.value);
     const frequency = expenseFrequencySelect.value;
     if (name && amount > 0 && categoryId) {
-        data.expenses.push({ id: Date.now(), name, amount, frequency, categoryId });
+        data.expenses.custom.push({ id: Date.now(), name, amount, frequency, categoryId }); // .push() -> .expenses.custom.push()
         expenseNameInput.value = '';
         expenseAmountInput.value = '';
         updateDisplay();
@@ -1190,7 +1212,7 @@ function addExpense() {
 function removeExpense(event) {
     const index = event.target.dataset.index;
     if (confirm('Are you sure you want to delete this expense?')) {
-        data.expenses.splice(index, 1);
+        data.expenses.custom.splice(index, 1); // .splice() -> .expenses.custom.splice()
         updateDisplay();
     }
 }
@@ -1221,7 +1243,8 @@ function saveData() {
 
 function populateUiFromData(savedData) {
     const deepMerge = (target, source) => {
-        for (const key in source) {
+        for (const key in postTaxDeductInputs) {
+            for (const key in expenseInputs) if (expenseInputs[key] && data.expenses[key] !== undefined) expenseInputs[key].value = data.expenses[key];
             if (source.hasOwnProperty(key)) {
                 if (source[key] instanceof Object && !Array.isArray(source[key]) && key in target && target[key] instanceof Object) {
                     deepMerge(target[key], source[key]);
@@ -1323,6 +1346,7 @@ document.addEventListener('DOMContentLoaded', () => {
     Object.assign(taxInputs, { federal: document.getElementById('tax-federal-1'), state: document.getElementById('tax-state-1'), oasdi: document.getElementById('tax-oasdi-1'), medicare: document.getElementById('tax-medicare-1'), casdi: document.getElementById('tax-casdi-1') });
     Object.assign(preTaxDeductInputs, { medical: document.getElementById('deduct-medical-1'), dental: document.getElementById('deduct-dental-1'), vision: document.getElementById('deduct-vision-1'), '401k-trad': document.getElementById('deduct-401k-trad-1') });
     Object.assign(postTaxDeductInputs, { spp: document.getElementById('deduct-spp-1'), adnd: document.getElementById('deduct-adnd-1'), '401k-roth': document.getElementById('deduct-401k-roth-1'), ltd: document.getElementById('deduct-ltd-1'), 'critical-illness': document.getElementById('deduct-critical-illness-1'), 'accident-insurance': document.getElementById('deduct-accident-insurance-1'), 'legal-services': document.getElementById('deduct-legal-services-1') });
+    Object.assign(expenseInputs, { rent: document.getElementById('exp-rent-1'), utilities: document.getElementById('exp-utilities-1'), internet: document.getElementById('exp-internet-1'), phone: document.getElementById('exp-phone-1'), groceries: document.getElementById('exp-groceries-1'), dining: document.getElementById('exp-dining-1'), transport: document.getElementById('exp-transport-1'), shopping: document.getElementById('exp-shopping-1'), health: document.getElementById('exp-health-1'), entertainment: document.getElementById('exp-entertainment-1'), insurance: document.getElementById('exp-insurance-1'), donation: document.getElementById('exp-donation-1'), travel: document.getElementById('exp-travel-1'), pets: document.getElementById('exp-pets-1'), children: document.getElementById('exp-children-1') });
     
     customIncomeList = document.getElementById('custom-income-list');
     customTaxList = document.getElementById('tax-custom-list');
