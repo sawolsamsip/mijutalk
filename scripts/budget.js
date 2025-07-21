@@ -19,6 +19,7 @@ let goalNameInput, goalTargetInput, addGoalBtn, goalListContainer;
 let debtNameInput, debtBalanceInput, debtRateInput, debtPaymentInput, addDebtBtn, debtListContainer;
 let debtExtraPaymentInput, debtResultContainer;
 let recordHistoryBtn, historyChartInstance;
+let apiKeyInput;
 
 const data = {
     calculationMode: 'simple',
@@ -1084,77 +1085,78 @@ function applyDarkMode() {
     darkmodeToggleBtn.querySelector('i').className = data.isDarkMode ? 'ri-sun-line' : 'ri-moon-line';
 }
 
-function generateLocalAiReport() {
+// AI에게 보낼 데이터를 요약하는 헬퍼 함수
+function getFinancialSummaryForAI() {
+    const { annualNetIncome, totalAnnualExpenses, remainingBudget } = calculateBudget();
+    const totals = categorizeExpensesOnly();
+    const summaryFreq = 'monthly';
     const lang = data.currentLanguage;
-    const t = translations[lang];
 
-    try {
-        const { annualNetIncome, remainingBudget } = calculateBudget();
-        const totals = categorizeExpensesOnly();
-        const breakdown = applyBudgetRule();
-        const summaryFreq = data.summaryFrequency;
-
-        if (annualNetIncome <= 0) {
-            aiReportBox.innerHTML = `<p>${t.report_local_no_data}</p>`;
-            return;
-        }
-
-        let insights = { summary: "", recommendations: [] };
-        const savingsRate = Math.round(((totals.savings + totals.debt) / annualNetIncome) * 100) || 0;
-        const wantsPercentage = Math.round((totals.wants / annualNetIncome) * 100) || 0;
-        const strength = savingsRate > 10 ? t.report_local_strength : t.report_local_no_weakness;
-        const weakness = wantsPercentage > 30 ? t.report_local_weakness : t.report_local_no_weakness;
-
-        insights.summary = t.report_local_summary_text
-            .replace('{summaryFreq}', translations[lang][`frequency_${summaryFreq}`])
-            .replace('{netIncome}', formatCurrency(convertFromAnnual(annualNetIncome, summaryFreq)))
-            .replace('{savingsRate}', savingsRate)
-            .replace('{remaining}', formatCurrency(convertFromAnnual(remainingBudget, summaryFreq)))
-            .replace('{strength}', strength)
-            .replace('{weakness}', weakness);
-
-        const overspending = breakdown.find(item => item.actual > item.goal);
-        if (overspending) {
-            insights.recommendations.push(t.report_local_tip_overspending.replace('{category}', overspending.label).replace('{amount}', formatCurrency(convertFromAnnual(overspending.actual, summaryFreq))));
-        }
-        if (wantsPercentage > 35) {
-            insights.recommendations.push(t.report_local_tip_high_wants.replace('{wantsPercentage}', wantsPercentage));
-        }
-        if (savingsRate < 10) {
-            insights.recommendations.push(t.report_local_tip_low_savings.replace('{savingsRate}', savingsRate));
-        }
-        if (remainingBudget > 0) {
-            const periodicSurplus = convertFromAnnual(remainingBudget, summaryFreq);
-            insights.recommendations.push(t.report_local_tip_surplus.replace('{remaining}', formatCurrency(periodicSurplus)).replace('{annualReturn}', formatCurrency(convertToAnnual(periodicSurplus, summaryFreq) * 0.05)));
-        }
-
-        let reportHtml = `<h3>${t.report_local_title}</h3><h4>${t.report_local_summary_title}</h4><p>${insights.summary}</p>`;
-        if (insights.recommendations.length > 0) {
-            reportHtml += `<h4>${t.report_local_recommendation_title}</h4><ul>${insights.recommendations.map(tip => `<li>${tip}</li>`).join('')}</ul>`;
-        }
-        aiReportBox.innerHTML = reportHtml;
-
-    } catch (error) {
-        console.error("Local report generation error:", error);
-        aiReportBox.innerHTML = `<p>${t.report_local_failed}</p>`;
-    }
+    let summaryText = `
+    - Language for response: ${lang === 'ko' ? 'Korean' : 'English'}
+    - Calculation Mode: ${data.calculationMode}
+    - Summary Frequency: ${summaryFreq}
+    - Currency: ${data.currency}
+    - Net Income: ${formatCurrency(convertFromAnnual(annualNetIncome, summaryFreq))}
+    - Total Expenses: ${formatCurrency(convertFromAnnual(totalAnnualExpenses, summaryFreq))}
+    - (Needs: ${formatCurrency(convertFromAnnual(totals.needs, summaryFreq))}, Wants: ${formatcurrency(convertFromAnnual(totals.wants, summaryFreq))}, Savings: ${formatCurrency(convertFromAnnual(totals.savings, summaryFreq))}, Debt Payments: ${formatCurrency(convertFromAnnual(totals.debt, summaryFreq))})
+    - Remaining Surplus: ${formatCurrency(convertFromAnnual(remainingBudget, summaryFreq))}
+    - Financial Goals: ${data.goals.length > 0 ? data.goals.map(g => `${g.name} (Target: ${formatCurrency(g.target)})`).join(', ') : 'None'}
+    - Debts: ${data.debts.length > 0 ? data.debts.map(d => `${d.name} (Balance: ${formatCurrency(d.balance)} at ${d.rate}% interest)`).join(', ') : 'None'}
+    `;
+    return summaryText.replace(/\s+/g, ' '); // 줄바꿈 및 여러 공백 제거
 }
+
 
 async function generateAiReport() {
+    const apiKey = apiKeyInput.value.trim();
+    if (!apiKey) {
+        alert("Gemini API 키를 입력해주세요.");
+        return;
+    }
+
     const lang = data.currentLanguage;
     aiReportBox.innerHTML = `<p>${translations[lang].report_local_generating}</p>`;
+
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+    const prompt = `
+        You are a friendly and helpful financial advisor.
+        Based on the following financial data summary, provide a concise analysis and 3-4 actionable recommendations for the user.
+        Format your response in simple HTML using <h4> for titles and <ul><li> for bullet points. Do not include <html> or <body> tags.
+        
+        User's Financial Data:
+        ${getFinancialSummaryForAI()}
+    `;
+
     try {
-        // AI API 연동 시뮬레이션 (현재는 항상 로컬 리포트로 대체)
-        if (false) {
-            // 여기에 실제 AI API 호출 코드를 넣습니다.
-        } else {
-            throw new Error("Simulating network failure to trigger local fallback.");
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: prompt }] }]
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`API Error: ${response.status} ${response.statusText}. ${errorData.error.message}`);
         }
+
+        const responseData = await response.json();
+        const aiText = responseData.candidates[0].content.parts[0].text;
+        
+        aiReportBox.innerHTML = aiText; // AI가 생성한 HTML을 그대로 삽입
+
     } catch (error) {
-        console.warn("AI endpoint simulation: falling back to local report.", error.message);
-        generateLocalAiReport();
+        console.error("AI Report generation failed:", error);
+        aiReportBox.innerHTML = `<p>리포트 생성에 실패했습니다. API 키가 유효한지, 또는 네트워크 연결을 확인해주세요. (${error.message})</p>`;
     }
 }
+
+
 
 // =================================================================================
 // 5. 데이터 관리 함수 (Data Management Functions)
@@ -1236,6 +1238,7 @@ function loadData() {
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Element References ---
+    apiKeyInput = document.getElementById('api-key-input');
     debtExtraPaymentInput = document.getElementById('debt-extra-payment-input');
     debtResultContainer = document.getElementById('debt-result-container');
     recordHistoryBtn = document.getElementById('record-history-btn');
