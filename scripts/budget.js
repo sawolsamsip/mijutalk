@@ -1241,6 +1241,10 @@ function populateUiFromData(savedData) {
 
     deepMerge(data, savedData);
 
+    taxFrequencySelect.value = data.frequencies.tax || 'monthly';
+    preTaxFrequencySelect.value = data.frequencies.preTax || 'monthly';
+    postTaxFrequencySelect.value = data.frequencies.postTax || 'monthly';
+    expenseFrequencySelect.value = data.frequencies.expense || 'monthly';
     modeToggleCheckbox.checked = data.calculationMode === 'advanced';
     netIncomeInput.value = data.netIncome || 0;
     grossSalaryInput.value = data.grossSalary || 0;
