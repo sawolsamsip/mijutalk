@@ -100,14 +100,14 @@
                     <h2 data-i18n-key="section_debt_title">부채 관리</h2>
                     <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_debt">상환할 부채 목록을 관리합니다. 이자율이 높은 순서대로 상환하는 '눈사태(Avalanche)' 전략을 계산해 드립니다.</span></div>
                 </div>
-                <div id="debt-form" class="form-grid" style="grid-template-columns: 2fr 1fr 1fr 1fr auto; align-items: flex-end; margin-bottom: 25px;">
+                <div id="debt-form" class="form-grid">
                     <div class="form-group" style="margin-bottom: 0;"><label for="debt-name-input" data-i18n-key="label_debt_name">부채 이름</label><input type="text" id="debt-name-input" class="form-control" placeholder="예: 신용카드 A" data-i18n-key="placeholder_debt"></div>
                     <div class="form-group" style="margin-bottom: 0;"><label for="debt-balance-input" data-i18n-key="label_debt_balance">현재 잔액</label><input type="number" id="debt-balance-input" class="form-control" placeholder="0"></div>
                     <div class="form-group" style="margin-bottom: 0;"><label for="debt-rate-input" data-i18n-key="label_debt_rate">이자율 (%)</label><input type="number" id="debt-rate-input" class="form-control" placeholder="0.0"></div>
                     <div class="form-group" style="margin-bottom: 0;"><label for="debt-payment-input" data-i18n-key="label_debt_min_payment">월 최소상환액</label><input type="number" id="debt-payment-input" class="form-control" placeholder="0"></div>
                     <button id="add-debt-btn" class="btn" data-i18n-key="btn_add_debt">부채 추가</button>
                 </div>
-                <div id="debt-calculator" class="form-grid" style="grid-template-columns: 2fr 1fr; margin-top: 25px; border-top: 1px solid var(--input-border-color); padding-top: 20px;">
+                <div id="debt-calculator" class="form-grid">
                     <div class="form-group"><label for="debt-extra-payment-input" data-i18n-key="label_debt_extra_payment">월 추가 상환액</label><input type="number" id="debt-extra-payment-input" class="form-control" value="0" min="0"></div>
                     <div id="debt-result-container" style="align-self: center; text-align: right;"></div>
                 </div>
@@ -119,7 +119,7 @@
                     <h2 data-i18n-key="section_goals_title">재무 목표 설정</h2>
                     <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_goals">달성하고 싶은 재무 목표를 추가하고 관리합니다. '저축액 추가'에 금액을 입력하여 달성률을 업데이트할 수 있습니다.</span></div>
                 </div>
-                <div id="goal-form" class="form-grid" style="grid-template-columns: 2fr 1fr auto; align-items: flex-end; margin-bottom: 25px;">
+                <div id="goal-form" class="form-grid">
                     <div class="form-group" style="margin-bottom: 0;"><label for="goal-name-input" data-i18n-key="label_goal_name">목표 이름</label><input type="text" id="goal-name-input" class="form-control" placeholder="예: 유럽 여행" data-i18n-key="placeholder_goal"></div>
                     <div class="form-group" style="margin-bottom: 0;"><label for="goal-target-input" data-i18n-key="label_goal_target">목표 금액</label><input type="number" id="goal-target-input" class="form-control" placeholder="0" min="0"></div>
                     <button id="add-goal-btn" class="btn" data-i18n-key="btn_add_goal">목표 추가</button>
@@ -135,8 +135,7 @@
                 <button id="record-history-btn" class="btn" style="margin-bottom: 20px;" data-i18n-key="btn_record_history">이번 달 데이터 기록하기</button>
                 <div class="chart-container" style="height: 400px;"><canvas id="history-chart"></canvas></div>
             </section>
-
-            </div>
+        </div>
 
         <section id="simple-mode-container" class="budget-section">
             <div class="section-header"><h2 data-i18n-key="section_net_income_title">Net Income</h2><div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_net_income">세금과 공제 항목이 모두 빠져나간 후, 실제로 통장에 입금되는 월 순수입을 입력합니다.</span></div></div>
