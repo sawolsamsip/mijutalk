@@ -187,6 +187,27 @@ body.dark-mode select.form-control { background-image: url("data:image/svg+xml,%
 .debt-item:last-child { border-bottom: none; padding-bottom: 0; }
 .debt-item span { font-weight: 500; }
 
+#goal-form {
+    grid-template-columns: 2fr 1fr auto;
+    align-items: flex-end;
+    margin-bottom: 25px;
+}
+#debt-form {
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    align-items: flex-end;
+    margin-bottom: 25px;
+}
+#debt-calculator {
+    margin-top: 25px;
+    border-top: 1px solid var(--input-border-color);
+    padding-top: 20px;
+    grid-template-columns: 2fr 1fr;
+}
+/* A small fix to remove unnecessary margins inside the forms */
+#goal-form .form-group,
+#debt-form .form-group {
+    margin-bottom: 0;
+}
 
 /* Responsive Styles */
 @media (max-width: 768px) {
