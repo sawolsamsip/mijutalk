@@ -34,6 +34,7 @@ const data = {
     expenses: { rent: 0, utilities: 0, internet: 0, phone: 0, groceries: 0, dining: 0, transport: 0, shopping: 0, health: 0, entertainment: 0, insurance: 0, donation: 0, travel: 0, pets: 0, children: 0, custom: [] },
     goals: [],
     debts: [],
+    history: [],
     budgetRule: '50-30-20',
     currentLanguage: 'ko',
     isDarkMode: false
