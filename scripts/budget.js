@@ -65,7 +65,7 @@ const translations = {
         tooltip_salary: "Enter your total salary before any taxes or deductions are taken out. Use 'Add Custom Income' for irregular earnings.",
         label_base_salary: 'Base Salary',
         frequency_monthly: 'Monthly',
-        frequency_annual: 'Annual',
+        frequency_annually: 'Annual',
         frequency_weekly: 'Weekly',
         frequency_bi_weekly: 'Bi-Weekly',
         btn_add_income: 'Add Custom Income',
@@ -210,7 +210,7 @@ const translations = {
         tooltip_salary: "세금을 제하기 전의 총 수입을 입력합니다. '추가 수입' 버튼으로 비정기적인 수입을 더할 수 있습니다.",
         label_base_salary: '기본 급여',
         frequency_monthly: '월별',
-        frequency_annual: '연간',
+        frequency_annually: '연간',
         frequency_weekly: '주별',
         frequency_bi_weekly: '2주별',
         btn_add_income: '추가 수입',
@@ -662,7 +662,7 @@ function renderCustomList(listElement, customItems, type) {
         const placeholder = type === 'income' ? t.custom_income_name : t.custom_item_name;
         const frequencyOptions = `
             <option value="monthly"${item.frequency === 'monthly' ? ' selected' : ''}>${t.frequency_monthly}</option>
-            <option value="annual"${item.frequency === 'annual' ? ' selected' : ''}>${t.frequency_annual}</option>
+            <option value="annual"${item.frequency === 'annual' ? ' selected' : ''}>${t.frequency_annually}</option>
             <option value="weekly"${item.frequency === 'weekly' ? ' selected' : ''}>${t.frequency_weekly}</option>
             <option value="bi-weekly"${item.frequency === 'bi-weekly' ? ' selected' : ''}>${t.frequency_bi_weekly}</option>
         `;
