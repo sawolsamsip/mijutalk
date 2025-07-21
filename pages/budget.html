@@ -252,6 +252,26 @@
 
         <section class="budget-section">
             <div class="section-header">
+                <h2 data-i18n-key="section_what_if_title">What-If 시나리오 분석</h2>
+                <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_what_if">가상의 수입/지출 변화가 부채 상환 완료 시점에 미치는 영향을 시뮬레이션합니다.</span></div>
+            </div>
+            <div id="scenario-controls" class="form-grid">
+                <div class="form-group">
+                    <label for="scenario-income-change" data-i18n-key="label_scenario_income">월 순수입 변화 (%)</label>
+                    <input type="number" id="scenario-income-change" class="form-control" placeholder="예: 10 또는 -5">
+                </div>
+                <div class="form-group">
+                    <label for="scenario-expense-change" data-i18n-key="label_scenario_expense">월 고정지출 변화</label>
+                    <input type="number" id="scenario-expense-change" class="form-control" placeholder="예: -50000 또는 100000">
+                </div>
+            </div>
+            <button id="run-scenario-btn" class="btn" data-i18n-key="btn_run_scenario">시나리오 실행</button>
+            <div id="scenario-results-container">
+                </div>
+        </section>
+        
+        <section class="budget-section">
+            <div class="section-header">
                 <h2 data-i18n-key="section_ai_title">AI Expense Report</h2>
                 <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_ai_report">입력된 데이터를 바탕으로 현재 재무 상태를 분석하고 개선을 위한 조언을 제공합니다.</span></div>
             </div>
