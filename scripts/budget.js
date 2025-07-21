@@ -15,6 +15,7 @@ let budgetRuleSelect, budgetRuleBreakdown;
 let taxChartInstance, preTaxDeductChartInstance, postTaxDeductChartInstance, expensesChartInstance, budgetDistributionChartInstance;
 let modalContainer, modalTitle, modalList, modalCloseBtn;
 let advancedModeContainer, simpleModeContainer;
+let goalNameInput, goalTargetInput, addGoalBtn, goalListContainer;
 
 const data = {
     calculationMode: 'simple',
@@ -697,6 +698,7 @@ function updateDisplay() {
 
     // 4. 나머지 UI 요소들 업데이트
     renderAllCustomLists();
+    renderGoals();
     const breakdownData = applyBudgetRule();
     renderBudgetRule(breakdownData, remainingBudget, summaryFreq);
     updateCharts();
@@ -710,6 +712,76 @@ function updateDisplay() {
 // 4. 이벤트 핸들러 함수 (Event Handler Functions)
 // =================================================================================
 
+function renderGoals() {
+    if (!goalListContainer) return;
+    
+    goalListContainer.innerHTML = data.goals.map((goal, index) => {
+        const targetAmount = parseFloat(goal.target) || 0;
+        const savedAmount = parseFloat(goal.saved) || 0;
+        const progress = targetAmount > 0 ? (savedAmount / targetAmount) * 100 : 0;
+        const isCompleted = savedAmount >= targetAmount;
+
+        return `
+            <div class="goal-item">
+                <div class="goal-item-header">
+                    <span class="goal-item-name">${goal.name} ${isCompleted ? '(달성!)' : ''}</span>
+                    <span class="goal-item-progress-text">${formatCurrency(savedAmount)} / ${formatCurrency(targetAmount)}</span>
+                </div>
+                <div class="goal-progress-bar">
+                    <div class="goal-progress-bar-inner" style="width: ${Math.min(progress, 100)}%;">${Math.round(progress)}%</div>
+                </div>
+                <div class="goal-item-controls">
+                    <input type="number" class="form-control goal-saved-input" placeholder="저축액 추가" data-index="${index}">
+                    <button class="btn update-goal-btn" data-index="${index}">입력</button>
+                    <button class="btn btn-danger remove-goal-btn" data-index="${index}">삭제</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    // 새로 생성된 버튼들에 이벤트 리스너 연결
+    goalListContainer.querySelectorAll('.update-goal-btn').forEach(btn => btn.addEventListener('click', updateGoalSavedAmount));
+    goalListContainer.querySelectorAll('.remove-goal-btn').forEach(btn => btn.addEventListener('click', removeGoal));
+}
+
+function addGoal() {
+    const name = goalNameInput.value.trim();
+    const target = parseFloat(goalTargetInput.value) || 0;
+
+    if (name && target > 0) {
+        data.goals.push({
+            id: Date.now(),
+            name: name,
+            target: target,
+            saved: 0
+        });
+        goalNameInput.value = '';
+        goalTargetInput.value = '';
+        updateDisplay();
+    } else {
+        alert('올바른 목표 이름과 목표 금액을 입력해주세요.');
+    }
+}
+
+function updateGoalSavedAmount(event) {
+    const index = event.target.dataset.index;
+    const goal = data.goals[index];
+    const input = goalListContainer.querySelector(`.goal-saved-input[data-index="${index}"]`);
+    const amountToAdd = parseFloat(input.value) || 0;
+
+    if (goal && amountToAdd > 0) {
+        goal.saved = (parseFloat(goal.saved) || 0) + amountToAdd;
+        updateDisplay();
+    }
+}
+
+function removeGoal(event) {
+    const index = event.target.dataset.index;
+    if (confirm(`'${data.goals[index].name}' 목표를 정말 삭제하시겠습니까?`)) {
+        data.goals.splice(index, 1);
+        updateDisplay();
+    }
+}
 function addCustomItem(event) {
     const type = event.target.dataset.type;
     const listMap = { 'income': data.customIncomes, 'tax': data.taxes.custom, 'pre-tax': data.preTaxDeductions.custom, 'post-tax': data.postTaxDeductions.custom, 'expense': data.expenses.custom };
@@ -918,6 +990,10 @@ function loadData() {
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Element References ---
+    goalNameInput = document.getElementById('goal-name-input');
+    goalTargetInput = document.getElementById('goal-target-input');
+    addGoalBtn = document.getElementById('add-goal-btn');
+    goalListContainer = document.getElementById('goal-list-container');
     modeToggleCheckbox = document.getElementById('mode-toggle-checkbox');
     advancedModeContainer = document.getElementById('advanced-mode-container');
     simpleModeContainer = document.getElementById('simple-mode-container');
@@ -974,6 +1050,7 @@ document.addEventListener('DOMContentLoaded', () => {
     modalCloseBtn = document.querySelector('.modal-close-btn');
 
     // --- Event Listeners ---
+    addGoalBtn.addEventListener('click', addGoal); 
     modeToggleCheckbox.addEventListener('change', updateDisplay);
     document.querySelectorAll('.add-custom-btn').forEach(btn => btn.addEventListener('click', addCustomItem));
 
