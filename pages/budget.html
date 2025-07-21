@@ -170,27 +170,51 @@
         </section>
 
         <section class="budget-section">
-            <div class="section-header"><h2 data-i18n-key="section_expenses_title">Expense Management</h2><div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_expenses">순수입(실수령액)에서 나가는 모든 지출을 입력합니다.</span></div></div>
+            <div class="section-header">
+                <h2 data-i18n-key="section_expenses_title">Expense Management</h2>
+                <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_expenses">순수입(실수령액)에서 나가는 모든 지출을 입력합니다.</span></div>
+            </div>
             <div class="form-group">
                 <label for="expense-frequency-select" data-i18n-key="label_frequency">Frequency:</label>
                 <select id="expense-frequency-select" class="form-control"><option value="weekly" data-i18n-key="frequency_weekly">Weekly</option><option value="bi-weekly" data-i18n-key="frequency_bi_weekly">Bi-Weekly</option><option value="monthly" data-i18n-key="frequency_monthly">Monthly</option><option value="annual" data-i18n-key="frequency_annually">Annual</option></select>
             </div>
+            
+            <div class="form-grid expenses-grid">
+                <div class="form-group" data-item-id="exp-rent-1"><label><span data-i18n-key="label_rent_mortgage">Rent/Mortgage</span><span class="category-tag"></span></label><input type="number" id="exp-rent-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-utilities-1"><label><span data-i18n-key="label_utilities">Utilities</span><span class="category-tag"></span></label><input type="number" id="exp-utilities-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-internet-1"><label><span data-i18n-key="label_internet">Internet</span><span class="category-tag"></span></label><input type="number" id="exp-internet-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-phone-1"><label><span data-i18n-key="label_phone">Phone Bill</span><span class="category-tag"></span></label><input type="number" id="exp-phone-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-groceries-1"><label><span data-i18n-key="label_groceries">Groceries</span><span class="category-tag"></span></label><input type="number" id="exp-groceries-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-transport-1"><label><span data-i18n-key="label_transportation">Transportation</span><span class="category-tag"></span></label><input type="number" id="exp-transport-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-health-1"><label><span data-i18n-key="label_health_wellness">Health/Wellness</span><span class="category-tag"></span></label><input type="number" id="exp-health-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-insurance-1"><label><span data-i18n-key="label_insurance">Insurance</span><span class="category-tag"></span></label><input type="number" id="exp-insurance-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-children-1"><label><span data-i18n-key="label_children">Children</span><span class="category-tag"></span></label><input type="number" id="exp-children-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-dining-1"><label><span data-i18n-key="label_dining_out">Dining Out</span><span class="category-tag"></span></label><input type="number" id="exp-dining-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-shopping-1"><label><span data-i18n-key="label_shopping">Shopping</span><span class="category-tag"></span></label><input type="number" id="exp-shopping-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-entertainment-1"><label><span data-i18n-key="label_entertainment">Entertainment</span><span class="category-tag"></span></label><input type="number" id="exp-entertainment-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-travel-1"><label><span data-i18n-key="label_travel">Travel</span><span class="category-tag"></span></label><input type="number" id="exp-travel-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-pets-1"><label><span data-i18n-key="label_pets">Pets</span><span class="category-tag"></span></label><input type="number" id="exp-pets-1" class="form-control" min="0" value="0"></div>
+                <div class="form-group" data-item-id="exp-donation-1"><label><span data-i18n-key="label_donation">Donation</span><span class="category-tag"></span></label><input type="number" id="exp-donation-1" class="form-control" min="0" value="0"></div>
+            </div>
+        
+            <div class="custom-list" id="expense-list-container">
+                </div>
             <div id="expense-form" class="form-grid">
                 <div class="form-group">
-                    <label for="expense-name-input" data-i18n-key="label_expense_name">Expense Name</label>
+                    <label for="expense-name-input" data-i18n-key="label_expense_name">기타 지출 항목</label>
                     <input type="text" id="expense-name-input" class="form-control" placeholder="e.g., Netflix">
                 </div>
                 <div class="form-group">
-                    <label for="expense-amount-input" data-i18n-key="label_expense_amount">Amount</label>
+                    <label for="expense-amount-input" data-i18n-key="label_expense_amount">금액</label>
                     <input type="number" id="expense-amount-input" class="form-control" placeholder="0.00">
                 </div>
                 <div class="form-group">
-                    <label for="expense-category-select" data-i18n-key="label_category_type">Category</label>
+                    <label for="expense-category-select" data-i18n-key="label_category_type">카테고리</label>
                     <select id="expense-category-select" class="form-control"></select>
                 </div>
-                <button id="add-expense-btn" class="btn" data-i18n-key="btn_add_expense">Add Expense</button>
+                <button id="add-expense-btn" class="btn" data-i18n-key="btn_add_expense">기타 지출 추가</button>
             </div>
-            <div class="custom-list" id="expense-list-container"></div>
+        
             <div class="chart-container"><canvas id="expenses-chart"></canvas></div>
         </section>
 
