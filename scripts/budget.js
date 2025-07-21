@@ -301,6 +301,16 @@ const translations = {
 };
 
 // 3. 헬퍼 함수
+function debounce(func, delay) {
+  let timeoutId;
+  return function(...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+}
+
 function capitalizeFirstLetter(string) {
     if (!string) return '';
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
@@ -960,7 +970,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Event Listeners
     modeToggleCheckbox.addEventListener('change', updateDisplay);
-    document.querySelectorAll('input[type="number"], select').forEach(el => el.addEventListener('change', updateDisplay));
+    
+    // 디바운싱이 적용된 updateDisplay 함수를 생성합니다 (300ms = 0.3초).
+    const debouncedUpdate = debounce(updateDisplay, 300);
+    
+    // 숫자 입력 필드: 'input' 이벤트를 사용하여 타이핑하는 동안 실시간으로 반영하되, 디바운싱으로 성능 저하를 막습니다.
+    document.querySelectorAll('input[type="number"]').forEach(el => {
+        el.addEventListener('input', debouncedUpdate);
+    });
+    
+    // 선택(select) 메뉴: 'change' 이벤트는 한 번만 발생하므로 디바운싱 없이 바로 실행합니다.
+    document.querySelectorAll('select').forEach(el => {
+        el.addEventListener('change', updateDisplay);
+    });
+        
     document.querySelectorAll('.add-custom-btn').forEach(btn => btn.addEventListener('click', addCustomItem));
     
     languageToggleBtn.addEventListener('click', () => { data.currentLanguage = data.currentLanguage === 'ko' ? 'en' : 'ko'; applyLanguage(); });
