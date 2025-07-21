@@ -111,7 +111,7 @@ body.dark-mode select.form-control { background-image: url("data:image/svg+xml,%
 .btn-danger:hover { background-color: #e5394b; }
 .icon-btn { background: none; border: none; font-size: 1.5em; color: var(--header-text-color); cursor: pointer; }
 
-.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
 .expenses-grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
 
 .custom-list { margin-top: 20px; border-top: 1px solid var(--input-border-color); padding-top: 15px; display: flex; flex-direction: column; gap: 20px; }
@@ -169,6 +169,14 @@ body.dark-mode select.form-control { background-image: url("data:image/svg+xml,%
 .modal-item-name { font-weight: 500; }
 .modal-item-amount { font-weight: bold; }
 
+/* Dashboard Styles */
+.dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; }
+.stat-card { background-color: var(--bg-color); padding: 15px 20px; border-radius: var(--border-radius); border: 1px solid var(--input-border-color); }
+.stat-title { font-size: 0.9em; margin-bottom: 8px; color: var(--text-color); opacity: 0.8; }
+.stat-value { font-size: 1.6em; font-weight: bold; color: var(--accent-color); }
+.stat-value.positive { color: var(--positive-color); }
+.stat-value.negative { color: var(--negative-color); }
+
 /* Goal Section Styles */
 #goal-list-container { margin-top: 25px; border-top: 1px solid var(--input-border-color); padding-top: 20px; display: flex; flex-direction: column; gap: 25px; }
 .goal-item { display: flex; flex-direction: column; gap: 10px; }
@@ -181,7 +189,7 @@ body.dark-mode select.form-control { background-image: url("data:image/svg+xml,%
 .goal-item-controls input { max-width: 150px; }
 
 /* Debt Section Styles */
-#debt-result-container { font-size: 1.1em; font-weight: bold; color: var(--accent-color); }
+#debt-result-container { font-size: 1.1em; font-weight: bold; color: var(--accent-color); align-self: center; text-align: right; }
 #debt-list-container { margin-top: 25px; border-top: 1px solid var(--input-border-color); padding-top: 20px; display: flex; flex-direction: column; gap: 15px; }
 .debt-item { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; align-items: center; gap: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--input-border-color); }
 .debt-item:last-child { border-bottom: none; padding-bottom: 0; }
@@ -194,50 +202,18 @@ body.dark-mode select.form-control { background-image: url("data:image/svg+xml,%
 .category-item .remove-category-btn { margin-left: 10px; background: none; border: none; color: var(--danger-color); cursor: pointer; font-size: 1.2em; padding: 0; line-height: 1; }
 
 /* Specific Form Layouts for Desktop */
-#goal-form { grid-template-columns: 2fr 1fr auto; align-items: flex-end; }
-#debt-form { grid-template-columns: 2fr 1fr 1fr 1fr auto; align-items: flex-end; }
-#debt-calculator { margin-top: 25px; border-top: 1px solid var(--input-border-color); padding-top: 20px; grid-template-columns: 2fr 1fr; }
-#category-form { grid-template-columns: 2fr 1fr auto; align-items: flex-end; }
-#expense-form { grid-template-columns: 3fr 1.5fr 2fr auto; align-items: flex-end; gap: 10px; }
+#goal-form, #category-form, #expense-form, #debt-form { align-items: flex-end; }
+#goal-form { grid-template-columns: 2fr 1fr auto; }
+#debt-form { grid-template-columns: 2fr 1fr 1fr 1fr auto; }
+#debt-calculator { grid-template-columns: 2fr 1fr; }
+#category-form { grid-template-columns: 2fr 1fr auto; }
+#expense-form { grid-template-columns: 3fr 1.5fr 2fr auto; }
 
 #goal-form .form-group,
 #debt-form .form-group,
 #category-form .form-group,
 #expense-form .form-group {
     margin-bottom: 0;
-}
-
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 20px;
-}
-
-.stat-card {
-    background-color: var(--bg-color);
-    padding: 15px 20px;
-    border-radius: var(--border-radius);
-    border: 1px solid var(--input-border-color);
-}
-
-.stat-title {
-    font-size: 0.9em;
-    margin-bottom: 8px;
-    color: var(--text-color);
-    opacity: 0.8;
-}
-
-.stat-value {
-    font-size: 1.6em;
-    font-weight: bold;
-    color: var(--accent-color);
-}
-
-.stat-value.positive {
-    color: var(--positive-color);
-}
-.stat-value.negative {
-    color: var(--negative-color);
 }
 
 /* Responsive Styles */
@@ -266,7 +242,7 @@ body.dark-mode select.form-control { background-image: url("data:image/svg+xml,%
 }
 
 @media print {
-    header, .add-custom-btn, .data-actions, #ai-report-btn, .custom-list-item .remove-btn, .modal-container, .calculation-mode-section, .tooltip-container, #api-key-input, #record-history-btn { display: none; }
+    header, .add-custom-btn, .data-actions, #ai-report-btn, .custom-list-item .remove-btn, .modal-container, .calculation-mode-section, .tooltip-container, #api-key-input, #record-history-btn, #add-category-btn, #add-expense-btn, .remove-category-btn { display: none; }
     .budget-section { box-shadow: none; border: 1px solid #ccc; }
     .container { padding: 0; margin: 0; max-width: 100%; }
 }
