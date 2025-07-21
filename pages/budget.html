@@ -94,7 +94,31 @@
                 <button class="btn add-custom-btn" data-type="post-tax" data-i18n-key="btn_add_item">Add Item</button>
                 <div class="chart-container"><canvas id="post-tax-deduct-chart"></canvas></div>
             </section>
-                     
+            
+            <section class="budget-section">
+                <div class="section-header">
+                    <h2 data-i18n-key="section_category_title">Category Management</h2>
+                    <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_category">Add, view, and delete your expense categories here.</span></div>
+                </div>
+                <div id="category-form" class="form-grid">
+                    <div class="form-group">
+                        <label for="category-name-input" data-i18n-key="label_category_name">Category Name</label>
+                        <input type="text" id="category-name-input" class="form-control" placeholder="e.g., Subscriptions">
+                    </div>
+                    <div class="form-group">
+                        <label for="category-type-select" data-i18n-key="label_category_type">Category Type</label>
+                        <select id="category-type-select" class="form-control">
+                            <option value="needs" data-i18n-key="tag_needs">Needs</option>
+                            <option value="wants" data-i18n-key="tag_wants">Wants</option>
+                            <option value="savings" data-i18n-key="tag_savings">Savings</option>
+                            <option value="debt" data-i18n-key="tag_debt">Debt</option>
+                        </select>
+                    </div>
+                    <button id="add-category-btn" class="btn" data-i18n-key="btn_add_category">Add Category</button>
+                </div>
+                <div id="category-list-container"></div>
+            </section>
+            
             <section class="budget-section">
                 <div class="section-header">
                     <h2 data-i18n-key="section_debt_title">부채 관리</h2>
@@ -145,30 +169,6 @@
             </div>
         </section>
 
-        <section class="budget-section">
-                <div class="section-header">
-                    <h2 data-i18n-key="section_category_title">Category Management</h2>
-                    <div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_category">Add, view, and delete your expense categories here.</span></div>
-                </div>
-                <div id="category-form" class="form-grid">
-                    <div class="form-group">
-                        <label for="category-name-input" data-i18n-key="label_category_name">Category Name</label>
-                        <input type="text" id="category-name-input" class="form-control" placeholder="e.g., Subscriptions">
-                    </div>
-                    <div class="form-group">
-                        <label for="category-type-select" data-i18n-key="label_category_type">Category Type</label>
-                        <select id="category-type-select" class="form-control">
-                            <option value="needs" data-i18n-key="tag_needs">Needs</option>
-                            <option value="wants" data-i18n-key="tag_wants">Wants</option>
-                            <option value="savings" data-i18n-key="tag_savings">Savings</option>
-                            <option value="debt" data-i18n-key="tag_debt">Debt</option>
-                        </select>
-                    </div>
-                    <button id="add-category-btn" class="btn" data-i18n-key="btn_add_category">Add Category</button>
-                </div>
-                <div id="category-list-container"></div>
-        </section>
-        
         <section class="budget-section">
             <div class="section-header"><h2 data-i18n-key="section_expenses_title">Expense Management</h2><div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_expenses">순수입(실수령액)에서 나가는 모든 지출을 입력합니다.</span></div></div>
             <div class="form-group">
@@ -221,7 +221,7 @@
                 <p data-i18n-key="label_gross_salary">Gross Salary:</p> <span id="summary-gross-salary"></span>
                 <p data-i18n-key="label_total_taxes">Total Taxes:</p> <span id="summary-total-taxes"></span>
                 <p data-i18n-key="label_total_pre_tax">Total Pre-Tax Deductions:</p> <span id="summary-total-pre-tax"></span>
-                <p data-i18n-key="label_total_post_tax">Total Post-Tax Deductions:</p> <span id="summary-total-post-tax"></span>
+                <p data-i18n-key="label_total_post_tax">Total Post-Tax Deductions:</p> <span id="summary-total-post_tax"></span>
             </div>
             <div class="summary-results">
                 <p data-i18n-key="label_net_salary">Net Salary (Take-Home):</p> <span id="summary-net-salary"></span>
