@@ -190,6 +190,22 @@
             <div id="debt-list-container">
                 </div>
         </section>
+
+        <section class="budget-section">
+            <div class="section-header">
+                <h2 data-i18n-key="section_trends_title">재무 트렌드 분석</h2>
+                <div class="tooltip-container">
+                    <i class="ri-question-line tooltip-icon"></i>
+                    <span class="tooltip-text" data-i18n-key="tooltip_trends">
+                        매월 말 '이번 달 데이터 기록하기' 버튼을 눌러 데이터를 저장하고, 시간 경과에 따른 재무 변화를 차트로 확인하세요.
+                    </span>
+                </div>
+            </div>
+            <button id="record-history-btn" class="btn" style="margin-bottom: 20px;" data-i18n-key="btn_record_history">이번 달 데이터 기록하기</button>
+            <div class="chart-container" style="height: 400px;">
+                <canvas id="history-chart"></canvas>
+            </div>
+        </section>
         
         <section class="budget-section">
             <div class="section-header"><h2 data-i18n-key="section_summary_title">Budget Summary</h2><div class="tooltip-container"><i class="ri-question-line tooltip-icon"></i><span class="tooltip-text" data-i18n-key="tooltip_summary">모든 수입과 지출을 종합한 최종 요약입니다. 선택한 주기에 따라 환산된 금액을 보여줍니다.</span></div></div>
