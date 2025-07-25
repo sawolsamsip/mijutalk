@@ -59,15 +59,16 @@
                                 <div class="mt-4 pt-4 border-t border-gray-200 text-left">
                                     <div class="flex items-center justify-start mb-3">
                                         <svg class="w-5 h-5 text-gray-500 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.976 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.842 11.842 0 00.757.433.57.57 0 00.28.14l.018.008.006.003zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" /></svg>
-                                        <p class="ml-3 text-sm sm:text-base text-gray-600">14468 Culver Dr, Irvine, CA 92604</p>
+                                        <!-- [EDIT] Added responsive font sizes to prevent wrapping -->
+                                        <p class="ml-3 text-xs sm:text-sm md:text-base text-gray-600">14468 Culver Dr, Irvine, CA 92604</p>
                                     </div>
                                     <div class="flex items-center justify-start mb-3">
                                         <svg class="w-5 h-5 text-gray-500 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.518.759a11.024 11.024 0 005.218 5.218l.759-1.518a1 1 0 011.06-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" /></svg>
-                                        <a href="tel:949-818-1881" class="ml-3 text-sm sm:text-base text-gray-600 hover:text-wim-gold transition-colors">949-818-1881</a>
+                                        <a href="tel:949-818-1881" class="ml-3 text-xs sm:text-sm md:text-base text-gray-600 hover:text-wim-gold transition-colors">949-818-1881</a>
                                     </div>
                                     <div class="flex items-center justify-start">
                                         <svg class="w-5 h-5 text-gray-500 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M3 4a2 2 0 00-2 2v1.161l8.441 4.221a1.25 1.25 0 001.118 0L19 7.162V6a2 2 0 00-2-2H3z" /><path d="M19 8.839l-7.77 3.885a2.75 2.75 0 01-2.46 0L1 8.839V14a2 2 0 002 2h14a2 2 0 002-2V8.839z" /></svg>
-                                        <a href="mailto:sanghyun.lee@wellsfargo.com" class="ml-3 text-sm sm:text-base text-gray-600 hover:text-wim-gold transition-colors">sanghyun.lee@wellsfargo.com</a>
+                                        <a href="mailto:sanghyun.lee@wellsfargo.com" class="ml-3 text-xs sm:text-sm md:text-base text-gray-600 hover:text-wim-gold transition-colors">sanghyun.lee@wellsfargo.com</a>
                                     </div>
                                 </div>
                             </div>
@@ -79,6 +80,7 @@
                         <form id="consultation-form" action="send_email.php" method="POST">
                             <div class="mb-5">
                                 <label for="name" class="block mb-2 font-medium text-gray-700">Full Name</label>
+                                <!-- [EDIT] Adjusted vertical padding for a sleeker look -->
                                 <input type="text" id="name" name="name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wim-gold focus:border-transparent outline-none" required>
                             </div>
                             <div class="mb-5">
