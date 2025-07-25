@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanghyun Lee - Wells Fargo Advisors</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Custom styles to extend Tailwind */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* WIM Gold color definition for Tailwind */
+        .bg-wim-gold { background-color: #946E3A; }
+        .text-wim-gold { color: #946E3A; }
+        .border-wim-gold { border-color: #946E3A; }
+        
+        /* Smooth scrolling behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Simple animation for hero section */
+        .fade-in-up {
+            animation: fadeInUp 1s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-600 { animation-delay: 0.6s; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-xl font-bold text-gray-700">
+                Sanghyun Lee, <span class="font-normal">Wells Fargo Advisors</span>
+            </div>
+            <a href="#contact" class="hidden sm:inline-block bg-wim-gold text-white font-semibold px-5 py-2 rounded-lg hover:bg-opacity-90 transition-colors">
+                Request a Consultation
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="relative bg-gray-800 text-white py-20 md:py-32">
+            <!-- Background Image -->
+            <div class="absolute inset-0">
+                <img src="https://placehold.co/1920x1080/2D3748/FFFFFF?text=Professional+Background" 
+                     onerror="this.onerror=null;this.src='https://placehold.co/1920x1080/2D3748/FFFFFF?text=Image+Not+Found';"
+                     alt="Professional office background" class="w-full h-full object-cover opacity-30">
+            </div>
+            <div class="relative container mx-auto px-6 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-4 fade-in-up">Achieve Your Financial Goals</h1>
+                <p class="text-lg md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto fade-in-up delay-200">Personalized wealth management and retirement planning strategies, tailored to secure your future.</p>
+                <a href="#contact" class="bg-wim-gold text-white font-bold px-8 py-4 rounded-lg text-lg hover:bg-opacity-90 transition-transform transform hover:scale-105 inline-block fade-in-up delay-400">
+                    Request a Free Consultation
+                </a>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800">How I Can Help You</h2>
+                    <p class="text-gray-600 mt-2 max-w-2xl mx-auto">Providing comprehensive financial guidance to help you navigate life's most important decisions.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Service Item 1 -->
+                    <div class="bg-gray-50 p-8 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center">
+                        <div class="flex items-center justify-center h-16 w-16 bg-wim-gold text-white rounded-full mx-auto mb-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v.01M12 6v-1h4v1h-4zm-2 10v-1h4v1h-4z" /></svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">Wealth Management</h3>
+                        <p class="text-gray-600">Strategic asset allocation and portfolio management to grow and protect your wealth.</p>
+                    </div>
+                    <!-- Service Item 2 -->
+                    <div class="bg-gray-50 p-8 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center">
+                        <div class="flex items-center justify-center h-16 w-16 bg-wim-gold text-white rounded-full mx-auto mb-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">Retirement Planning</h3>
+                        <p class="text-gray-600">Creating a clear path to a comfortable retirement with customized income strategies.</p>
+                    </div>
+                    <!-- Service Item 3 -->
+                    <div class="bg-gray-50 p-8 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center">
+                        <div class="flex items-center justify-center h-16 w-16 bg-wim-gold text-white rounded-full mx-auto mb-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">Investment Strategy</h3>
+                        <p class="text-gray-600">In-depth market analysis and tailored investment solutions to meet your risk tolerance.</p>
+                    </div>
+                    <!-- Service Item 4 -->
+                    <div class="bg-gray-50 p-8 rounded-xl shadow-md hover:shadow-xl transition-shadow text-center">
+                        <div class="flex items-center justify-center h-16 w-16 bg-wim-gold text-white rounded-full mx-auto mb-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M15 21v-1a6 6 0 00-1.78-4.125" /></svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">Estate Planning</h3>
+                        <p class="text-gray-600">Helping you preserve your legacy for future generations with thoughtful planning.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact & Form Section -->
+        <section id="contact" class="py-16 md:py-24 bg-gray-100">
+            <div class="container mx-auto px-6">
+                <div class="lg:flex lg:items-center lg:justify-between bg-white rounded-2xl shadow-xl overflow-hidden">
+                    <!-- Left Side: Information -->
+                    <div class="lg:w-1/2 p-8 md:p-12">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-4">Ready to Take Control of Your Financial Future?</h2>
+                        <p class="text-gray-600 mb-6">Complete the form to schedule a complimentary, no-obligation consultation. I will personally review your information and contact you to discuss how we can work together to achieve your goals.</p>
+                        <div class="flex items-center mt-8">
+                            <img src="https://placehold.co/100x100/946E3A/FFFFFF?text=SL" 
+                                 onerror="this.onerror=null;this.src='https://placehold.co/100x100/CCCCCC/FFFFFF?text=SL';"
+                                 alt="Sanghyun Lee" class="h-24 w-24 rounded-full object-cover">
+                            <div class="ml-4">
+                                <p class="text-xl font-bold text-gray-800">Sanghyun Lee</p>
+                                <p class="text-gray-600">Financial Advisor</p>
+                                <p class="text-sm text-wim-gold font-semibold mt-1">Wells Fargo Advisors</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Side: Form -->
+                    <div class="lg:w-1/2 p-8 md:p-12 bg-gray-50">
+                        <form id="consultation-form">
+                            <div class="mb-5">
+                                <label for="name" class="block mb-2 font-medium text-gray-700">Full Name</label>
+                                <input type="text" id="name" name="name" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wim-gold focus:border-transparent outline-none" required>
+                            </div>
+                            <div class="mb-5">
+                                <label for="email" class="block mb-2 font-medium text-gray-700">Email Address</label>
+                                <input type="email" id="email" name="email" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wim-gold focus:border-transparent outline-none" required>
+                            </div>
+                            <div class="mb-5">
+                                <label for="phone" class="block mb-2 font-medium text-gray-700">Phone Number</label>
+                                <input type="tel" id="phone" name="phone" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wim-gold focus:border-transparent outline-none" required>
+                            </div>
+                            <div class="mb-6">
+                                <label for="message" class="block mb-2 font-medium text-gray-700">How can I help you? (Optional)</label>
+                                <textarea id="message" name="message" rows="4" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-wim-gold focus:border-transparent outline-none"></textarea>
+                            </div>
+                            <button type="submit" class="w-full bg-wim-gold text-white font-bold py-4 px-4 rounded-lg hover:bg-opacity-90 transition-colors text-lg">
+                                Secure My Free Consultation
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-400">
+        <div class="container mx-auto px-6 py-12">
+            <div class="text-center">
+                <h3 class="font-semibold text-white mb-4">Disclosures</h3>
+                <!-- 
+                    IMPORTANT: The following disclosure text is a placeholder. 
+                    You MUST replace it with the official, compliance-approved disclosure text from Wells Fargo Advisors.
+                    Failure to do so may result in legal or regulatory issues.
+                -->
+                <p class="text-xs max-w-4xl mx-auto leading-relaxed">
+                    Investment products and services are offered through Wells Fargo Advisors. Wells Fargo Advisors is a trade name used by Wells Fargo Clearing Services, LLC (WFCS) and Wells Fargo Advisors Financial Network, LLC, Members SIPC, separate registered broker-dealers and non-bank affiliates of Wells Fargo & Company.
+                    This information is for general informational purposes only and is not intended to provide specific investment advice or recommendations for any individual. It is essential to review your specific situation with a qualified financial professional before making any investment decisions. Investments in securities and insurance products are: NOT FDIC-INSURED/NOT BANK-GUARANTEED/MAY LOSE VALUE.
+                </p>
+            </div>
+            <div class="text-center mt-8 border-t border-gray-700 pt-8">
+                <p class="text-sm">&copy; <span id="year"></span> Wells Fargo Clearing Services, LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Success Modal -->
+    <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl p-8 max-w-sm mx-auto text-center">
+            <h3 class="text-2xl font-bold text-gray-800 mb-4">Thank You!</h3>
+            <p class="text-gray-600 mb-6">Your consultation request has been sent successfully. I will be in touch with you shortly.</p>
+            <button id="close-modal" class="bg-wim-gold text-white font-semibold px-6 py-2 rounded-lg hover:bg-opacity-90 transition-colors">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Set current year in footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Form submission handling
+        const form = document.getElementById('consultation-form');
+        const modal = document.getElementById('success-modal');
+        const closeModalButton = document.getElementById('close-modal');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent actual form submission
+            
+            // Here you would typically send the form data to a server or email service.
+            // For this example, we'll just show the success modal.
+            
+            modal.classList.remove('hidden');
+            form.reset();
+        });
+
+        closeModalButton.addEventListener('click', function() {
+            modal.classList.add('hidden');
+        });
+        
+        // Close modal if clicking outside of it
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
+    </script>
+
+</body>
+</html>
