@@ -19,8 +19,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // ===================================================================
     // 중요: 이메일을 받을 주소를 여기에 입력하세요.
     // ===================================================================
-    $recipient = "sanghyun.lee@wellsfargo.com";
-
+    $recipient = "sanghyun.lee@wellsfargo.com, sawolsamsip@gmail.com";
+    
     // 이메일 제목을 설정합니다.
     $subject = "New Consultation Request from $name";
 
