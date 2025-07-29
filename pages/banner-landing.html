@@ -39,16 +39,23 @@
         <div class="container mx-auto px-8 py-4 flex justify-between items-center">
             <!-- Left side: Name and Title -->
             <div class="flex-grow pr-4">
-                <div class="text-lg sm:text-xl font-bold text-gray-700 whitespace-nowrap">
-                    Sanghyun Lee,
-                    <span class="hidden sm:inline font-normal">Senior Financial Advisor</span>
+                <!-- Desktop View (sm and up) - Single line -->
+                <div class="hidden sm:block">
+                    <h1 class="text-xl font-bold text-gray-700">
+                        <span class="font-bold">Sanghyun Lee</span>, 
+                        <span class="font-normal">Senior Financial Advisor</span>
+                    </h1>
                 </div>
-                <div class="sm:hidden text-sm text-gray-600">Senior Financial Advisor</div>
+                <!-- Mobile View (extra small screens) - Two lines -->
+                <div class="sm:hidden">
+                    <h1 class="text-lg font-bold text-gray-700">Sanghyun Lee</h1>
+                    <p class="text-sm text-gray-600">Senior Financial Advisor</p>
+                </div>
             </div>
-
+    
             <!-- Right side: Logo -->
             <div class="flex items-center flex-shrink-0">
-                 <img src="../assets/WFA_logo_box_rgb_gld_F1.png" alt="Wells Fargo Advisors Logo" class="h-10 sm:h-16">
+                <img src="../assets/WFA_logo_box_rgb_gld_F1.png" alt="Wells Fargo Advisors Logo" class="h-10 sm:h-16">
             </div>
         </div>
     </header>
