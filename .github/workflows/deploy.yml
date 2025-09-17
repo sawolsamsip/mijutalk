@@ -3,29 +3,22 @@ name: Deploy to OCI Server
 on:
   push:
     branches:
-      - main # main 브랜치에 코드가 push 될 때만 실행됩니다.
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
+      # 1. GitHub 저장소의 코드를 Actions 가상 머신으로 가져옵니다.
       - name: Checkout the code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Deploy to Server
-        uses: appleboy/ssh-action@master
+      # 2. 가져온 코드 전체를 OCI 서버의 지정된 폴더로 복사합니다.
+      - name: Copy files to server
+        uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-          script: |
-            cd ${{ secrets.WORK_DIR }}
-            # 처음 배포할 때 폴더가 비어있으므로 git clone을,
-            # 이후에는 git pull을 하도록 간단한 스크립트를 작성합니다.
-            # [중요] 이 주소는 반드시 자신의 GitHub 프로젝트 주소로 변경하세요!
-            if [ -d ".git" ]; then
-              git pull origin main
-            else
-              git clone https://github.com/sawolsamsip/mijutalk.git .
-            fi
+          source: "./" # 현재 폴더의 모든 파일을
+          target: ${{ secrets.WORK_DIR }} # 이 폴더로 전송
