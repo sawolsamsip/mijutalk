@@ -1,25 +1,31 @@
-name: Deploy to Server
+name: Deploy to OCI Server
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main # main 브랜치에 코드가 push 될 때만 실행됩니다.
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Repository
+      - name: Checkout the code
         uses: actions/checkout@v3
 
-      - name: Deploy via SSH
+      - name: Deploy to Server
         uses: appleboy/ssh-action@master
         with:
-          host: "${{ secrets.SSH_HOST }}"
-          username: "${{ secrets.SSH_USERNAME }}"
-          key: "${{ secrets.SSH_PRIVATE_KEY }}"
-          port: "${{ secrets.SSH_PORT }}"
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
           script: |
-            cd /var/www/html
-            git reset --hard
-            git pull origin main
-            sudo systemctl restart nginx
+            cd ${{ secrets.WORK_DIR }}
+            # 처음 배포할 때 폴더가 비어있으므로 git clone을,
+            # 이후에는 git pull을 하도록 간단한 스크립트를 작성합니다.
+            # [중요] 이 주소는 반드시 자신의 GitHub 프로젝트 주소로 변경하세요!
+            if [ -d ".git" ]; then
+              git pull origin main
+            else
+              git clone https://github.com/sawolsamsip/mijutalk.git .
+            fi
