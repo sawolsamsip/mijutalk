@@ -511,7 +511,10 @@ footer p {
       <p>전문 컨설턴트와의 1:1 상담을 위해 정보를 입력해주세요</p>
     </div>
     
-    <form id="consultingForm" class="consult-form" action="../scripts/send.php" method="POST">
+    <form id="consultingForm" class="consult-form" action="https://formsubmit.co/info@mijutalk.co" method="POST">
+      <input type="hidden" name="_next" value="https://mijutalk.co/pages/thank-you.html">
+      <input type="hidden" name="_subject" value="미주자산톡 상담 신청">
+      <input type="hidden" name="_captcha" value="false">
       <div class="form-grid">
         <!-- 1행: 이름 + 전화번호 -->
         <div class="form-group">
